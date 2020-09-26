@@ -1,0 +1,4 @@
+(sym_lib_table
+  (lib (name USART_8251)(type Legacy)(uri "C:/Users/kaltchuk/Documents/Kicad Projects/My_Private_Lib.lib")(options "")(descr ""))
+  (lib (name USART-rescue)(type Legacy)(uri ${KIPRJMOD}/USART-rescue.lib)(options "")(descr ""))
+)
