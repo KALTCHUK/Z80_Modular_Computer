@@ -23,35 +23,35 @@ USART_STA		.EQU	0D1H			; USART status addr
 UMODE			.EQU	06DH			; 8N1 (8 bit, no parity, 1 stop), baud=clock (9600bps)
 UCMD0			.EQU	015H			; initial command: Rx enable, Tx enable, reset error flags
 
-BLKSIZ		.EQU	4096		;CP/M allocation size
-HSTSIZ		.EQU	512		;host disk sector size
-HSTSPT		.EQU	32		;host disk sectors/trk
-HSTBLK		.EQU	HSTSIZ/128	;CP/M sects/host buff
+BLKSIZ		.EQU	4096			;CP/M allocation size
+HSTSIZ		.EQU	512			;host disk sector size
+HSTSPT		.EQU	32			;host disk sectors/trk
+HSTBLK		.EQU	HSTSIZ/128		;CP/M sects/host buff
 CPMSPT		.EQU	HSTBLK * HSTSPT	;CP/M sectors/track
-SECMSK		.EQU	HSTBLK-1	;sector mask
-						;compute sector mask
-;secshf		.EQU	2		;log2(HSTBLK)
+SECMSK		.EQU	HSTBLK-1		;sector mask
+							;compute sector mask
+;secshf		.EQU	2			;log2(HSTBLK)
 
-WRALL			.EQU	0		;write to allocated
-WRDIR			.EQU	1		;write to directory
-WRUAL			.EQU	2		;write to unallocated
+WRALL			.EQU	0			;write to allocated
+WRDIR			.EQU	1			;write to directory
+WRUAL			.EQU	2			;write to unallocated
 
-FLASH_ADDR		.EQU	0DH		; Base I/O address for compact flash card
+FLASH_ADDR		.EQU	0DH			; Base I/O address for compact flash card
 ; CF registers
-CF_DATA		.EQU	$10
-CF_FEATURES	.EQU	$11
-CF_ERROR		.EQU	$11
-CF_SECCOUNT	.EQU	$12
-CF_SECTOR		.EQU	$13
-CF_CYL_LOW		.EQU	$14
-CF_CYL_HI		.EQU	$15
-CF_HEAD		.EQU	$16
-CF_STATUS		.EQU	$17
-CF_COMMAND		.EQU	$17
-CF_LBA0		.EQU	$13
-CF_LBA1		.EQU	$14
-CF_LBA2		.EQU	$15
-CF_LBA3		.EQU	$16
+CF_DATA		.EQU	(FLASH_ADDR+0)
+CF_FEATURES	.EQU	(FLASH_ADDR+1)
+CF_ERROR		.EQU	(FLASH_ADDR+1)
+CF_SECCOUNT	.EQU	(FLASH_ADDR+2)
+CF_SECTOR		.EQU	(FLASH_ADDR+3)
+CF_CYL_LOW		.EQU	(FLASH_ADDR+4)
+CF_CYL_HI		.EQU	(FLASH_ADDR+5)
+CF_HEAD		.EQU	(FLASH_ADDR+6)
+CF_STATUS		.EQU	(FLASH_ADDR+7)
+CF_COMMAND		.EQU	(FLASH_ADDR+7)
+CF_LBA0		.EQU	(FLASH_ADDR+3)
+CF_LBA1		.EQU	(FLASH_ADDR+4)
+CF_LBA2		.EQU	(FLASH_ADDR+5)
+CF_LBA3		.EQU	(FLASH_ADDR+6)
 
 ;CF Features
 CF_8BIT		.EQU	1
