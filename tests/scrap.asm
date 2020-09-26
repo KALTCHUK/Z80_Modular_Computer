@@ -1,3 +1,5 @@
+;This file is used to test small routines with Z80 Simulator
+
 COUNTER	.EQU	05000H
 CHAR		.EQU	05001H
 ATARGET	.EQU	0F000H
