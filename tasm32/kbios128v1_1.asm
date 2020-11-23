@@ -1,4 +1,8 @@
-; KBIOS v1.1 change USART setup from 8N1 to 8E2 
+; KBIOS v1.1 change USART setup from 8N1 to 8E2 and send error code to console
+; 	000 no error
+; 	001 parity error
+; 	010 overrun error
+; 	100 framing error
 
 CCP			.EQU	0D000h		; Base of CCP.
 BIOS			.EQU	0E600h		; Base of BIOS.
@@ -24,6 +28,7 @@ USART_CMD		.EQU	0D1H			; USART command addr
 USART_STA		.EQU	0D1H			; USART status addr
 UMODE			.EQU	0FDH			; 8E2 (8 bit, parity even, 2 stop), baud=clock/1
 UCMD0			.EQU	015H			; initial command: Rx enable, Tx enable, reset error flags
+URST			.EQU	040H			; USART reset command
 
 BLKSIZ		.EQU	4096			;CP/M allocation size
 HSTSIZ		.EQU	512			;host disk sector size
@@ -224,6 +229,18 @@ UINT:
 		PUSH	HL
 
 		IN	A,(USART_DAT)		; fetch the character
+		IN	A,(USART_CMD)		; fetch status byte
+		AND	00111000b			; get only the error bits
+		JR	Z,RXOK			; continue normally if no error detected
+		SRA	A				; convert error flags to ASCII char
+		SRA	A
+		SRA	A
+		ADD	A,030h			
+		OUT	(USART_DAT),A		; send character without testing if TxEMPTY
+		LD 	A,UCMD0			; reset error flags
+		OUT	(USART_CMD),A
+
+RXOK:		IN	A,(USART_DAT)		; fetch the character
 		AND	01111111b			; Zero msb (we use 7 bit ASCII)
 		LD	BC,(WRPTR)
 		LD	(BC),A
@@ -252,7 +269,7 @@ USARTINIT:
 		OUT	(USART_CMD),A
 		NOP
 		OUT	(USART_CMD),A
-		LD 	A,040H			; Reset USART
+		LD 	A,URST			; Reset USART
 		OUT	(USART_CMD),A
 		LD 	A,UMODE			; Set USART mode
 		OUT	(USART_CMD),A
