@@ -244,8 +244,8 @@ EOINT:	LD	(WRPTR),BC
 ; Initialize USART
 ;================================================================================================
 USARTINIT:
-		LD 	A,0				; Worst case init: put in SYNC mode, send 2 dummy 00 sync chars and reset
-		OUT	(USART_CMD),A
+		LD 	A,0				; Worst case init: put in SYNC mode, 
+		OUT	(USART_CMD),A		; send 2 dummy 00 sync chars and reset
 		NOP
 		OUT	(USART_CMD),A
 		NOP
