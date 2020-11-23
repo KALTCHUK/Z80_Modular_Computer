@@ -228,7 +228,6 @@ UINT:
 		PUSH	BC
 		PUSH	HL
 
-		IN	A,(USART_DAT)		; fetch the character
 		IN	A,(USART_CMD)		; fetch status byte
 		AND	00111000b			; get only the error bits
 		JR	Z,RXOK			; continue normally if no error detected
