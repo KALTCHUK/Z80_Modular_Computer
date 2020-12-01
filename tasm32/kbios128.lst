@@ -20,7 +20,7 @@
 0020   0000             USART_DAT		.EQU	0D0H			; USART data addr
 0021   0000             USART_CMD		.EQU	0D1H			; USART command addr
 0022   0000             USART_STA		.EQU	0D1H			; USART status addr
-0023   0000             UMODE			.EQU	06DH			; 8N1 (8 bit, no parity, 1 stop), baud=clock (9600bps)
+0023   0000             UMODE			.EQU	06FH			; 8N1 (8 bit, no parity, 1 stop), baud=clock/64
 0024   0000             UCMD0			.EQU	015H			; initial command: Rx enable, Tx enable, reset error flags
 0025   0000             
 0026   0000             BLKSIZ		.EQU	4096			;CP/M allocation size
@@ -315,15 +315,15 @@
 0244   E83D             ; Initialize USART
 0245   E83D             ;================================================================================================
 0246   E83D             USARTINIT:
-0247   E83D 3E 00       		LD 	A,0				; Worst case init: put in SYNC mode, send 2 dummy 00 sync chars and reset
-0248   E83F D3 D1       		OUT	(USART_CMD),A
+0247   E83D 3E 00       		LD 	A,0				; Worst case init: put in SYNC mode, 
+0248   E83F D3 D1       		OUT	(USART_CMD),A		; send 2 dummy 00 sync chars and reset
 0249   E841 00          		NOP
 0250   E842 D3 D1       		OUT	(USART_CMD),A
 0251   E844 00          		NOP
 0252   E845 D3 D1       		OUT	(USART_CMD),A
 0253   E847 3E 40       		LD 	A,040H			; Reset USART
 0254   E849 D3 D1       		OUT	(USART_CMD),A
-0255   E84B 3E 6D       		LD 	A,UMODE			; Set USART mode
+0255   E84B 3E 6F       		LD 	A,UMODE			; Set USART mode
 0256   E84D D3 D1       		OUT	(USART_CMD),A
 0257   E84F 3E 15       		LD 	A,UCMD0			; Set USART initial command
 0258   E851 D3 D1       		OUT	(USART_CMD),A

@@ -20,7 +20,7 @@ NOROM_RAM1		.EQU	0F3H			; no ROM + RAM bank 1 (full RAM)
 USART_DAT		.EQU	0D0H			; USART data addr
 USART_CMD		.EQU	0D1H			; USART command addr
 USART_STA		.EQU	0D1H			; USART status addr
-UMODE			.EQU	06DH			; 8N1 (8 bit, no parity, 1 stop), baud=clock (9600bps)
+UMODE			.EQU	06FH			; 8N1 (8 bit, no parity, 1 stop), baud=clock/64
 UCMD0			.EQU	015H			; initial command: Rx enable, Tx enable, reset error flags
 
 BLKSIZ		.EQU	4096			;CP/M allocation size
