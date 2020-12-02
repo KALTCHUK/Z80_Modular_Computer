@@ -30,7 +30,7 @@ U 1 1 5EA61F2B
 P 6750 2750
 F 0 "C4" H 6868 2796 50  0000 L CNN
 F 1 "1uF" H 6868 2705 50  0000 L CNN
-F 2 "Capacitor_THT:CP_Radial_D7.5mm_P2.50mm" H 6788 2600 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D5.0mm_P2.50mm" H 6788 2600 50  0001 C CNN
 F 3 "~" H 6750 2750 50  0001 C CNN
 	1    6750 2750
 	1    0    0    -1  
@@ -41,7 +41,7 @@ U 1 1 5EA62D6B
 P 5150 2750
 F 0 "C2" H 4900 2850 50  0000 L CNN
 F 1 "1uF" H 4900 2750 50  0000 L CNN
-F 2 "Capacitor_THT:CP_Radial_D7.5mm_P2.50mm" H 5188 2600 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D5.0mm_P2.50mm" H 5188 2600 50  0001 C CNN
 F 3 "~" H 5150 2750 50  0001 C CNN
 	1    5150 2750
 	1    0    0    -1  
@@ -63,7 +63,7 @@ U 1 1 5EA60659
 P 7100 3100
 F 0 "C5" V 7250 3150 50  0000 C CNN
 F 1 "1uF" V 7250 3000 50  0000 C CNN
-F 2 "Capacitor_THT:CP_Radial_D7.5mm_P2.50mm" H 7138 2950 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D5.0mm_P2.50mm" H 7138 2950 50  0001 C CNN
 F 3 "~" H 7100 3100 50  0001 C CNN
 	1    7100 3100
 	0    -1   -1   0   
@@ -74,7 +74,7 @@ U 1 1 5EA6122F
 P 7100 3400
 F 0 "C6" V 6950 3350 50  0000 C CNN
 F 1 "1uF" V 6950 3500 50  0000 C CNN
-F 2 "Capacitor_THT:CP_Radial_D7.5mm_P2.50mm" H 7138 3250 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D5.0mm_P2.50mm" H 7138 3250 50  0001 C CNN
 F 3 "~" H 7100 3400 50  0001 C CNN
 	1    7100 3400
 	0    1    1    0   
@@ -85,7 +85,7 @@ U 1 1 5EA72344
 P 6250 2150
 F 0 "C3" V 6400 2300 50  0000 C CNN
 F 1 "1uF" V 6400 2050 50  0000 C CNN
-F 2 "Capacitor_THT:CP_Radial_D7.5mm_P2.50mm" H 6288 2000 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D5.0mm_P2.50mm" H 6288 2000 50  0001 C CNN
 F 3 "~" H 6250 2150 50  0001 C CNN
 	1    6250 2150
 	0    -1   -1   0   
@@ -270,7 +270,7 @@ U 1 1 5FC83421
 P 2650 3500
 F 0 "J1" H 2300 3500 50  0000 C CNN
 F 1 "Reset jumper" H 2300 3400 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Horizontal" H 2650 3500 50  0001 C CNN
+F 2 "Connector_PinSocket_2.54mm:PinSocket_1x03_P2.54mm_Vertical" H 2650 3500 50  0001 C CNN
 F 3 "~" H 2650 3500 50  0001 C CNN
 	1    2650 3500
 	1    0    0    -1  
@@ -309,7 +309,7 @@ U 1 1 5FC87182
 P 4650 3050
 F 0 "J2" V 4450 2900 50  0000 L CNN
 F 1 "TTL port" V 4550 2950 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Horizontal" H 4650 3050 50  0001 C CNN
+F 2 "Connector_PinSocket_2.54mm:PinSocket_1x03_P2.54mm_Vertical" H 4650 3050 50  0001 C CNN
 F 3 "~" H 4650 3050 50  0001 C CNN
 	1    4650 3050
 	0    1    1    0   
