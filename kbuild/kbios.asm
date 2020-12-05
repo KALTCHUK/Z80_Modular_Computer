@@ -25,7 +25,7 @@ NOROM_RAM1		.EQU	0F3H			; no ROM + RAM bank 1 (full RAM)
 USART_DAT		.EQU	0D0H			; USART data addr
 USART_CMD		.EQU	0D1H			; USART command addr
 USART_STA		.EQU	0D1H			; USART status addr
-UMODE			.EQU	06DH			; 8N1 (8 bit, no parity, 1 stop), baud=clock (9600bps)
+UMODE			.EQU	06FH			; 8N1 (8 bit, no parity, 1 stop), baud=clock/64
 UCMD0			.EQU	015H			; initial command: Rx enable, Tx enable, reset error flags
 
 LF			.EQU	0AH			;line feed
@@ -77,13 +77,13 @@ BOOT:
 		CALL	PRINTSEQ
 		.TEXT "Z80 Modular Computer BIOS 1.0 by Kaltchuk 2020"
 		.DB CR,LF
-		.TEXT "*** This version does NOT support disk functions ***"
-		.DB CR,LF
-		.DB CR,LF
-		.TEXT "CP/M 2.2 "
-		.TEXT	"Copyright"
-		.TEXT	" 1979 (c) by Digital Research"
-		.DB CR,LF
+;		.TEXT "*** This version does NOT support disk functions ***"
+;		.DB CR,LF
+;		.DB CR,LF
+;		.TEXT "CP/M 2.2 "
+;		.TEXT	"Copyright"
+;		.TEXT	" 1979 (c) by Digital Research"
+;		.DB CR,LF
 		.DB CR,LF,0
 
 		JP	GOCPM
@@ -149,8 +149,8 @@ CONVOID:
 ; Console Input (Wait for input and return character in A)
 ;================================================================================================
 CONIN:
-		PUSH	BC	
-		PUSH	HL	
+		PUSH	BC
+		PUSH	HL
 AGAIN:	CALL	CONST
 		CP	0
 		JR	Z,AGAIN			; Keep trying till we receive something
@@ -182,7 +182,7 @@ CONOUT:
 ;================================================================================================
 ; Reader Input
 ;================================================================================================
-READER:	JP CONIN	
+READER:	JP CONIN
 
 ;================================================================================================
 ; List Output
@@ -192,7 +192,7 @@ LIST:		JP CONOUT
 ;================================================================================================
 ; Punch Output
 ;================================================================================================
-PUNCH:	JP CONOUT	
+PUNCH:	JP CONOUT
 
 ;================================================================================================
 ; List Status (List = Console)
@@ -220,19 +220,19 @@ CHGDSK:
 HOME:
 		RET
 ;------------------------------------------------------------------------------------------------
-SETTRK:	
+SETTRK:
 		RET
 
 ;------------------------------------------------------------------------------------------------
-SETSEC:	
+SETSEC:
 		RET
 
 ;------------------------------------------------------------------------------------------------
-SETDMA:	
+SETDMA:
 		RET
 
 ;------------------------------------------------------------------------------------------------
-SECTRAN:	
+SECTRAN:
 		RET
 
 ;------------------------------------------------------------------------------------------------
