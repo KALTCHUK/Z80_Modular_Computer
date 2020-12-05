@@ -292,8 +292,8 @@
 0221   E81A C5          		PUSH	BC
 0222   E81B E5          		PUSH	HL
 0223   E81C             
-0224   E81C DB D0       		IN	A,(USART_DAT)		; fetch the character
-0225   E81E E6 7F       		AND	01111111b			; Zero msb (we use 7 bit ASCII)
+0224   E81C DB D0       		IN	A,(USART_DAT)		; read incoming byte
+0225   E81E D3 D0       		OUT	(USART_DAT),A		; send character
 0226   E820 ED 4B D2 FB 		LD	BC,(WRPTR)
 0227   E824 02          		LD	(BC),A
 0228   E825 03          		INC	BC
