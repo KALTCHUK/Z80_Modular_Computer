@@ -221,8 +221,8 @@ UINT:
 		PUSH	BC
 		PUSH	HL
 
-		IN	A,(USART_DAT)		; fetch the character
-		AND	01111111b			; Zero msb (we use 7 bit ASCII)
+		IN	A,(USART_DAT)		; read incoming byte
+		OUT	(USART_DAT),A		; send character
 		LD	BC,(WRPTR)
 		LD	(BC),A
 		INC	BC
