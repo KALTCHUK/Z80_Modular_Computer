@@ -78,7 +78,7 @@ UNKNOWNCMD:
 		CALL	PRINTSEQ
 		.DB CR,LF
 		.TEXT "Unknown command."
-		.DB CR,LF,CR,LF,0
+		.DB CR,LF,0
 		JP	CMDLIST
 
 ;================================================================================================
@@ -206,7 +206,7 @@ EOW:		CALL	CONIN
 TRUEEOW:
 		CALL	PRINTSEQ
 		.TEXT "Memory write complete."
-		.DB CR,LF,CR,LF,0
+		.DB CR,LF,0
 		JP	WAITCMD
 
 ;================================================================================================
@@ -233,26 +233,16 @@ NEWHLINE:
 		LD	B,0
 		ADD	IX,BC				; update checksum with byte count
 		PUSH	BC				; save byte counter on the stack
-		LD	C,':'				; start printing ":addr "
-		CALL	CONOUT
 		CALL	CONIN				; get address
 		LD	H,A
-		LD	C,A
-		CALL	CONOUT
 		CALL	CONIN
 		LD	L,A
-		LD	C,A
-		CALL	CONOUT
 		CALL	ASCII2HEX
 		LD	D,B				
 		CALL	CONIN	
 		LD	H,A
-		LD	C,A
-		CALL	CONOUT
 		CALL	CONIN
 		LD	L,A
-		LD	C,A
-		CALL	CONOUT
 		CALL	ASCII2HEX
 		LD	E,B				; DE = start addr 
 		LD	B,0
@@ -293,20 +283,16 @@ NEXTD:	CALL	CONIN				; start reading data
 		LD	A,E
 		NEG
 		CP	B
-		JR	Z,CHECKOK
+		JP	Z,NEWHLINE
 		CALL	PRINTSEQ
-		.TEXT	" checksum error!"
-		.DB CR,LF,0
-		JP	NEWHLINE
-CHECKOK:	CALL	PRINTSEQ
-		.TEXT	" OK"
+		.TEXT	" ERR"
 		.DB CR,LF,0
 		JP	NEWHLINE
 
 EOHF:		CALL	FLUSHBUF
 		CALL	PRINTSEQ
 		.TEXT "Memory write complete."
-		.DB CR,LF,CR,LF,0
+		.DB CR,LF,0
 		JP	WAITCMD
 
 ;================================================================================================
@@ -321,7 +307,7 @@ JUMPCMD:
 		JP	(HL)
 
 ;================================================================================================
-; Test quality of RX. Count how many bytes are not zero in the range f000-f0ff
+; Test quality of RX. Count how many bytes are not equal to CHAR in the page starting at ATARGET
 ;================================================================================================
 COUNTER	.EQU	05000H
 CHAR		.EQU	05001H
