@@ -269,7 +269,7 @@ NEXTD:	LD	A,(IX+0)			; read data
 		INC	IY 
 		ADD	A,C
 		LD	C,A				; update checksum acc
-		DJNZ,NEXTD
+		DJNZ	NEXTD
 		LD	A,(IX+0)			; read checksum byte
 		INC	IX
 		NEG
