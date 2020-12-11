@@ -23,7 +23,7 @@ DRAFT			.EQU	0C000H		; draft area to write incoming HEX-format data
 
 MONITOR:
 		CALL	PRINTSEQ
-		.TEXT	"Z80 Modular Computer Monitor V1.2 by Kaltchuk, Sep/2020"
+		.TEXT	"Z80 Modular Computer Monitor V1.3 by Kaltchuk, Dec/2020"
 		.DB	CR,LF,CR,LF,0
 CMDLIST:
 		CALL	PRINTSEQ
@@ -201,13 +201,17 @@ NEXTWR:	CALL	CONIN
 		LD	H,A
 		CP	CR
 		JR	Z,EOW
-		CALL	CONIN
+		CP	':'
+		JR	NZ,GETL
+		LD	A,':'
+		JR	WRCOLON
+GETL:		CALL	CONIN
 		LD	L,A				; at this point HL holds the value to be written (ASCII)
 		CP	CR
 		JR	Z,EOW
 		CALL	ASCII2HEX			; B holds the hex value
 		LD	A,B
-		LD	(DE),A
+WRCOLON:	LD	(DE),A
 		INC	DE
 		JR	NEXTWR
 EOW:		CALL	CONIN
@@ -241,6 +245,7 @@ HEXCMD:
 		.TEXT ">Send HEX-format data to be written."
 		.DB CR,LF,'>',0
 		LD	DE,DRAFT			; set the address of the draft area
+		CALL FLUSHBUF
 		CALL	SBRWR	
 
 		LD	IX,DRAFT
