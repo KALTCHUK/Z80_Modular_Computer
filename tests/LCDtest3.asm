@@ -22,45 +22,37 @@ AGAIN:
 		CALL LCDCLEAR
 
 		CALL	LCDPRINT
-		.TEXT	"Batatinha"
+		.TEXT	"Z80 Modular"
 		.DB	0
 
 		LD 	B,DT
 		CALL	DELAYS
 
-		CALL LCDLFCR
+		LD	HL,00205H
+		CALL	LCDPOS
 		CALL	LCDPRINT
-		.TEXT	"quando nasce"
+		.TEXT	"Computer"
 		.DB	0
 
 		LD 	B,DT
 		CALL	DELAYS
 
-		CALL LCDLFCR
+		CALL LCDCLEAR
 		CALL	LCDPRINT
-		.TEXT	"se esparrama"
+		.TEXT	"by Kaltchuk     "
 		.DB	0
 
 		LD 	B,DT
 		CALL	DELAYS
 
-		CALL LCDLFCR
+		LD	HL,00201H
+		CALL	LCDPOS
 		CALL	LCDPRINT
-		.TEXT	"pelo chao..."
+		.TEXT	"December/2020   "
 		.DB	0
 
 		LD 	B,DT
 		CALL	DELAYS
-
-		CALL LCDLFCR
-		CALL	LCDPRINT
-		.TEXT	" "
-		.DB	0
-
-		LD 	B,DT
-		CALL	DELAYS
-
-		CALL LCDLFCR
 
 		JP	AGAIN
 
