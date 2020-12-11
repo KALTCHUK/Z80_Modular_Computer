@@ -1,0 +1,140 @@
+0001   0000             ; 0200h: Routine to initialize LCD 16x2
+0002   0000             ; 02E0h: LCDBUF. [02E0; 02EF] is 1st line, [02F0; 02FF] is 2nd line.
+0003   0000             ; 0300h: Routine to write content of LCDBUF to LCD
+0004   0000             ;
+0005   0000             ; CPU @ 4.0MHz (this is important for the delay routines)
+0006   0000             ;
+0007   0000             ; RS  = A0 from CPU
+0008   0000             ; R/W = A1 from CPU
+0009   0000             ; E   = 74LS85 output pin 'A=B'
+0010   0000             ;
+0011   0000             
+0012   0000             DAT_WR	.EQU	0E1H			;
+0013   0000             DAT_RD	.EQU	0E3H			;
+0014   0000             CMD_WR	.EQU	0E0H			;
+0015   0000             CMD_RD	.EQU	0E2H			;
+0016   0000             
+0017   0000             WAITCMD	.EQU	0D131H		; return address inside kmonitor
+0018   0000             
+0019   0000             ;================================================================================================
+0020   0000             ;================================================================================================
+0021   0000             
+0022   0200             		.ORG	0200h
+0023   0200             ;================================================================================================
+0024   0200             ; Initialize LCD
+0025   0200             ;================================================================================================
+0026   0200             LCDINIT:
+0027   0200 06 0F       		LD	B,15			; wait 15ms
+0028   0202 CD 24 03    		CALL	DELAYMS
+0029   0205 3E 30       		LD	A,030H		; write command 030h
+0030   0207 D3 E0       		OUT	(CMD_WR),A
+0031   0209 06 05       		LD	B,5			; wait 5ms
+0032   020B CD 24 03    		CALL	DELAYMS
+0033   020E 3E 30       		LD	A,030H		; write command 030h
+0034   0210 D3 E0       		OUT	(CMD_WR),A
+0035   0212 0E 14       		LD	C,20			; wait (5x20) 100us
+0036   0214 CD 30 03    		CALL	DELAY5US
+0037   0217 3E 30       		LD	A,030H		; write command 030h
+0038   0219 D3 E0       		OUT	(CMD_WR),A
+0039   021B 0E 14       		LD	C,20			; wait (5x20) 100us
+0040   021D CD 30 03    		CALL	DELAY5US
+0041   0220 3E 38       		LD	A,038H		; write command 038h = function set (8-bits, 2-lines, 5x7dots)
+0042   0222 D3 E0       		OUT	(CMD_WR),A
+0043   0224 CD 37 03    		CALL	BWAIT
+0044   0227 3E 08       		LD	A,08H			; write command 08h = display (off)
+0045   0229 D3 E0       		OUT	(CMD_WR),A
+0046   022B CD 37 03    		CALL	BWAIT
+0047   022E 3E 01       		LD	A,01H			; write command 01h = clear display
+0048   0230 D3 E0       		OUT	(CMD_WR),A
+0049   0232 CD 37 03    		CALL	BWAIT
+0050   0235 3E 06       		LD	A,06H			; write command 06h = entry mode (increment)
+0051   0237 D3 E0       		OUT	(CMD_WR),A
+0052   0239 CD 37 03    		CALL	BWAIT
+0053   023C 3E 0C       		LD	A,0CH			; write command 0Ch = display (on)
+0054   023E D3 E0       		OUT	(CMD_WR),A
+0055   0240             
+0056   0240 21 3D 03    		LD	HL,INIMSG		; copy initial message to LCDBUF
+0057   0243 11 E0 02    		LD	DE,LCDBUF
+0058   0246 06 20       		LD	B,32
+0059   0248 ED B0       		LDIR
+0060   024A             
+0061   024A C3 00 03    		JP	LCDWRITE	
+0062   024D             
+0063   02E0             		.ORG	02E0h
+0064   02E0             LCDBUF	.EQU	$
+0065   02E0             
+0066   02E0             
+0067   02E0             ;================================================================================================
+0068   02E0             ;================================================================================================
+0069   02E0             
+0070   0300             		.ORG	0300h
+0071   0300             ;================================================================================================
+0072   0300             ; Wtite to LCD.
+0073   0300             ;================================================================================================
+0074   0300             LCDWRITE:
+0075   0300 3E 80       		LD	A,080h		; position cursor at the beginning of 1st line
+0076   0302 D3 E0       		OUT	(CMD_WR),A
+0077   0304 06 10       		LD	B,16			; send 16 bytes (1st half of LCDBUF) to LCD
+0078   0306 11 E0 02    		LD	DE,LCDBUF
+0079   0309 CD 37 03    NXT:		CALL	BWAIT
+0080   030C 1A          		LD	A,(DE)
+0081   030D D3 E1       		OUT	(DAT_WR),A
+0082   030F 13          		INC	DE
+0083   0310 10 F7       		DJNZ	NXT		
+0084   0312             
+0085   0312 3E C0       		LD	A,0C0h		; position cursor at the beginning of 2nd line
+0086   0314 D3 E0       		OUT	(CMD_WR),A
+0087   0316 06 10       		LD	B,16			; send 16 bytes (2nd half of LCDBUF) to LCD
+0088   0318 CD 37 03    NXT2:		CALL	BWAIT
+0089   031B 1A          		LD	A,(DE)
+0090   031C D3 E1       		OUT	(DAT_WR),A
+0091   031E 13          		INC	DE
+0092   031F 10 F7       		DJNZ	NXT2		
+0093   0321             
+0094   0321 C3 31 D1    		JP	WAITCMD
+0095   0324             
+0096   0324             ;================================================================================================
+0097   0324             ; Delay X miliseconds, with X passed on reg B
+0098   0324             ;================================================================================================
+0099   0324             DELAYMS:
+0100   0324 C5          		PUSH	BC
+0101   0325 0E C8       DECB:		LD	C,0C8H
+0102   0327 00          DECC:		NOP
+0103   0328 0D          		DEC	C
+0104   0329 20 FC       		JR	NZ,DECC
+0105   032B 05          		DEC	B
+0106   032C 20 F7       		JR	NZ,DECB
+0107   032E C1          		POP	BC
+0108   032F C9          		RET
+0109   0330             
+0110   0330             ;================================================================================================
+0111   0330             ; Delay 5*X microseconds, with X passed on reg C
+0112   0330             ;================================================================================================
+0113   0330             DELAY5US:
+0114   0330 C5          		PUSH	BC
+0115   0331 00          DEC:		NOP
+0116   0332 0D          		DEC	C
+0117   0333 20 FC       		JR	NZ,DEC
+0118   0335 C1          		POP	BC
+0119   0336 C9          		RET
+0120   0337             
+0121   0337             ;================================================================================================
+0122   0337             ; Wait until Busy flag = 0
+0123   0337             ;================================================================================================
+0124   0337 DB E2       BWAIT:	IN A,(CMD_RD)
+0125   0339 07          		RLCA
+0126   033A 38 FB       		JR	C,BWAIT
+0127   033C C9          		RET
+0128   033D             
+0129   033D             ;================================================================================================
+0130   033D 5A 38 30 20 INIMSG:	.TEXT	"Z80 Modular Comp"
+0130   0341 4D 6F 64 75 
+0130   0345 6C 61 72 20 
+0130   0349 43 6F 6D 70 
+0131   034D 4C 43 44 20 		.TEXT	"LCD initialized "
+0131   0351 69 6E 69 74 
+0131   0355 69 61 6C 69 
+0131   0359 7A 65 64 20 
+0132   035D             
+0133   035D             		.END
+tasm: Number of errors = 0
