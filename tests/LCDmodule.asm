@@ -14,7 +14,7 @@ DAT_RD	.EQU	0E3H			;
 CMD_WR	.EQU	0E0H			;
 CMD_RD	.EQU	0E2H			;
 
-WAITCMD	.EQU	????			; return address inside kmonitor
+WAITCMD	.EQU	0D131H		; return address inside kmonitor
 
 ;================================================================================================
 ;================================================================================================
