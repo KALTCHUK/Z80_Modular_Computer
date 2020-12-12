@@ -1,0 +1,296 @@
+0001   0000             ;==================================================================================
+0002   0000             ; Contents of this file are copyright Grant Searle
+0003   0000             ;
+0004   0000             ; You have permission to use this for NON COMMERCIAL USE ONLY
+0005   0000             ; If you wish to use it elsewhere, please include an acknowledgement to myself.
+0006   0000             ;
+0007   0000             ; http://searle.hostei.com/grant/index.html
+0008   0000             ;
+0009   0000             ; eMail: home.micros01@btinternet.com
+0010   0000             ;
+0011   0000             ; If the above don't work, please perform an Internet search to see if I have
+0012   0000             ; updated the web page hosting service.
+0013   0000             ;
+0014   0000             ;==================================================================================
+0015   0000             PRINTSEQ		.EQU	0E633H		; Routine (located in the BIOS) to print a sequence of characters
+0016   0000             WAITCMD		.EQU	0D131H		; Reentry point to Monitor
+0017   0000             CONST			.EQU	0E606H		; Entry point for BIOS function CONST
+0018   0000             CONIN			.EQU	0E609H		; Entry point for BIOS function CONIN
+0019   0000             CONOUT		.EQU	0E60CH		; Entry point for BIOS function CONOUT
+0020   0000             
+0021   0000             numDrives	.EQU	15				; Not including A:
+0022   0000             
+0023   0000             FLASH_ADDR		.EQU	0B0H			; Base I/O address for compact flash card
+0024   0000             ; CF registers
+0025   0000             CF_DATA		.EQU	(FLASH_ADDR+0)
+0026   0000             CF_FEATURES	.EQU	(FLASH_ADDR+1)
+0027   0000             CF_ERROR		.EQU	(FLASH_ADDR+1)
+0028   0000             CF_SECCOUNT	.EQU	(FLASH_ADDR+2)
+0029   0000             CF_SECTOR		.EQU	(FLASH_ADDR+3)
+0030   0000             CF_CYL_LOW		.EQU	(FLASH_ADDR+4)
+0031   0000             CF_CYL_HI		.EQU	(FLASH_ADDR+5)
+0032   0000             CF_HEAD		.EQU	(FLASH_ADDR+6)
+0033   0000             CF_STATUS		.EQU	(FLASH_ADDR+7)
+0034   0000             CF_COMMAND		.EQU	(FLASH_ADDR+7)
+0035   0000             CF_LBA0		.EQU	(FLASH_ADDR+3)
+0036   0000             CF_LBA1		.EQU	(FLASH_ADDR+4)
+0037   0000             CF_LBA2		.EQU	(FLASH_ADDR+5)
+0038   0000             CF_LBA3		.EQU	(FLASH_ADDR+6)
+0039   0000             
+0040   0000             ;CF Features
+0041   0000             CF_8BIT		.EQU	1
+0042   0000             CF_NOCACHE		.EQU	082H
+0043   0000             
+0044   0000             ;CF Commands
+0045   0000             CF_READ_SEC	.EQU	020H
+0046   0000             CF_WRITE_SEC	.EQU	030H
+0047   0000             CF_SET_FEAT	.EQU 	0EFH
+0048   0000             
+0049   0000             LF			.EQU	0AH			;line feed
+0050   0000             FF			.EQU	0CH			;form feed
+0051   0000             CR			.EQU	0DH			;carriage return
+0052   0000             
+0053   0000             ;====================================================================================
+0054   0000             
+0055   5000             		.ORG	5000H				; Format program origin.
+0056   5000             
+0057   5000             
+0058   5000 CD 33 E6    		CALL	PRINTSEQ
+0059   5003 43 50 2F 4D 		.TEXT "CP/M Formatter by G. Searle 2012"
+0059   5007 20 46 6F 72 
+0059   500B 6D 61 74 74 
+0059   500F 65 72 20 62 
+0059   5013 79 20 47 2E 
+0059   5017 20 53 65 61 
+0059   501B 72 6C 65 20 
+0059   501F 32 30 31 32 
+0060   5023 0D 0A       		.DB CR,LF
+0061   5025 43 75 73 74 		.TEXT "Customized by P.R.Kaltchuk 2020"
+0061   5029 6F 6D 69 7A 
+0061   502D 65 64 20 62 
+0061   5031 79 20 50 2E 
+0061   5035 52 2E 4B 61 
+0061   5039 6C 74 63 68 
+0061   503D 75 6B 20 32 
+0061   5041 30 32 30 
+0062   5044 0D 0A       		.DB CR,LF
+0063   5046 31 32 38 4D 		.TEXT "128MB CF ==> drives A: to P:"
+0063   504A 42 20 43 46 
+0063   504E 20 3D 3D 3E 
+0063   5052 20 64 72 69 
+0063   5056 76 65 73 20 
+0063   505A 41 3A 20 74 
+0063   505E 6F 20 50 3A 
+0064   5062 0D 0A 00    		.DB CR,LF,0
+0065   5065             
+0066   5065 3E 41       		LD	A,'A'
+0067   5067 32 51 51    		LD	(drvName),A
+0068   506A             
+0069   506A CD 45 51    		CALL	cfWait
+0070   506D 3E 01       		LD 	A,CF_8BIT			; Set IDE to be 8bit
+0071   506F D3 B1       		OUT	(CF_FEATURES),A
+0072   5071 3E EF       		LD	A,CF_SET_FEAT
+0073   5073 D3 B7       		OUT	(CF_COMMAND),A
+0074   5075             
+0075   5075 CD 45 51    		CALL	cfWait
+0076   5078 3E 82       		LD 	A,CF_NOCACHE		; No write cache
+0077   507A D3 B1       		OUT	(CF_FEATURES),A
+0078   507C 3E EF       		LD	A,CF_SET_FEAT
+0079   507E D3 B7       		OUT	(CF_COMMAND),A
+0080   5080             
+0081   5080             
+0082   5080             ; There are 512 directory entries per disk, 4 DIR entries per sector
+0083   5080             ; So 128 x 128 byte sectors are to be initialised
+0084   5080             ; The drive uses 512 byte sectors, so 32 x 512 byte sectors per disk
+0085   5080             ; require initialisation
+0086   5080             
+0087   5080             ;Drive 0 (A:) is slightly different due to reserved track, so DIR sector starts at 32
+0088   5080 3A 51 51    		LD	A,(drvName)
+0089   5083 4F          		LD	C,A
+0090   5084 CD 0C E6    		CALL	CONOUT			; Print drive letter
+0091   5087 3C          		INC	A
+0092   5088 32 51 51    		LD	(drvName),A
+0093   508B             
+0094   508B 3E 20       		LD	A,$20
+0095   508D 32 50 51    		LD	(secNo),A
+0096   5090             
+0097   5090             processSectorA:
+0098   5090 CD 45 51    		CALL	cfWait
+0099   5093             
+0100   5093 3A 50 51    		LD	A,(secNo)
+0101   5096 D3 B3       		OUT 	(CF_LBA0),A
+0102   5098 3E 00       		LD	A,0
+0103   509A D3 B4       		OUT 	(CF_LBA1),A
+0104   509C 3E 00       		LD	A,0
+0105   509E D3 B5       		OUT 	(CF_LBA2),A
+0106   50A0 3E E0       		LD	a,$E0
+0107   50A2 D3 B6       		OUT 	(CF_LBA3),A
+0108   50A4 3E 01       		LD 	A,1
+0109   50A6 D3 B2       		OUT 	(CF_SECCOUNT),A
+0110   50A8             
+0111   50A8 CD 21 51    		CALL	writeDir
+0112   50AB             
+0113   50AB 3A 50 51    		LD	A,(secNo)
+0114   50AE 3C          		INC	A
+0115   50AF 32 50 51    		LD	(secNo),A
+0116   50B2 FE 40       		CP	$40
+0117   50B4 20 DA       		JR	NZ, processSectorA
+0118   50B6             
+0119   50B6             
+0120   50B6             
+0121   50B6             ;Drive 1 onwards (B: etc) don't have reserved tracks, so sector starts at 0
+0122   50B6             
+0123   50B6 11 40 00    		LD 	DE,$0040  			; HL increment
+0124   50B9 21 40 00    		LD 	HL,$0040  			; H = LBA2, L=LBA1, initialise for drive 1 (B:)
+0125   50BC             
+0126   50BC 06 0F       		LD	B,numDrives
+0127   50BE             
+0128   50BE             processDirs:
+0129   50BE             
+0130   50BE 3A 51 51    		LD	A,(drvName)
+0131   50C1 4F          		LD	C,A
+0132   50C2 CD 0C E6    		CALL	CONOUT			; Print drive letter
+0133   50C5 3C          		INC	A
+0134   50C6 32 51 51    		LD	(drvName),A
+0135   50C9             
+0136   50C9 3E 00       		LD	A,0
+0137   50CB 32 50 51    		LD	(secNo),A
+0138   50CE             
+0139   50CE             processSector:
+0140   50CE CD 45 51    		CALL	cfWait
+0141   50D1             
+0142   50D1 3A 50 51    		LD	A,(secNo)
+0143   50D4 D3 B3       		OUT 	(CF_LBA0),A
+0144   50D6 7D          		LD	A,L
+0145   50D7 D3 B4       		OUT 	(CF_LBA1),A
+0146   50D9 7C          		LD	A,H
+0147   50DA D3 B5       		OUT 	(CF_LBA2),A
+0148   50DC 3E E0       		LD	a,0E0H
+0149   50DE D3 B6       		OUT 	(CF_LBA3),A
+0150   50E0 3E 01       		LD 	A,1
+0151   50E2 D3 B2       		OUT 	(CF_SECCOUNT),A
+0152   50E4             
+0153   50E4 CD 21 51    		CALL	writeDir
+0154   50E7             
+0155   50E7 3A 50 51    		LD	A,(secNo)
+0156   50EA 3C          		INC	A
+0157   50EB 32 50 51    		LD	(secNo),A
+0158   50EE FE 20       		CP	$20
+0159   50F0 20 DC       		JR	NZ, processSector
+0160   50F2             
+0161   50F2 19          		ADD	HL,DE
+0162   50F3             
+0163   50F3 05          		DEC	B
+0164   50F4 20 C8       		JR	NZ,processDirs
+0165   50F6             
+0166   50F6 CD 33 E6    		CALL	PRINTSEQ
+0167   50F9 0D 0A       		.DB CR,LF
+0168   50FB 46 6F 72 6D 		.TEXT "Formatting complete"
+0168   50FF 61 74 74 69 
+0168   5103 6E 67 20 63 
+0168   5107 6F 6D 70 6C 
+0168   510B 65 74 65 
+0169   510E 0D 0A 00    		.DB CR,LF,0
+0170   5111             
+0171   5111 CD 06 E6    FLUSHBUF:	CALL	CONST
+0172   5114 FE 00       		CP	0
+0173   5116 CA 31 D1    		JP	Z,WAITCMD
+0174   5119 CD 09 E6    		CALL	CONIN
+0175   511C 18 F3       		JR	FLUSHBUF
+0176   511E             
+0177   511E C3 31 D1    		JP	WAITCMD	
+0178   5121             
+0179   5121             ;================================================================================================
+0180   5121             ; Write physical sector to host
+0181   5121             ;================================================================================================
+0182   5121             
+0183   5121             writeDir:
+0184   5121 F5          		PUSH 	AF
+0185   5122 C5          		PUSH 	BC
+0186   5123 E5          		PUSH 	HL
+0187   5124             
+0188   5124 CD 45 51    		CALL 	cfWait
+0189   5127             
+0190   5127 3E 30       		LD 	A,CF_WRITE_SEC
+0191   5129 D3 B7       		OUT 	(CF_COMMAND),A
+0192   512B             
+0193   512B CD 45 51    		CALL 	cfWait
+0194   512E             
+0195   512E 0E 04       		LD 	C,4
+0196   5130             wr4secs:
+0197   5130 21 52 51    		LD	HL,dirData
+0198   5133 06 80       		LD	B,128
+0199   5135 7E          wrByte:	LD	A,(HL)
+0200   5136 00          		NOP
+0201   5137 00          		NOP
+0202   5138 D3 B0       		OUT 	(CF_DATA),A
+0203   513A 23          		INC	HL
+0204   513B 05          		DEC	B
+0205   513C 20 F7       		JR 	NZ, wrByte
+0206   513E             
+0207   513E 0D          		DEC	C
+0208   513F 20 EF       		JR 	NZ,wr4secs
+0209   5141             
+0210   5141 E1          		POP 	HL
+0211   5142 C1          		POP 	BC
+0212   5143 F1          		POP 	AF
+0213   5144             
+0214   5144 C9          		RET
+0215   5145             
+0216   5145             ;================================================================================================
+0217   5145             ; Wait for disk to be ready (busy=0,ready=1)
+0218   5145             ;================================================================================================
+0219   5145             cfWait:
+0220   5145 F5          		PUSH 	AF
+0221   5146             cfWait1:
+0222   5146 DB B7       		IN 	A,(CF_STATUS)
+0223   5148 E6 80       		AND 	080H
+0224   514A FE 80       		CP 	080H
+0225   514C 28 F8       		JR	Z,cfWait1
+0226   514E F1          		POP 	AF
+0227   514F C9          		RET
+0228   5150             
+0229   5150 00          secNo		.DB	0
+0230   5151 00          drvName	.DB	0
+0231   5152             
+0232   5152             
+0233   5152             ; Directory data for 1 x 128 byte sector
+0234   5152             dirData:
+0235   5152 E5 20 20 20 		.DB $E5,$20,$20,$20,$20,$20,$20,$20,$20,$20,$20,$20,$00,$00,$00,$00
+0235   5156 20 20 20 20 
+0235   515A 20 20 20 20 
+0235   515E 00 00 00 00 
+0236   5162 00 00 00 00 		.DB $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+0236   5166 00 00 00 00 
+0236   516A 00 00 00 00 
+0236   516E 00 00 00 00 
+0237   5172             
+0238   5172 E5 20 20 20 		.DB $E5,$20,$20,$20,$20,$20,$20,$20,$20,$20,$20,$20,$00,$00,$00,$00
+0238   5176 20 20 20 20 
+0238   517A 20 20 20 20 
+0238   517E 00 00 00 00 
+0239   5182 00 00 00 00 		.DB $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+0239   5186 00 00 00 00 
+0239   518A 00 00 00 00 
+0239   518E 00 00 00 00 
+0240   5192             
+0241   5192 E5 20 20 20 		.DB $E5,$20,$20,$20,$20,$20,$20,$20,$20,$20,$20,$20,$00,$00,$00,$00
+0241   5196 20 20 20 20 
+0241   519A 20 20 20 20 
+0241   519E 00 00 00 00 
+0242   51A2 00 00 00 00 		.DB $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+0242   51A6 00 00 00 00 
+0242   51AA 00 00 00 00 
+0242   51AE 00 00 00 00 
+0243   51B2             
+0244   51B2 E5 20 20 20 		.DB $E5,$20,$20,$20,$20,$20,$20,$20,$20,$20,$20,$20,$00,$00,$00,$00
+0244   51B6 20 20 20 20 
+0244   51BA 20 20 20 20 
+0244   51BE 00 00 00 00 
+0245   51C2 00 00 00 00 		.DB $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+0245   51C6 00 00 00 00 
+0245   51CA 00 00 00 00 
+0245   51CE 00 00 00 00 
+0246   51D2             
+0247   51D2             		.END
+0248   51D2             	tasm: Number of errors = 0
