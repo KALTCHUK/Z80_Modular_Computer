@@ -1,0 +1,170 @@
+0001   0000             ;================================================================================================
+0002   0000             ; Compact Flash Routines
+0003   0000             ;
+0004   0000             ;================================================================================================
+0005   0000             CF_INIT		.EQU	0200H			; Routine to initialize the CF
+0006   0000             CF_RD			.EQU	0300H			; Routine to read a sector of the CF
+0007   0000             CF_WT			.EQU	0400H			; Routine to wait till CF isn't busy
+0008   0000             CF_WR			.EQU	0500H			; Routine to write a sector of the CF
+0009   0000             PRINTSEQ		.EQU	0E633H		; Routine (located in the BIOS) to print a sequence of characters
+0010   0000             WAITCMD		.EQU	0D131H		; Reentry point to Monitor
+0011   0000             CONIN			.EQU	0E609H		; Entry point for BIOS function CONIN
+0012   0000             CONOUT		.EQU	0E60CH		; Entry point for BIOS function CONOUT
+0013   0000             
+0014   0000             FLASH_ADDR		.EQU	0B0H			; Base I/O address for compact flash card
+0015   0000             ; CF registers
+0016   0000             CF_DATA		.EQU	(FLASH_ADDR+0)
+0017   0000             CF_FEATURES	.EQU	(FLASH_ADDR+1)
+0018   0000             CF_ERROR		.EQU	(FLASH_ADDR+1)
+0019   0000             CF_SECCOUNT	.EQU	(FLASH_ADDR+2)
+0020   0000             CF_SECTOR		.EQU	(FLASH_ADDR+3)
+0021   0000             CF_CYL_LOW		.EQU	(FLASH_ADDR+4)
+0022   0000             CF_CYL_HI		.EQU	(FLASH_ADDR+5)
+0023   0000             CF_HEAD		.EQU	(FLASH_ADDR+6)
+0024   0000             CF_STATUS		.EQU	(FLASH_ADDR+7)
+0025   0000             CF_COMMAND		.EQU	(FLASH_ADDR+7)
+0026   0000             CF_LBA0		.EQU	(FLASH_ADDR+3)
+0027   0000             CF_LBA1		.EQU	(FLASH_ADDR+4)
+0028   0000             CF_LBA2		.EQU	(FLASH_ADDR+5)
+0029   0000             CF_LBA3		.EQU	(FLASH_ADDR+6)
+0030   0000             
+0031   0000             ;CF Features
+0032   0000             CF_8BIT		.EQU	1
+0033   0000             CF_NOCACHE		.EQU	082H
+0034   0000             
+0035   0000             ;CF Commands
+0036   0000             CF_READ_SEC	.EQU	020H
+0037   0000             CF_WRITE_SEC	.EQU	030H
+0038   0000             CF_SET_FEAT	.EQU 	0EFH
+0039   0000             
+0040   0000             LF			.EQU	0AH			; line feed
+0041   0000             FF			.EQU	0CH			; form feed
+0042   0000             CR			.EQU	0DH			; carriage return
+0043   0000             SPACE			.EQU	020H			; space
+0044   0000             COLON			.EQU	03AH			; colon
+0045   0000             
+0046   0000             ;================================================================================================
+0047   0000             ; Compact flash initialization
+0048   0000             ;================================================================================================
+0049   0200             		.ORG CF_INIT
+0050   0200             
+0051   0200 CD 30 03    		CALL	CFWAIT
+0052   0203 3E 01       		LD 	A,CF_8BIT			; Set IDE to be 8bit
+0053   0205 D3 B1       		OUT	(CF_FEATURES),A
+0054   0207 3E EF       		LD	A,CF_SET_FEAT
+0055   0209 D3 B7       		OUT	(CF_COMMAND),A
+0056   020B             
+0057   020B             
+0058   020B CD 30 03    		CALL	CFWAIT
+0059   020E 3E 82       		LD 	A,CF_NOCACHE		; No write cache
+0060   0210 D3 B1       		OUT	(CF_FEATURES),A
+0061   0212 3E EF       		LD	A,CF_SET_FEAT
+0062   0214 D3 B7       		OUT	(CF_COMMAND),A
+0063   0216             
+0064   0216 CD 33 E6    		CALL	PRINTSEQ
+0065   0219 46 6C 61 73 		.TEXT	"Flash initialized."
+0065   021D 68 20 69 6E 
+0065   0221 69 74 69 61 
+0065   0225 6C 69 7A 65 
+0065   0229 64 2E 
+0066   022B 0D 0A 00    		.DB CR,LF,0
+0067   022E             
+0068   022E C3 31 D1    		JP	WAITCMD
+0069   0231             
+0070   0231             ;================================================================================================
+0071   0231             ; Compact flash read a sector and write to RAM @04000H
+0072   0231             ;================================================================================================
+0073   0300             		.ORG CF_RD
+0074   0300             
+0075   0300 F5          		PUSH 	AF
+0076   0301 C5          		PUSH 	BC
+0077   0302 E5          		PUSH 	HL
+0078   0303             
+0079   0303 CD 30 03    		CALL 	CFWAIT
+0080   0306             ;
+0081   0306 3E 00       		LD	A,0
+0082   0308 D3 B3       		OUT 	(CF_LBA0),A
+0083   030A D3 B4       		OUT 	(CF_LBA1),A
+0084   030C D3 B5       		OUT 	(CF_LBA2),A
+0085   030E 3E E0       		LD	A,0E0H
+0086   0310 D3 B6       		OUT 	(CF_LBA3),A
+0087   0312 3E 01       		LD 	A,1
+0088   0314 D3 B2       		OUT 	(CF_SECCOUNT),A
+0089   0316             ;
+0090   0316 3E 20       		LD 	A,CF_READ_SEC
+0091   0318 D3 B7       		OUT 	(CF_COMMAND),A
+0092   031A             
+0093   031A CD 30 03    		CALL 	CFWAIT
+0094   031D             
+0095   031D 21 00 50    		LD 	HL,05000H
+0096   0320 0E B0       		LD	C,CF_DATA
+0097   0322 06 00       		LD 	B,0
+0098   0324 ED B2       		INIR
+0099   0326 06 00       		LD 	B,0
+0100   0328 ED B2       		INIR
+0101   032A             
+0102   032A E1          		POP 	HL
+0103   032B C1          		POP 	BC
+0104   032C F1          		POP 	AF
+0105   032D             
+0106   032D C3 31 D1    		JP	WAITCMD
+0107   0330             
+0108   0330             ;================================================================================================
+0109   0330             ; Wait for disk to be ready (busy=0,ready=1)
+0110   0330             ;================================================================================================
+0111   0330             CFWAIT:
+0112   0330 F5          		PUSH 	AF
+0113   0331 C5          		PUSH 	BC
+0114   0332             CFWAIT1:
+0115   0332 DB B7       		IN 	A,(CF_STATUS)
+0116   0334 4F          		LD	C,A
+0117   0335 CD 0C E6    		CALL	CONOUT
+0118   0338 79          		LD	A,C
+0119   0339 E6 80       		AND 	080H
+0120   033B 20 F5       		JR	NZ,CFWAIT1
+0121   033D C1          		POP 	BC
+0122   033E F1          		POP 	AF
+0123   033F C9          		RET
+0124   0340             
+0125   0340             ;================================================================================================
+0126   0340             ; Compact flash write a sector from RAM @05000H
+0127   0340             ;================================================================================================
+0128   0500             		.ORG CF_WR
+0129   0500             
+0130   0500 F5          		PUSH 	AF
+0131   0501 C5          		PUSH 	BC
+0132   0502 E5          		PUSH 	HL
+0133   0503             
+0134   0503 CD 30 03    		CALL 	CFWAIT
+0135   0506             ;
+0136   0506 3E 00       		LD	A,0
+0137   0508 D3 B3       		OUT 	(CF_LBA0),A
+0138   050A D3 B4       		OUT 	(CF_LBA1),A
+0139   050C D3 B5       		OUT 	(CF_LBA2),A
+0140   050E 3E E0       		LD	A,0E0H
+0141   0510 D3 B6       		OUT 	(CF_LBA3),A
+0142   0512 3E 01       		LD 	A,1
+0143   0514 D3 B2       		OUT 	(CF_SECCOUNT),A
+0144   0516             ;
+0145   0516 3E 30       		LD 	A,CF_WRITE_SEC
+0146   0518 D3 B7       		OUT 	(CF_COMMAND),A
+0147   051A             
+0148   051A CD 30 03    		CALL 	CFWAIT
+0149   051D             
+0150   051D 21 00 50    		LD 	HL,05000H
+0151   0520 0E B0       		LD	C,CF_DATA
+0152   0522 06 00       		LD 	B,0
+0153   0524 ED B3       		OTIR
+0154   0526 06 00       		LD 	B,0
+0155   0528 ED B3       		OTIR
+0156   052A             
+0157   052A E1          		POP 	HL
+0158   052B C1          		POP 	BC
+0159   052C F1          		POP 	AF
+0160   052D             
+0161   052D C3 31 D1    		JP	WAITCMD
+0162   0530             
+0163   0530             
+0164   0530             
+0165   0530             		.END
+tasm: Number of errors = 0
