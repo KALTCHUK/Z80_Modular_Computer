@@ -12,24 +12,30 @@
 ; updated the web page hosting service.
 ;
 ;==================================================================================
+PRINTSEQ		.EQU	0E633H		; Routine (located in the BIOS) to print a sequence of characters
+WAITCMD		.EQU	0D131H		; Reentry point to Monitor
+CONST			.EQU	0E606H		; Entry point for BIOS function CONST
+CONIN			.EQU	0E609H		; Entry point for BIOS function CONIN
+CONOUT		.EQU	0E60CH		; Entry point for BIOS function CONOUT
 
-numDrives	.EQU	15		; Not including A:
+numDrives	.EQU	15				; Not including A:
 
+FLASH_ADDR		.EQU	0B0H			; Base I/O address for compact flash card
 ; CF registers
-CF_DATA		.EQU	$10
-CF_FEATURES	.EQU	$11
-CF_ERROR		.EQU	$11
-CF_SECCOUNT	.EQU	$12
-CF_SECTOR		.EQU	$13
-CF_CYL_LOW		.EQU	$14
-CF_CYL_HI		.EQU	$15
-CF_HEAD		.EQU	$16
-CF_STATUS		.EQU	$17
-CF_COMMAND		.EQU	$17
-CF_LBA0		.EQU	$13
-CF_LBA1		.EQU	$14
-CF_LBA2		.EQU	$15
-CF_LBA3		.EQU	$16
+CF_DATA		.EQU	(FLASH_ADDR+0)
+CF_FEATURES	.EQU	(FLASH_ADDR+1)
+CF_ERROR		.EQU	(FLASH_ADDR+1)
+CF_SECCOUNT	.EQU	(FLASH_ADDR+2)
+CF_SECTOR		.EQU	(FLASH_ADDR+3)
+CF_CYL_LOW		.EQU	(FLASH_ADDR+4)
+CF_CYL_HI		.EQU	(FLASH_ADDR+5)
+CF_HEAD		.EQU	(FLASH_ADDR+6)
+CF_STATUS		.EQU	(FLASH_ADDR+7)
+CF_COMMAND		.EQU	(FLASH_ADDR+7)
+CF_LBA0		.EQU	(FLASH_ADDR+3)
+CF_LBA1		.EQU	(FLASH_ADDR+4)
+CF_LBA2		.EQU	(FLASH_ADDR+5)
+CF_LBA3		.EQU	(FLASH_ADDR+6)
 
 ;CF Features
 CF_8BIT		.EQU	1
@@ -40,16 +46,16 @@ CF_READ_SEC	.EQU	020H
 CF_WRITE_SEC	.EQU	030H
 CF_SET_FEAT	.EQU 	0EFH
 
-LF		.EQU	0AH		;line feed
-FF		.EQU	0CH		;form feed
-CR		.EQU	0DH		;carriage return
+LF			.EQU	0AH			;line feed
+FF			.EQU	0CH			;form feed
+CR			.EQU	0DH			;carriage return
 
 ;====================================================================================
 
-		.ORG	5000H		; Format program origin.
+		.ORG	5000H				; Format program origin.
 
 
-		CALL	printInline
+		CALL	PRINTSEQ
 		.TEXT "CP/M Formatter by G. Searle 2012"
 		.DB CR,LF
 		.TEXT "Customized by P.R.Kaltchuk 2020"
@@ -61,13 +67,13 @@ CR		.EQU	0DH		;carriage return
 		LD	(drvName),A
 
 		CALL	cfWait
-		LD 	A,CF_8BIT	; Set IDE to be 8bit
+		LD 	A,CF_8BIT			; Set IDE to be 8bit
 		OUT	(CF_FEATURES),A
 		LD	A,CF_SET_FEAT
 		OUT	(CF_COMMAND),A
 
 		CALL	cfWait
-		LD 	A,CF_NOCACHE	; No write cache
+		LD 	A,CF_NOCACHE		; No write cache
 		OUT	(CF_FEATURES),A
 		LD	A,CF_SET_FEAT
 		OUT	(CF_COMMAND),A
@@ -80,7 +86,8 @@ CR		.EQU	0DH		;carriage return
 
 ;Drive 0 (A:) is slightly different due to reserved track, so DIR sector starts at 32
 		LD	A,(drvName)
-		RST	08H		; Print drive letter
+		LD	C,A
+		CALL	CONOUT			; Print drive letter
 		INC	A
 		LD	(drvName),A
 
@@ -101,7 +108,7 @@ processSectorA:
 		LD 	A,1
 		OUT 	(CF_SECCOUNT),A
 
-		call	writeDir
+		CALL	writeDir
 
 		LD	A,(secNo)
 		INC	A
@@ -113,15 +120,16 @@ processSectorA:
 
 ;Drive 1 onwards (B: etc) don't have reserved tracks, so sector starts at 0
 
-		LD 	DE,$0040  ; HL increment
-		LD 	HL,$0040  ; H = LBA2, L=LBA1, initialise for drive 1 (B:)
+		LD 	DE,$0040  			; HL increment
+		LD 	HL,$0040  			; H = LBA2, L=LBA1, initialise for drive 1 (B:)
 
 		LD	B,numDrives
 
 processDirs:
 
 		LD	A,(drvName)
-		RST	08H		; Print drive letter
+		LD	C,A
+		CALL	CONOUT			; Print drive letter
 		INC	A
 		LD	(drvName),A
 
@@ -142,7 +150,7 @@ processSector:
 		LD 	A,1
 		OUT 	(CF_SECCOUNT),A
 
-		call	writeDir
+		CALL	writeDir
 
 		LD	A,(secNo)
 		INC	A
@@ -155,12 +163,18 @@ processSector:
 		DEC	B
 		JR	NZ,processDirs
 
-		CALL	printInline
+		CALL	PRINTSEQ
 		.DB CR,LF
 		.TEXT "Formatting complete"
 		.DB CR,LF,0
 
-		RET				
+FLUSHBUF:	CALL	CONST
+		CP	0
+		JP	Z,WAITCMD
+		CALL	CONIN
+		JR	FLUSHBUF
+
+		JP	WAITCMD	
 
 ;================================================================================================
 ; Write physical sector to host
@@ -178,19 +192,19 @@ writeDir:
 
 		CALL 	cfWait
 
-		LD 	c,4
+		LD 	C,4
 wr4secs:
-		LD 	HL,dirData
-		LD 	b,128
-wrByte:		LD 	A,(HL)
-		nop
-		nop
+		LD	HL,dirData
+		LD	B,128
+wrByte:	LD	A,(HL)
+		NOP
+		NOP
 		OUT 	(CF_DATA),A
-		iNC 	HL
-		dec 	b
+		INC	HL
+		DEC	B
 		JR 	NZ, wrByte
 
-		dec 	c
+		DEC	C
 		JR 	NZ,wr4secs
 
 		POP 	HL
@@ -200,40 +214,20 @@ wrByte:		LD 	A,(HL)
 		RET
 
 ;================================================================================================
-; Utilities
-;================================================================================================
-
-printInline:
-		EX 	(SP),HL 	; PUSH HL and put RET ADDress into HL
-		PUSH 	AF
-		PUSH 	BC
-nextILChar:	LD 	A,(HL)
-		CP	0
-		JR	Z,endOfPrint
-		RST 	08H
-		INC 	HL
-		JR	nextILChar
-endOfPrint:	INC 	HL 		; Get past "null" terminator
-		POP 	BC
-		POP 	AF
-		EX 	(SP),HL 	; PUSH new RET ADDress on stack and restore HL
-		RET
-
-;================================================================================================
 ; Wait for disk to be ready (busy=0,ready=1)
 ;================================================================================================
 cfWait:
 		PUSH 	AF
 cfWait1:
-		in 	A,(CF_STATUS)
+		IN 	A,(CF_STATUS)
 		AND 	080H
-		cp 	080H
+		CP 	080H
 		JR	Z,cfWait1
 		POP 	AF
 		RET
 
-secNo		.db	0
-drvName		.db	0
+secNo		.DB	0
+drvName	.DB	0
 
 
 ; Directory data for 1 x 128 byte sector
