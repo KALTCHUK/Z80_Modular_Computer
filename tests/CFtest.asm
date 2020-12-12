@@ -2,16 +2,16 @@
 ; Compact Flash Routines
 ;
 ;================================================================================================
-CF_INIT	.EQU	0200H			; Routine to initialize the CF
-CF_RD		.EQU	0300H			; Routine to read a sector of the CF
-CF_WT		.EQU	0400H			; Routine to wait till CF isn't busy
-CF_WR		.EQU	0500H			; Routine to write a sector of the CF
-PRINTSEQ	.EQU	0E633H		; Routine (located in the BIOS) to print a sequence of characters
-WAITCMD	.EQU	0D130H		; Reentry point to Monitor
-CONIN		.EQU	0E867H		; Entry point for BIOS function CONIN
-CONOUT	.EQU	0E889H		; Entry point for BIOS function CONOUT
+CF_INIT		.EQU	0200H			; Routine to initialize the CF
+CF_RD			.EQU	0300H			; Routine to read a sector of the CF
+CF_WT			.EQU	0400H			; Routine to wait till CF isn't busy
+CF_WR			.EQU	0500H			; Routine to write a sector of the CF
+PRINTSEQ		.EQU	0E633H		; Routine (located in the BIOS) to print a sequence of characters
+WAITCMD		.EQU	0D131H		; Reentry point to Monitor
+CONIN			.EQU	0E609H		; Entry point for BIOS function CONIN
+CONOUT		.EQU	0E60CH		; Entry point for BIOS function CONOUT
 
-FLASH_ADDR		.EQU	0			; Base I/O address for compact flash card
+FLASH_ADDR		.EQU	0B0H			; Base I/O address for compact flash card
 ; CF registers
 CF_DATA		.EQU	(FLASH_ADDR+0)
 CF_FEATURES	.EQU	(FLASH_ADDR+1)
@@ -48,9 +48,6 @@ COLON			.EQU	03AH			; colon
 ;================================================================================================
 		.ORG CF_INIT
 
-		LD	C,'I'
-		CALL	CONOUT
-
 		CALL	CFWAIT
 		LD 	A,CF_8BIT			; Set IDE to be 8bit
 		OUT	(CF_FEATURES),A
@@ -64,12 +61,9 @@ COLON			.EQU	03AH			; colon
 		LD	A,CF_SET_FEAT
 		OUT	(CF_COMMAND),A
 
-;		CALL	PRINTSEQ
-;		.TEXT	"Flash initialized."
-;		.DB CR,LF,0
-
-		LD	C,'i'
-		CALL	CONOUT
+		CALL	PRINTSEQ
+		.TEXT	"Flash initialized."
+		.DB CR,LF,0
 
 		JP	WAITCMD
 
@@ -81,9 +75,6 @@ COLON			.EQU	03AH			; colon
 		PUSH 	AF
 		PUSH 	BC
 		PUSH 	HL
-
-		LD	C,'R'
-		CALL	CONOUT
 
 		CALL 	CFWAIT
 ;
@@ -111,9 +102,6 @@ COLON			.EQU	03AH			; colon
 		POP 	HL
 		POP 	BC
 		POP 	AF
-
-		LD	C,'r'
-		CALL	CONOUT
 
 		JP	WAITCMD
 
@@ -143,9 +131,6 @@ CFWAIT1:
 		PUSH 	BC
 		PUSH 	HL
 
-		LD	C,'W'
-		CALL	CONOUT
-
 		CALL 	CFWAIT
 ;
 		LD	A,0
@@ -172,9 +157,6 @@ CFWAIT1:
 		POP 	HL
 		POP 	BC
 		POP 	AF
-
-		LD	C,'w'
-		CALL	CONOUT
 
 		JP	WAITCMD
 
