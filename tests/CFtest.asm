@@ -1,32 +1,38 @@
 ;================================================================================================
-; Compact Flash Routines
+; Compact Flash Test Routines
 ;
 ;================================================================================================
 CF_INIT		.EQU	0200H			; Routine to initialize the CF
-CF_RD			.EQU	0300H			; Routine to read a sector of the CF
-CF_WT			.EQU	0400H			; Routine to wait till CF isn't busy
-CF_WR			.EQU	0500H			; Routine to write a sector of the CF
+CF_RD			.EQU	0400H			; Routine to read from CF
+CF_WR			.EQU	0500H			; Routine to write to CF
+FILL_PAD		.EQU	0300H			; Write content of addr SET_PAD+2 on all scratch pad
+SCRATCHPAD		.EQU	02000H		; 4k read/write scratch pad
+
 PRINTSEQ		.EQU	0E633H		; Routine (located in the BIOS) to print a sequence of characters
 WAITCMD		.EQU	0D131H		; Reentry point to Monitor
+CONST			.EQU	0E606H		; Entry point for BIOS function CONST
 CONIN			.EQU	0E609H		; Entry point for BIOS function CONIN
 CONOUT		.EQU	0E60CH		; Entry point for BIOS function CONOUT
 
 FLASH_ADDR		.EQU	0B0H			; Base I/O address for compact flash card
 ; CF registers
-CF_DATA		.EQU	(FLASH_ADDR+0)
-CF_FEATURES	.EQU	(FLASH_ADDR+1)
-CF_ERROR		.EQU	(FLASH_ADDR+1)
-CF_SECCOUNT	.EQU	(FLASH_ADDR+2)
-CF_SECTOR		.EQU	(FLASH_ADDR+3)
-CF_CYL_LOW		.EQU	(FLASH_ADDR+4)
-CF_CYL_HI		.EQU	(FLASH_ADDR+5)
-CF_HEAD		.EQU	(FLASH_ADDR+6)
-CF_STATUS		.EQU	(FLASH_ADDR+7)
-CF_COMMAND		.EQU	(FLASH_ADDR+7)
-CF_LBA0		.EQU	(FLASH_ADDR+3)
-CF_LBA1		.EQU	(FLASH_ADDR+4)
-CF_LBA2		.EQU	(FLASH_ADDR+5)
-CF_LBA3		.EQU	(FLASH_ADDR+6)
+CF_DATA		.EQU	(FLASH_ADDR+0)	; R/W
+CF_FEATURES	.EQU	(FLASH_ADDR+1)	; W
+CF_ERROR		.EQU	(FLASH_ADDR+1)	; R
+CF_SECCOUNT	.EQU	(FLASH_ADDR+2)	; W
+
+CF_SECTOR		.EQU	(FLASH_ADDR+3)	; W
+CF_CYL_LOW		.EQU	(FLASH_ADDR+4)	; W
+CF_CYL_HI		.EQU	(FLASH_ADDR+5)	; W
+CF_HEAD		.EQU	(FLASH_ADDR+6)	; W
+
+CF_LBA0		.EQU	(FLASH_ADDR+3)	; W
+CF_LBA1		.EQU	(FLASH_ADDR+4)	; W
+CF_LBA2		.EQU	(FLASH_ADDR+5)	; W
+CF_LBA3		.EQU	(FLASH_ADDR+6)	; W
+
+CF_STATUS		.EQU	(FLASH_ADDR+7)	; R
+CF_COMMAND		.EQU	(FLASH_ADDR+7)	; W
 
 ;CF Features
 CF_8BIT		.EQU	1
@@ -68,98 +74,139 @@ COLON			.EQU	03AH			; colon
 		JP	WAITCMD
 
 ;================================================================================================
-; Compact flash read a sector and write to RAM @04000H
+; Compact flash read 8 sectors (8 x 512bytes) and write to SCRATCHPAD
 ;================================================================================================
 		.ORG CF_RD
+		JR	SKIPRLBA
+RLBA0		.DB	0				; addr of 1st sector to be read
+RLBA1		.DB	0				; LBA2 + LBA1 + LBA0
+RLBA2		.DB	0				; addr range = [00 00 00; 03 FF FF]
 
-		PUSH 	AF
-		PUSH 	BC
-		PUSH 	HL
+SKIPRLBA:	CALL 	CFWAIT
 
-		CALL 	CFWAIT
-;
-		LD	A,0
+		LD	A,(RLBA0)
 		OUT 	(CF_LBA0),A
+		LD	A,(RLBA1)
 		OUT 	(CF_LBA1),A
+		LD	A,(RLBA2)
 		OUT 	(CF_LBA2),A
 		LD	A,0E0H
 		OUT 	(CF_LBA3),A
-		LD 	A,1
+		LD 	A,8
 		OUT 	(CF_SECCOUNT),A
-;
+
 		LD 	A,CF_READ_SEC
 		OUT 	(CF_COMMAND),A
 
 		CALL 	CFWAIT
 
-		LD 	HL,05000H
-		LD	C,CF_DATA
-		LD 	B,0
-		INIR
-		LD 	B,0
-		INIR
+		LD	BC,01000H
+		LD	DE,SCRATCPAD
+rdByte:	NOP
+		NOP
+		NOP
+		NOP
+		NOP
+		IN	A,(CF_DATA)
+		LD	(DE),A
+		INC	DE
+		DEC	BC
+		LD	A,B
+		OR	C
+		JR 	NZ, rdByte
 
-		POP 	HL
-		POP 	BC
-		POP 	AF
+		CALL	PRINTSEQ
+		.TEXT	"Flash read completed."
+		.DB CR,LF,0
 
 		JP	WAITCMD
 
 ;================================================================================================
-; Wait for disk to be ready (busy=0,ready=1)
-;================================================================================================
-CFWAIT:
-		PUSH 	AF
-		PUSH 	BC
-CFWAIT1:
-		IN 	A,(CF_STATUS)
-		LD	C,A
-		CALL	CONOUT
-		LD	A,C
-		AND 	080H
-		JR	NZ,CFWAIT1
-		POP 	BC
-		POP 	AF
-		RET
-
-;================================================================================================
-; Compact flash write a sector from RAM @05000H
+; Compact flash write 8 sectors (8 x 512bytes) from SCRATCHPAD
 ;================================================================================================
 		.ORG CF_WR
 
-		PUSH 	AF
-		PUSH 	BC
-		PUSH 	HL
+		JR	SKIPWLBA
 
-		CALL 	CFWAIT
-;
-		LD	A,0
+WLBA0		.DB	0				; addr of 1st sector to be written
+WLBA1		.DB	0				; LBA2 + LBA1 + LBA0 
+WLBA2		.DB	0				; addr range = [00 00 00; 03 FF FF]
+
+SKIPWLBA:	CALL 	CFWAIT
+
+		LD	A,(WLBA0)
 		OUT 	(CF_LBA0),A
+		LD	A,(WLBA1)
 		OUT 	(CF_LBA1),A
+		LD	A,(WLBA2)
 		OUT 	(CF_LBA2),A
 		LD	A,0E0H
 		OUT 	(CF_LBA3),A
-		LD 	A,1
+		LD 	A,8
 		OUT 	(CF_SECCOUNT),A
-;
+
 		LD 	A,CF_WRITE_SEC
 		OUT 	(CF_COMMAND),A
 
 		CALL 	CFWAIT
 
-		LD 	HL,05000H
-		LD	C,CF_DATA
-		LD 	B,0
-		OTIR
-		LD 	B,0
-		OTIR
+		LD	BC,01000H
+		LD	DE,SCRATCPAD
+wrByte:	LD	A,(DE)
+		NOP
+		NOP
+		NOP
+		NOP
+		NOP
+		OUT 	(CF_DATA),A
+		INC	DE
+		DEC	BC
+		LD	A,B
+		OR	C
+		JR 	NZ, wrByte
 
-		POP 	HL
-		POP 	BC
-		POP 	AF
+		CALL	PRINTSEQ
+		.TEXT	"Flash write completed."
+		.DB CR,LF,0
 
 		JP	WAITCMD
 
+;================================================================================================
+; Wait for disk to be ready
+;================================================================================================
+CFWAIT:
+		PUSH 	AF
+CFWAIT1:
+		IN 	A,(CF_STATUS)
+		AND 	080H
+		JR	NZ,CFWAIT1
 
+		POP 	AF
+		RET
+
+;================================================================================================
+; Fill scratch pad with content of addr 'SET_PAD+2' 
+;================================================================================================
+		.ORG	FILL_PAD
+
+		JR	SKIPBYTE
+
+SET_BYTE	.DB	0				; this byte will be used to fill the scratch pad
+
+SKIPBYTE:	LD	BC,01000H
+		LD	DE,SCRATCHPAD
+SETNEXT:	LD	A,(SET_BYTE)
+		LD	(DE),A
+		INC	DE
+		DEC	BC
+		LD	A,B
+		OR	C
+		JR	NZ,SETNEXT
+
+		CALL	PRINTSEQ
+		.TEXT	"Fill scratch pad completed."
+		.DB CR,LF,0
+
+		JP	WAITCMD
 
 		.END
