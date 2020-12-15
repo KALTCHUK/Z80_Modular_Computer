@@ -36,7 +36,7 @@ WRALL			.EQU	0			;write to allocated
 WRDIR			.EQU	1			;write to directory
 WRUAL			.EQU	2			;write to unallocated
 
-FLASH_ADDR		.EQU	0DH			; Base I/O address for compact flash card
+FLASH_ADDR		.EQU	0BH			; Base I/O address for compact flash card
 ; CF registers
 CF_DATA			.EQU	(FLASH_ADDR+0)
 CF_FEATURES		.EQU	(FLASH_ADDR+1)
