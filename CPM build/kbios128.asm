@@ -297,7 +297,7 @@ UINT:
 		PUSH	HL
 
 		IN	A,(USART_DAT)		; read incoming byte
-		OUT	(USART_DAT),A		; send character
+;		OUT	(USART_DAT),A		; send character
 		LD	BC,(WRPTR)
 		LD	(BC),A
 		INC	BC
