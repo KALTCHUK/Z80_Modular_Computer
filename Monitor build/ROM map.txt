@@ -1,0 +1,30 @@
+ROM map for Monitor program
+***************************
+The ROM is divided into 4 blocks. MEM card has a selctor which chooses one of the blocks to boot from.
+ 
+FFFF----+
+		|- BLOCK 3 (empty)
+C000----+
+BFFF----+
+		|- BLOCK 2 (empty)
+8000----+
+7FFF----+
+		|- BLOCK 1 (empty)
+4000----+
+3FFF----+
+		|- BLOCK 0
+0000----+
+
+
+Zoom on BLOCK 0 
+***************
+
+3FFF----+
+		|- mbios128
+2600----+
+25FF----+
+		|- kmonitor
+1000----+
+	...
+0000----  romboot (14 bytes)
+
