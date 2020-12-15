@@ -1,0 +1,224 @@
+0001   0000             ;==================================================================================
+0002   0000             ; Contents of this file are copyright Grant Searle
+0003   0000             ;
+0004   0000             ; You have permission to use this for NON COMMERCIAL USE ONLY
+0005   0000             ; If you wish to use it elsewhere, please include an acknowledgement to myself.
+0006   0000             ;
+0007   0000             ; http://searle.hostei.com/grant/index.html
+0008   0000             ;
+0009   0000             ; eMail: home.micros01@btinternet.com
+0010   0000             ;
+0011   0000             ; If the above don't work, please perform an Internet search to see if I have
+0012   0000             ; updated the web page hosting service.
+0013   0000             ;
+0014   0000             ; Customized by Kaltchuk for use with Z80 Modular Computer, december/2020
+0015   0000             ;
+0016   0000             ;==================================================================================
+0017   0000             CONST			.EQU	0E606H		; Entry point for BIOS function CONST
+0018   0000             CONIN			.EQU	0E609H		; Entry point for BIOS function CONIN
+0019   0000             CONOUT			.EQU	0E60CH		; Entry point for BIOS function CONOUT
+0020   0000             
+0021   0000             loadAddr		.EQU	0D000h
+0022   0000             numSecs			.EQU	24	; Number of 512 sectors to be loaded
+0023   0000             
+0024   0000             ; FLASH card stuff
+0025   0000             FLASH_ADDR		.EQU	0B0H			; Base I/O address for compact flash card
+0026   0000             ; CF registers
+0027   0000             CF_DATA			.EQU	(FLASH_ADDR+0)	; R/W
+0028   0000             CF_FEATURES		.EQU	(FLASH_ADDR+1)	; W
+0029   0000             CF_ERROR		.EQU	(FLASH_ADDR+1)	; R
+0030   0000             CF_SECCOUNT		.EQU	(FLASH_ADDR+2)	; W
+0031   0000             
+0032   0000             CF_SECTOR		.EQU	(FLASH_ADDR+3)	; W
+0033   0000             CF_CYL_LOW		.EQU	(FLASH_ADDR+4)	; W
+0034   0000             CF_CYL_HI		.EQU	(FLASH_ADDR+5)	; W
+0035   0000             CF_HEAD			.EQU	(FLASH_ADDR+6)	; W
+0036   0000             
+0037   0000             CF_LBA0			.EQU	(FLASH_ADDR+3)	; W
+0038   0000             CF_LBA1			.EQU	(FLASH_ADDR+4)	; W
+0039   0000             CF_LBA2			.EQU	(FLASH_ADDR+5)	; W
+0040   0000             CF_LBA3			.EQU	(FLASH_ADDR+6)	; W
+0041   0000             
+0042   0000             CF_STATUS		.EQU	(FLASH_ADDR+7)	; R
+0043   0000             CF_COMMAND		.EQU	(FLASH_ADDR+7)	; W
+0044   0000             
+0045   0000             ;CF Features
+0046   0000             CF_8BIT			.EQU	1
+0047   0000             CF_NOCACHE		.EQU	082H
+0048   0000             ;CF Commands
+0049   0000             CF_READ_SEC		.EQU	020H
+0050   0000             CF_WRITE_SEC	.EQU	030H
+0051   0000             CF_SET_FEAT		.EQU 	0EFH
+0052   0000             
+0053   0000             LF				.EQU	0AH		;line feed
+0054   0000             FF				.EQU	0CH		;form feed
+0055   0000             CR				.EQU	0DH		;carriage RETurn
+0056   0000             
+0057   0000             ;================================================================================================
+0058   0000             
+0059   5000             		.ORG	5000H		; Loader origin.
+0060   5000             
+0061   5000 CD 0B 51    		CALL	PRINTSEQ
+0062   5003 43 50 2F 4D 		.TEXT "CP/M System Transfer by G. Searle 2012"
+0062   5007 20 53 79 73 
+0062   500B 74 65 6D 20 
+0062   500F 54 72 61 6E 
+0062   5013 73 66 65 72 
+0062   5017 20 62 79 20 
+0062   501B 47 2E 20 53 
+0062   501F 65 61 72 6C 
+0062   5023 65 20 32 30 
+0062   5027 31 32 
+0063   5029 0D 0A       		.DB CR,LF
+0064   502B 43 75 73 74 		.TEXT "Customized by Kaltchuk for use with Z80 Modular Computer, 2020"
+0064   502F 6F 6D 69 7A 
+0064   5033 65 64 20 62 
+0064   5037 79 20 4B 61 
+0064   503B 6C 74 63 68 
+0064   503F 75 6B 20 66 
+0064   5043 6F 72 20 75 
+0064   5047 73 65 20 77 
+0064   504B 69 74 68 20 
+0064   504F 5A 38 30 20 
+0064   5053 4D 6F 64 75 
+0064   5057 6C 61 72 20 
+0064   505B 43 6F 6D 70 
+0064   505F 75 74 65 72 
+0064   5063 2C 20 32 30 
+0064   5067 32 30 
+0065   5069 0D 0A 00    		.DB CR,LF,0
+0066   506C             
+0067   506C CD 00 51    		CALL	cfWait
+0068   506F 3E 01       		LD 	A,CF_8BIT	; Set IDE to be 8bit
+0069   5071 D3 B1       		OUT	(CF_FEATURES),A
+0070   5073 3E EF       		LD	A,CF_SET_FEAT
+0071   5075 D3 B7       		OUT	(CF_COMMAND),A
+0072   5077             
+0073   5077 CD 00 51    		CALL	cfWait
+0074   507A 3E 82       		LD 	A,CF_NOCACHE	; No write cache
+0075   507C D3 B1       		OUT	(CF_FEATURES),A
+0076   507E 3E EF       		LD	A,CF_SET_FEAT
+0077   5080 D3 B7       		OUT	(CF_COMMAND),A
+0078   5082             
+0079   5082 06 18       		LD	B,numSecs
+0080   5084             
+0081   5084 3E 00       		LD	A,0
+0082   5086 32 21 51    		LD	(secNo),A
+0083   5089 21 00 D0    		LD	HL,loadAddr
+0084   508C 22 1F 51    		LD	(dmaAddr),HL
+0085   508F             processSectors:
+0086   508F             
+0087   508F CD 00 51    		CALL	cfWait
+0088   5092             
+0089   5092 3A 21 51    		LD	A,(secNo)
+0090   5095 D3 B3       		OUT 	(CF_LBA0),A
+0091   5097 3E 00       		LD	A,0
+0092   5099 D3 B4       		OUT 	(CF_LBA1),A
+0093   509B D3 B5       		OUT 	(CF_LBA2),A
+0094   509D 3E E0       		LD	a,0E0H
+0095   509F D3 B6       		OUT 	(CF_LBA3),A
+0096   50A1 3E 01       		LD 	A,1
+0097   50A3 D3 B2       		OUT 	(CF_SECCOUNT),A
+0098   50A5             
+0099   50A5 CD DC 50    		call	write
+0100   50A8             
+0101   50A8 11 00 02    		LD	DE,0200H
+0102   50AB 2A 1F 51    		LD	HL,(dmaAddr)
+0103   50AE 19          		ADD	HL,DE
+0104   50AF 22 1F 51    		LD	(dmaAddr),HL
+0105   50B2 3A 21 51    		LD	A,(secNo)
+0106   50B5 3C          		INC	A
+0107   50B6 32 21 51    		LD	(secNo),A
+0108   50B9             
+0109   50B9 10 D4       		djnz	processSectors
+0110   50BB             
+0111   50BB CD 0B 51    		CALL	PRINTSEQ
+0112   50BE 0D 0A       		.DB CR,LF
+0113   50C0 53 79 73 74 		.TEXT "System transfer complete"
+0113   50C4 65 6D 20 74 
+0113   50C8 72 61 6E 73 
+0113   50CC 66 65 72 20 
+0113   50D0 63 6F 6D 70 
+0113   50D4 6C 65 74 65 
+0114   50D8 0D 0A 00    		.DB CR,LF,0
+0115   50DB             
+0116   50DB C9          		RET				
+0117   50DC             
+0118   50DC             
+0119   50DC             ;================================================================================================
+0120   50DC             ; Write physical sector to host
+0121   50DC             ;================================================================================================
+0122   50DC             write:
+0123   50DC F5          		PUSH 	AF
+0124   50DD C5          		PUSH 	BC
+0125   50DE E5          		PUSH 	HL
+0126   50DF             
+0127   50DF             
+0128   50DF CD 00 51    		CALL 	cfWait
+0129   50E2             
+0130   50E2 3E 30       		LD 	A,CF_WRITE_SEC
+0131   50E4 D3 B7       		OUT 	(CF_COMMAND),A
+0132   50E6             
+0133   50E6 CD 00 51    		CALL 	cfWait
+0134   50E9             
+0135   50E9 0E 04       		LD 	c,4
+0136   50EB 2A 1F 51    		LD 	HL,(dmaAddr)
+0137   50EE             wr4secs:
+0138   50EE 06 80       		LD 	b,128
+0139   50F0 7E          wrByte:		LD 	A,(HL)
+0140   50F1 00          		nop
+0141   50F2 00          		nop
+0142   50F3 D3 B0       		OUT 	(CF_DATA),A
+0143   50F5 23          		iNC 	HL
+0144   50F6 05          		dec 	b
+0145   50F7 20 F7       		JR 	NZ, wrByte
+0146   50F9             
+0147   50F9 0D          		dec 	c
+0148   50FA 20 F2       		JR 	NZ,wr4secs
+0149   50FC             
+0150   50FC E1          		POP 	HL
+0151   50FD C1          		POP 	BC
+0152   50FE F1          		POP 	AF
+0153   50FF             
+0154   50FF C9          		RET
+0155   5100             
+0156   5100             ;================================================================================================
+0157   5100             ; Wait for disk to be ready (busy=0,ready=1)
+0158   5100             ;================================================================================================
+0159   5100             cfWait:
+0160   5100 F5          		PUSH 	AF
+0161   5101             cfWait1:
+0162   5101 DB B7       		in 	A,(CF_STATUS)
+0163   5103 E6 80       		AND 	080H
+0164   5105 FE 80       		cp 	080H
+0165   5107 28 F8       		JR	Z,cfWait1
+0166   5109 F1          		POP 	AF
+0167   510A C9          		RET
+0168   510B             
+0169   510B             ;================================================================================================
+0170   510B             ; Print (on console) a sequence of characters ending with zero
+0171   510B             ;================================================================================================
+0172   510B             PRINTSEQ:
+0173   510B E3          		EX 	(SP),HL 		; Push HL and put RET address into HL
+0174   510C F5          		PUSH 	AF
+0175   510D C5          		PUSH 	BC
+0176   510E             NEXTCHAR:
+0177   510E 7E          		LD 	A,(HL)
+0178   510F FE 00       		CP	0
+0179   5111 28 07       		JR	Z,ENDOFPRINT
+0180   5113 4F          		LD  	C,A
+0181   5114 CD 0C E6    		CALL 	CONOUT		; Print to console
+0182   5117 23          		INC 	HL
+0183   5118 18 F4       		JR	NEXTCHAR
+0184   511A             ENDOFPRINT:
+0185   511A 23          		INC 	HL 			; Get past "null" terminator
+0186   511B C1          		POP 	BC
+0187   511C F1          		POP 	AF
+0188   511D E3          		EX 	(SP),HL 		; Push new RET address on stack and restore HL
+0189   511E C9          		RET
+0190   511F             
+0191   511F 00 00       dmaAddr		.dw	0
+0192   5121 00          secNo		.db	0
+0193   5122             
+0194   5122             	.END
+tasm: Number of errors = 0
