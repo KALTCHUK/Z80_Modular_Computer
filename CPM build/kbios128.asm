@@ -96,12 +96,12 @@ CR				.EQU	0DH				;carriage RETurn
 ;================================================================================================
 		JP	boot						;  0 Initialize.
 wboote:	JP	wboot						;  1 Warm boot.
-		JP	const						;  2 Console status.
-		JP	conin						;  3 Console input.
-		JP	conout						;  4 Console OUTput.
-		JP	list						;  5 List OUTput.
-		JP	punch						;  6 punch OUTput.
-		JP	reader						;  7 Reader input.
+		JP	CONST						;  2 Console status.
+		JP	CONIN						;  3 Console input.
+		JP	CONOUT						;  4 Console OUTput.
+		JP	LIST						;  5 List OUTput.
+		JP	PUNCH						;  6 punch OUTput.
+		JP	READER						;  7 Reader input.
 		JP	home						;  8 Home disk.
 		JP	seldsk						;  9 Select disk.
 		JP	settrk						; 10 Select track.
@@ -109,7 +109,7 @@ wboote:	JP	wboot						;  1 Warm boot.
 		JP	setdma						; 12 Set DMA ADDress.
 		JP	read						; 13 Read 128 bytes.
 		JP	write						; 14 Write 128 bytes.
-		JP	listst						; 15 List status.
+		JP	LISTST						; 15 List status.
 		JP	sectran						; 16 Sector translate.
 		JP	PRINTSEQ					; not a BIOS function
 
@@ -178,7 +178,7 @@ dpbLast:
 
 boot:
 		DI						; Disable interrupts.
-		LD	SP,biosstack		; Set default stack.
+		LD	SP,BIOSSTACK		; Set default stack.
 
 		OUT (NOROM_RAM0),A		; Turn off ROM. Doesn't matter what we output
 
@@ -217,7 +217,7 @@ boot:
 
 wboot:
 		DI						; Disable interrupts.
-		LD	SP,biosstack		; Set default stack.
+		LD	SP,BIOSSTACK		; Set default stack.
 
 		LD	B,11 				; Number of sectors to reload
 
