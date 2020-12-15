@@ -1,10 +1,10 @@
 ;==================================================================================
-; ROM Bootloader for CP/M
+; ROM Bootloader for CP/M and Monitor
 ;==================================================================================
 
-CCP		.EQU	0D000h			; Base of CCP (or Monitor).
+CCP			.EQU	0D000h			; Base of CCP (or Monitor).
 BIOS		.EQU	0E600h			; Base of BIOS.
-ROM_CCP	.EQU	01000h			; Base of CCP in ROM
+ROM_CCP		.EQU	01000h			; Base of CCP in ROM
 ROM_BIOS	.EQU	02600h			; Base of BIOS in ROM
 
 ;================================================================================================
