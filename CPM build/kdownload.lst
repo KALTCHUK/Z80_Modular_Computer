@@ -1,0 +1,294 @@
+0001   0000             ;==================================================================================
+0002   0000             ; Contents of this file are copyright Grant Searle
+0003   0000             ; HEX routine from Joel Owens.
+0004   0000             ;
+0005   0000             ; You have permission to use this for NON COMMERCIAL USE ONLY
+0006   0000             ; If you wish to use it elsewhere, please include an acknowledgement to myself.
+0007   0000             ;
+0008   0000             ; http://searle.hostei.com/grant/index.html
+0009   0000             ;
+0010   0000             ; eMail: home.micros01@btinternet.com
+0011   0000             ;
+0012   0000             ; If the above don't work, please perform an Internet search to see if I have
+0013   0000             ; updated the web page hosting service.
+0014   0000             ;
+0015   0000             ;==================================================================================
+0016   0000             
+0017   0000             TPA		.EQU	100H
+0018   0000             REBOOT	.EQU	0H
+0019   0000             BDOS	.EQU	5H
+0020   0000             CONIO	.EQU	6
+0021   0000             CONINP	.EQU	1
+0022   0000             CONOUT	.EQU	2
+0023   0000             PSTRING	.EQU	9
+0024   0000             MAKEF	.EQU	22
+0025   0000             CLOSEF	.EQU	16
+0026   0000             WRITES	.EQU	21
+0027   0000             DELF	.EQU	19
+0028   0000             SETUSR	.EQU	32
+0029   0000             
+0030   0000             CR		.EQU	0DH
+0031   0000             LF		.EQU	0AH
+0032   0000             
+0033   0000             FCB		.EQU	05CH
+0034   0000             BUFF	.EQU	080H
+0035   0000             
+0036   0100             	.ORG TPA
+0037   0100             
+0038   0100 3E 00       	LD	A,0
+0039   0102 32 6D 02    	LD	(buffPos),A
+0040   0105 32 71 02    	LD	(checkSum),A
+0041   0108 32 72 02    	LD	(byteCount),A
+0042   010B 32 70 02    	LD	(printCount),A
+0043   010E 21 80 00    	LD	HL,BUFF
+0044   0111 22 6E 02    	LD	(buffPtr),HL
+0045   0114             
+0046   0114 CD 39 02    WAITLT:	CALL	GETCHR
+0047   0117 FE 55       	CP	'U'
+0048   0119 CA 2A 02    	JP	Z,SETUSER
+0049   011C FE 3A       	CP	':'
+0050   011E 20 F4       	JR	NZ,WAITLT
+0051   0120             
+0052   0120 0E 13       	LD	C,DELF
+0053   0122 11 5C 00    	LD	DE,FCB
+0054   0125 CD 05 00    	CALL	BDOS
+0055   0128             
+0056   0128 0E 16       	LD	C,MAKEF
+0057   012A 11 5C 00    	LD	DE,FCB
+0058   012D CD 05 00    	CALL	BDOS
+0059   0130             
+0060   0130             GETHEX:
+0061   0130 CD 39 02    	CALL 	GETCHR
+0062   0133 FE 3E       	CP	'>'
+0063   0135 28 61       	JR	Z,CLOSE
+0064   0137 47          	LD   B,A
+0065   0138 C5          	PUSH BC
+0066   0139 CD 39 02    	CALL GETCHR
+0067   013C C1          	POP BC
+0068   013D 4F          	LD   C,A
+0069   013E             
+0070   013E CD 4C 02    	CALL BCTOA
+0071   0141             
+0072   0141 47          	LD	B,A
+0073   0142 3A 71 02    	LD	A,(checkSum)
+0074   0145 80          	ADD	A,B
+0075   0146 32 71 02    	LD	(checkSum),A
+0076   0149 3A 72 02    	LD	A,(byteCount)
+0077   014C 3C          	INC	A
+0078   014D 32 72 02    	LD	(byteCount),A
+0079   0150             
+0080   0150 78          	LD	A,B
+0081   0151             
+0082   0151 2A 6E 02    	LD	HL,(buffPtr)
+0083   0154             
+0084   0154 77          	LD	(HL),A
+0085   0155 23          	INC	HL
+0086   0156 22 6E 02    	LD	(buffPtr),HL
+0087   0159             
+0088   0159 3A 6D 02    	LD	A,(buffPos)
+0089   015C 3C          	INC	A
+0090   015D 32 6D 02    	LD	(buffPos),A
+0091   0160 FE 80       	CP	80H
+0092   0162             
+0093   0162 20 32       	JR	NZ,NOWRITE
+0094   0164             
+0095   0164 0E 15       	LD	C,WRITES
+0096   0166 11 5C 00    	LD	DE,FCB
+0097   0169 CD 05 00    	CALL	BDOS
+0098   016C 3E 2E       	LD	A,'.'
+0099   016E CD 45 02    	CALL	PUTCHR
+0100   0171             
+0101   0171                     ; New line every 8K (64 dots)
+0102   0171 3A 70 02    	LD	A,(printCount)
+0103   0174 3C          	INC	A
+0104   0175 FE 40       	CP	64
+0105   0177 20 0F       	JR	NZ,noCRLF
+0106   0179 32 70 02    	LD	(printCount),A
+0107   017C 3E 0D       	LD	A,CR
+0108   017E CD 45 02    	CALL	PUTCHR
+0109   0181 3E 0A       	LD	A,LF
+0110   0183 CD 45 02    	CALL	PUTCHR
+0111   0186 3E 00       	LD	A,0
+0112   0188 32 70 02    noCRLF:	LD	(printCount),A
+0113   018B             
+0114   018B 21 80 00    	LD	HL,BUFF
+0115   018E 22 6E 02    	LD	(buffPtr),HL
+0116   0191             
+0117   0191 3E 00       	LD	A,0
+0118   0193 32 6D 02    	LD	(buffPos),A
+0119   0196             NOWRITE:
+0120   0196 18 98       	JR	GETHEX
+0121   0198             	
+0122   0198             CLOSE:
+0123   0198             
+0124   0198 3A 6D 02    	LD	A,(buffPos)
+0125   019B FE 00       	CP	0
+0126   019D 28 0D       	JR	Z,NOWRITE2
+0127   019F             
+0128   019F 0E 15       	LD	C,WRITES
+0129   01A1 11 5C 00    	LD	DE,FCB
+0130   01A4 CD 05 00    	CALL	BDOS
+0131   01A7 3E 2E       	LD	A,'.'
+0132   01A9 CD 45 02    	CALL	PUTCHR
+0133   01AC             
+0134   01AC             NOWRITE2:
+0135   01AC 0E 10       	LD	C,CLOSEF
+0136   01AE 11 5C 00    	LD	DE,FCB
+0137   01B1 CD 05 00    	CALL	BDOS
+0138   01B4             
+0139   01B4             ; Byte count (lower 8 bits)
+0140   01B4 CD 39 02    	CALL 	GETCHR
+0141   01B7 47          	LD   B,A
+0142   01B8 C5          	PUSH BC
+0143   01B9 CD 39 02    	CALL GETCHR
+0144   01BC C1          	POP BC
+0145   01BD 4F          	LD   C,A
+0146   01BE             
+0147   01BE CD 4C 02    	CALL BCTOA
+0148   01C1 47          	LD	B,A
+0149   01C2 3A 72 02    	LD	A,(byteCount)
+0150   01C5 90          	SUB	B
+0151   01C6 FE 00       	CP	0
+0152   01C8 28 1A       	JR	Z,byteCountOK
+0153   01CA             
+0154   01CA 3E 0D       	LD	A,CR
+0155   01CC CD 45 02    	CALL	PUTCHR
+0156   01CF 3E 0A       	LD	A,LF
+0157   01D1 CD 45 02    	CALL	PUTCHR
+0158   01D4             
+0159   01D4 11 91 02    	LD	DE,countErrMess
+0160   01D7 0E 09       	LD	C,PSTRING
+0161   01D9 CD 05 00    	CALL	BDOS
+0162   01DC             
+0163   01DC             	; Sink remaining 2 bytes
+0164   01DC CD 39 02    	CALL GETCHR
+0165   01DF CD 39 02    	CALL GETCHR
+0166   01E2             
+0167   01E2 18 3C       	JR	FINISH
+0168   01E4             
+0169   01E4             byteCountOK:
+0170   01E4             
+0171   01E4             ; Checksum
+0172   01E4 CD 39 02    	CALL 	GETCHR
+0173   01E7 47          	LD   B,A
+0174   01E8 C5          	PUSH BC
+0175   01E9 CD 39 02    	CALL GETCHR
+0176   01EC C1          	POP BC
+0177   01ED 4F          	LD   C,A
+0178   01EE             
+0179   01EE CD 4C 02    	CALL BCTOA
+0180   01F1 47          	LD	B,A
+0181   01F2 3A 71 02    	LD	A,(checkSum)
+0182   01F5 90          	SUB	B
+0183   01F6 FE 00       	CP	0
+0184   01F8 28 14       	JR	Z,checksumOK
+0185   01FA             
+0186   01FA 3E 0D       	LD	A,CR
+0187   01FC CD 45 02    	CALL	PUTCHR
+0188   01FF 3E 0A       	LD	A,LF
+0189   0201 CD 45 02    	CALL	PUTCHR
+0190   0204             
+0191   0204 11 76 02    	LD	DE,chkErrMess
+0192   0207 0E 09       	LD	C,PSTRING
+0193   0209 CD 05 00    	CALL	BDOS
+0194   020C 18 12       	JR	FINISH
+0195   020E             
+0196   020E             checksumOK:
+0197   020E 3E 0D       	LD	A,CR
+0198   0210 CD 45 02    	CALL	PUTCHR
+0199   0213 3E 0A       	LD	A,LF
+0200   0215 CD 45 02    	CALL	PUTCHR
+0201   0218             
+0202   0218 11 73 02    	LD	DE,OKMess
+0203   021B 0E 09       	LD	C,PSTRING
+0204   021D CD 05 00    	CALL	BDOS
+0205   0220             
+0206   0220             FINISH:
+0207   0220 0E 20       	LD	C,SETUSR
+0208   0222 1E 00       	LD	E,0
+0209   0224 CD 05 00    	CALL	BDOS
+0210   0227             
+0211   0227 C3 00 00    	JP	REBOOT
+0212   022A             
+0213   022A             SETUSER:
+0214   022A CD 39 02    	CALL	GETCHR
+0215   022D CD 65 02    	CALL	HEX2VAL
+0216   0230 5F          	LD	E,A
+0217   0231 0E 20       	LD	C,SETUSR
+0218   0233 CD 05 00    	CALL	BDOS
+0219   0236 C3 14 01    	JP	WAITLT
+0220   0239             
+0221   0239             ; Get a char into A
+0222   0239             ;GETCHR: LD C,CONINP
+0223   0239             ;	CALL BDOS
+0224   0239             ;	RET
+0225   0239             
+0226   0239             ; Wait for a char into A (no echo)
+0227   0239             GETCHR: 
+0228   0239 1E FF       	LD	E,$FF
+0229   023B 0E 06       	LD 	C,CONIO
+0230   023D CD 05 00    	CALL 	BDOS
+0231   0240 FE 00       	CP	0
+0232   0242 28 F5       	JR	Z,GETCHR
+0233   0244 C9          	RET
+0234   0245             
+0235   0245             ; Write A to output
+0236   0245 0E 02       PUTCHR: LD C,CONOUT
+0237   0247 5F          	LD E,A
+0238   0248 CD 05 00    	CALL BDOS
+0239   024B C9          	RET
+0240   024C             
+0241   024C             ;------------------------------------------------------------------------------
+0242   024C             ; Convert ASCII characters in B C registers to a byte value in A
+0243   024C             ;------------------------------------------------------------------------------
+0244   024C 78          BCTOA	LD   A,B	; Move the hi order byte to A
+0245   024D D6 30       	SUB  $30	; Take it down from Ascii
+0246   024F FE 0A       	CP   $0A	; Are we in the 0-9 range here?
+0247   0251 38 02       	JR   C,BCTOA1	; If so, get the next nybble
+0248   0253 D6 07       	SUB  $07	; But if A-F, take it down some more
+0249   0255 07          BCTOA1	RLCA		; Rotate the nybble from low to high
+0250   0256 07          	RLCA		; One bit at a time
+0251   0257 07          	RLCA		; Until we
+0252   0258 07          	RLCA		; Get there with it
+0253   0259 47          	LD   B,A	; Save the converted high nybble
+0254   025A 79          	LD   A,C	; Now get the low order byte
+0255   025B D6 30       	SUB  $30	; Convert it down from Ascii
+0256   025D FE 0A       	CP   $0A	; 0-9 at this point?
+0257   025F 38 02       	JR   C,BCTOA2	; Good enough then, but
+0258   0261 D6 07       	SUB  $07	; Take off 7 more if it's A-F
+0259   0263 80          BCTOA2	ADD  A,B	; Add in the high order nybble
+0260   0264 C9          	RET
+0261   0265             
+0262   0265             ; Change Hex in A to actual value in A
+0263   0265 D6 30       HEX2VAL SUB	$30
+0264   0267 FE 0A       	CP	$0A
+0265   0269 D8          	RET	C
+0266   026A D6 07       	SUB	$07
+0267   026C C9          	RET
+0268   026D             
+0269   026D             
+0270   026D 00          buffPos			.DB	0H
+0271   026E 00 00       buffPtr			.DW	0000H
+0272   0270 00          printCount 		.DB	0H
+0273   0271 00          checkSum 		.DB	0H
+0274   0272 00          byteCount 		.DB	0H
+0275   0273 4F 4B 24    OKMess			.BYTE	"OK$"
+0276   0276 3D 3D 3D 3D chkErrMess 		.BYTE	"======Checksum Error======$"
+0276   027A 3D 3D 43 68 
+0276   027E 65 63 6B 73 
+0276   0282 75 6D 20 45 
+0276   0286 72 72 6F 72 
+0276   028A 3D 3D 3D 3D 
+0276   028E 3D 3D 24 
+0277   0291 3D 3D 3D 3D countErrMess 	.BYTE	"======File Length Error======$"
+0277   0295 3D 3D 46 69 
+0277   0299 6C 65 20 4C 
+0277   029D 65 6E 67 74 
+0277   02A1 68 20 45 72 
+0277   02A5 72 6F 72 3D 
+0277   02A9 3D 3D 3D 3D 
+0277   02AD 3D 24 
+0278   02AF             
+0279   02AF             
+0280   02AF             		.END
+tasm: Number of errors = 0
