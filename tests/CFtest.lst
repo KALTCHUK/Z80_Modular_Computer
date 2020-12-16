@@ -3,264 +3,318 @@
 0003   0000             ;
 0004   0000             ;================================================================================================
 0005   0000             CF_INIT			.EQU	0200H			; Routine to initialize the CF
-0006   0000             FILL_PAD		.EQU	0300H			; Fill scratch pad with content of addr SET_PAD+2 
-0007   0000             FILL_PAD_SAW	.EQU	0380H			; Fill scratch pad with saw tooth pattern
-0008   0000             CF_RD			.EQU	0400H			; Routine to read from CF
-0009   0000             CF_WR			.EQU	0500H			; Routine to write to CF
-0010   0000             SCRATCHPAD		.EQU	01000H			; 512 bytes (= 1 sector) read/write scratch pad
-0011   0000             
-0012   0000             PRINTSEQ		.EQU	0E633H			; Routine (located in the BIOS) to print a sequence of characters
-0013   0000             WAITCMD			.EQU	0D131H			; Reentry point to Monitor
-0014   0000             CONST			.EQU	0E606H			; Entry point for BIOS function CONST
-0015   0000             CONIN			.EQU	0E609H			; Entry point for BIOS function CONIN
-0016   0000             CONOUT			.EQU	0E60CH			; Entry point for BIOS function CONOUT
-0017   0000             
-0018   0000             FLASH_ADDR		.EQU	0B0H			; Base I/O address for compact flash card
-0019   0000             ; CF registers
-0020   0000             CF_DATA			.EQU	(FLASH_ADDR+0)	; R/W
-0021   0000             CF_FEATURES		.EQU	(FLASH_ADDR+1)	; W
-0022   0000             CF_ERROR		.EQU	(FLASH_ADDR+1)	; R
-0023   0000             CF_SECCOUNT		.EQU	(FLASH_ADDR+2)	; W
-0024   0000             
-0025   0000             CF_SECTOR		.EQU	(FLASH_ADDR+3)	; W
-0026   0000             CF_CYL_LOW		.EQU	(FLASH_ADDR+4)	; W
-0027   0000             CF_CYL_HI		.EQU	(FLASH_ADDR+5)	; W
-0028   0000             CF_HEAD			.EQU	(FLASH_ADDR+6)	; W
-0029   0000             
-0030   0000             CF_LBA0			.EQU	(FLASH_ADDR+3)	; W
-0031   0000             CF_LBA1			.EQU	(FLASH_ADDR+4)	; W
-0032   0000             CF_LBA2			.EQU	(FLASH_ADDR+5)	; W
-0033   0000             CF_LBA3			.EQU	(FLASH_ADDR+6)	; W
-0034   0000             
-0035   0000             CF_STATUS		.EQU	(FLASH_ADDR+7)	; R
-0036   0000             CF_COMMAND		.EQU	(FLASH_ADDR+7)	; W
-0037   0000             
-0038   0000             ;CF Features
-0039   0000             CF_8BIT			.EQU	1
-0040   0000             CF_NOCACHE		.EQU	082H
-0041   0000             
-0042   0000             ;CF Commands
-0043   0000             CF_READ_SEC		.EQU	020H
-0044   0000             CF_WRITE_SEC	.EQU	030H
-0045   0000             CF_SET_FEAT		.EQU 	0EFH
-0046   0000             
-0047   0000             LF				.EQU	0AH				; line feed
-0048   0000             FF				.EQU	0CH				; form feed
-0049   0000             CR				.EQU	0DH				; carriage return
-0050   0000             SPACE			.EQU	020H			; space
-0051   0000             COLON			.EQU	03AH			; colon
-0052   0000             
-0053   0000             ;================================================================================================
-0054   0000             ; Compact flash initialization
-0055   0000             ;================================================================================================
-0056   0200             		.ORG CF_INIT
-0057   0200             
-0058   0200 CD 59 05    		CALL	CFWAIT
-0059   0203 3E 01       		LD 	A,CF_8BIT					; Set IDE to be 8bit
-0060   0205 D3 B1       		OUT	(CF_FEATURES),A
-0061   0207 3E EF       		LD	A,CF_SET_FEAT
-0062   0209 D3 B7       		OUT	(CF_COMMAND),A
-0063   020B             
+0006   0000             DISK_TAB		.EQU	0280H			; Disk physical address table
+0007   0000             FILL_PAD		.EQU	0300H			; Fill scratch pad with content of addr SET_PAD+2 
+0008   0000             FILL_PAD_SAW	.EQU	0380H			; Fill scratch pad with saw tooth pattern
+0009   0000             CF_RD			.EQU	0400H			; Routine to read from CF
+0010   0000             CF_WR			.EQU	0500H			; Routine to write to CF
+0011   0000             SCRATCHPAD		.EQU	01000H			; 512 bytes (= 1 sector) read/write scratch pad
+0012   0000             
+0013   0000             PRINTSEQ		.EQU	0E633H			; Routine (located in the BIOS) to print a sequence of characters
+0014   0000             WAITCMD			.EQU	0D131H			; Reentry point to Monitor
+0015   0000             CONST			.EQU	0E606H			; Entry point for BIOS function CONST
+0016   0000             CONIN			.EQU	0E609H			; Entry point for BIOS function CONIN
+0017   0000             CONOUT			.EQU	0E60CH			; Entry point for BIOS function CONOUT
+0018   0000             
+0019   0000             FLASH_ADDR		.EQU	0B0H			; Base I/O address for compact flash card
+0020   0000             ; CF registers
+0021   0000             CF_DATA			.EQU	(FLASH_ADDR+0)	; R/W
+0022   0000             CF_FEATURES		.EQU	(FLASH_ADDR+1)	; W
+0023   0000             CF_ERROR		.EQU	(FLASH_ADDR+1)	; R
+0024   0000             CF_SECCOUNT		.EQU	(FLASH_ADDR+2)	; W
+0025   0000             
+0026   0000             CF_SECTOR		.EQU	(FLASH_ADDR+3)	; W
+0027   0000             CF_CYL_LOW		.EQU	(FLASH_ADDR+4)	; W
+0028   0000             CF_CYL_HI		.EQU	(FLASH_ADDR+5)	; W
+0029   0000             CF_HEAD			.EQU	(FLASH_ADDR+6)	; W
+0030   0000             
+0031   0000             CF_LBA0			.EQU	(FLASH_ADDR+3)	; W
+0032   0000             CF_LBA1			.EQU	(FLASH_ADDR+4)	; W
+0033   0000             CF_LBA2			.EQU	(FLASH_ADDR+5)	; W
+0034   0000             CF_LBA3			.EQU	(FLASH_ADDR+6)	; W
+0035   0000             
+0036   0000             CF_STATUS		.EQU	(FLASH_ADDR+7)	; R
+0037   0000             CF_COMMAND		.EQU	(FLASH_ADDR+7)	; W
+0038   0000             
+0039   0000             ;CF Features
+0040   0000             CF_8BIT			.EQU	1
+0041   0000             CF_NOCACHE		.EQU	082H
+0042   0000             
+0043   0000             ;CF Commands
+0044   0000             CF_READ_SEC		.EQU	020H
+0045   0000             CF_WRITE_SEC	.EQU	030H
+0046   0000             CF_SET_FEAT		.EQU 	0EFH
+0047   0000             
+0048   0000             LF				.EQU	0AH				; line feed
+0049   0000             FF				.EQU	0CH				; form feed
+0050   0000             CR				.EQU	0DH				; carriage return
+0051   0000             SPACE			.EQU	020H			; space
+0052   0000             COLON			.EQU	03AH			; colon
+0053   0000             
+0054   0000             ;================================================================================================
+0055   0000             ; Compact flash initialization
+0056   0000             ;================================================================================================
+0057   0200             		.ORG CF_INIT
+0058   0200             
+0059   0200 CD 57 05    		CALL	CFWAIT
+0060   0203 3E 01       		LD 	A,CF_8BIT					; Set IDE to be 8bit
+0061   0205 D3 B1       		OUT	(CF_FEATURES),A
+0062   0207 3E EF       		LD	A,CF_SET_FEAT
+0063   0209 D3 B7       		OUT	(CF_COMMAND),A
 0064   020B             
-0065   020B CD 59 05    		CALL	CFWAIT
-0066   020E 3E 82       		LD 	A,CF_NOCACHE				; No write cache
-0067   0210 D3 B1       		OUT	(CF_FEATURES),A
-0068   0212 3E EF       		LD	A,CF_SET_FEAT
-0069   0214 D3 B7       		OUT	(CF_COMMAND),A
-0070   0216             
-0071   0216 CD 33 E6    		CALL	PRINTSEQ
-0072   0219 46 6C 61 73 		.TEXT	"Flash initialized."
-0072   021D 68 20 69 6E 
-0072   0221 69 74 69 61 
-0072   0225 6C 69 7A 65 
-0072   0229 64 2E 
-0073   022B 0D 0A 00    		.DB CR,LF,0
-0074   022E             
-0075   022E C3 31 D1    		JP	WAITCMD
-0076   0231             
-0077   0231             ;================================================================================================
-0078   0231             ; Compact flash read 1 sector and write to SCRATCHPAD
-0079   0231             ;================================================================================================
-0080   0400             		.ORG CF_RD
-0081   0400 18 03       		JR	SKIPRLBA
-0082   0402 00          RLBA0	.DB	0						; addr of 1st sector to be read
-0083   0403 00          RLBA1	.DB	0						; LBA2 + LBA1 + LBA0
-0084   0404 00          RLBA2	.DB	0						; addr range = [00 00 00; 03 FF FF]
-0085   0405             
-0086   0405 CD 59 05    SKIPRLBA:	CALL 	CFWAIT
-0087   0408             
-0088   0408 3A 02 04    		LD	A,(RLBA0)
-0089   040B D3 B3       		OUT 	(CF_LBA0),A
-0090   040D 3A 03 04    		LD	A,(RLBA1)
-0091   0410 D3 B4       		OUT 	(CF_LBA1),A
-0092   0412 3A 04 04    		LD	A,(RLBA2)
-0093   0415 D3 B5       		OUT 	(CF_LBA2),A
-0094   0417 3E E0       		LD	A,0E0H
-0095   0419 D3 B6       		OUT 	(CF_LBA3),A
-0096   041B 3E 01       		LD 	A,1
-0097   041D D3 B2       		OUT 	(CF_SECCOUNT),A
-0098   041F             
-0099   041F 3E 20       		LD 	A,CF_READ_SEC
-0100   0421 D3 B7       		OUT 	(CF_COMMAND),A
-0101   0423             
-0102   0423 CD 59 05    		CALL 	CFWAIT
-0103   0426             
-0104   0426 01 00 02    		LD	BC,0200H
-0105   0429 11 00 10    		LD	DE,SCRATCHPAD
-0106   042C 00          rdByte:	NOP
-0107   042D 00          		NOP
-0108   042E 00          		NOP
-0109   042F 00          		NOP
-0110   0430 00          		NOP
-0111   0431 DB B0       		IN	A,(CF_DATA)
-0112   0433 12          		LD	(DE),A
-0113   0434 13          		INC	DE
-0114   0435 0B          		DEC	BC
-0115   0436 78          		LD	A,B
-0116   0437 B1          		OR	C
-0117   0438 20 F2       		JR 	NZ, rdByte
-0118   043A             
-0119   043A CD 33 E6    		CALL	PRINTSEQ
-0120   043D 46 6C 61 73 		.TEXT	"Flash read completed."
-0120   0441 68 20 72 65 
-0120   0445 61 64 20 63 
-0120   0449 6F 6D 70 6C 
-0120   044D 65 74 65 64 
-0120   0451 2E 
-0121   0452 0D 0A 00    		.DB CR,LF,0
-0122   0455             
-0123   0455 C3 31 D1    		JP	WAITCMD
-0124   0458             
-0125   0458             ;================================================================================================
-0126   0458             ; Compact flash write 1 sector from SCRATCHPAD
-0127   0458             ;================================================================================================
-0128   0500             		.ORG CF_WR
-0129   0500             
-0130   0500 18 03       		JR	SKIPWLBA
-0131   0502             
-0132   0502 00          WLBA0	.DB	0					; addr of 1st sector to be written
-0133   0503 00          WLBA1	.DB	0					; LBA2 + LBA1 + LBA0 
-0134   0504 00          WLBA2	.DB	0					; addr range = [00 00 00; 03 FF FF]
-0135   0505             
-0136   0505             SKIPWLBA:
-0137   0505 CD 59 05    		CALL 	CFWAIT
-0138   0508             
-0139   0508 3A 02 05    		LD	A,(WLBA0)
-0140   050B D3 B3       		OUT (CF_LBA0),A
-0141   050D 3A 03 05    		LD	A,(WLBA1)
-0142   0510 D3 B4       		OUT (CF_LBA1),A
-0143   0512 3A 04 05    		LD	A,(WLBA2)
-0144   0515 D3 B5       		OUT (CF_LBA2),A
-0145   0517 3E E0       		LD	A,0E0H
-0146   0519 D3 B6       		OUT	(CF_LBA3),A
-0147   051B 3E 01       		LD 	A,1
-0148   051D D3 B2       		OUT	(CF_SECCOUNT),A
-0149   051F             
-0150   051F 3E 30       		LD 	A,CF_WRITE_SEC
-0151   0521 D3 B7       		OUT	(CF_COMMAND),A
-0152   0523             
-0153   0523 CD 59 05    		CALL 	CFWAIT
-0154   0526             
-0155   0526 01 00 02    		LD	BC,0200H
-0156   0529 11 00 10    		LD	DE,SCRATCHPAD
-0157   052C 1A          wrByte:	LD	A,(DE)
-0158   052D 00          		NOP
-0159   052E 00          		NOP
-0160   052F 00          		NOP
-0161   0530 00          		NOP
-0162   0531 00          		NOP
-0163   0532 D3 B0       		OUT (CF_DATA),A
-0164   0534 13          		INC	DE
-0165   0535 0B          		DEC	BC
-0166   0536 78          		LD	A,B
-0167   0537 B1          		OR	C
-0168   0538 20 F2       		JR 	NZ, wrByte
-0169   053A             
-0170   053A CD 33 E6    		CALL	PRINTSEQ
-0171   053D 46 6C 61 73 		.TEXT	"Flash write completed."
-0171   0541 68 20 77 72 
-0171   0545 69 74 65 20 
-0171   0549 63 6F 6D 70 
-0171   054D 6C 65 74 65 
-0171   0551 64 2E 
-0172   0553 0D 0A 00    		.DB CR,LF,0
-0173   0556             
-0174   0556 C3 31 D1    		JP	WAITCMD
-0175   0559             
-0176   0559             ;================================================================================================
-0177   0559             ; Wait for disk to be ready
-0178   0559             ;================================================================================================
-0179   0559             CFWAIT:
-0180   0559 F5          		PUSH 	AF
-0181   055A             CFWAIT1:
-0182   055A DB B7       		IN 	A,(CF_STATUS)
-0183   055C E6 80       		AND 080H
-0184   055E 20 FA       		JR	NZ,CFWAIT1
-0185   0560             
-0186   0560 F1          		POP AF
-0187   0561 C9          		RET
-0188   0562             
-0189   0562             ;================================================================================================
-0190   0562             ; Fill scratch pad with content of addr 'SET_PAD+2' 
-0191   0562             ;================================================================================================
-0192   0300             		.ORG	FILL_PAD
-0193   0300             
-0194   0300 18 01       		JR	SKIPBYTE
-0195   0302             
-0196   0302 00          SET_BYTE	.DB	0						; this byte will be used to fill the scratch pad
-0197   0303             
-0198   0303 01 00 02    SKIPBYTE:	LD	BC,0200H
-0199   0306 11 00 10    		LD	DE,SCRATCHPAD
-0200   0309 3A 02 03    SETNEXT:	LD	A,(SET_BYTE)
-0201   030C 12          		LD	(DE),A
-0202   030D 13          		INC	DE
-0203   030E 0B          		DEC	BC
-0204   030F 78          		LD	A,B
-0205   0310 B1          		OR	C
-0206   0311 20 F6       		JR	NZ,SETNEXT
-0207   0313             
-0208   0313 CD 33 E6    		CALL	PRINTSEQ
-0209   0316 46 69 6C 6C 		.TEXT	"Fill scratch pad completed."
-0209   031A 20 73 63 72 
-0209   031E 61 74 63 68 
-0209   0322 20 70 61 64 
-0209   0326 20 63 6F 6D 
-0209   032A 70 6C 65 74 
-0209   032E 65 64 2E 
-0210   0331 0D 0A 00    		.DB CR,LF,0
-0211   0334             
-0212   0334 C3 31 D1    		JP	WAITCMD
-0213   0337             
-0214   0337             ;================================================================================================
-0215   0337             ; Fill scratch pad with saw tooth pattern (00, FF, FE, FD, FC, FB, FA... 03, 02, 01, 00...)
-0216   0337             ;================================================================================================
-0217   0380             		.ORG	FILL_PAD_SAW
-0218   0380             
-0219   0380 01 00 02    		LD	BC,0200H
-0220   0383 21 00 10    		LD	HL,SCRATCHPAD
-0221   0386 3A 02 03    STNXTD:	LD	A,(SET_BYTE)
-0222   0389 71          		LD	(HL),C
-0223   038A 23          		INC	HL
-0224   038B 0B          		DEC	BC
-0225   038C 78          		LD	A,B
-0226   038D B1          		OR	C
-0227   038E 20 F6       		JR	NZ,STNXTD
-0228   0390             
-0229   0390 CD 33 E6    		CALL	PRINTSEQ
-0230   0393 53 61 77 20 		.TEXT	"Saw tooth pattern fill scratch pad completed."
-0230   0397 74 6F 6F 74 
-0230   039B 68 20 70 61 
-0230   039F 74 74 65 72 
-0230   03A3 6E 20 66 69 
-0230   03A7 6C 6C 20 73 
-0230   03AB 63 72 61 74 
-0230   03AF 63 68 20 70 
-0230   03B3 61 64 20 63 
-0230   03B7 6F 6D 70 6C 
-0230   03BB 65 74 65 64 
-0230   03BF 2E 
-0231   03C0 0D 0A 00    		.DB CR,LF,0
-0232   03C3             
-0233   03C3 C3 31 D1    		JP	WAITCMD
-0234   03C6             		.END
+0065   020B             
+0066   020B CD 57 05    		CALL	CFWAIT
+0067   020E 3E 82       		LD 	A,CF_NOCACHE				; No write cache
+0068   0210 D3 B1       		OUT	(CF_FEATURES),A
+0069   0212 3E EF       		LD	A,CF_SET_FEAT
+0070   0214 D3 B7       		OUT	(CF_COMMAND),A
+0071   0216             
+0072   0216 CD 33 E6    		CALL	PRINTSEQ
+0073   0219 46 6C 61 73 		.TEXT	"Flash initialized."
+0073   021D 68 20 69 6E 
+0073   0221 69 74 69 61 
+0073   0225 6C 69 7A 65 
+0073   0229 64 2E 
+0074   022B 0D 0A 00    		.DB CR,LF,0
+0075   022E             
+0076   022E C3 31 D1    		JP	WAITCMD
+0077   0231             		
+0078   0280             		.ORG	DISK_TAB
+0079   0280 00          DISK	.DB		0
+0080   0281 00 00       TRACK	.DW		0
+0081   0283 00          SECTOR	.DB		0
+0082   0284             		
+0083   0284 00          LBA0	.DB		0
+0084   0285 00          LBA1	.DB		0
+0085   0286 00          LBA2	.DB		0
+0086   0287             
+0087   0287             ;================================================================================================
+0088   0287             ; Compact flash read 1 sector and write to SCRATCHPAD
+0089   0287             ;================================================================================================
+0090   0400             		.ORG CF_RD
+0091   0400 CD 60 05    		CALL	DTS2LBA
+0092   0403             		
+0093   0403 CD 57 05    		CALL 	CFWAIT
+0094   0406             
+0095   0406 3A 84 02    		LD	A,(LBA0)
+0096   0409 D3 B3       		OUT 	(CF_LBA0),A
+0097   040B 3A 85 02    		LD	A,(LBA1)
+0098   040E D3 B4       		OUT 	(CF_LBA1),A
+0099   0410 3A 86 02    		LD	A,(LBA2)
+0100   0413 D3 B5       		OUT 	(CF_LBA2),A
+0101   0415 3E E0       		LD	A,0E0H
+0102   0417 D3 B6       		OUT 	(CF_LBA3),A
+0103   0419 3E 01       		LD 	A,1
+0104   041B D3 B2       		OUT 	(CF_SECCOUNT),A
+0105   041D             
+0106   041D 3E 20       		LD 	A,CF_READ_SEC
+0107   041F D3 B7       		OUT 	(CF_COMMAND),A
+0108   0421             
+0109   0421 CD 57 05    		CALL 	CFWAIT
+0110   0424             
+0111   0424 01 00 02    		LD	BC,0200H
+0112   0427 11 00 10    		LD	DE,SCRATCHPAD
+0113   042A 00          rdByte:	NOP
+0114   042B 00          		NOP
+0115   042C 00          		NOP
+0116   042D 00          		NOP
+0117   042E 00          		NOP
+0118   042F DB B0       		IN	A,(CF_DATA)
+0119   0431 12          		LD	(DE),A
+0120   0432 13          		INC	DE
+0121   0433 0B          		DEC	BC
+0122   0434 78          		LD	A,B
+0123   0435 B1          		OR	C
+0124   0436 20 F2       		JR 	NZ, rdByte
+0125   0438             
+0126   0438 CD 33 E6    		CALL	PRINTSEQ
+0127   043B 46 6C 61 73 		.TEXT	"Flash read completed."
+0127   043F 68 20 72 65 
+0127   0443 61 64 20 63 
+0127   0447 6F 6D 70 6C 
+0127   044B 65 74 65 64 
+0127   044F 2E 
+0128   0450 0D 0A 00    		.DB CR,LF,0
+0129   0453             
+0130   0453 C3 31 D1    		JP	WAITCMD
+0131   0456             
+0132   0456             ;================================================================================================
+0133   0456             ; Compact flash write 1 sector from SCRATCHPAD
+0134   0456             ;================================================================================================
+0135   0500             		.ORG CF_WR
+0136   0500 CD 60 05    		CALL	DTS2LBA
+0137   0503             		
+0138   0503 CD 57 05    		CALL 	CFWAIT
+0139   0506             
+0140   0506 3A 84 02    		LD	A,(LBA0)
+0141   0509 D3 B3       		OUT (CF_LBA0),A
+0142   050B 3A 85 02    		LD	A,(LBA1)
+0143   050E D3 B4       		OUT (CF_LBA1),A
+0144   0510 3A 86 02    		LD	A,(LBA2)
+0145   0513 D3 B5       		OUT (CF_LBA2),A
+0146   0515 3E E0       		LD	A,0E0H
+0147   0517 D3 B6       		OUT	(CF_LBA3),A
+0148   0519 3E 01       		LD 	A,1
+0149   051B D3 B2       		OUT	(CF_SECCOUNT),A
+0150   051D             
+0151   051D 3E 30       		LD 	A,CF_WRITE_SEC
+0152   051F D3 B7       		OUT	(CF_COMMAND),A
+0153   0521             
+0154   0521 CD 57 05    		CALL 	CFWAIT
+0155   0524             
+0156   0524 01 00 02    		LD	BC,0200H
+0157   0527 11 00 10    		LD	DE,SCRATCHPAD
+0158   052A 1A          wrByte:	LD	A,(DE)
+0159   052B 00          		NOP
+0160   052C 00          		NOP
+0161   052D 00          		NOP
+0162   052E 00          		NOP
+0163   052F 00          		NOP
+0164   0530 D3 B0       		OUT (CF_DATA),A
+0165   0532 13          		INC	DE
+0166   0533 0B          		DEC	BC
+0167   0534 78          		LD	A,B
+0168   0535 B1          		OR	C
+0169   0536 20 F2       		JR 	NZ, wrByte
+0170   0538             
+0171   0538 CD 33 E6    		CALL	PRINTSEQ
+0172   053B 46 6C 61 73 		.TEXT	"Flash write completed."
+0172   053F 68 20 77 72 
+0172   0543 69 74 65 20 
+0172   0547 63 6F 6D 70 
+0172   054B 6C 65 74 65 
+0172   054F 64 2E 
+0173   0551 0D 0A 00    		.DB CR,LF,0
+0174   0554             
+0175   0554 C3 31 D1    		JP	WAITCMD
+0176   0557             
+0177   0557             ;================================================================================================
+0178   0557             ; Wait for disk to be ready
+0179   0557             ;================================================================================================
+0180   0557             CFWAIT:
+0181   0557 F5          		PUSH 	AF
+0182   0558             CFWAIT1:
+0183   0558 DB B7       		IN 	A,(CF_STATUS)
+0184   055A E6 80       		AND 080H
+0185   055C 20 FA       		JR	NZ,CFWAIT1
+0186   055E             
+0187   055E F1          		POP AF
+0188   055F C9          		RET
+0189   0560             
+0190   0560             ;================================================================================================
+0191   0560             ; Convert physical address (disk, track, sector) to LBA address.
+0192   0560             ;================================================================================================
+0193   0560             DTS2LBA:
+0194   0560 2A 81 02    		LD	HL,(TRACK)
+0195   0563 CB 05       		RLC	L
+0196   0565 CB 05       		RLC	L
+0197   0567 CB 05       		RLC	L
+0198   0569 CB 05       		RLC	L
+0199   056B CB 05       		RLC	L
+0200   056D 7D          		LD	A,L
+0201   056E E6 E0       		AND	0E0H
+0202   0570 6F          		LD	L,A
+0203   0571 3A 83 02    		LD	A,(SECTOR)
+0204   0574 85          		ADD	A,L
+0205   0575 32 84 02    		LD	(LBA0),A
+0206   0578             
+0207   0578 2A 81 02    		LD	HL,(TRACK)
+0208   057B CB 0D       		RRC	L
+0209   057D CB 0D       		RRC	L
+0210   057F CB 0D       		RRC	L
+0211   0581 7D          		LD	A,L
+0212   0582 E6 1F       		AND	01FH
+0213   0584 6F          		LD	L,A
+0214   0585 CB 04       		RLC	H
+0215   0587 CB 04       		RLC	H
+0216   0589 CB 04       		RLC	H
+0217   058B CB 04       		RLC	H
+0218   058D CB 04       		RLC	H
+0219   058F 7C          		LD	A,H
+0220   0590 E6 20       		AND	020H
+0221   0592 67          		LD	H,A
+0222   0593 3A 80 02    		LD	A,(DISK)
+0223   0596 CB 07       		RLC	a
+0224   0598 CB 07       		RLC	a
+0225   059A CB 07       		RLC	a
+0226   059C CB 07       		RLC	a
+0227   059E CB 07       		RLC	a
+0228   05A0 CB 07       		RLC	a
+0229   05A2 E6 C0       		AND	0C0H
+0230   05A4 84          		ADD	A,H
+0231   05A5 85          		ADD	A,L
+0232   05A6 32 85 02    		LD	(LBA1),A
+0233   05A9             		
+0234   05A9             
+0235   05A9 3A 80 02    		LD	A,(DISK)
+0236   05AC CB 0F       		RRC	A
+0237   05AE CB 0F       		RRC	A
+0238   05B0 E6 03       		AND	03H
+0239   05B2 32 86 02    		LD	(LBA2),A
+0240   05B5             
+0241   05B5 C9          		RET
+0242   05B6             
+0243   05B6             ;================================================================================================
+0244   05B6             ; Fill scratch pad with content of addr 'SET_PAD+2' 
+0245   05B6             ;================================================================================================
+0246   0300             		.ORG	FILL_PAD
+0247   0300             
+0248   0300 18 01       		JR	SKIPBYTE
+0249   0302             
+0250   0302 00          SET_BYTE	.DB	0						; this byte will be used to fill the scratch pad
+0251   0303             
+0252   0303 01 00 02    SKIPBYTE:	LD	BC,0200H
+0253   0306 11 00 10    		LD	DE,SCRATCHPAD
+0254   0309 3A 02 03    SETNEXT:	LD	A,(SET_BYTE)
+0255   030C 12          		LD	(DE),A
+0256   030D 13          		INC	DE
+0257   030E 0B          		DEC	BC
+0258   030F 78          		LD	A,B
+0259   0310 B1          		OR	C
+0260   0311 20 F6       		JR	NZ,SETNEXT
+0261   0313             
+0262   0313 CD 33 E6    		CALL	PRINTSEQ
+0263   0316 46 69 6C 6C 		.TEXT	"Fill scratch pad completed."
+0263   031A 20 73 63 72 
+0263   031E 61 74 63 68 
+0263   0322 20 70 61 64 
+0263   0326 20 63 6F 6D 
+0263   032A 70 6C 65 74 
+0263   032E 65 64 2E 
+0264   0331 0D 0A 00    		.DB CR,LF,0
+0265   0334             
+0266   0334 C3 31 D1    		JP	WAITCMD
+0267   0337             
+0268   0337             ;================================================================================================
+0269   0337             ; Fill scratch pad with saw tooth pattern (00, FF, FE, FD, FC, FB, FA... 03, 02, 01, 00...)
+0270   0337             ;================================================================================================
+0271   0380             		.ORG	FILL_PAD_SAW
+0272   0380             
+0273   0380 01 00 02    		LD	BC,0200H
+0274   0383 21 00 10    		LD	HL,SCRATCHPAD
+0275   0386 3A 02 03    STNXTD:	LD	A,(SET_BYTE)
+0276   0389 71          		LD	(HL),C
+0277   038A 23          		INC	HL
+0278   038B 0B          		DEC	BC
+0279   038C 78          		LD	A,B
+0280   038D B1          		OR	C
+0281   038E 20 F6       		JR	NZ,STNXTD
+0282   0390             
+0283   0390 CD 33 E6    		CALL	PRINTSEQ
+0284   0393 53 61 77 20 		.TEXT	"Saw tooth pattern fill scratch pad completed."
+0284   0397 74 6F 6F 74 
+0284   039B 68 20 70 61 
+0284   039F 74 74 65 72 
+0284   03A3 6E 20 66 69 
+0284   03A7 6C 6C 20 73 
+0284   03AB 63 72 61 74 
+0284   03AF 63 68 20 70 
+0284   03B3 61 64 20 63 
+0284   03B7 6F 6D 70 6C 
+0284   03BB 65 74 65 64 
+0284   03BF 2E 
+0285   03C0 0D 0A 00    		.DB CR,LF,0
+0286   03C3             
+0287   03C3 C3 31 D1    		JP	WAITCMD
+0288   03C6             		.END
 tasm: Number of errors = 0
