@@ -43,7 +43,8 @@ BUFF	.EQU	080H
 	LD	HL,BUFF
 	LD	(buffPtr),HL
 
-WAITLT:	CALL	GETCHR
+WAITLT:
+	CALL	GETCHR
 	CP	'U'
 	JP	Z,SETUSER
 	CP	':'
@@ -109,7 +110,8 @@ GETHEX:
 	LD	A,LF
 	CALL	PUTCHR
 	LD	A,0
-noCRLF:	LD	(printCount),A
+noCRLF:
+	LD	(printCount),A
 
 	LD	HL,BUFF
 	LD	(buffPtr),HL
@@ -120,7 +122,6 @@ NOWRITE:
 	JR	GETHEX
 	
 CLOSE:
-
 	LD	A,(buffPos)
 	CP	0
 	JR	Z,NOWRITE2
@@ -233,7 +234,8 @@ GETCHR:
 	RET
 
 ; Write A to output
-PUTCHR: LD C,CONOUT
+PUTCHR:
+	LD C,CONOUT
 	LD E,A
 	CALL BDOS
 	RET
@@ -241,12 +243,14 @@ PUTCHR: LD C,CONOUT
 ;------------------------------------------------------------------------------
 ; Convert ASCII characters in B C registers to a byte value in A
 ;------------------------------------------------------------------------------
-BCTOA	LD   A,B	; Move the hi order byte to A
+BCTOA:
+	LD   A,B	; Move the hi order byte to A
 	SUB  $30	; Take it down from Ascii
 	CP   $0A	; Are we in the 0-9 range here?
 	JR   C,BCTOA1	; If so, get the next nybble
 	SUB  $07	; But if A-F, take it down some more
-BCTOA1	RLCA		; Rotate the nybble from low to high
+BCTOA1:
+	RLCA		; Rotate the nybble from low to high
 	RLCA		; One bit at a time
 	RLCA		; Until we
 	RLCA		; Get there with it
@@ -256,11 +260,13 @@ BCTOA1	RLCA		; Rotate the nybble from low to high
 	CP   $0A	; 0-9 at this point?
 	JR   C,BCTOA2	; Good enough then, but
 	SUB  $07	; Take off 7 more if it's A-F
-BCTOA2	ADD  A,B	; Add in the high order nybble
+BCTOA2:
+	ADD  A,B	; Add in the high order nybble
 	RET
 
 ; Change Hex in A to actual value in A
-HEX2VAL SUB	$30
+HEX2VAL:
+	SUB	$30
 	CP	$0A
 	RET	C
 	SUB	$07
