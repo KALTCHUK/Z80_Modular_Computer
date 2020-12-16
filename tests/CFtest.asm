@@ -3,6 +3,10 @@
 ;
 ;================================================================================================
 CF_INIT			.EQU	0200H			; Routine to initialize the CF
+DISK_TAB		.EQU	0280H			; Disk physical address table
+;				disk	0280h
+;				track 	0281h
+;				sector	0283h
 FILL_PAD		.EQU	0300H			; Fill scratch pad with content of addr SET_PAD+2 
 FILL_PAD_SAW	.EQU	0380H			; Fill scratch pad with saw tooth pattern
 CF_RD			.EQU	0400H			; Routine to read from CF
@@ -73,23 +77,29 @@ COLON			.EQU	03AH			; colon
 		.DB CR,LF,0
 
 		JP	WAITCMD
+		
+		.ORG	DISK_TAB
+DISK	.DB		0
+TRACK	.DW		0
+SECTOR	.DB		0
+		
+LBA0	.DB		0
+LBA1	.DB		0
+LBA2	.DB		0
 
 ;================================================================================================
 ; Compact flash read 1 sector and write to SCRATCHPAD
 ;================================================================================================
 		.ORG CF_RD
-		JR	SKIPRLBA
-RLBA0	.DB	0						; addr of 1st sector to be read
-RLBA1	.DB	0						; LBA2 + LBA1 + LBA0
-RLBA2	.DB	0						; addr range = [00 00 00; 03 FF FF]
+		CALL	DTS2LBA
+		
+		CALL 	CFWAIT
 
-SKIPRLBA:	CALL 	CFWAIT
-
-		LD	A,(RLBA0)
+		LD	A,(LBA0)
 		OUT 	(CF_LBA0),A
-		LD	A,(RLBA1)
+		LD	A,(LBA1)
 		OUT 	(CF_LBA1),A
-		LD	A,(RLBA2)
+		LD	A,(LBA2)
 		OUT 	(CF_LBA2),A
 		LD	A,0E0H
 		OUT 	(CF_LBA3),A
@@ -126,21 +136,15 @@ rdByte:	NOP
 ; Compact flash write 1 sector from SCRATCHPAD
 ;================================================================================================
 		.ORG CF_WR
-
-		JR	SKIPWLBA
-
-WLBA0	.DB	0					; addr of 1st sector to be written
-WLBA1	.DB	0					; LBA2 + LBA1 + LBA0 
-WLBA2	.DB	0					; addr range = [00 00 00; 03 FF FF]
-
-SKIPWLBA:
+		CALL	DTS2LBA
+		
 		CALL 	CFWAIT
 
-		LD	A,(WLBA0)
+		LD	A,(LBA0)
 		OUT (CF_LBA0),A
-		LD	A,(WLBA1)
+		LD	A,(LBA1)
 		OUT (CF_LBA1),A
-		LD	A,(WLBA2)
+		LD	A,(LBA2)
 		OUT (CF_LBA2),A
 		LD	A,0E0H
 		OUT	(CF_LBA3),A
@@ -184,6 +188,59 @@ CFWAIT1:
 		JR	NZ,CFWAIT1
 
 		POP AF
+		RET
+
+;================================================================================================
+; Convert physical address (disk, track, sector) to LBA address.
+;================================================================================================
+DTS2LBA:
+		LD	HL,(TRACK)
+		RLC	L
+		RLC	L
+		RLC	L
+		RLC	L
+		RLC	L
+		LD	A,L
+		AND	0E0H
+		LD	L,A
+		LD	A,(SECTOR)
+		ADD	A,L
+		LD	(LBA0),A
+
+		LD	HL,(TRACK)
+		RRC	L
+		RRC	L
+		RRC	L
+		LD	A,L
+		AND	01FH
+		LD	L,A
+		RLC	H
+		RLC	H
+		RLC	H
+		RLC	H
+		RLC	H
+		LD	A,H
+		AND	020H
+		LD	H,A
+		LD	A,(DISK)
+		RLC	a
+		RLC	a
+		RLC	a
+		RLC	a
+		RLC	a
+		RLC	a
+		AND	0C0H
+		ADD	A,H
+		ADD	A,L
+		LD	(LBA1),A
+		
+
+		LD	A,(DISK)
+		RRC	A
+		RRC	A
+		AND	03H
+		LD	(LBA2),A
+
 		RET
 
 ;================================================================================================
