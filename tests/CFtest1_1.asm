@@ -137,7 +137,7 @@ RDBYTE:
 		JR 	NZ, RDBYTE
 
 		CALL	PRINTSEQ
-		.TEXT	"Flash read completed."
+		.TEXT	"Flash sector read completed."
 		.DB CR,LF,0
 
 		JP	WAITCMD
@@ -182,7 +182,7 @@ wrByte:	LD	A,(DE)
 		JR 	NZ, wrByte
 
 		CALL	PRINTSEQ
-		.TEXT	"Flash write completed."
+		.TEXT	"Flash sector write completed."
 		.DB CR,LF,0
 
 		JP	WAITCMD
