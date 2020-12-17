@@ -114,10 +114,6 @@ LBA2	.DB		0
 		LD	BC,0200H
 		LD	DE,SCRATCHPAD
 rdByte:	NOP
-		NOP
-		NOP
-		NOP
-		NOP
 		IN	A,(CF_DATA)
 		LD	(DE),A
 		INC	DE
@@ -159,10 +155,6 @@ rdByte:	NOP
 		LD	BC,0200H
 		LD	DE,SCRATCHPAD
 wrByte:	LD	A,(DE)
-		NOP
-		NOP
-		NOP
-		NOP
 		NOP
 		OUT (CF_DATA),A
 		INC	DE
