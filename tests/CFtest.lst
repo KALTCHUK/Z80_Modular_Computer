@@ -286,30 +286,32 @@
 0266   0380             		.ORG	FILL_PAD_SAW
 0267   0380             
 0268   0380 01 00 02    		LD	BC,0200H
-0269   0383 21 00 10    		LD	HL,SCRATCHPAD
-0270   0386 3A 02 03    STNXTD:	LD	A,(SET_BYTE)
-0271   0389 71          		LD	(HL),C
-0272   038A 23          		INC	HL
-0273   038B 0B          		DEC	BC
-0274   038C 78          		LD	A,B
-0275   038D B1          		OR	C
-0276   038E 20 F6       		JR	NZ,STNXTD
-0277   0390             
-0278   0390 CD 33 E6    		CALL	PRINTSEQ
-0279   0393 53 61 77 20 		.TEXT	"Saw tooth pattern fill scratch pad completed."
-0279   0397 74 6F 6F 74 
-0279   039B 68 20 70 61 
-0279   039F 74 74 65 72 
-0279   03A3 6E 20 66 69 
-0279   03A7 6C 6C 20 73 
-0279   03AB 63 72 61 74 
-0279   03AF 63 68 20 70 
-0279   03B3 61 64 20 63 
-0279   03B7 6F 6D 70 6C 
-0279   03BB 65 74 65 64 
-0279   03BF 2E 
-0280   03C0 0D 0A 00    		.DB CR,LF,0
-0281   03C3             
-0282   03C3 C3 31 D1    		JP	WAITCMD
-0283   03C6             		.END
+0269   0383 16 00       		LD	D,0
+0270   0385 21 00 10    		LD	HL,SCRATCHPAD
+0271   0388 3A 02 03    STNXTD:	LD	A,(SET_BYTE)
+0272   038B 72          		LD	(HL),D
+0273   038C 23          		INC	HL
+0274   038D 14          		INC	D
+0275   038E 0B          		DEC	BC
+0276   038F 78          		LD	A,B
+0277   0390 B1          		OR	C
+0278   0391 20 F5       		JR	NZ,STNXTD
+0279   0393             
+0280   0393 CD 33 E6    		CALL	PRINTSEQ
+0281   0396 53 61 77 20 		.TEXT	"Saw tooth pattern fill scratch pad completed."
+0281   039A 74 6F 6F 74 
+0281   039E 68 20 70 61 
+0281   03A2 74 74 65 72 
+0281   03A6 6E 20 66 69 
+0281   03AA 6C 6C 20 73 
+0281   03AE 63 72 61 74 
+0281   03B2 63 68 20 70 
+0281   03B6 61 64 20 63 
+0281   03BA 6F 6D 70 6C 
+0281   03BE 65 74 65 64 
+0281   03C2 2E 
+0282   03C3 0D 0A 00    		.DB CR,LF,0
+0283   03C6             
+0284   03C6 C3 31 D1    		JP	WAITCMD
+0285   03C9             		.END
 tasm: Number of errors = 0
