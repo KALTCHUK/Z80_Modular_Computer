@@ -9,9 +9,11 @@ DISK_TAB		.EQU	0280H			; Disk physical address table
 ;				track 	0281h
 ;				sector	0283h
 FILL_PAD		.EQU	0300H			; Fill scratch pad with content of addr SET_PAD+2 
+FILL_PAD_PLAID	.EQU	0350H			; Fill scratch pad with plaid pattern (00 FF 00 FF...)
 FILL_PAD_SAW	.EQU	0380H			; Fill scratch pad with saw tooth pattern
 CF_RD			.EQU	0400H			; Routine to read from CF
 CF_WR			.EQU	0500H			; Routine to write to CF
+CF_VY			.EQU	0600H			; Routine to verify if CF sector is equal to scratch pad
 SCRATCHPAD		.EQU	01000H			; 512 bytes (= 1 sector) read/write scratch pad
 
 PRINTSEQ		.EQU	0E633H			; Routine (located in the BIOS) to print a sequence of characters
@@ -66,8 +68,8 @@ COLON			.EQU	03AH			; colon
 		CALL	CFWAIT
 		LD	A,CF_SET_FEAT
 		OUT	(CF_COMMAND),A
+		CALL	CFWAIT
 
-;		CALL	CFWAIT
 ;		LD 	A,CF_NOCACHE				; No write cache
 ;		OUT	(CF_FEATURES),A
 ;		LD	A,CF_SET_FEAT
@@ -97,37 +99,26 @@ LBA2	.DB		0
 		CALL 	CFWAIT
 		LD	A,(LBA0)
 		OUT 	(CF_LBA0),A
-
 		CALL 	CFWAIT
 		LD	A,(LBA1)
 		OUT 	(CF_LBA1),A
-
 		CALL 	CFWAIT
 		LD	A,(LBA2)
 		OUT 	(CF_LBA2),A
-
 		CALL 	CFWAIT
 		LD	A,0E0H
 		OUT 	(CF_LBA3),A
-
 		CALL 	CFWAIT
 		LD 	A,1
 		OUT 	(CF_SECCOUNT),A
-RETRY:
-		CALL	CFCMDRDY
+		CALL	CFWAIT
 		LD 	A,CF_READ_SEC
 		OUT 	(CF_COMMAND),A
-
-		CALL 	CFWAIT
-
-		IN	A,(CF_STATUS)					;Read status
-		AND	%00000001						;mask off error bit
-		JP	NZ,RETRY						;Try again if error
+		CALL	CFDATRDY	
 
 		LD	BC,0200H
 		LD	DE,SCRATCHPAD
 RDBYTE:	
-		CALL	CFDATRDY	
 		IN 	A,(CF_DATA)						;get byte of ide data	
 		LD 	(DE),A
 		INC	DE
@@ -149,37 +140,34 @@ RDBYTE:
 		CALL	DTS2LBA
 		
 		CALL 	CFWAIT
-
 		LD	A,(LBA0)
-		OUT (CF_LBA0),A
-		LD	A,(LBA1)
-		OUT (CF_LBA1),A
-		LD	A,(LBA2)
-		OUT (CF_LBA2),A
-		LD	A,0E0H
-		OUT	(CF_LBA3),A
-		LD 	A,1
-		OUT	(CF_SECCOUNT),A
-
-		LD 	A,CF_WRITE_SEC
-		OUT	(CF_COMMAND),A
-
+		OUT 	(CF_LBA0),A
 		CALL 	CFWAIT
+		LD	A,(LBA1)
+		OUT 	(CF_LBA1),A
+		CALL 	CFWAIT
+		LD	A,(LBA2)
+		OUT 	(CF_LBA2),A
+		CALL 	CFWAIT
+		LD	A,0E0H
+		OUT 	(CF_LBA3),A
+		CALL 	CFWAIT
+		LD 	A,1
+		OUT 	(CF_SECCOUNT),A
+		CALL	CFWAIT
+		LD 	A,CF_WRITE_SEC
+		OUT 	(CF_COMMAND),A
+		CALL	CFDATRDY	
 
 		LD	BC,0200H
 		LD	DE,SCRATCHPAD
-wrByte:	LD	A,(DE)
-		NOP
-		NOP
-		NOP
-		NOP
-		NOP
+WRBYTE:	LD	A,(DE)
 		OUT (CF_DATA),A
 		INC	DE
 		DEC	BC
 		LD	A,B
 		OR	C
-		JR 	NZ, wrByte
+		JR 	NZ, WRBYTE
 
 		CALL	PRINTSEQ
 		.TEXT	"Flash sector write completed."
@@ -196,34 +184,31 @@ CFWAIT1:
 		IN 	A,(CF_STATUS)
 		AND 080H
 		JR	NZ,CFWAIT1
-
 		POP AF
 		RET
 
 ;================================================================================================
-; Originally LOOP_CMD_RDY by Matthew Cook.
-; Loops until status register bit 7 (busy) is 0 and drvrdy(6) is 1
-;================================================================================================
-CFCMDRDY:
-		IN	A,(CF_STATUS)					;Read status
-		AND	%11000000						;mask off busy and rdy bits
-		XOR	%01000000						;we want busy(7) to be 0 and drvrdy(6) to be 1
-		JP	NZ,CFCMDRDY
-		RET
-
-;================================================================================================
 ; Originally LOOP_DAT_RDY by Matthew Cook.
-; Loops until status register bit 7 (busy) is 0 and drq(3) is 1
+; Loops until status register bit 7 (busy) is 0 and bit 3 (drq) is 1
 ;================================================================================================
 CFDATRDY:
+		PUSH 	AF
+CFDATRDY1:
 		IN	A,(CF_STATUS)					;Read status
 		AND	%10001000						;mask off busy and drq bits
 		XOR	%00001000						;we want busy(7) to be 0 and drq(3) to be 1
-		JP	CFDATRDY
+		JR	NZ,CFDATRDY1
+		POP AF
 		RET
 
 ;================================================================================================
 ; Convert physical address (disk, track, sector) to LBA address.
+;
+;	|      LBA2     |      LBA1     |      LBA0     |
+;	|0 0 0 0 0 0 D D|D D T T T T T T|T T T S S S S S|
+;               |3 2 1 0|8 7 6 5 4 3 2 1 0|4 3 2 1 0|
+;				| DISK  |      TRACK      | SECTOR  |
+;
 ;================================================================================================
 DTS2LBA:
 		LD	HL,(TRACK)
@@ -284,18 +269,41 @@ DTS2LBA:
 
 SET_BYTE	.DB	0						; this byte will be used to fill the scratch pad
 
-SKIPBYTE:	LD	BC,0200H
+SKIPBYTE:	LD	B,0
 		LD	DE,SCRATCHPAD
-SETNEXT:	LD	A,(SET_BYTE)
+		LD	A,(SET_BYTE)
+SETNEXT:
 		LD	(DE),A
 		INC	DE
-		DEC	BC
-		LD	A,B
-		OR	C
-		JR	NZ,SETNEXT
+		LD	(DE),A
+		INC	DE
+		DJNZ	SETNEXT
 
 		CALL	PRINTSEQ
 		.TEXT	"Fill scratch pad completed."
+		.DB CR,LF,0
+
+		JP	WAITCMD
+
+;================================================================================================
+; Fill scratch pad with plaid pattern 
+;================================================================================================
+		.ORG	FILL_PAD_PLAID
+
+		LD	B,0
+		LD	DE,SCRATCHPAD
+		LD	A,(SET_BYTE)
+SETNEXT1:
+		LD	(DE),A
+		INC	DE
+		CPL
+		LD	(DE),A
+		INC	DE
+		CPL
+		DJNZ	SETNEXT1
+
+		CALL	PRINTSEQ
+		.TEXT	"Fill scratch pad with plaid pattern completed."
 		.DB CR,LF,0
 
 		JP	WAITCMD
@@ -307,20 +315,70 @@ SETNEXT:	LD	A,(SET_BYTE)
 
 		LD	BC,0200H
 		LD	HL,SCRATCHPAD
-STNXTD:	LD	A,(SET_BYTE)
+SETNEXT2:
 		LD	(HL),C
 		INC	HL
 		DEC	BC
 		LD	A,B
 		OR	C
-		JR	NZ,STNXTD
+		JR	NZ,SETNEXT2
 
 		CALL	PRINTSEQ
-		.TEXT	"Saw tooth pattern fill scratch pad completed."
+		.TEXT	"Fill scratch pad saw tooth pattern completed."
 		.DB CR,LF,0
 
 		JP	WAITCMD
 		.END
 		
+;================================================================================================
+; Compact flash verify 1 sector (compare with SCRATCHPAD)
+;================================================================================================
+		.ORG CF_RD
+		CALL	DTS2LBA
+		
+		CALL 	CFWAIT
+		LD	A,(LBA0)
+		OUT 	(CF_LBA0),A
+		CALL 	CFWAIT
+		LD	A,(LBA1)
+		OUT 	(CF_LBA1),A
+		CALL 	CFWAIT
+		LD	A,(LBA2)
+		OUT 	(CF_LBA2),A
+		CALL 	CFWAIT
+		LD	A,0E0H
+		OUT 	(CF_LBA3),A
+		CALL 	CFWAIT
+		LD 	A,1
+		OUT 	(CF_SECCOUNT),A
+		CALL	CFWAIT
+		LD 	A,CF_READ_SEC
+		OUT 	(CF_COMMAND),A
+		CALL	CFDATRDY	
+
+		LD	BC,0200H
+		LD	DE,SCRATCHPAD
+RDBYTE1:	
+		IN 	A,(CF_DATA)						;get byte of ide data
+		LD	H,A
+		LD 	A,(DE)
+		CP	H
+		JR	Z,ISEQUAL
+		CALL	PRINTSEQ
+		.TEXT	"ERROR"
+		.DB CR,LF,0
+ISEQUAL:
+		INC	DE
+		DEC	BC
+		LD	A,B
+		OR	C
+		JR 	NZ, RDBYTE1
+
+		CALL	PRINTSEQ
+		.TEXT	"Flash sector verify completed."
+		.DB CR,LF,0
+
+		JP	WAITCMD
+
 		
 
