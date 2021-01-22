@@ -1,0 +1,36 @@
+0001   0000             ;================================================================================================
+0002   0000             ; Clears all memory from 0100h to BFFFh
+0003   0000             ; Clear means fill it with 00
+0004   0000             ;================================================================================================
+0005   0000             
+0006   0000             PRINTSEQ		.EQU	0E633H			; Routine (located in the BIOS) to print a sequence of characters
+0007   0000             WAITCMD			.EQU	0D131H			; Reentry point to Monitor
+0008   0000             
+0009   0000             TOPMEM			.EQU	0C000H			; The program will reside here
+0010   0000             TPA				.EQU	0100H			; Start of Transient Program Area fo CP/M 
+0011   0000             
+0012   0000             LF				.EQU	0AH				; line feed
+0013   0000             CR				.EQU	0DH				; carriage return
+0014   0000             ;================================================================================================
+0015   0000             
+0016   C000             		.ORG TOPMEM
+0017   C000             		
+0018   C000 01 FE BE    		LD		BC,TOPMEM-TPA-2
+0019   C003 11 01 01    		LD		DE,TPA+1
+0020   C006 21 00 01    		LD		HL,TPA
+0021   C009 36 00       		LD		(HL),0
+0022   C00B ED B0       		LDIR
+0023   C00D             
+0024   C00D CD 33 E6    		CALL	PRINTSEQ
+0025   C010 4D 65 6D 6F 		.TEXT	"Memory cleared."
+0025   C014 72 79 20 63 
+0025   C018 6C 65 61 72 
+0025   C01C 65 64 2E 
+0026   C01F 0D 0A 00    		.DB CR,LF,0
+0027   C022             
+0028   C022 C3 31 D1    		JP	WAITCMD
+0029   C025             		
+0030   C025             
+0031   C025             
+0032   C025             		.END
+tasm: Number of errors = 0
