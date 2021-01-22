@@ -1,286 +1,214 @@
 ;==================================================================================
-; Contents of this file are copyright Grant Searle
-; HEX routine from Joel Owens.
+; Use Monitor to load this program to 0100h.
+; Switch to CP/M
+; SAVE 2 DOWNLOAD.COM
 ;
-; You have permission to use this for NON COMMERCIAL USE ONLY
-; If you wish to use it elsewhere, please include an acknowledgement to myself.
-;
-; http://searle.hostei.com/grant/index.html
-;
-; eMail: home.micros01@btinternet.com
-;
-; If the above don't work, please perform an Internet search to see if I have
-; updated the web page hosting service.
-;
+; What this program does:
+;	- transfer itself to 0C000h
+;	- receive a block os ASCII bytes starting with ':' and terminated with '#'
+;	- convert the charcters to bytes and write them starting at 0300h
+;	- print the number of pages (you'll need this info for the SAVE x command)
+;	- transfer the block from 0300h to 0100h (beginning of TPA)
+;	- return control to CCP
 ;==================================================================================
 
-TPA		.EQU	100H
+TPA		.EQU	0100H
+PTPA	.EQU	0300H
+NEWLOC	.EQU	0C000H
 REBOOT	.EQU	0H
 BDOS	.EQU	5H
 CONIO	.EQU	6
 CONINP	.EQU	1
 CONOUT	.EQU	2
 PSTRING	.EQU	9
-MAKEF	.EQU	22
-CLOSEF	.EQU	16
-WRITES	.EQU	21
-DELF	.EQU	19
-SETUSR	.EQU	32
 
 CR		.EQU	0DH
 LF		.EQU	0AH
 
-FCB		.EQU	05CH
-BUFF	.EQU	080H
-
 	.ORG TPA
-
-	LD	A,0
-	LD	(buffPos),A
-	LD	(checkSum),A
-	LD	(byteCount),A
-	LD	(printCount),A
-	LD	HL,BUFF
-	LD	(buffPtr),HL
-
-WAITLT:
-	CALL	GETCHR
-	CP	'U'
-	JP	Z,SETUSER
-	CP	':'
-	JR	NZ,WAITLT
-
-	LD	C,DELF
-	LD	DE,FCB
-	CALL	BDOS
-
-	LD	C,MAKEF
-	LD	DE,FCB
-	CALL	BDOS
-
+		LD	DE,msgInit
+		LD	C,PSTRING
+		CALL	BDOS
+		CALL	CRLF
+COLON:
+		CALL	GETCHR
+		CP	':'
+		JR	NZ,COLON
+		LD	DE,PTPA						; this is the addr to start writing the incoming block
 GETHEX:
-	CALL 	GETCHR
-	CP	'>'
-	JR	Z,CLOSE
-	LD   B,A
-	PUSH BC
-	CALL GETCHR
-	POP BC
-	LD   C,A
+		CALL	GETCHR
+		CP	'#'							; is it the end?
+		JR	Z,CLOSE
+		LD   H,A
+		CALL	GETCHR
+		LD   L,A
+		CALL	ASCII2HEX
+		LD	A,B
+		LD	(DE),A
+		INC	DE
+		JR	GETHEX
+CLOSE:	
+		DEC	DE							; DE contains the last written address
+		CALL	CRLF
+		PUSH	DE
+		LD		DE,msgPages
+		LD		C,PSTRING
+		CALL	BDOS
+		POP		DE
+		DEC		D
+		DEC		D
+		DEC		D
+		LD		A,E
+		CP		0
+		LD		B,D
+		JR		Z,NOINC
+		INC		B
+NOINC:
+		CALL	HEX2ASCII
+		LD	A,H
+		CALL	PUTCHR
+		LD	A,L
+		CALL	PUTCHR
+		CALL	CRLF
 
-	CALL BCTOA
+		LD		DE,msgTransf
+		LD		C,PSTRING
+		CALL	BDOS
+		CALL	CRLF
 
-	LD	B,A
-	LD	A,(checkSum)
-	ADD	A,B
-	LD	(checkSum),A
-	LD	A,(byteCount)
-	INC	A
-	LD	(byteCount),A
+		PUSH	DE
 
-	LD	A,B
+		LD	BC,EBLK-BBLK
+		LD	DE,NEWLOC
+		LD	HL,BBLK
+		LDIR
+		JP	NEWLOC
+BBLK:
+		POP		BC					; move loaded program from 0300h to 0100h
+		LD	DE,TPA
+		LD	HL,PTPA
+		LDIR
+		JP	REBOOT
 
-	LD	HL,(buffPtr)
+EBLK:
 
-	LD	(HL),A
-	INC	HL
-	LD	(buffPtr),HL
+;================================================================================================
+; Send CR + LF to console
+;================================================================================================
+CRLF: 
+		LD	A,CR
+		CALL	PUTCHR
+		LD	A,LF
+		CALL	PUTCHR
+		RET
 
-	LD	A,(buffPos)
-	INC	A
-	LD	(buffPos),A
-	CP	80H
-
-	JR	NZ,NOWRITE
-
-	LD	C,WRITES
-	LD	DE,FCB
-	CALL	BDOS
-	LD	A,'.'
-	CALL	PUTCHR
-
-        ; New line every 8K (64 dots)
-	LD	A,(printCount)
-	INC	A
-	CP	64
-	JR	NZ,noCRLF
-	LD	(printCount),A
-	LD	A,CR
-	CALL	PUTCHR
-	LD	A,LF
-	CALL	PUTCHR
-	LD	A,0
-noCRLF:
-	LD	(printCount),A
-
-	LD	HL,BUFF
-	LD	(buffPtr),HL
-
-	LD	A,0
-	LD	(buffPos),A
-NOWRITE:
-	JR	GETHEX
-	
-CLOSE:
-	LD	A,(buffPos)
-	CP	0
-	JR	Z,NOWRITE2
-
-	LD	C,WRITES
-	LD	DE,FCB
-	CALL	BDOS
-	LD	A,'.'
-	CALL	PUTCHR
-
-NOWRITE2:
-	LD	C,CLOSEF
-	LD	DE,FCB
-	CALL	BDOS
-
-; Byte count (lower 8 bits)
-	CALL 	GETCHR
-	LD   B,A
-	PUSH BC
-	CALL GETCHR
-	POP BC
-	LD   C,A
-
-	CALL BCTOA
-	LD	B,A
-	LD	A,(byteCount)
-	SUB	B
-	CP	0
-	JR	Z,byteCountOK
-
-	LD	A,CR
-	CALL	PUTCHR
-	LD	A,LF
-	CALL	PUTCHR
-
-	LD	DE,countErrMess
-	LD	C,PSTRING
-	CALL	BDOS
-
-	; Sink remaining 2 bytes
-	CALL GETCHR
-	CALL GETCHR
-
-	JR	FINISH
-
-byteCountOK:
-
-; Checksum
-	CALL 	GETCHR
-	LD   B,A
-	PUSH BC
-	CALL GETCHR
-	POP BC
-	LD   C,A
-
-	CALL BCTOA
-	LD	B,A
-	LD	A,(checkSum)
-	SUB	B
-	CP	0
-	JR	Z,checksumOK
-
-	LD	A,CR
-	CALL	PUTCHR
-	LD	A,LF
-	CALL	PUTCHR
-
-	LD	DE,chkErrMess
-	LD	C,PSTRING
-	CALL	BDOS
-	JR	FINISH
-
-checksumOK:
-	LD	A,CR
-	CALL	PUTCHR
-	LD	A,LF
-	CALL	PUTCHR
-
-	LD	DE,OKMess
-	LD	C,PSTRING
-	CALL	BDOS
-
-FINISH:
-	LD	C,SETUSR
-	LD	E,0
-	CALL	BDOS
-
-	JP	REBOOT
-
-SETUSER:
-	CALL	GETCHR
-	CALL	HEX2VAL
-	LD	E,A
-	LD	C,SETUSR
-	CALL	BDOS
-	JP	WAITLT
-
-; Get a char into A
-;GETCHR: LD C,CONINP
-;	CALL BDOS
-;	RET
-
-; Wait for a char into A (no echo)
+;================================================================================================
+; Get chat from console
+;================================================================================================
 GETCHR: 
-	LD	E,$FF
-	LD 	C,CONIO
-	CALL 	BDOS
-	CP	0
-	JR	Z,GETCHR
-	RET
+		PUSH	DE
+		LD	E,$FF
+		LD 	C,CONIO
+		CALL 	BDOS
+		CP	0
+		JR	Z,GETCHR
+		POP		DE
+		RET
 
-; Write A to output
+;================================================================================================
+; Send char to console
+;================================================================================================
 PUTCHR:
-	LD C,CONOUT
-	LD E,A
-	CALL BDOS
-	RET
+		PUSH	DE
+		LD C,CONOUT
+		LD E,A
+		CALL BDOS
+		POP		DE
+		RET
 
-;------------------------------------------------------------------------------
-; Convert ASCII characters in B C registers to a byte value in A
-;------------------------------------------------------------------------------
-BCTOA:
-	LD   A,B	; Move the hi order byte to A
-	SUB  $30	; Take it down from Ascii
-	CP   $0A	; Are we in the 0-9 range here?
-	JR   C,BCTOA1	; If so, get the next nybble
-	SUB  $07	; But if A-F, take it down some more
-BCTOA1:
-	RLCA		; Rotate the nybble from low to high
-	RLCA		; One bit at a time
-	RLCA		; Until we
-	RLCA		; Get there with it
-	LD   B,A	; Save the converted high nybble
-	LD   A,C	; Now get the low order byte
-	SUB  $30	; Convert it down from Ascii
-	CP   $0A	; 0-9 at this point?
-	JR   C,BCTOA2	; Good enough then, but
-	SUB  $07	; Take off 7 more if it's A-F
-BCTOA2:
-	ADD  A,B	; Add in the high order nybble
-	RET
+;================================================================================================
+; Convert HEX to ASCII (B --> HL)
+;================================================================================================
+HEX2ASCII:
+		PUSH	BC
+		LD	A,B
+		AND	0FH
+		LD	L,A
+		SUB	0AH
+		LD	C,030H
+		JP	C,COMPENSATE
+		LD	C,037H
+COMPENSATE:
+		LD	A,L
+		ADD	A,C
+		LD	L,A
+		LD	A,B
+		AND	0F0H
+		SRL	A
+		SRL	A
+		SRL	A
+		SRL	A
+		LD	H,A
+		SUB	0AH
+		LD	C,030H
+		JP	C,COMPENSATE2
+		LD	C,037H
+COMPENSATE2:
+		LD	A,H
+		ADD	A,C
+		LD	H,A
+		POP	BC
+		RET
 
-; Change Hex in A to actual value in A
-HEX2VAL:
-	SUB	$30
-	CP	$0A
-	RET	C
-	SUB	$07
-	RET
+;================================================================================================
+; Convert ASCII to HEX (HL --> B)
+;================================================================================================
+ASCII2HEX:	PUSH	BC
+		LD	A,060H
+		SUB	H
+		LD	C,057H
+		JP	C,DISCOUNT
+		LD	A,040H
+		SUB	H
+		LD	C,037H
+		JP	C,DISCOUNT
+		LD	C,030H
+DISCOUNT:
+		LD	A,H
+		SUB	C
+CONVL:
+		LD	B,A
+		SLA	B
+		SLA	B
+		SLA	B
+		SLA	B
 
+		LD	A,060H
+		SUB	L
+		LD	C,057H
+		JP	C,DISCOUNT2
+		LD	A,040H
+		SUB	L
+		LD	C,037H
+		JP	C,DISCOUNT2
+		LD	C,030H
+DISCOUNT2:
+		LD	A,L
+		SUB	C
+		OR	B
+		POP	BC
+		LD	B,A
+		RET
 
-buffPos			.DB	0H
-buffPtr			.DW	0000H
-printCount 		.DB	0H
-checkSum 		.DB	0H
-byteCount 		.DB	0H
-OKMess			.BYTE	"OK$"
-chkErrMess 		.BYTE	"======Checksum Error======$"
-countErrMess 	.BYTE	"======File Length Error======$"
+;================================================================================================
+; Message area
+;================================================================================================
+msgInit	 		.BYTE	"Send ASCII block starting with ':' and ending with '#'$"
+msgPages 		.BYTE	"Number of pages written: 0x$"
+msgTransf 		.BYTE	"Transfering block to TPA... $"
 
 
 		.END
+
+
+
