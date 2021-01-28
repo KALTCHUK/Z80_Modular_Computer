@@ -19,21 +19,22 @@ with open(file_name,"rb") as f:
     byte_counter = 0    
 
     if file_type == 'a' or file_type == 'A':
-        while 1:
-            b = f.read(1)
-            if b == '':
+        while True:
+            br = f.read(1)
+            if br == b'':
                 byte_counter /= 2
                 break
             byte_counter += 1
-            Z80_port.write(b)
+            Z80_port.write(br)
     else:
-        while 1:
-            b = f.read(1)
-            if b == '':
+        while True:
+            br = f.read(1)
+            if br == b'':
                 break
             byte_counter += 1
-            msn = b // 0x10
-            lsn = b % 0x10
+            # change this part using bitwise operators
+            msn = int(br) >> 4
+            lsn = int(br) & 0xf0
             if msn < 0xA:
                 msn += 0x30
             else:
@@ -55,5 +56,5 @@ with open(file_name,"rb") as f:
         pages += 1
 
     print("Transmission complete." + '\r\n')
-    print("Use: SAVE " + str(pages))
+    print("Use: SAVE " + str(int(pages)))
     print('\r\n')    
