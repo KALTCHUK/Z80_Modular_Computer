@@ -10,9 +10,11 @@ Z80_port = serial.Serial(port = "COM" + str(com_port), baudrate = 9600)
 
 file_name = input("File name? ")
 f = open(file_name,"rb")
+
 print('\r\n' + "Transmitting..." + '\r\n')    
     
 Z80_port.write(f.read()+b'\r\n')
+
 print("Transmission complete.")
 
 f.close()
