@@ -6,11 +6,13 @@ import serial
 print('\r\n')    
 
 # Which COM port?
-com_port = input("COM port number? ")
+#com_port = input("COM port number? ")
+com_port = 16
 Z80_port = serial.Serial(port = "COM" + str(com_port), baudrate = 9600)
 
 # Which file?
-file_name = input("File name? ")
+#file_name = input("File name? ")
+file_name = "Mbasic.com"
 with open(file_name,"rb") as f:
 
     # Which type of file?
@@ -27,26 +29,17 @@ with open(file_name,"rb") as f:
             byte_counter += 1
             Z80_port.write(br)
     else:
-        while True:
+        while byte_counter < 5:
             br = f.read(1)
-            if br == b'':
-                break
-            byte_counter += 1
-            # change this part using bitwise operators
-            msn = int(br) >> 4
-            lsn = int(br) & 0xf0
-            if msn < 0xA:
-                msn += 0x30
-            else:
-                msn += 0x37
-            if lsn < 0xA:
-                lsn += 0x30
-            else:
-                lsn += 0x37
-            
-            Z80_port.write(msn)
-            Z80_port.write(lsn)
 
+#            if br == b'':
+#                break
+
+            byte_counter += 1
+            nbr = int(br)
+            nbr += 1
+            print(br + nbr)
+            
     # End the transmission with CR+LF
     Z80_port.write(b'\r\n')
 
