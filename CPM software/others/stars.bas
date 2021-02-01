@@ -1,4 +1,5 @@
 REM Draw a frame 60 x 20 and randomly plot stars
+REM *** Requires a VT100 compatible terminal ***
 
 3 e$=chr$(27)				'Just the ESC character
 5 clrscr$=chr$(27)+"[2J"	'Clear screen
@@ -6,7 +7,7 @@ REM Draw a frame 60 x 20 and randomly plot stars
 9 attoff$=chr$(27)+"[0m"	'Attribute off (for character)
 11 curhom$=chr$(27)+"[H"	'Move cursor home (upper left corner)
 
-
+20 randomize (peek(&h80)+peek(&h81)+peek(&h82)+peek(&h83))
 
 REM draw top of the frame
 50 print clrscr$;revchr$;curhom$;"+";
