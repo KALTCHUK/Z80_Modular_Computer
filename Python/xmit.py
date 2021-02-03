@@ -1,5 +1,8 @@
-# This program opens a file and transmits it through a COM port to the Z80 MC.
+#************************************************************************************************
+# This program opens a file and transmits it through a COM port to the Z80 Modular Computer.
 # It may be a binary or ASCII file.
+# The Z80 Modular Computer must be already expecting the data. For example, use "W0100" command.
+#************************************************************************************************
 
 import serial
 
