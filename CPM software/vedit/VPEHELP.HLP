@@ -1,0 +1,274 @@
+	ษออออออออออออออออออออออออออออออออออออออออออออออออออป
+	บ	ON-LINE HELP FOR COMMAND MODE TOPICS       บ
+	ศออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+EXIT		Save text and exit VEDIT
+SAVE		Save text and continue editing
+QUIT		Quit - DO NOT save any edit changes
+
+DIR		Display disk directory
+NEW		Begin editing a new file
+LOOK		Look at another file with line numbers
+GET		Get (insert) a line range of another file
+MERGE		Merge two or more files together
+SPLIT		Split a file into two or more separate files
+DOS		Execute DOS commands or programs
+MEMORY		Make more memory space free
+RECOVER		Recover from disk full errors
+
+More help on common editing tasks in available in Visual Mode using the 
+[HELP] function.  After [HELP] press RETURN several times until you see the 
+menu of help topics.
+
+Type the word on the left side for help on above topics: 
+
+\EXIT\
+
+When you are done editing your file and want to exit VEDIT, give the command:
+
+EX	Saves the entire file on disk.  If you were only editing one file it 
+	also returns to DOS.  Otherwise it switches to another active edit 
+	buffer.
+
+	This command is equivalent to [FILE]-Exit.
+
+If you were simultaneously editing several files, you can save all of the 
+files and exit back to DOS with the command:
+
+EXA	Saves all files being edited and returns to DOS.
+
+\QUIT\
+
+Sometimes you will want to quit the editing and NOT SAVE any edit changes.  
+This may be because you were only examining the file and want to return to 
+the operating system as quickly as possible.  Or perhaps you made a big
+editing mistake (like erasing the entire text) and want to "forget" these 
+unwanted changes and start over.  The command is:
+
+EQ	Quit VEDIT PLUS and DO NOT SAVE any edit changes.  You are prompted 
+	for confirmation.  If you were only editing one file it will also 
+	exit back to the operation system.  Otherwise it will switch to 
+	another active edit buffer.  The command "EQA" quits ALL files and 
+	returns to the operating system without saving anything.
+
+	This command is equivalent to [FILE]-Quit.
+
+The "EQ" command quits the "edit session" and does not save any edit changes 
+made to the file from the time you began editing it or since the last "EA" 
+command or [FILE]-Save operation.
+
+To quit the edit session just like "EQ", but remain in VEDIT PLUS (and in the 
+current edit buffer) use the "EZ" command instead.
+
+\SAVE\
+
+You should make it a habit to regularly save your text on disk during a long 
+edit session.  This way you won't lose all of your work in case of a power or 
+hardware failure or a major editing mistake on your part.  The command is:
+
+EA	Saves the file being edited on disk and allows further editing to
+	continue.  All text registers, text markers and the current editing
+	position are preserved.
+
+	This command is equivalent to [FILE]-Save.
+
+\DIR\
+
+The "ED" command is similar to the DOS "DIR" command. 
+
+Examples:
+
+ED			Display the directory of the current drive.
+
+ED \USER\		Display the directory of all files in the subdirectory
+			\USER\ on the current drive.
+
+ED B:			Display the directory of all files on drive B.
+
+ED A:*.ASM		Display the directory of all files with extension
+			".ASM" on drive A.
+
+To see the sizes and creation dates of the files run the MS-DOS "DIR" command
+from within VEDIT PLUS.  For example:
+
+OC DIR *.TXT		Use MS-DOS "DIR" command from inside VEDIT PLUS.
+
+\NEW\
+
+After you are done editing one file, you can easily begin editing another
+file with the following commands:
+
+EY		This saves the current file on disk in the same way that the 
+		EX command does.  The difference is that you remain in VEDIT 
+		PLUS.
+
+EB newfile.txt	The "EB" command is followed by the name of the file you now  
+		want to edit.  This can be a file which already exists, or a 
+		file you want to create.
+
+The [FILE]-New function is equivalent to an "EY" followed by an "EB".
+
+Alternatively, you can simultaneously edit additional files by using the
+"EE" and "EB" commands.  In this case you may want to save all of your files 
+and exit VEDIT PLUS with the command "EXA".
+
+\LOOK\
+
+It is often desirable to look at all or a portion of another file.  The 
+command to look at another file is "EL" and is similar to the DOS "TYPE" 
+command.  However, "EL" also displays line numbers so that you can 
+subsequently insert a line range of another file into the file you are 
+editing.  You can look at all or a portion of another file:
+
+EL myfile.txt		Display the file "myfile.txt" starting with line 
+			number one.
+
+EL myfile.txt[n,m]	Display the file "myfile.txt" starting with line 
+			number 'n' and ending with line number 'm'.  This 
+			lets you zero in on the desired lines without 
+			displaying the entire file.
+
+Example:
+
+EL VVHELP.HLP[35,60]	Display lines 35 through 60 of one of the help files.
+
+To print the file with line numbers, precede the "EL" with a "YP":
+
+YP EL VVHELP.HLP	Print out the help file with line numbers.
+
+\GET\
+
+You can easily insert a portion of another file into the file you are 
+editing.  This inserted portion might be a paragraph you previously wrote or 
+a programmer's subroutine.  The command is "EG file[n,m]" where 'file' is the 
+file containing the text to be inserted, 'n' is the number of the first line 
+to insert and 'm' is the number of the last line.
+
+Use the "EL" command to display a file with line numbers if you don't yet 
+know which lines you want to insert.
+
+Example:
+
+EG VVHELP.HLP[35,60]	Insert lines 35 through 60 of the file VVHELP.HLP 
+			into the file being edited at the edit pointer 
+			(cursor) position.
+
+EG VVHELP.HLP		Insert the entire file VVHELP.HLP into the file being 
+			edited.
+
+\MERGE\
+
+It is quite easy to merge two files together, i.e. append one file to the end 
+of the file being edited.  Here are the commands:
+
+_Z		Position edit pointer (cursor) to end of file being edited.
+
+ER part2	Setup to append the file "part2" to the current file.
+0A		Append all of the file, or as much as will fit right now.
+
+V		Enter Visual Mode so that you can edit the file you just 
+		appended.
+
+EX		Exit and save the file.  If all of "part2" wasn't appended 
+		yet, this will append the rest of it.
+
+You can also merge files in other ways - you can merge two files and make a 
+new file, or insert a file into the middle of another file.  The text 
+registers can also be used for more complex merging tasks. See "Merging 
+files" in the Manual's index for more information.
+
+\SPLIT\
+
+A large file can be split into two or more smaller files.  For example, you 
+could split "BIGFILE" into "PART1" and "PART2", without changing "BIGFILE". 
+Since you must invoke VEDIT PLUS properly to do this, you may have to exit 
+VEDIT PLUS first (use EX command).  Then give the following commands:
+
+VPLUS			Invoke VEDIT PLUS without any file names.
+
+ER BIGFILE		Setup to read "BIGFILE" into memory.
+
+EW PART1		"PART1" is the first part to be written.
+
+V			Enter Visual Mode and position the cursor on the 
+			first character for the file "PART2" (i.e. position 
+			the cursor just past the end of "PART1").
+
+0W EF			Save the first part of the text on disk in the file
+			"PART1".  In detail "0W" writes the text to disk and 
+			"EF" closes/saves this text in "PART1".
+
+EW PART2		"PART2" is the second part to be written.
+
+EX			Exit VEDIT PLUS, saving the rest of the text in the 
+			file "PART2".
+\DOS\
+
+The two commands "OC" and "OS" allow accessing DOS commands and programs 
+from within VEDIT PLUS.  "OC" executes a single DOS command or program and 
+returns to VEDIT PLUS.  "OS" enters DOS for as long as you wish, yet lets
+you return to VEDIT PLUS at any time.
+
+Examples:
+
+OC DIR *.TXT	Use the DOS "DIR" command to display a directory of all
+		".TXT" files.
+
+OC CC PROGRAM	Run the C compiler "CC" on the program "PROGRAM".
+
+OS		Temporarily enter DOS.  Give the MS-DOS command "EXIT"
+		to return to VEDIT PLUS.
+
+		BE SURE TO RETURN TO VEDIT PLUS if you need to save any
+		files!  "OS" does not save your files.  It easy to enter
+		DOS, forget you are still in VEDIT PLUS and turn off the
+		computer!
+
+\MEMORY\
+
+When using the text registers extensively, you may run out of memory space 
+for performing the desired operations.  This is indicated by a "FULL" message 
+in Visual Mode or a "*BREAK*" in Command Mode.  First try and empty any text 
+registers which are no longer needed.  If this does not give you enough 
+space, you can write some of the text in memory back to disk.
+
+The easiest way to write some of the text back to disk is with the "nEN" 
+command which will free 'n' bytes in the edit buffer (if possible).
+
+Example:
+		You got a "FULL" message when you tried to insert a text
+		register containing 12000 characters.  You can give the
+		following command and try the operation again:
+
+12000EN		Frees 12000 bytes in the current edit buffer (if possible)
+		by writing some text back to disk.  However, no text 
+		within 2000 bytes of the edit pointer is written.
+
+The "EN" command is a useful combination of the "W" and "-W" commands. You 
+can also give explicit "W" and "-W" commands to make more memory free.
+
+
+\RECOVER\  At times, especially if you are using floppy disks, you may run 
+out of disk space while editing.  This is indicated by the errors "NO DISK 
+SPACE" or "NO DIR SPACE".  Most often you can simply delete some unused 
+files.  First use the "ED" command to display a directory of all files.  Then 
+use the "EK" (kill) command to erase one or more files.  Often, ".BAK" backup 
+files can be erased.  In a pinch you can delete the VPLUS.COM file.  NEVER 
+erase any ".$$$" or "$R$" files from within VEDIT PLUS! Last re-issue the 
+command, typically "EX", "EY" or [FILE]-Exit, which resulted in the error.
+
+Example:
+
+ED			Display directory of all files on current drive.
+
+EK *.BAK		Erase (kill) all ".BAK" files.  This makes more disk
+			space available.
+
+EX			Issue the "EX" command again to save the file being 
+			edited on disk and exit VEDIT.
+
+If the "EK" command cannot make enough disk space free, refer to the manual 
+under "Disk full error recovery" for more information.
+
+\
+                                        

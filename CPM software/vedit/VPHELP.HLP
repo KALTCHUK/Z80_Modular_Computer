@@ -1,0 +1,917 @@
+
+BASIC COMMANDS				TEXT REGISTER COMMANDS
+A	Append file to text		RA	Auto-execute text register
+B	Begin of text			RC	Copy text to text register
+C	Change edit position		RD	Dump text register
+D	Delete characters		RE	Empty text register
+F	Find string			RG	Get (insert) text register
+G	Same as "RG"			RJ	Jump to macro register
+H	Help				RI	Insert into text register
+I	Insert text			RL	Load register from file
+K	Kill text			RM	Match register/edit buffer
+L	Line change			RP	Print text register
+M	Macro execution			RQ	Query for input line
+N	Next string (search)		RS	Save register to file
+S	Search and Replace		RT	Type (display) text register
+T	Type text			RU	Display size of registers
+U	Unused, used memory		RX	Load and execute register
+V	Visual mode			R*	Comment line
+W	Write text			
+Z	End of text			
+
+Type <RETURN> for next screen or enter letter(s) for desired command: 
+EXTENDED COMMANDS
+EA	Edit again			EV	VEDIT version number
+EB	Edit with backup		EW	Open write file
+EC	Change disks			EX	Finish edit session, exit
+ED	Display disk directory		EY	Finish edit session, remain
+EE	Enter edit buffer		EZ	Quit edit session, remain
+EF	Finish (close file)		
+EG	Get external text		JUMP COMMANDS
+EH	Query extra help file		JL	Exit loop
+EI	Insert special character	JM	Exit macro (return)
+EJ	Set (jump) edit pointer		JN	Start next iteration
+EK	Erase (kill) file		JO	Abort to Command Mode prompt
+EL	Display enumerated lines	JP	Jump to specified label
+EM	Match text at edit pointer	
+EN	Need room, squeeze buffer	OPERATING SYSTEM COMMANDS
+EO	Same as "PR"			OC / OS	Execute DOS command/program
+EP	Edit parameters			OD / OT	Display date and time
+EQ	Quit edit session, leave	
+ER	Open read file			PRINT COMMANDS
+ES	Edit switches			PE	Eject page
+ET	Set tab positions		PP	Print parameters
+EU	Use another drive/directory	PR	Print text
+
+Type <RETURN> for next screen or enter letter(s) for desired command: 
+
+MISCELLANEOUS COMMANDS
+YB	Ring Bell			YWD	Delete current window
+YD	Dump ASCII char to console	YWB	Create window at bottom
+YEA	Set window attribute(s)		YWI	Initialize/delete windows
+YEC	Clear window			YWL	Create window at left
+YEH	Position cursor horizontally	YWR	Create window at right
+YEL	Erase end-of-line in window	YWS	Switch to another window
+YES	Erase end-of-screen in window	YWT	Create window at top
+YEV	Position cursor vertically	YWZ	Zoom current window
+YF	Format paragraph		
+YI	Insert console text		NUMERIC REGISTER COMMANDS
+YK	Save keyboard layout to disk	XA	Add to numeric register
+YL	Load keyboard layout from disk	XQ	Query and input expression
+YM	Search for matching parentheses	XK	Get keystroke
+YO	Output console text to DOS	XS	Set numeric register
+YP	Print console text		XT	Type numeric register
+YS	Strip high bits from text line	
+YT	Type text on console		
+
+Type <RETURN> for next screen or enter letter(s) for desired command: 
+
+KEYBOARD CONTROL			GENERIC/INDIRECT
+<CTRL-Q> Literal Character		|	Search pattern code
+<CTRL-C> BREAK out of command		|R	Variable filename specifier
+					#n	Num. reg. 'n' has buffer name
+<ESC>	 Terminate string/command	#w	Num. reg. 'n' has window name
+ESC ESC  Begin processing commands
+<CR>	 Begin processing commands
+
+COMMAND MODIFIERS			NUMERIC SPECIFIERS
+_ 	Global file operations		#	Maximum number 65535
+@	Explicit text delimiter		"	ASCII constant specifier
+:	Suppress search errors		^	Control character specifier
+: 	Suppress [CR][LF]		Q	Numeric register
+-	Backwards, opp., diminished	.	Internal read-only value
++	Augmented command (e.g. +RL)
+
+HELP AIDS				MISCELLANEOUS
+??	Display last executed commands	;	Shorthand for ".erJL"
+?	Enter trace mode		,	Separates second parameter
+					!	Label/comment delimiter
+
+Type <RETURN> for next screen or enter letter(s) for desired command: 
+
+NUMERIC OPERATORS			LOGICAL OPERATORS
++	Addition			&	AND
+-	Subtraction			^	OR
+*	Multiplication			~	NOT
+/	Division
+%	Remainder of division
+&	Bitwise AND
+^	Bitwise OR
+'	Bitwise complement
+
+
+RELATIONAL OPERATORS			OPERATOR PRECEDENCE
+<	Less than			'	      Complement
+<=	Less than or equal to		*  /  %	      Mult., Div., Remainder
+=	Equal to			+  -	      Addition, subtraction
+<>	Not equal to			<  >  =  etc. Relationals
+>=	Greater than or equal to	~	      NOT
+>	Greater than			&	      AND (Bitwise & Logical)
+					^	      OR  (Bitwise & Logical)
+
+Enter letter(s) for desired command or <RETURN> to command mode: 
+
+
+\EP\
+     EP <term>	Display current values of all parameters.
+
+     EP n<term> Store value of parameter 'n' in ".rv".
+
+     EP n k	Change the value of parameter 'n' to 'k' after saving
+		the old value in ".rv".
+		Affects the current and all subsequently created edit buffers.
+
+    -EP n k	Affect only the current edit buffer.
+
+	1  Cursor type				(0 - 4)
+	2  Cursor blink rate			(10 - 255)
+	3  Indent Increment			(1 - 20)
+	4  Lower/upper case conversion		(0 - 3)
+	5  Conditional conversion character	(32 - 126)
+	6  Delay for Command Mode scrolling	(0 - 255)
+	7  Word Wrap column (0 = Off)		(0 - 255)
+	8  Bit 8 Allowed (1/input 3/Output)	(0 - 7)
+	9  Cursor positioning mode		(0 - 2)
+       10  Horizontal scroll margin		(40 - 255)
+       11  Horizontal scroll increment		(1 - 100)
+
+\ES\
+     ES <term>	Display values of all switches for current edit buffer.
+
+     ES n<term>	Store value of switch 'n' in ".rv".
+
+     ES n k	Change the value of switch 'n' to 'k' after saving
+		the old value in ".rv".
+		Affects the current and all subsequently created edit buffers.
+
+    -ES n k	Affect only the current edit buffer.
+
+	1  Expand <TAB> key with spaces		(0=NO 1=YES)
+	2  Auto buffering in Visual Mode	(0=NO 1=FWD 2=FWD & BACK)
+	3  Auto-Indent mode			(0=NO 1=YES)
+	4  Point past text reg. insert		(0=NO 1=YES)
+	5  Equate UC/LC when searching		(0=NO 1=YES)
+	6  MS-DOS - EOF mark, padding		(0=NO 1=YES 2=padding)
+	7  Reverse Upper and Lower case keys	(0=NO 1=YES)
+	8  Suppress search errors		(0=NO 1=YES)
+	9  Explicit string delimiters		(0=NO 1=YES)
+       10  Global file operations		(0=NO 1=YES)
+       11  Justify paragraphs			(0=NO 1=YES 2=UNJUSTIFY)
+
+\A\
+nA	Append 'n' lines from the input file to the edit buffer.
+0A	Append lines until edit buffer is nearly full.
+
+-nA	Read 'n' lines back from the output file.
+-0A	Read back lines until the edit buffer is nearly full.
+
+\B\
+B	Move the edit pointer to the beginning of the edit buffer.
+_B	Move to the beginning of the file.
+
+\C\
+mC	Move the edit pointer by 'm' characters.
+
+\D\
+mD	Delete 'm' characters from the text.
+
+p,qD    Delete the block of text "marked" by 'p' and 'q'. The edit pointer is
+	moved to the character following the deleted text.
+	Equivalent to "p,qK".
+
+0,1D	Delete the first character in the edit buffer.  The edit pointer
+	is now at the beginning of the edit buffer.
+
+\E\
+E	First letter of extended two letter commands.
+
+\F\
+nFstring<ESC>	Search for the 'n'th  occurrence of 'string' in the edit
+		buffer and position the edit pointer after it. 'string' may be
+		up to 80 characters long.
+
+-nFstring<ESC>	Perform the search in the reverse direction.  The edit
+		pointer is left at the beginning of 'string'.
+
+m:Fstring<ESC>	Change processing of the event of not finding 'm' occurrences
+		of 'string' when ES(8) = 0 (normal) such that the current
+		iteration loop is terminated and the error flag is set to one.
+
+m_Fstring<ESC>	Search for the 'm'th occurrence of 'string', performing 
+		auto-buffering if necessary.  The edit pointer is positioned 
+		after/before the last 'string' found in forward/reverse 
+		searching.
+
+		(If auto-buffering is performed but there are no
+		more occurrences of 'string', the edit pointer is left
+		at the buffer beginning for forward searches and at the
+		buffer end for reverse searches).
+
+\G\
+Gr		Same as "RG" for compatibility with older versions.
+
+\H\
+H		On-line help for Command Mode commands using the
+		help file "VPHELP.HLP".
+
+H text <term>	Immediately search help file for "\text\" and display
+		the associated help message.
+
+\I\
+Itext<ESC>	Insert 'text' into the edit buffer at the edit
+		pointer.  The edit pointer is moved past 'text'.
+
+-Itext<ESC>	Overwrite existing characters with 'text'.
+
+\J\
+J	First letter of two letter macro execution 'jump' commands.
+
+\K\
+mK	Kill 'm' lines of text.
+m_K	Kill 'm' lines, performing auto-buffering if necessary.
+
+p,qK    Delete the block of text "marked" by 'p' and 'q'. The edit pointer is
+	moved to the character following the deleted text.
+	Equivalent to "p,qD".
+
+0K	Delete characters from beginning of line up to edit position.
+
+0KK	Kill current line.
+
+Other double parameter commands: 'T' and 'PR' and 'RC'.
+
+\L\
+mL	Move the edit pointer by 'm' lines and leave at the beginning of
+0L	that line.  Thus '0L' moves to the start of the current line.
+
+m_L	Move, performing auto-buffering if needed.
+
+:L	Change the processing of the error of trying to move past an edit
+	buffer boundary when ES switch 8 is zero (normal) such that the
+	current iteration loop is terminated and the error flag (.er) is
+	set to one.
+
+\M\
+Mr	Execute text register 'r' as a command macro.  When finished,
+	continue processing the commands following "Mr".
+
+	See also 'RJr' and 'RXr'.
+
+\N\
+mNstring<ESC>	Shorthand for "n_Fstring<ESC>.
+
+\O\
+O	First letter of two letter DOS commands.
+
+\P\
+P	First letter of two letter printing commands.
+
+\Q\
+Qr	Access the value in numeric register 'r'.  Not a command!
+
+\R\
+R	First letter of two letter text register commands.
+
+\S\
+nSss<ESC>text<ESC>  Search for the next occurrence of 'ss', and if
+		    found, change to 'text';  perform 'n' times.
+
+n_@:S/ss/text/	    Change the next 'n' occurrences of 'ss' to 'text',
+		    performing auto-buffering if needed.  Change
+		    processing of the event of not encountering 'n'
+		    occurrences of 'ss' when ES switch = 0 (normal) such
+		    that the current iteration loop is terminated and the
+		    error flag (.er) is set to one.
+
+\T\
+mT	Type (display) 'm' lines of text.
+m_T	Type lines, performing auto-buffering if needed.  Edit pointer
+	position is restored following auto-buffering.
+
+p,qT	Type the block of text marked by 'p' and 'q'. Moves the edit pointer
+	to buffer position 'p'.
+
+\U\
+U	Display # of free bytes in current segment / # bytes in current edit 
+	buffer / total # bytes of all text registers which are not edit
+	buffers.
+
+\V\
+V	Go into visual mode - sets cursor position from current edit pointer.
+
+-V	Perform a visual mode update only.  Predominately useful from macros
+	which need to update a visual mode window.
+
+\W\
+nW	Write 'n' lines to the disk from the beginning of the edit buffer and
+	delete them from the buffer.
+0W	Write out the edit buffer up to the current line.
+
+-nW	Write last 'n' lines in the edit buffer to the ".$R$" file.
+	This makes more memory space free.
+-0W	Write the current line and the rest of the edit buffer to the
+	".$R$" file.
+
+\Z\
+Z	Move the edit pointer past the last character in the edit buffer.
+_Z	Move the edit pointer to the end of the file.
+
+\EA\
+EA	Saves the file being edited on disk and allows further editing
+	to continue.  Maintains edit position.
+
+-EA	Saves file, but leaves edit position at beginning of file.
+
+\EB\
+EB file <term>	Begin editing the file 'file'.  If the file does not exist
+		"NEW FILE" is displayed.
+
+EB file1 file2  Open 'file1' for reading and 'file2' for writing;  then
+		perform '0A' on 'file1'.
+
+\EC\
+EC	Allow user to change disks.  Used for write error recovery, or
+	to edit files on other disks.
+
+\ED\
+
+ED	Display disk directory.  Optional drive, path, and wildcard 
+	characters "?" and "*" may be specified.
+
+nED	Display the filenames in 'n' columns instead of 4.
+
+-ED	Display the filenames in one one column and omit the header.
+	Also omits extra spaces in filenames.
+
+:EDfile	Test for existence of the file 'file'.  Report result in ".rv".
+
+YI -ED	Insert the disk directory into the edit buffer, one file per line.
+
+\EE\
+EEr	Enter text register 'r' for editing, converting 'r' into an edit
+	buffer if not one already.
+
+EE#r	Change to the buffer specified by the ASCII value contained in
+	numeric register 'r'.
+
+-EEr	Do not perform auto-buffering on current edit buffer before
+	changing to edit buffer 'r'.  (See also "EN").
+
+\EF\
+EF	Close the current output file WITHOUT writing additional text.
+	The input file and edit buffer are unaffected. USE WITH CAUTION!
+	INCORRECT USE WILL RESULT IN DELETED FILES!
+
+EFY	Skip the confirmation prompt.
+
+\EG\
+EG file[line range]	Insert the line range of the file 'file' into the
+			edit buffer at the edit pointer.  If no line range
+			is specified, the entire file is inserted.
+
+\EH\
+EH <term>	On-line help for Command Mode topics using the help file
+		"VPEHELP.HLP".
+
+EH text <term>	Immediately search help file for "\text\" and display
+		the associated help message.
+
+\EI\
+nEI	Insert the character with decimal value 'n' into the edit buffer at
+	the edit pointer.  The value "26" <CTRL-Z> is not allowed.
+	Values of 128 to 254 are allowed.
+
+-nEI	Overwrite the existing character at the edit pointer.
+
+\EJ\
+nEJ	Jump the edit pointer to the 'n'th position in the edit buffer.
+	"0EJ" jumps to the beginning of the buffer.
+	
+\EK\
+
+EK fspec   Erase (kill) the file(s) specified by 'fspec' from the disk.  This 
+	   makes more space free on the disk.  Optional drive, path, and 
+	   wildcard characters "?" and "*".
+
+	   Requires confirmation after displaying filenames about to be erased.
+
+-EK fspec  Erase the specified files, skipping the directory display and
+	   confirmation prompt.
+
+EK fspec Y		Same as "-EK fspec".
+
+\EL\
+ELfile[line range]	Display with line numbers the line range of the file
+		     	'file'.  If no line range is specified, the entire
+			file is displayed.
+
+\EM\
+nEMss<ESC>	Check 'ss' for match with text at edit pointer;  move
+		edit pointer if match.  Report results in ".rv", ".n"
+		and ".er".  Do this 'n' times.  String 'ss' may be up to
+		80 characters long.
+
+		If each element of 'ss' is matched by the edit text, then
+		.er=0, .rv=0, and .n=# edit characters matched.  Otherwise,
+		.er=1;  .n is unchanged;  and .rv has the value 1 if 'ss' is
+		lexically less than the edit text, 2 if it is greater, and
+		3 if the mismatch occurred while trying to match a pattern
+		matching code.
+
+		As with the 'f' command, '.er' is not set when 'n'
+		is '#' and at least one occurrence of 'ss' is matched.
+
+#@EM/|A/	One way to move the edit pointer past the end of a word.
+
+@EM/|W/		Spans (skips over) white space.
+
+See also:	"RM".
+	
+\EN\
+nEN	Free 'n' bytes of memory space in edit buffer, if possible.
+
+0EN	Make customized "Free memory after auto-read" free.
+
+EN	Squeeze edit buffer down to customized "page" size.
+
+\EO\
+mEO	Same as "mPR" for compatibility with older versions.
+
+\EQ\
+EQ	Quit (abandon) the edit session;  any text changes are lost.
+	Leaves disk files exactly as before the session started.  If
+	there are any more edit buffers, move to one of them;  otherwise,
+	return to DOS.
+
+EQY	Skip the confirmation prompt.
+
+EQA	Quit all edit buffers without saving changes.
+
+EQAY	Skip the confirmation prompt.  (BAD HABIT TO GET INTO!!)
+
+\ER\
+ER file		Open the file 'file' for input.
+
+ER <term>	Display the input (read) filename on the console.
++ER <term>	Display filename and include its drive and/or path.
+:ER <term>	Suppress "INPUT FILE:" message and final <CR><LF>.
+
+\ET\
+ET n1,n2,n3 ...	Set new tab positions.  ET is followed by up to 30
+		decimal numbers specifying the tab positions.
+		Affects the current and all subsequently created edit buffers.
+
+-ET n1,n2 ...	Affect only the current edit buffer.
+
+ET n		If ET is followed by just one 'n', tabs are set to every
+		'n' positions.
+
+ET		Display current tab positions.
+
+\EU\
+EU d:subd	Change to drive 'd' and/or subdirectory 'subd'.
+
+EU du:		Change to drive 'd' and/or user number 'n' (CP/M).
+
+EU <term>	Display current drive/subdirectory.
+
+\EV\
+EV		Display the VEDIT PLUS version number.
+
+\EW\
+EW file		Open the file 'file' for output.  Any existing file by that
+		name will be renamed to have the file extension ".BAK"
+		when the file is saved to disk.
+
+EW <term>	Display the output (write) filename on the console.
++EW <term>	Display filename and include its drive and/or path.
+:EW <term>	Suppress "OUTPUT FILE:" message and final <CR><LF>.
+
+\EX\
+EX	Exit edit buffer after saving entire file being edited on disk. If 
+	there are any other edit buffers, move to one of them;  otherwise, 
+	return to DOS.
+
+EXA	Exit all edit buffers, saving edit changes wherever an output
+	file is open.
+
+\EY\
+EY	Save the entire file being edited on disk and remain in the
+	current edit buffer.  You can edit another file by using the "EB"
+	command.
+
+\EZ\
+EZ	Quit (abandon) the edit session;  any text changes are lost.  Leaves
+	disk files exactly as before the session started.  Remains in
+	current edit buffer.
+
+EZY	Skip the confirmation prompt.
+
+\JL\ \JM\ \JN\ \JO\ \JP\
+
+cJL		If 'c' is TRUE, exit the current REPEAT-UNTIL loop.
+
+cJM		If 'c' is TRUE, exit the currently executing macro.
+
+cJN		If 'c' is TRUE, start next iteration of current loop.
+
+cJO		If 'c' is TRUE, abort and return to Command Mode prompt (or
+		to a "locked-in" macro register (see "RA" command).
+
+cJPlabel<ESC>	If 'c' is TRUE, jump to !label!.
+
+\OC\ \OS\
+
+OC command	Execute the specified DOS command or program.  Returns to
+		VEDIT PLUS after command/program is done.
+
+OC |Rr		Execute the DOS command in text register 'r'.
+
+OS		Temporarily enter MS-DOS.  Return to VEDIT PLUS with the
+		MS-DOS command "EXIT".
+
+\OD\ \OT\
+
+OD		Display the current system date.
+:OD		Suppress the final <CR><LF>.
+
+YI OD -YI	Insert the date into the text.
+
+OT		Display the current system time.
+:OT		Suppress the final <CR><LF>.
++OT		Display system time with 1/100 second resolution.
+
+\PE\
+PE	Page eject - advance printer to next page.  Uses Form-Feed character
+	if selected by "PP 4 1".
+
+-PE	Reset only the internal line counter used for printing.
+
+\PP\
+     PP <term>	Display current values of all print parameters.
+
+     PP n<term>	Store value of parameter 'n' in ".rv".
+
+     PP n k	Store value of parameter 'n' in ".rv".  Change the value
+		of switch 'n' to 'k'.  Applies to all edit buffers.
+
+	1  Physical lines per page		(5 - 100)
+	2  Printed lines per page		(1 - 100)
+	3  Left margin for printing		(0 - 100)
+	4  Use Form-Feed for new page	(0 = NO, 1 = YES)
+
+\PR\
+mPR	Print the specified 'm' lines of text.  "0PR" prints from the
+	beginning of the edit buffer to the current line.
+m_PR	Print lines, performing auto-buffering if needed.  Edit pointer
+	position is restored following auto-buffering.
+
+p,qPR	Print the block of text marked by 'p' and 'q'. Moves the edit pointer
+	to buffer position 'p'.
+
+\R*\
+R*	Treat this line as a comment.
+
+\RA\
+
++RAr		Auto-execute text register 'r' in place of the "COMMAND:" 
+		prompt.  'r' cannot be "0".
+
+RA <term>	Disable auto-execution.  Or use "RA0".
+
+\RC\
+mRCr	Copy 'm' lines from the edit buffer into text register 'r'.
+mRC+r	Append 'm' lines to existing contents in register 'r'.
+
+p,qRCr	Copy the block of text marked by 'p' and 'q' into register 'r'.
+	Moves the edit pointer to buffer position 'p'.
+
+\RD\
+RDr	Dump the contents of text register 'r' to the console.  Control
+	characters are not expanded.
+
+\RE\
+REr	Empty text register 'r'.
+
++REr	Empty text register 'r', even if it is currently executing.
+
+\RG\
+RGr	Get (insert) contents of register 'r' into the edit buffer.
+
+\RI\
+RIrtext<ESC>	Insert 'text' into text register 'r'.
+
+RI+r		Append 'text' to any existing contents of register 'r'.
+
+\RJ\
+RJr	Jump to macro register 'r' without "returning" to the current macro
+	after 'r' is done executing.  Don't follow "RJ" with other commands
+	- they won't be executed.
+
+\RL\ \RS\
+
+RLr file	Load text register 'r' from file 'file'.
+
+RL+r		Append 'file' to contents of text register 'r'.
+
++RLr		Perform extended search for 'file'.
+
+
+RSr file	Save contents of register 'r' in file 'file'.
+
+-RSr file	Skip confirmation prompt when 'file' already exists.
+
+\RM\
+RMr	Compare contents of text register 'r' with text at edit pointer.  Move 
+	the edit pointers over as many characters as matched.
+
+	Return # characters matched in ".n" and the match result in
+	".rv":  {0,1,2} for {=,<,>}.
+
+	This is a character by character comparison.  ES switch 5 controls
+	whether upper/lower case letters are equated.
+
+_RMr	Perform automatic disk buffering on current edit buffer, if necessary, 
+	to complete match.  Often used when 'r' is also an edit buffer.
+
+	See also:  "EM".
+
+\RP\
+RPr	Print contents of register 'r'.
+
+\RQ\
+RQrtext<ESC>	Query for user input with 'text'.  Get keyboard input
+		line including terminating <CR><LF> or <ESC><ESC> and save
+		in text register 'r'.
+
++RQr		As above, but prompt on status line.
+
+RQ+r		Append input line to contents of text register 'r'.
+
+:RQr		Get keyboard input line without the <CR><LF> or <ESC><ESC>.
+
+\RT\
+RTr	Type (display) contents of register 'r'.  Control characters
+	are expanded, <ESC> is represented as "$".  An embedded <CTRL-S>
+	"stop character" causes a pause - type any character to continue.
+
+\RU\
+RU	After displaying memory usage as in the 'U' command, display the size
+	of each text register.  Asterisks indicate edit buffers.
+
+\RX\
+RXr execfile	Load file 'execfile' into register 'r' and execute register 
+		'r' as a command macro.  Perform extended search for 
+		'execfile'.  Equivalent to "+RLr execfile$ Mr".
+
+\XA\ \XS\
+
+nXAr	Add 'n' to numeric register 'r'.
+-nXAr	Subtract 'n' from numeric register 'r'.
+
+nXSr	Set numeric register 'r' to 'n'.
+
+\XK\
+XKrtext<ESC>	Prompt for user input with 'text'.  Store next keyboard
+		character in numerical register 'r'.
+
++XKr		As above, but prompt on status line.
+
+:XKr		Allow <CTRL-C> as valid input character.
+
+\XQ\
+XQrtext<ESC>	Query for user input with 'text'.  Store evaluated
+		keyboard input in numerical register 'r'.
+
++XQr		As above, but prompt on status line.
+
+\XT\
+XTr	Type numeric register 'r' in decimal followed by <CR><LF>.
+	Number is right justified in field of 5 columns.
+
+-XTr	Number is left justified in field of 5 columns.
+
+:XTr	Suppress the <CR><LF> following the the number.
+
+\YB\
+YB	Rings the bell by sending a <CTRL-G> to DOS.
+
+\YD\
+nYD	Dump character with ASCII value 'n' to the console.
+n:YD	Suppress the <CR><LF> after the character.
+
+.bYD	Display the name of the current edit buffer.
+
+^mYD	Send <CR><CR><LF> to the console.
+
+\YEA\
+nYEA		Set window attribute to 'n'.
+		(1 - 6 is color, 7 is white on black).
+
+n1,n2YEA	Set window attribute to 'n1' for text characters and to
+		'n2' for characters used to erase window.
+
+Note:		If you can't remember the right attribute values, use
+		'YWI" to initialize the screen to the INSTALLed values.
+
+\YEC\ \YEL\ \YES\
+
+YEC	Clear (erase) entire window; home cursor.
+
+YEL	Erase to end-of-line in window.
+
+YES	Erase to end-of-screen in window.
+
+\YEH\ \YEV\
+
+nYEH	Position cursor horizontally to line 'n'.
+
+nYEV	Position cursor vertically to line 'n'.
+
+\YF\
+nYF	Format the paragraph the edit pointer is in.  Use 'n' as the left
+	margin.  If no 'n' is specified, use Visual Mode indent position as
+	the left margin.  Use word wrap column as right margin.  Justify if
+	justification switch is set.  After formatting, position the edit
+	pointer to the beginning of the next paragraph.
+
+\YI\
+YI	Re-route console output until next command prompt into the edit buffer 
+	at edit pointer and update edit pointer. (May work very slowly)
+
+-YI	Disable "YI", allowing output to go back to the console.
+
+\YK\ \YL\
+
+YK file  Save current keyboard layout, including any keystroke macros, to
+	 the file 'file'.
+
+YL file  Load new keyboard layout from the file 'file'.
+
++YL file Perform extended search for the file.
+
+\YM\
+YM	Search for the matching pair for "{" - "}", "[" - "]", "<" - ">" and
+	"(" - ")".  If edit pointer is not at one of the characters, search
+	forwards for one.
+
+_YM	Search for matching pair, performing auto-buffering if necessary.
+
+\YO\
+YO	Re-route console output until next command prompt directly to DOS. 
+	This bypasses the normal screen/window handler.
+
+-YO	Disable "YO", allowing output to go back to the console.
+
+\YP\
+YP	Re-route console output until next command prompt to the printer.
+
+-YP	Disable "YP", allowing output to go back to the console.
+
+\YS\
+mYS	Strip the 8th bit from all characters in the specified 'm' lines.
+
+m_YS	Strip characters, performing auto-buffering if needed.  Edit pointer
+	position is restored following auto-buffering.
+
+p,qYS	Strip the the block of characters marked by 'p' and 'q'. Moves the
+	edit pointer to buffer position 'p'.
+
+
+\YT\
+YTtext<ESC>	Type 'text' on the console.
+
++YTtext<ESC>	Type 'text' on the status line.
+
+\YWB\ \YWD\ \YWI\ \YWL\ \YWR\ \YWS\ \YWT\ \YWZ\
+
+YWD		Delete current window.
+YWDw		Delete window 'w'.
+
+YWI		Initialize screen - delete all windows, reset attributes.
+
+YWS		Switch to window "@".
+YWSw		Switch to window 'w'.
+YWS#r		Switch to the window specified by numeric register 'r'.
+
+YWZ		Zoom current window to full screen.
+
+YWBw n		Create window 'w' of 'n' lines at bottom.
+YWLw n		Create window 'w' of 'n' columns at left.
+YWRw n		Create window 'w' of 'n' columns at right.
+YWTw n		Create window 'w' of 'n' lines at top.
+
+\|\
+SEARCH PATTERN MATCHING CODES
+
+|A	Match any alphabetic letter, upper or lower case
+|B	Match a blank - single space or tab
+|C	Match any control character
+|D	Match any numeric digit - "0" - "9"
+|F	Match any alphanumeric - a letter or a digit
+|L	Match end of line:  <CR> and/or <LF>, Form feed, end of line at EOF
+|M	Multi - match any sequence of zero or more characters
+|N	Match any character except following character or pattern
+|Pr	Access contents of text register 'r' as pattern set
+|Rr	Access contents of text register 'r' as variable string
+|S	Match any separator - not a letter or digit
+|T	Match selected separators (terminators)
+|U	Match any upper case letter
+|V	Match any lower case letter
+|W	Match white space - single or multiple spaces or tabs
+|X	Match any character
+|Y	Match multiple characters until the next pattern matches
+|<	Match beginning of line (zero length match)
+|>	Match end of line (zero length match)
+||	Use "||" when you need to search for "|"
+
+\<Q\ \<CTRL-Q>\
+<CTRL-Q>	Literal character.  Next character, usually a control
+		character, is taken literally and not interpreted.
+		Allows searching and inserting of control characters
+		including line editing characters and <CR>.
+
+		<ESC> may be inserted via <CTRL-Q> but not searched for -
+		To search for an <ESC> you MUST use explicit delimiters.
+
+\<C\ \<CTRL-C>\
+<CTRL-C>	BREAK character.  Will stop an iteration macro or command
+		macro before next command is executed.
+
+\_\
+_	Precedes "F" or "S" to perform search/replace to the end-of-file
+	instead of just the end of the text buffer.
+	"_F" is equivalent to "N".
+	
+	Precedes "B", "K", "L", "T", "Z", "EM", "RM" or "YM" to indicate a
+	global operation.  Used with the "EM" command, it allows a match at
+	the end of the buffer to continue.
+
+\@\
+@	Precedes commands to indicate that explicit delimiters are being used.
+
+	E.g.  @F/string/     @I'string'	     @JP.label.
+
+\:\
+:	Precedes "F", "L", "N" or "S" to suppress error handling.
+	(See also switch ES 8).
+
+	Precedes "ER", "EW", "XT", "YD" to suppress <CR><LF> from being sent.
+
+	Precedes "RQ" to prevent <CR><LF> or <ESC><ESC> from being included
+	in the input string being copied into the designated text register.
+
+
+\;\
+;	Shorthand for ".erJL".  Used with "ES 8 2" following the "F",
+	"S" and "L" commands.  Does not clear the error flag ".er" as
+	"JL" would do.
+
+\#\
+#	Represents maximum positive number 65535.  Signifies "forever" or
+	"all occurrences of".
+
+\.\
+INTERNAL VALUES
+
+.b	Name of current edit buffer (in ASCII)
+.c	ASCII value of character at the edit pointer
+.ef	End-of-input flag for input file (or file not yet opened)
+.er	Error flag.  Set by "F", "L", "S" and "EM"
+.es	Search error flag.  Only set/reset by "F", "S", "EM" amd "RM"
+.ew	Write error flag.  Set/reset by last disk write operation
+.f	Number of free memory bytes
+.m	Name of currently executing text register (in ASCII)
+.ml	Left margin (Indent position)
+.mr	Right margin (word wrap column; same as EP 7)
+.ms	Horizontal scroll amount in visual mode
+.n	Number of characters matched by F, S, EM, RM
+.of	Output file open flag: 0 = file not open, 1 = output file open
+.os	Operating system: 0 = CP/M, 1 = CP/M-86, 2 = MSDOS/PCDOS
+.p	Edit pointer's offset in edit buffer (0 = begin of buffer)
+.rm	Absolute value of the remainder from last division
+.rtR	Type of register 'R':  0 = unused, 1 = text register, 2 = edit buffer
+.rv	Value returned by commands :ED, EM, EP, ES, PP and RM
+
+Press <RETURN> to continue:
+
+.t	Next tab position based on ".x"
+.uR	Number of bytes in register 'R'
+.v	Numerical value of expression at edit pointer (moves edit pointer)
+.vm	Visual mode "1 END" marker's offset in edit buffer
+.wa	Attribute for displayed text in current window
+.wd	Display type (0 = CRT, 1 = Non-IBM MM, 2 = IBM Mono, 3 = IBM Color)
+.we	Attribute for erased parts in current window
+.wh	Horizontal size (in columns) of current window
+.wn	Name of current window (in ASCII)
+.wsW	Status of window 'W': 0 = does not exist, 1 = exists
+.wt	Total number of existing windows
+.wv	Vertical size (in lines) of current window
+.wx	Horizontal ('x') position of cursor in window
+.wy	Vertical ('y') position of cursor in window
+.wz	Zoom flag. Is a window zoomed: 0 = not zoomed, 1 = zoomed
+.x	Horizontal column position for character at edit pointer
+.y	Line-number in the file for line the edit pointer is on
+
+\
+                                                                                        

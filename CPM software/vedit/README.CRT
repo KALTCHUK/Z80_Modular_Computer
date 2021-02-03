@@ -1,0 +1,1321 @@
+
+
+
+
+VEDIT PLUS
+
+
+
+
+
+
+
+
+
+
+
+                          A P P E N D I X   A
+
+
+              N O T E S   F O R   C R T   V E R S I O N S
+
+
+                                 A N D
+
+
+            E X A M P L E   K E Y B O A R D   L A Y O U T S
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                  -1-
+
+
+
+
+
+
+
+VEDIT PLUS                                                    Appendix A
+                                                               CRT Notes
+
+
+                    IMPORTANT NOTES FOR CRT VERSIONS
+
+
+                   (Televideo Users: See next page!!)
+
+
+The  CRT versions of VEDIT PLUS are very generic in that they can run on
+almost any hardware configuration.  They are primarily  intended  to  be
+used  with CRT terminals connected to a micro-computer.  (The connection
+may be direct, via a network, or over a telephone line.)
+
+Although the CRT versions will even run on an IBM PC, whenever possible,
+you should use a "memory mapped" version for the IBM PC, Tandy 2000, DEC
+Rainbow, Wang PC and TI Professional.  The memory mapped  versions  have
+the  advantage  of  updating the screen about 10 to 20 times faster than
+CRT versions.  Please contact us if you receive a CRT version  when  you
+should have a memory mapped version. 
+
+VEDIT  PLUS  supports  "windows"  on  CRT terminals.  Screen updating is
+faster if the terminal has "Insert Line" and "Delete  Line"  capability.
+Fortunately,   most   terminals  and  the  Z-100  have  this.   On  some
+(relatively obscure) MS-DOS machines you will have to install the MS-DOS
+ANSI.SYS driver to run VEDIT PLUS.  Unfortunately, most ANSI.SYS do  not
+support  Insert  Line/Delete line.  This slows down screen updating when
+using windows. 
+
+When using "windows"  with  the  CRT  versions,  you  will  find  screen
+updating  faster  when  using vertical (top/bottom) windows.  Horizontal
+(left/right) windows can also be used, but scrolling then requires  that
+the  entire  window  be  rewritten.  Remember that you can edit multiple
+files without having to split the screen into windows. 
+
+If your terminal (computer) does not scroll properly with VEDIT PLUS, it
+is often due to incorrect installation for the "Number of Screen Lines".
+Some terminals and computers have  25  line  displays,  others  have  24
+lines. 
+
+Please contact us if you have any questions concerning the compatibility
+of VEDIT PLUS with your machine. 
+
+
+If  you  have  MS-DOS and a hard disk you should create the subdirectory
+"\VEDIT" on the hard  disk  and  copy  all  files  to  it.   Follow  the
+directions  under  "Setting  up VEDIT PLUS on an IBM PC-XT or AT" in the
+Introduction. 
+
+
+                  IMPORTANT NOTE ABOUT "STATUS LINES"
+
+The "status line" on the Zenith Z19 and Televideo 950 terminals  is  not
+supported.  They must be installed as 24 line terminals. 
+
+
+
+                                  -2-
+
+
+
+
+
+
+
+VEDIT PLUS                                                    Appendix A
+                                                               CRT Notes
+
+
+                IMPORTANT NOTE ABOUT TELEVIDEO TERMINALS
+
+(For models 910, 912, 920, 925 and 950)
+
+Most  Televideo  terminals  (and terminals emulating a Televideo) do not
+support reverse  video  on  individual  characters.   (A  reverse  video
+character is surrounded by two blank spaces.) Therefore, VEDIT PLUS does
+not support reverse video on these terminals.  Without reverse video, it
+is  impossible  to  see the location of the cursors in multiple windows.
+(The main cursor is always visible.)
+
+However, VEDIT PLUS can display the text using the "dim" attribute,  and
+display  messages,  the status line and multiple cursors in the "normal"
+attribute.  This may require an intensity adjustment  when  using  VEDIT
+PLUS, but is the preferred setup. 
+
+Therefore,  the CRT Installation menu has multiple entries for Televideo
+terminals.  Those marked "DIM" use the  "dim"  attribute  feature.   The
+alternate entries do not use reverse video or dim characters. 
+
+To improve the visibility of the status line, you may want to display it
+with  dashes  "-".   This  is  selected by setting Task 7.4 to "2D" hex.
+Task 7.5 should also be set to "2D" hex. 
+
+Note:  The Televideo models 914,  924  and  970  support  reverse  video
+       properly.   Therefore,  the  above  discussion  does not apply to
+       them.  The 914/924 entry is marked with "REVERSE" as  a  reminder
+       that  reverse video is supported.  The 970 user should select the
+       "ANSI 3.64" entry. 
+
+Note:  Since the BACKSPACE key on most  Televideo  terminals  sends  the
+       same code as "Left Arrow" key, the [BACKSPACE] function cannot be
+       assigned to the BACKSPACE key. 
+
+
+                 IMPORTANT NOTE ABOUT WYSE 50 TERMINALS
+
+The  Wyse  50  can  emulate  Televideo  terminals, but then has the same
+problem with reverse video  characters.   However,  VEDIT  PLUS  uses  a
+"trick"  to  support  reverse video in the WY50 mode - it writes reverse
+video characters as "protected characters" without  entering  "protected
+mode".  For this to work you must set up the terminal as follows:
+
+WYSE 50 Setup:
+
+        PROT = REV
+
+        COMPATIBLE MODE = WY50
+
+You  can  optionally  install  VEDIT  PLUS  to support the WY50 with 132
+columns.  Select the WYSE 50 (132 COLUMN) from  the  CRT  menu  AND  set
+installation Task 10.2 to 132. 
+
+
+                                  -3-
+
+
+
+
+
+
+
+VEDIT PLUS                                                    Appendix A
+                                                               CRT Notes
+
+
+                      INSTALLING THE CRT VERSIONS
+
+The  CRT  versions are NOT supplied ready to run since we have no way of
+knowing what hardware configuration you have.  Therefore,  there  is  no
+".COM"  file  on  your disk, but rather a ".SET" file.  You must perform
+the installation before you can use VEDIT PLUS for the first time. 
+
+Give the DOS command:
+
+     INSTALL VPLUS86C.SET VPLUS.COM
+
+Initially you only have to perform Step 2 of the Installation  on  pages
+299  -  300  in  the  manual.   This will give you the "Default Keyboard
+Layout" listed later in this file. 
+
+
+
+
+                  IMPORTANT NOTE FOR NEC APC AND Z-100
+
+The function keys on the NEC  APC  and  Zenith  Z-100  can  send  8  bit
+characters, i.e.  characters which have their "high" bit set.  To enable
+these functions keys for editing purposes you must set Task 7.2 to a "0"
+during Installation.  (Note: Task 7.2 has a totally different meaning on
+the IBM PC.  The manual describes the IBM PC meaning.)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                  -4-
+
+
+
+
+
+
+
+VEDIT PLUS                                                    Appendix A
+                                                               CRT Notes
+
+
+                      DESCRIPTION OF FILES ON DISK
+
+                   General 8080 / Z80 / 8086 Versions
+
+
+The  files  actually supplied on your diskette depend upon which version
+of VEDIT PLUS you purchased.  You will have to perform the Installation,
+described in the manual, to produce a runnable VEDIT PLUS. 
+
+
+INSTALL.EXE    The program used to perform the Installation.  The manual
+               describes the use of this program  and  the  "SET"  files
+               below.   (Note:  file name is INSTALL.CMD for CP/M-86 and
+               INSTALL.COM for CP/M.)
+
+INSTALL.INI    Data file needed to  perform  CRT  version  Installation.
+               Must be on same drive as INSTALL.EXE. 
+
+INTMOD.EXE     The  program  used  to add, delete or change entries from
+               the CRT terminal menu during Installation.  Modifies  the
+               file  INSTALL.INI.  The program is self-prompting and its
+               operation is described in the file NEWCRT.DOC. 
+
+
+VPLUSZC.SET    File for producing the Z80 CRT version. 
+
+VPLUS8C.SET    File for producing the 8080 CRT version. 
+
+VPLUSZM.SET    File for producing the Z80 Memory mapped version. 
+
+VPLUS8M.SET    File for producing the 8080 Memory mapped version. 
+
+VPLUS86C.SET   File for producing the 8086 CRT version. 
+
+
+VPHELP.HLP     Help file accessed by "H" command.  The help file may  be
+               edited to better fit your needs. 
+
+VPEHELP.HLP    Help file accessed by "EH" command. 
+
+VVHELP.HLP     Help file accessed by [HELP] function. 
+
+PRINT.VDM      Simple print formatting command macro. 
+
+COMPARE.VDM    Sophisticated  split screen file comparison/merge command
+               macro. 
+
+SORT.VDM       Command macro to sort a mailing list. 
+
+CV203.VDM      Command macro which converts  version  2.02  macros  into
+               2.03 macros. 
+
+
+
+                                  -5-
+
+
+
+
+
+
+
+VEDIT PLUS                                                    Appendix A
+                                                               CRT Notes
+
+
+STRIPV.VDM     Command  macro  which  strips  comments  from  VEDIT PLUS
+               macros.  Primarily for CP/M (8080 / Z80) machines,  where
+               it is important to save memory space. 
+
+MENU.VDM       Macro to make Command Mode "Menu" driven. 
+
+MENU.INI       Macro  which  should  be renamed to "VEDIT.INI" to enable
+               the MENU.VDM file. 
+
+KEYS.ART       Graphic representation of the  Default  Keyboard  Layout.
+               This  file can be used to replace the first two "screens"
+               of the VVHELP.HLP file. 
+
+WHATS.NEW      Overview for existing VEDIT users of the new features  in
+               this release. 
+
+ERRATA.DOC     IMPORTANT  documentation  about corrections in the manual
+               and last minute enhancements. 
+
+NEWCRT.DOC     Description of how to use INTMOD program to add  new  CRT
+               terminals  to  the  customization menu or modify existing
+               entries. 
+
+README.CRT     This appendix supplied on disk. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                  -6-
+
+
+
+
+
+
+
+VEDIT PLUS                                                    Appendix A
+                                                               CRT Notes
+
+
+                        PERSONAL KEYBOARD LAYOUT
+
+
+[CURSOR UP]
+[CURSOR DOWN]
+[CURSOR RIGHT]
+[CURSOR LEFT]
+[BACK TAB]
+[TAB CURSOR]
+[ZIP]
+[LINE TOGGLE]
+[NEXT LINE]
+[SCROLL UP]
+[SCROLL DOWN]
+[SCROLL RIGHT]
+[SCROLL LEFT]
+[PREVIOUS WORD]
+[NEXT WORD]
+[PREVIOUS PARAGRAPH]
+[NEXT PARAGRAPH]
+[PAGE UP]
+[PAGE DOWN]
+[SCREEN TOGGLE]
+[INSERT]
+[DELETE]
+[BACKSPACE]
+[DEL PREVIOUS WORD]
+[DEL NEXT WORD]
+[ERASE TO END OF LINE]
+[ERASE LINE]
+[UNDO]
+[TAB CHARACTER]
+[NEXT CHAR LITERAL]
+[REPEAT]
+[FIND]
+[REPLACE]
+[CANCEL]
+[INDENT]
+[UNDENT]
+[FORMAT PARAGRAPH]
+[MACRO]
+[VISUAL EXIT]
+[VISUAL ESCAPE]
+[DEFINE]
+[HELP]
+[GOTO]
+[FILE]
+[BLOCK]
+[PRINT]
+[WINDOW]
+[USER]
+[MISC]
+
+
+                                  -7-
+
+
+
+
+
+
+
+VEDIT PLUS                                                    Appendix A
+                                                               CRT Notes
+
+                        DEFAULT KEYBOARD LAYOUT
+
+"UPPER/LOWER CASE ESCAPE SEQUENCES EQUIVALENT?"   Yes
+
+[CURSOR UP]               <CTRL-E>
+[CURSOR DOWN]             <CTRL-C>
+[CURSOR RIGHT]            <CTRL-D>
+[CURSOR LEFT]             <CTRL-S>
+[BACK TAB]                <CTRL-Q>
+[TAB CURSOR]              <CTRL-B>
+[ZIP]                     <CTRL-G>
+[LINE TOGGLE]             NOT USED
+[NEXT LINE]               <CTRL-J>           Often labeled LINE FEED
+[SCROLL UP]               <CTRL-R>
+[SCROLL DOWN]             <CTRL-V>
+[SCROLL RIGHT]            <CTRL-Y>
+[SCROLL LEFT]             <CTRL-T>
+[PREVIOUS WORD]           <CTRL-A>
+[NEXT WORD]               <CTRL-F>
+[PREVIOUS PARAGRAPH]      ESC - W
+[NEXT PARAGRAPH]          ESC - X
+[PAGE UP]                 <CTRL-W>
+[PAGE DOWN]               <CTRL-X>
+[SCREEN TOGGLE]           NOT USED
+[INSERT]                  <CTRL-N>           Think I[N]sert
+[DELETE]                  <DEL>
+[BACKSPACE]               <CTRL-H>           Often labeled BACKSPACE
+[DEL PREVIOUS WORD]       ESC - A
+[DEL NEXT WORD]           ESC - F
+[ERASE TO END OF LINE]    <CTRL-L>
+[ERASE LINE]              <CTRL-K>           Think [K]ill Line
+[UNDO]                    <CTRL-U>
+[TAB CHARACTER]           <CTRL-I>           Often labeled TAB
+[NEXT CHAR LITERAL]       ESC - Q
+[REPEAT]                  ESC - R
+[FIND]                    ESC - 2
+[REPLACE]                 ESC - 3
+[CANCEL]                  <CTRL-Z>
+[INDENT]                  <CTRL-P>
+[UNDENT]                  <CTRL-O>
+[FORMAT PARAGRAPH]        ESC - J            Think [J]ustify
+[MACRO]                   ESC - C            Think [C]ommand Macro
+[VISUAL EXIT]             ESC - E
+[VISUAL ESCAPE]           ESC - ESC
+[DEFINE]                  ESC - D
+[HELP]                    ESC - ?
+[GOTO]                    ESC - G
+[FILE]                    ESC - 0            ESC - "Zero"
+[BLOCK]                   ESC - B
+[PRINT]                   ESC - P
+[WINDOW]                  ESC - 9
+[USER]                    ESC - U
+[MISC]                    ESC - M
+
+
+                                  -8-
+
+
+
+
+
+
+
+VEDIT PLUS                                                    Appendix A
+                                                               CRT Notes
+
+                    DEFAULT KEYBOARD LAYOUT (Page 2)
+
+                      (Built-in Keystroke Macros)
+
+
+[BLOCK]-C                 ESC - 4            "Copy to text register"
+[BLOCK]-M                 ESC - 5            "Move to text register"
+[BLOCK]-I                 ESC - 6            "Insert text register"
+[GOTO]-M                  ESC - 7            "Set text marker"
+[GOTO]-J                  ESC - 8            "Jump to text marker"
+[GOTO]-H                  ESC - H            "Home"
+[GOTO]-Z                  ESC - Z            "Zend"
+[CANCEL]                  ESC - 1            Alternate key for CANCEL
+
+
+
+These commonly used menu functions are built-in as keystroke macros.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                  -9-
+
+
+
+
+
+
+
+VEDIT PLUS                                                    Appendix A
+                                                               CRT Notes
+
+
+                       DEFAULT CRT CUSTOMIZATION
+
+
+
+4.)  PHYSICAL LINES PER PAGE                        66
+     PRINTED LINES PER PAGE                         60
+     LEFT MARGIN FOR PRINTING                       12
+     USE FORM-FEED FOR NEW PAGE                     Yes
+
+5.)  CURSOR TYPE                                    Not Applicable
+     CURSOR BLINK RATE                              Not Applicable
+     INDENT INCREMENT                               4
+     LOWER/UPPER CASE CONVERSION                    No Conversion
+     CONDITIONAL CONVERSION CHARACTER               ;
+     DELAY FOR COMMAND MODE SCROLLING               0
+     RIGHT MARGIN FOR WORD WRAP  (0 = OFF)          0
+     HIGH BIT PROCESSING ON INPUT/OUTPUT            1
+     CURSOR POSITIONING OPTION                      1
+     HORIZONTAL SCROLL MARGIN                       210
+     HORIZONTAL SCROLL INCREMENT                    20
+
+6.)  EXPAND TAB WITH SPACES                         No
+     AUTO-BUFFERING IN VISUAL MODE                  Forward & Backward
+     AUTO-INDENT MODE                               No
+     POINT PAST TEXT REGISTER INSERT                Yes
+     EQUATE UPPER/LOWER CASE WHEN SEARCHING         Yes
+     MS-DOS END-OF-FILE PADDING                     No
+     REVERSE ALL UPPER AND LOWER CASE KEYS          No
+     SUPPRESS ERROR HANDLING                        No
+     USE EXPLICIT TEXT DELIMITERS                   No
+     GLOBAL FILE OPERATIONS                         No
+     JUSTIFY PARAGRAPHS                             No
+
+7.)  TAB POSITIONS                                  Every 8
+     KEYBOARD INPUT                                 System
+     BEGIN IN INSERT MODE                           No
+     STATUS LINE CHARACTER                          20 hex
+     SCREEN CONTINUATION CHARACTER                  AD hex
+     TAB FILL CHARACTER                             20 hex
+     END-OF-LINE CHARACTER                          20 hex
+
+8.)  PATTERN MATCH CHARACTER                        |
+     COMMAND ITERATION LEFT BRACKET                 [
+     COMMAND ITERATION RIGHT BRACKET                ]
+     COMMAND ESCAPE CHARACTER                       ESC
+     COUNT FOR COMMAND MODE HELP MESSAGE            3
+     START UP IN COMMAND MODE                       No
+     SPEED OF YOUR COMPUTER IN MHZ                  4
+
+
+
+
+
+
+                                  -10-
+
+
+
+
+
+
+
+VEDIT PLUS                                                    Appendix A
+                                                               CRT Notes
+
+
+                     DEFAULT CRT CUSTOMIZATION (PAGE 2)
+
+
+9.)  ENABLE AUTO-STARTUP (EXECUTE VEDIT.INI)        Yes
+     LOOK FOR HELP AND VEDIT.INI ON CURRENT DRIVE   Yes (2)
+     ALTERNATE DRIVE FOR HELP AND VEDIT.INI FILES   None
+     SIZE OF FREE MEMORY AFTER AUTO-READ (K BYTES)  6
+     SIZE OF FILE BUFFERING "PAGE" (K BYTES)        12
+
+10.) NUMBER OF SCREEN LINES                         24
+     LENGTH OF DISPLAYED LINE                       80
+     LINE MOVEMENT FOR PAGING                       20
+     TOP LINE FOR CURSOR                            3
+     BOTTOM LINE FOR CURSOR                         20
+     ATTRIBUTE FOR TEXT CHARACTERS                  0
+     ATTRIBUTE FOR SCREEN ERASE                     0
+     ATTRIBUTE FOR STATUS LINE                      1
+     ATTRIBUTE FOR STATUS LINE MESSAGES             1
+     ATTRIBUTE FOR WINDOW BORDER                    0
+     ATTRIBUTE FOR WINDOW BORDER MESSAGE            1
+
+
+11.) Not Applicable
+
+
+12.) Select CRT Terminal Type
+
+     Select your terminal (or computer type) from the multi-page menu of
+     supported terminals.  In the unlikely event your  terminal  is  not
+     listed,  you  can  add  it  to  the  menu using the supplied INTMOD
+     program.  This program is documented in the file NEWCRT.DOC. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                  -11-
+
+
+
+
+
+
+
+VEDIT PLUS                                                    Appendix A
+                                                               CRT Notes
+
+
+
+
+               NOTES FOR HEATH H19 / ZENITH Z19 TERMINALS
+
+
+The example keyboard layout assumes that the terminal is in the  "Heath"
+mode and not in the ANSI mode.  VEDIT PLUS and INSTALL automatically put
+the keypad into "Alternate Keypad Mode" and disable this mode on exit. 
+
+You  may  experience extra characters appearing when using the cursor UP
+and DOWN keys, especially in conjunction with the REPEAT key.   This  is
+caused  by the function keys sending their multi character codes at 9600
+Baud, which is too fast for non-interrupt driven software.  This is best
+solved by making your system interrupt driven.  If this is not possible,
+implement the cursor movements  with  control  characters  and  use  the
+keypad  for other functions.  It may help to reduce the entered value in
+Task 8.8 (relating to processor speed) during Installation,  or  to  use
+the "Shifted Keypad Mode". 
+
+If you are using your terminal at the undocumented 19,200 baud, you will
+need  to modify the CRT terminal entry (see NEWCRT.DOC) and increase the
+delays for EOS, EOL, INSERT LINE and DELETE LINE.  The cursor addressing
+will also require a delay of about 4 milliseconds. 
+
+Note:  The 25th status line  on  the  H19/Z19  is  not  supported.   The
+       H19/Z19 must be installed as a 24 line terminal. 
+
+
+
+                            NOTES FOR Z-100
+
+
+Be sure you have installed TASK 7.2 to a value of "0". 
+
+VEDIT  PLUS  automatically  puts  the Z-100 into a mode of "disabled key
+expansion" since this allows maximum flexibility in the keyboard layout.
+In particular, it allows use of the Shifted arrow keys, and the  use  of
+[CANCEL] in Command Mode. 
+
+Normal  key  expansion  is  restored when VEDIT PLUS is exited.  INSTALL
+also puts the Z-100 into this mode.  (The Z100SET file used in  previous
+versions of VEDIT PLUS is no longer needed.)
+
+
+
+
+
+
+
+
+
+
+
+
+                                  -12-
+
+
+
+
+
+
+
+VEDIT PLUS                                                    Appendix A
+                                                               CRT Notes
+
+               EXAMPLE KEYBOARD LAYOUT FOR THE ZENITH Z19
+
+"UPPER/LOWER CASE ESCAPE SEQUENCES EQUIVALENT?"   Yes
+
+[CURSOR UP]               <Up Arrow>
+[CURSOR DOWN]             <Down Arrow>
+[CURSOR RIGHT]            <Right Arrow>
+[CURSOR LEFT]             <Left Arrow>
+[BACK TAB]                <HOME>             On Keypad
+[TAB CURSOR]              <.>                On Keypad
+[ZIP]                     <0>                On Keypad
+[LINE TOGGLE]             <CTRL-A>
+[NEXT LINE]               <LINE FEED>
+[SCROLL UP]               SHIFT <Up Arrow>
+[SCROLL DOWN]             SHIFT <Down Arrow>
+[SCROLL RIGHT]            SHIFT <Right Arrow>
+[SCROLL LEFT]             SHIFT <Left Arrow>
+[PREVIOUS WORD]           <BLUE>
+[NEXT WORD]               <RED>
+[PREVIOUS PARAGRAPH]      SHIFT <IC>
+[NEXT PARAGRAPH]          SHIFT <IL>
+[PAGE UP]                 <IC>
+[PAGE DOWN]               <IL>
+[SCREEN TOGGLE]           <CTRL-W>
+[INSERT]                  <ENTER>            "ENTER" on Keypad
+[DELETE]                  <DELETE>
+[BACKSPACE]               <BACK SPACE>
+[DEL PREVIOUS WORD]       <CTRL-S>
+[DEL NEXT WORD]           <CTRL-D>
+[ERASE TO END OF LINE]    <CTRL-Z>
+[ERASE LINE]              <CTRL-X>
+[UNDO]                    <CTRL-U>
+[TAB CHARACTER]           <TAB>
+[NEXT CHAR LITERAL]       <CTRL-Q>
+[REPEAT]                  <CTRL-R>
+[FIND]                    <F2>
+[REPLACE]                 <F3>
+[CANCEL]                  <F1>
+[INDENT]                  <CTRL-L>
+[UNDENT]                  <CTRL-K>
+[FORMAT PARAGRAPH]        <CTRL-F>
+[MACRO]                   ESC - /
+[VISUAL EXIT]             <CTRL-E>           Used to exit to command mode.
+[VISUAL ESCAPE]           ESC - ESC
+[DEFINE]                  ESC - K            Think [K]eystroke macro
+[HELP]                    ESC - <Space Bar>
+[GOTO]                    <DC>               On Keypad
+[FILE]                    ESC - F
+[BLOCK]                   <WHITE>
+[PRINT]                   <CTRL-P>
+[WINDOW]                  ESC - W
+[USER]                    SHIFT <DL>
+[MISC]                    <DL>
+
+
+                                  -13-
+
+
+
+
+
+
+
+VEDIT PLUS                                                    Appendix A
+                                                               CRT Notes
+
+               EXAMPLE KEYBOARD LAYOUT FOR THE ZENITH Z19
+
+                      (Built-in Keystroke Macros)
+
+
+[BLOCK]-C                 <F5>               "Copy to text register"
+[BLOCK]-M                 <ERASE>            "Move to text register"
+[BLOCK]-I                 <F4>               "Insert text register"
+[GOTO]-H                  ESC - <CTRL-H>     "Home"
+[GOTO]-Z                  ESC - <CTRL-Z>     "Zend"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                  -14-
+
+
+
+
+
+
+
+VEDIT PLUS                                                    Appendix A
+                                                               CRT Notes
+
+                 EXAMPLE KEYBOARD LAYOUT FOR THE Z-100
+
+"UPPER/LOWER CASE ESCAPE SEQUENCES EQUIVALENT?"   No
+
+[CURSOR UP]               <Up Arrow>
+[CURSOR DOWN]             <Down Arrow>
+[CURSOR RIGHT]            <Right Arrow>
+[CURSOR LEFT]             <Left Arrow>
+[BACK TAB]                <HOME>             on keypad
+[TAB CURSOR]              <.>                on keypad
+[ZIP]                     <0>                on keypad
+[LINE TOGGLE]             <->                on keypad
+[NEXT LINE]               <LINE FEED>
+[SCROLL UP]               SHIFT <Up Arrow>
+[SCROLL DOWN]             SHIFT <Down Arrow>
+[SCROLL RIGHT]            SHIFT <Right Arrow>
+[SCROLL LEFT]             SHIFT <Left Arrow>
+[PREVIOUS WORD]           <8>                on keypad
+[NEXT WORD]               <9>                on keypad
+[PREVIOUS PARAGRAPH]      <5>                on keypad
+[NEXT PARAGRAPH]          <2>                on keypad
+[PAGE UP]                 <4>                on keypad
+[PAGE DOWN]               <1>                on keypad
+[SCREEN TOGGLE]           <CTRL-S>
+[INSERT]                  <ENTER>            on keypad
+[DELETE]                  <DELETE>
+[BACKSPACE]               <BACK SPACE>
+[DEL PREVIOUS WORD]       <SHIFT-8>          <8> on keypad
+[DEL NEXT WORD]           <SHIFT-9>          <9> on keypad
+[ERASE TO END OF LINE]    <CTRL-Z>
+[ERASE LINE]              <CTRL-X>
+[UNDO]                    <CTRL-U>
+[TAB CHARACTER]           <TAB>
+[NEXT CHAR LITERAL]       <CTRL-Q>
+[REPEAT]                  <CTRL-R>
+[FIND]                    <F1>
+[REPLACE]                 <SHIFT- F1>
+[CANCEL]                  <F0>
+[INDENT]                  <F8>
+[UNDENT]                  <F7>
+[FORMAT PARAGRAPH]        <CTRL-F>
+[MACRO]                   <F2>
+[VISUAL EXIT]             <INS LINE>         Exit to command mode
+[VISUAL ESCAPE]           ESC - ESC
+[DEFINE]                  <CTRL-D>
+[HELP]                    <HELP>
+[GOTO]                    <3>                On Keypad
+[FILE]                    <F3>
+[BLOCK]                   <F9>
+[PRINT]                   <CTRL-P>
+[WINDOW]                  <F4>
+[USER]                    <F5>
+[MISC]                    <F6>
+
+
+                                  -15-
+
+
+
+
+
+
+
+VEDIT PLUS                                                    Appendix A
+                                                               CRT Notes
+
+                 EXAMPLE KEYBOARD LAYOUT FOR THE Z-100
+
+                      (Built-in Keystroke Macros)
+
+
+[BLOCK]-C                 <F10>              "Copy to text register"
+[BLOCK]-M                 <F11>              "Move to text register"
+[BLOCK]-I                 <F12>              "Insert text register"
+[GOTO]-H                  ESC - <CTRL-H>     "Home"
+[GOTO]-Z                  ESC - <CTRL-Z>     "Zend"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                  -16-
+
+
+
+
+
+
+
+VEDIT PLUS                                                    Appendix A
+                                                               CRT Notes
+
+                EXAMPLE KEYBOARD LAYOUT FOR THE IBM 3101
+
+"UPPER/LOWER CASE ESCAPE SEQUENCES EQUIVALENT?"   No
+
+[CURSOR UP]               <Up Arrow>
+[CURSOR DOWN]             <Down Arrow>
+[CURSOR RIGHT]            <Right Arrow>
+[CURSOR LEFT]             <Left Arrow>
+[BACK TAB]                <ALT-A>
+[TAB CURSOR]              <ALT-B>
+[ZIP]                     <ALT-G>
+[LINE TOGGLE]             NOT USED           Type RETURN
+[NEXT LINE]               <ALT-J>
+[SCROLL UP]               <ALT-Q>
+[SCROLL DOWN]             <ALT-Z>
+[SCROLL RIGHT]            <ALT-Y>
+[SCROLL LEFT]             <ALT-T>
+[PREVIOUS WORD]           <ALT-K>
+[NEXT WORD]               <ALT-L>
+[PREVIOUS PARAGRAPH]      ESC - W
+[NEXT PARAGRAPH]          ESC - X
+[PAGE UP]                 <ALT-W>
+[PAGE DOWN]               <ALT-X>
+[SCREEN TOGGLE]           NOT USED
+[INSERT]                  <ALT-N>            Think I[N]sert
+[DELETE]                  <DEL>
+[BACKSPACE]               <---
+[DEL PREVIOUS WORD]       ESC - K
+[DEL NEXT WORD]           ESC - L
+[ERASE TO END OF LINE]    <EOL>
+[ERASE LINE]              <EOS>
+[UNDO]                    <ALT-U>
+[TAB CHARACTER]           <TAB>
+[NEXT CHAR LITERAL]       ESC - Q
+[REPEAT]                  <ALT-R>
+[FIND]                    <PF7>
+[REPLACE]                 <PF8>
+[CANCEL]                  <ALT-C>
+[INDENT]                  <ALT-P>
+[UNDENT]                  <ALT-O>
+[FORMAT PARAGRAPH]        <ALT-F>
+[MACRO]                   ESC - M
+[VISUAL EXIT]             <ALT-E>
+[VISUAL ESCAPE]           ESC - ESC
+[DEFINE]                  <ALT-D>
+[HELP]                    ESC - ?
+[GOTO]                    <PF1>
+[FILE]                    <PF3>
+[BLOCK]                   <PF2>
+[PRINT]                   ESC - P
+[WINDOW]                  <PF4>
+[USER]                    <PF5>
+[MISC]                    <PF6>
+
+
+                                  -17-
+
+
+
+
+
+
+
+VEDIT PLUS                                                    Appendix A
+                                                               CRT Notes
+
+             EXAMPLE KEYBOARD LAYOUT FOR THE TELEVIDEO 920C
+
+"UPPER/LOWER CASE ESCAPE SEQUENCES EQUIVALENT?"   Yes
+
+[CURSOR UP]               <Up Arrow>
+[CURSOR DOWN]             <Down Arrow>
+[CURSOR RIGHT]            <Right Arrow>
+[CURSOR LEFT]             <Left Arrow>
+[BACK TAB]                FUNCT - <HOME>
+[TAB CURSOR]              <CTRL-T>
+[ZIP]                     <HOME>
+[LINE TOGGLE]             NOT USED
+[NEXT LINE]               <CTRL-N>
+[SCROLL UP]               FUNCT - <Up Arrow>
+[SCROLL DOWN]             FUNCT - <Down Arrow>
+[SCROLL RIGHT]            FUNCT - <Right Arrow>
+[SCROLL LEFT]             FUNCT - <Left Arrow>
+[PREVIOUS WORD]           <CTRL-D>
+[NEXT WORD]               <CTRL-F>
+[PREVIOUS PARAGRAPH]      ESC - W
+[NEXT PARAGRAPH]          ESC - S
+[PAGE UP]                 <CTRL-W>
+[PAGE DOWN]               <CTRL-S>
+[SCREEN TOGGLE]           <CTRL-Y>
+[INSERT]                  <F11>
+[DELETE]                  <DEL>
+[BACKSPACE]               <F10>
+[DEL PREVIOUS WORD]       ESC - D
+[DEL NEXT WORD]           ESC - F
+[ERASE TO END OF LINE]    <CTRL-Z>
+[ERASE LINE]              <CTRL-X>
+[UNDO]                    <CTRL-U>
+[TAB CHARACTER]           TAB
+[NEXT CHAR LITERAL]       <CTRL-Q>
+[REPEAT]                  <CTRL-R>
+[FIND]                    <F2>
+[REPLACE]                 <F3>
+[CANCEL]                  <F1>
+[INDENT]                  <CTRL-P>
+[UNDENT]                  <CTRL-O>
+[FORMAT PARAGRAPH]        <CTRL-V>
+[MACRO]                   ESC - C            Think [C]ommand Macro
+[VISUAL EXIT]             <CTRL-E>
+[VISUAL ESCAPE]           ESC - ESC
+[DEFINE]                  ESC - K            Think [K]eystroke Macro
+[HELP]                    ESC - ?
+[GOTO]                    <F5>
+[FILE]                    <F6>
+[BLOCK]                   <F9>
+[PRINT]                   ESC - P
+[WINDOW]                  <F4>
+[USER]                    <F7>
+[MISC]                    <F8>
+
+
+                                  -18-
+
+
+
+
+
+
+
+VEDIT PLUS                                                    Appendix A
+                                                               CRT Notes
+
+             EXAMPLE KEYBOARD LAYOUT FOR THE TELEVIDEO 924
+
+"UPPER/LOWER CASE ESCAPE SEQUENCES EQUIVALENT?"   No
+
+[CURSOR UP]               <Up Arrow>
+[CURSOR DOWN]             <Down Arrow>
+[CURSOR RIGHT]            <Right Arrow>
+[CURSOR LEFT]             <Left Arrow>
+[BACK TAB]                <BACK TAB>
+[TAB CURSOR]              <CTRL-G>
+[ZIP]                     <HOME
+[LINE TOGGLE]             NOT USED
+[NEXT LINE]               <LINE FEED>
+[SCROLL UP]               <CTRL-E>
+[SCROLL DOWN]             <CTRL-C>
+[SCROLL RIGHT]            <CTRL-Y>
+[SCROLL LEFT]             <CTRL-T>
+[PREVIOUS WORD]           <F5>
+[NEXT WORD]               <F6>
+[PREVIOUS PARAGRAPH]      <CTRL-W>
+[NEXT PARAGRAPH]          <CTRL-S>
+[PAGE UP]                 <PAGE ERASE>
+[PAGE DOWN]               <PAGE>
+[SCREEN TOGGLE]           <CTRL-N>
+[INSERT]                  <CHAR INSERT>
+[DELETE]                  <CHAR DELETE>
+[BACKSPACE]               <DEL>
+[DEL PREVIOUS WORD]       ESC - <F5>
+[DEL NEXT WORD]           ESC - <F6>
+[ERASE TO END OF LINE]    <CLEAR SPACE>      Same as <CTRL-Z>
+[ERASE LINE]              <CTRL-X>
+[UNDO]                    <CTRL-U>
+[TAB CHARACTER]           TAB
+[NEXT CHAR LITERAL]       <CTRL-Q>
+[REPEAT]                  <CTRL-R>
+[FIND]                    <F2>
+[REPLACE]                 <F3>
+[CANCEL]                  <F1>
+[INDENT]                  <F8>
+[UNDENT]                  <F7>
+[FORMAT PARAGRAPH]        <CTRL-F>
+[MACRO]                   <F15>
+[VISUAL EXIT]             <F16>
+[VISUAL ESCAPE]           ESC - ESC
+[DEFINE]                  ESC - D
+[HELP]                    <SEND>
+[GOTO]                    <F13>
+[FILE]                    ESC - <F4>
+[BLOCK]                   <F9>
+[PRINT]                   <PRINT>
+[WINDOW]                  <F4>
+[USER]                    <LINE INSERT>
+[MISC]                    <LINE ERASE>
+
+
+                                  -19-
+
+
+
+
+
+
+
+VEDIT PLUS                                                    Appendix A
+                                                               CRT Notes
+
+             EXAMPLE KEYBOARD LAYOUT FOR THE TELEVIDEO 924
+
+                      (Built-in Keystroke Macros)
+
+
+[BLOCK]-C                 <F10>              "Copy to text register"
+[BLOCK]-M                 <F11>              "Move to text register"
+[BLOCK]-I                 <F12>              "Insert text register"
+[GOTO]-M                  ESC - <F14>        "Set text marker"
+[GOTO]-J                  <F14>              "Jump to text marker"
+[GOTO]-H                  ESC - H            "Home"
+[GOTO]-Z                  ESC - Z            "Zend"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                  -20-
+
+
+
+                                                                                     

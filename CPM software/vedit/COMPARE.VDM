@@ -1,0 +1,528 @@
+!			 COMPARE.VDM
+!
+!		VEDIT PLUS file comparison macro
+!
+!		Copyright (c) 1985 CompuView Products, Inc.
+!
+!		  Written by Thomas C. Burt
+!			November, 1984
+!
+!                 Last change:  December 4, 1986
+!
+!Compare two text files, excluding those with file extension ".BAK".
+!
+!To use:  RXZ COMPARE.VDM
+!
+!Reuse:   If the registers containing the COMPARE submacros have been left
+!	  undisturbed, this macro may be reused without having to be reloaded.
+!	  Execute the startup macro, MS.  (The initially loaded register is
+!	  not needed).
+!
+!	  You may choose to use windows for viewing/editing by responding
+!	  to COMPARE's query with 'V' for top/bottom windows or 'H' for
+!	  side by side windows.  Otherwise answer 'N' for whole screen
+!	  viewing/editing of one file at a time.
+!
+!	  The user will be prompted for the names of the files to be compared.
+!	  If a difference is found, the active file will be displayed with the
+!	  visual mode cursor at the spot of the difference.  The user merely
+!	  moves the cursor to a spot where the files again match and presses
+!	  [EXIT VISUAL].  Visual mode operations may be performed on the active
+!	  file.  To look at the template file or to abondon the comparison
+!	  early, press [ESCAPE VISUAL].  If windows are being used, the
+!	  [WINDOW]-s function may be used to switch between the active and
+!	  template files.
+!
+!Internal process:
+!
+!	1) Submacros are loaded into their registers.
+!
+!	2) The startup macro S is then invoked (see end of this macro file).
+!
+!	3) The initially loaded macro is replaced by the command RJS. This
+!	   makes additional memory space available while allowing
+!	   additional file comparisons to be made later by just issuing
+!	   one of the commands "MS" or "MZ" without having to reload
+!	   COMPARE.VDM from disk.
+!
+!	4) Macro S then obtains the names of the files to be compared from the
+!	   user and opens them for editing.  If either file has the extension
+!	   ".BAK" the macro prints a warning message and quits.
+!
+!	5) Macro S invokes macro C to carry on with the file comparison.  Macro
+!	   C may be invoked directly by the user later to restart an
+!	   interrupted comparison session  (the edit pointer in each file
+!          should be hand aligned first).
+!
+!	6) When a discrepancy is discovered, the user is put into the active
+!	   buffer in visual mode with the cursor at the point of discrepancy.
+!	   The user may perform any editing he wishes at this time.  After
+!	   adjusting the active cursor to a point where the active and
+!	   template files begin to match again he may press [EXIT VISUAL]
+!	   and the file comparison will resume.  He may also press
+!	   [ESCAPE VISUAL] for these further options:
+!	 
+!	7) a. stop the comparison;  b. enter either the active or the 
+!	   template file;  c. continue the file comparison from the current 
+!	   spot.
+!
+!	8) Any break out attempt, including [ESCAPE VISUAL], is trapped by
+!	   Macro X.  The user  is presented with the options  listed in #7
+!	   above.
+!
+!	Buffers/registers used by this macro:
+!
+!	A	Active filename register;  name obtained from user.
+!	B	Check for files with extension ".BAK".
+!	C	Comparison driver macro.  May be re-entered.
+!	D	Actually does the file comparison.
+!	E	Restores evnironment parameters
+!	F	Re-alignment macro.  Finds user specified line from active file
+!		in the template file.
+!	K	Echo any visible character in Q0.
+!	M	"Match" buffer.  Macro F stores user specified synchronization
+!		line in M.
+!	O	Overrides certain customizable switches.
+!	P	Buffer used for the template or "pattern" file.
+!	Q	Queries user for options when quitting.
+!	R	Reports results of the file comparison.
+!	S	Startup macro.
+!	T	Template input file name register;  name obtained from user.
+!
+!	V	Enters visual mode.
+!	W	Wipes out buffers & registers employed by this macro.
+!	X	Traps [Escape Visual] and other macro-abort conditions.
+!
+!	Numerical variables used by this macro:
+!
+!	Q0	Commonly used, especially for interactive 1-key input
+!	Q1-Q4	Locally used variables
+!	Q5	Contains name of original startup buffer for this macro
+!	Q6	Line number in active buffer of current discrepancy
+!	Q7	Line number in active buffer where user adjusted the cursor
+!	Q8,Q9	Line numbers in template buffer, local to Macro F.
+!	Q10	Flag implying files are still the same if <> 0.
+!	Q15	Save user-configured Upper/Lower case distinction.
+!		This macro distinguishes between upper and lower case.
+!	Q18	Save user-configured unsuccessful-search error handling code
+!	Q19	Whether windows are being used: V,H,N for vert, horiz, no
+!
+!************************************************************************
+
+ywi				!Clear screen, remove windows
+(.wv/2)-1 yev
+@YT/		  VEDIT PLUS File Comparison Macro
+		      Written by Thomas C. Burt
+/
+
+!
+!************ Check for available registers *****************************
+!
+(.U@>0)[			!Text in main edit buffer? If so, give message.
+@YT"
+Please dispose of text in main edit buffer before using VEDIT's file
+comparison macro.  Also check that buffers A,B,C,D,E,F, K,M, O,P,Q,R,S,T, V, W & X
+are empty.
+"
+RU JO				!then show buffer usage and exit to command mode
+]
+
+!If any other needed buffers are in use,...
+(.UA>0^.UB>0^.UC>0^.UD>0^.UE>0^.UF>0^.UK>0^.UM>0^.UO>0^.UP>0^.UQ>0^.UR>0^.US>0^.UT>0^.UV>0^.UW>0^.UX>0)[
+
+    ^MYD
+    @YT"VEDIT'S file comparison macro uses buffers A,B,C,D,E,F, K,M," ^MYD
+    @YT"O,P,Q,R,S,T,  V, W & X, not all of which are currently empty."     ^MYD
+    RU
+    ^MYD  @YT"Alright to erase needed buffers?"
+    ^MYD  @XK/(Press "Y" if so, any other key if no): / MK  ^MYD
+
+    ((Q0&95)<>"Y)[
+        ^MYD
+        @YT"Please dispose of needed buffers before using this macro." ^MYD
+        JO
+        ]
+
+    (.UA>0)[-EEA @EQY]
+    (.UB>0)[-EEB @EQY]
+    (.UC>0)[-EEC @EQY]
+    (.UD>0)[-EED @EQY]
+    (.UE>0)[-EEE @EQY]
+    (.UF>0)[-EEF @EQY]
+
+    (.UK>0)[-EEK @EQY]
+    (.UM>0)[-EEM @EQY]
+
+    (.UO>0)[-EEO @EQY]
+    (.UP>0)[-EEP @EQY]
+    (.UQ>0)[-EEQ @EQY]
+    (.UR>0)[-EER @EQY]
+    (.US>0)[-EES @EQY]
+    (.UT>0)[-EET @EQY]
+
+    (.UV>0)[-EEV @EQY]
+    (.UW>0)[-EEW @EQY]
+    (.UX>0)[-EEX @EQY]
+    ]
+
+ES 5	.RVXS15 		!Save upper/lower case equivalence switch
+ES 8	.RVXS18			!Save search-error-processing flag
+
+R*		 Loading remaining subroutines
+
+
+R******************    Macro B    *****************************************
+R*
+R* Macro B checks for files with extension ".BAK".
+R* If such a filename is found in the current edit buffer, a warning message
+R* is printed out and COMPARE is aborted.
+
+@RIB\
+B [@:F/.BAK/;
+@YT'
+Unable to compare files with extension ".BAK".
+Please return to the operating system and rename or copy this file
+to one having some other extension.
+' JO]
+\
+
+R******************    Macro C    ****************************************
+R*
+R* Macro C performs the actual file comparison and reports the results.
+R* Re-enterable.  The user may start up an abandoned comparison by hand
+R* aligning the edit pointers of the active and template files (in buffers
+R* '@' and 'P') and then issuing the command MC.
+
+@RIC\
+!
+!Set parameters for this macro, saving values for restoring when done.
+!
+MI				!Setup switches for COMPARE.
++RAX				!Have Macro X trap all macro escape attempts
+
+MD				!Do the comparison.
+MR				!Report results.
+RJQ				!Query user for termination option.
+\
+
+R******************	Macro D    ****************************************
+R*
+R* Macro D does the actual file comparison.
+R* On entry, upto 100 lines of text are in the template (pattern) buffer P.
+R* A full auto buffered read has been done on the main viewing file.
+
+@RID\
+
+@YT"
+Comparing ...
+"
+[				!LOOP until break out.
+  -EE@				!Ensure the main buffer is selected.
+  _RMP				!Compare pattern buffer P with main edit buffer.
+
+  (.C=^Z)&(.EF)JM		!End of main buffer implies process done.
+
+  EEP				!Otherwise check for end of pattern buffer.
+  (.C=^Z)&(.EF)JM		!Also done if at end of pattern file.
+
+  (.C=^Z)[ 0W 100A		!If just at end of pattern buffer, replenish
+	 ^m:YD .y-1:
+         JN]			!buffer and continue the file comparison.
+
+			!SHOW MISMATCH
+
+0XS10				!Clear files-match flag.
+-eep -v				!Force template window to update
+-EE@				!Reselect main edit buffer.
+.yXS6				!Save current line number
+ MV MI				!Show point of discrepancy to user in visual mode.
+(.b="P)[RJc]			!If user exits from template file, just continue comparing
+.yXS7				!Else save user adjusted line number
+ MF				!And re-align active file with template file
+				!(cursor at start of re-alignment string).
+				!(F aborts with error message if not successful.)
+]				!Repeat
+
+\
+
+R******************    Macro E    *****************************************
+R*
+R* Macro E restores startup VEDIT parameters for buffers '@' & 'P'.
+R*
+@RIE\
+.bxs0
+(.b="@)[-eep][-ee@]
+ES 5 Q15			!Restore Upper/Lower case distinction
+ES 8 Q18			!Restore error-handling code
+-ee#0
+ES 5 Q15
+ES 8 Q18
+\
+
+R******************    Macro F    *****************************************
+R*
+R* RG-F realigns the template file with the active file.
+R*
+R*    1) A realignment string is created in buffer M (match) from the 24
+R*       characters following the current edit position in the main buffer.
+R*    2) The template/pattern buffer P is made the current edit buffer.
+R*    3) If the user had moved the active cursor back towards the beginning of
+R*	 the active file, then the template cursor is likewise backed up.
+R*    4) The template text is buffered out/in such that no more than 24 lines
+R*	 remain before the cursor position, and at least 60 lines follow it.
+R*    6) A search is made for an occurrence of the realignment string.
+R*    7) When the realignment string is matched, the template cursor is
+R*	 reset to the start of the matching string and control is returned.
+R*    8) If there is no match, various recovery attempts are made.
+R*    9) If there is still no match, a message is printed and the comparison
+R*       is aborted.  (Error trapped by Macro X).
+
+@RIF\
+(.EF & .C=^Z) @JP.EOT.			!Just in case
+
+0XS2					!Want to go through the following code at most
+!ALIGN!					!1-1/2 times.  Use Q2 for control.
+!
+!				1)
+-EEM @EQY				!Convert M into empty text register
+-EE@ .p,.p+24_RCm			!Put 24 chars from main buffer into M
+-EEM  B  #@:S/||/||/  B			!Replicate each wild card char in M
+!				2)
+-EEP					!Activate template/pattern buffer P
+!				3)
+(Q7<Q6)[Q7-Q6_L]			!Move cursor back if active cursor was
+!				4)
+.yXS9 .pXS3 0L Q3-.pXS4			!Save current position
+B (Q9-.y>24)[0W]			!Write out excess processed text
+Z ((.y-Q9)<60)[60-(.y-Q9)A]		!Arbitrarily want at least 60 additional lines
+-(.y-Q9)_:L  Q4_C			!Restore position
+!				5)
+					!Align pattern file by finding M in P.
+[@:F'|RM';				!Search on Reg-M.  On success
+!				6)
+ -.nC JM]				!back up to start of string and exit.
+!				7)
+					!Unsuccessful
+Z 100A					!Go to end of buffer and read more text
+(.c=^z) @JP.EOT.			!If no more text, print message & quit
+
+-24C [@:F'|RM'; -.nC JM]		!Else back up 1 pattern length and retry.
+!
+! Still unsuccessful.  One time only, allow user to reposition Active File cursor.
+!
+XA2 (Q2=1)[
+@YT'
+Unable to re-align template file.  Please select another position.
+Press any key to continue.
+'
+-(.y-Q9)_:L  Q4C			!Move template cursor back to original spot
+@XK0""
+-EE@ MV MI @JP_ALIGN_
+]					!End (Q2=1)
+!
+! That didn't work either.  Ask whether alright to start global search.
+!
+@XK0'
+Still unable to re-align files.
+Alright to start searching to the end of the template file?
+(Press "Y" if so, any other key if no): ' MK
+
+((Q0 & 95)<>"Y) JO		!8.0)
+B [_@:F/|RM/; -.nC JM]
+!
+! Unalignable.
+!
+!EOT!					!Premature end of template file
+R*				8)
+@YT"
+End of template file reached.
+Unable to align template file with active file.
+" JO
+\
+
+R******************    Macro K    *****************************************
+R*
+R* Macro K echos the character in Q0 if it is visible.
+
+@RIK\
+( 31<Q0 & Q0<127 )[Q0:YD]
+\
+
+R******************    Macro O    *****************************************
+R*
+R* Macro O overrides certain customizable switches for buffers '@' & 'P'.
+
+@RIO\
+.bxs0
+(.b="@)[-eep][-ee@]
+ES 5,0				!Don't consider upper & lower case the same.
+ES 8,2				!Just set error flag on unsuccesful search
+-ee#0
+ES 5,0
+ES 8,2
+\
+
+R******************    Macro Q    *****************************************
+R*
+R* Macro Q queries user for termination option and carries out his selection.
+
+@RIQ\
+-EE@
+@YT/   /  .y-1: @YT" lines from 'active file' examined.
+
+	1) Save active-file alterations on disk.
+	2) Compare more files.
+	3) Exit to command mode with all buffers intact (MW will empty them).
+	4) Exit to command mode:  delete all buffers used by COMPARE.
+"
+!Q-OPTION!
+13:YD @XK0"Please enter your option: "
+[ ("0<Q0 & Q0<"5) JL @XK0"" ] MK
+
+(Q0="1)[-EE@ 13:YD @YT"	Saving " RTA @YT"..."
+         EY  13:YD 3[@YT"           "]
+	 @JP.Q-OPTION.
+       ]
+13YD
+RA0
+(Q0="2)[RJS]
+(Q0="3)JO
+(Q0="4)[-EE@ EZY (q19<>"N)[ywi] RJW]
+\
+
+
+R******************    Macro R    *****************************************
+R*
+R* Macro R reports results of the file comparison.
+
+@RIR\
+
+@YT"
+"
+-EE@
+(Q10=0)  @JP.NOMATCH.
+(.RV=1)  @JP.SHORTER.
+(.RV=2)  @JP.LONGER.
+
+@YT"Files match."
+JM
+
+!NOMATCH!
+-EEP (.EF & .C=^Z)XS2			!Set Q2 = @EOF for template file.
+-EE@ (.EF & .C=^Z)XS1 			!Set Q1 = @EOF for active file.
+
+~Q1 @JP.SHORTER.			!Template file is shorter
+~Q2 @JP.LONGER.				!Template file is longer
+
+@YT"The remainder matches."
+JM
+
+!SHORTER!
+@YT"End of template reached."
+JM
+
+!LONGER!
+@YT"End of active file reached."
+
+\
+
+R******************    Macro S    *****************************************
+R*
+R* Macro S is the start-up macro.  It gives a sign-on message;  it queries
+R* the user for file names; it opens the files;  and it then invokes the
+R* re-enterable superintendant macro C.
+
+@RIS\
+-EE@ EZY -EEP @EQY -EEA @EQY -EET @EQY
+
+@:RQA/
+Please enter the name of the active file:  /  -EEA MB -EE@ ER|RA 0A EW|RA
+-v
+@:RQT/Now enter the name of the template file:   / EET MB -EEP ER|RT EW|RT
+100A				!Read in 100 lines.
+-v
+
+@RI#5'RJS'			!Clean out source macro & put in restart cmd
+1XS10				!Q10 = 1 => files same.
+RJC				!Execute the actual file comparison macros
+\
+
+
+R******************  Macro V   ********************************************
+R*
+R* Macro V tries to avoid problems with cursor positioning when entering
+R* visual mode.  If there is less than 24 lines to the end of the buffer,
+R* 24 lines are appended.  This should eliminate auto buffering.
+R* It also restores user's parameter/switches.
+
+@RIV\
+ME
+.pXS16 .yXS17
+z
+(.y-Q17<24)[24A]
+Q16_EJ
+V
+\
+
+R******************  Macro W    *******************************************
+R*
+R* Macro W wipes out the file buffers and text registers used by COMPARE.
+
+@RIW/
+-EEA @EQY
+-EEB @EQY
+-EEC @EQY
+-EED @EQY
+-EEE @EQY
+-EEF @EQY
+-EEK @EQY
+-EEM @EQY
+-EEO @EQY
+-EEP @EQY
+-EEQ @EQY
+-EER @EQY
+-EES @EQY
+-EET @EQY
+-EEV @EQY
+-EEX @EQY
+ RE#5
++REW
+/
+
+R******************    Macro X    *****************************************
+R*
+R* Macro X traps macro escape/abort occurrences.  Offers options to the user.
+
+@RIX\
+@YT"
+
+File comparison interrupted.  Please select one of the following options:
+       1) Examine template file      3) Resume, no realignment
+       2) Examine active file        4) Realign template & resume
+		  5) Stop.  Get termination options menu
+
+		  Enter Option: "
+ME
+[@XK0""	(Q0="1)[-EEP MV RJC] (Q0="2)[-EE@ MV .yXS7 MF RJC]
+	(Q0="3)[        RJC] (Q0="4)[		   MF RJC]
+	(Q0="5)[13YD    RJQ]
+]
+\
+
+R************* Initial Macro Continued *********************************
+R*
+.MXS5			!Find out where COMPARE is running from
+
+.wv-3yev		!Determine whether/what kind of windows to use
+
+@YT\Do you wish to use windows to view/edit the active & template files?
+[V]ertical split, [H]orizontal split, [N]o: \
+[@xk19// q19&95xs19 (q19="V ^ q19="H ^ q19="N)jl] q19:yd
+
+(q19="H)[yec ywb$ 7  ywrp .wh/2   yws$]
+(q19="V)[yec ywb$ 7  ywbp .wv/2-1 yws$]
+
+RJS			!Do setup, then perform file comparison
+
+		!END OF FILE COMPARISON MACRO
+                                         

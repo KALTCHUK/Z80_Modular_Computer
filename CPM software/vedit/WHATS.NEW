@@ -1,0 +1,276 @@
+
+	-----------------------------------------------------
+	|    WELCOME TO VEDIT PLUS VERSION 2.03b / 2.33b    |
+	-----------------------------------------------------
+
+This is an overview of the changes made from 2.03/2.33 to 2.03b/2.33b and 
+from 2.02/2.32 to 2.03/2.33.  It is primarily oriented towards previous VEDIT 
+and VEDIT PLUS users.
+
+Be sure to read the file ERRATA.DOC for corrections to the manual.  It also 
+describes enhancements made after the manual was printed.
+
+
+		CHANGES FROM 2.03/2.33 TO 2.03b/2.33b
+		-------------------------------------
+
+Be sure to read the file ERRATA.DOC carefully, since virtually everything
+in this file is new!
+
+New Commands
+------------
+
+V	"-V" performs an update-only of the visual mode window.
+EA	"-EA" leaves the edit position at the beginning of the file.
+OD	Displays the system date.
+OT	Displays the system time.  +OT gives 1/100 second resolution.
+YB	"YB" rings the bell.
+YL	"+YL file" performs an extended search for the 'file'.
+YO	"YO" re-routes the following console output directly to DOS.
+YS	"_YS" performs a global stripping of characters.
+YWS	"YWS?" switches to use the status line as a one line window.
+
+YWS#r	The desired window is specified by numeric register 'r'.
+	Applies to all window commands.
+
+ES 6 n	MS-DOS - EOF mark and padding: 0 = no mark, no padding (normal 
+	setting), 1 = EOF mark no padding, 2 = EOF mark and padding.
+
+.ml 	The current left margin, i.e. the indent position in Visual Mode
+.mr	The current right margin, i.e. the word wrap column
+.ms	The horizontal scroll amount in Visual Mode
+.os	Operating system: 0 = CP/M, 1 = CP/M-86, 2 = MSDOS/PCDOS
+.wd 	The current display type:
+		0 = CRT terminal,   1 = Non-IBM memory mapped
+		2 = IBM Monochrome, 3 = IBM Color (CGA or EGA)
+.wn	Name of the current window
+.wsW	Status of window 'W': 0 = window does not exist, 1 = window exists
+.wt	Total number of existing windows
+.wz	Zoom flag: 0 = window not zoomed, 1 = window zoomed
+
+
+Other Changes
+-------------
+
+[GOTO]		"Mark" has been changed to "Set".
+
+INSTALL		Can now load the keyboard layout file saved with the
+		"YK" command.  You can easily copy your 2.03 layout
+		to the 2.03b VEDIT PLUS.
+
+Keystroke macros may be set up for use in Command Mode.
+
+Visual keystroke macros can perform Command Mode operations (macros) without
+the use of a text register.  (Create your own editing functions!  Add them
+with INSTALL!)
+
+During [DEFINE], you may press [BACKSPACE] to cancel the function.
+
+There are now 100 numeric registers.  (CP/M version remains at 26 registers.)
+
+Small memory mode may be selected with the "-S" invocation option.  Prevents
+VEDIT PLUS from using more than 100K, even when more is available.
+
+The name of the file "PRINT.EXC" has been changed to "PRINT.VDM".
+
+	-------------------------------------------------------------
+
+		CHANGES FROM 2.02/2.32 TO 2.03/2.33
+		-----------------------------------
+
+IMPORTANT CHANGES:
+-----------------
+
+Several of the Command Mode commands have been re-organized.
+
+The good news -- the structure and syntax are more consistent, more
+		 functions are readily available.
+
+The bad news  -- all previous macros will require some changes.  This is 
+		 the first time in six years we have made incompatible 
+		 changes and, hopefully, the last for some time.
+
+All of your existing macros with the following commands MUST be changed. 
+You can simplify this necessary operation by using the supplied macro 
+CV203.VDM.  It searches for likely changes and gets your confirmation to 
+make the change.
+
+OLD		NEW
+---		---
+
+P		RC		"P" is now the leadin for printer commands.
+				Think of "Copy to register".
+0P		RE		New command to empty a text register.
+				0RC now works like 0T and 0K.
+RC		RJ
+RG		RQ		The "Q" stands for "Query".
+XG		XQ
+YL		YP		"YL" was discontinued some time ago.
+YR		ER<ESC>		More consistent this way.
+YW		EW<ESC>
+EO		PR		Printing now starts new pages automatically.
+EP 12		+RA		Look up the "RA" command in the manual!
+
+
+
+Watch out for the "EB" command, the "EE" command and text register commands.  
+The "EB" command expects TWO arguments; a single argument must be followed 
+with a RETURN or <ESC>.  The "EE" and register commands may no longer have a 
+space between the command and the register name.
+
+OLD		NEW
+---		---
+
+EE r		EEr		The edit buffer must not be preceded with
+				a space.
+RL r		RLr		Same for all register commands.
+EB file		EB file<ESC>	Single arguments needs a RETURN or <ESC>.
+
+
+
+We also recommend that you change the following old commands to the newer
+commands.  The old commands may be discontinued in the next release.
+
+OLD		NEW
+---		---
+
+G		RG		Think of "Get register".
+
+
+
+NEW COMMANDS
+------------
+
+_K		You can now perform a "global" kill of lines.
+_T		Similarly with the "T" command.
+_PR		Similarly with the "PR" command to print lines.
+p,qPR		This is how you print a block in command mode.
+
+:ED file	This only tests if the file "file" exists.
+
+OC		Execute a single DOS command or program
+OS		Temporarily enter MS-DOS, return with DOS command "EXIT"
+
+PE		Page eject
+PP		Controls/display 4 printer parameters
+PP 1 n		Controls physical lines per page
+PP 2 n		Controls printed lines per page
+PP 3 n		Controls left margin for printing
+PP 4 n		Controls use for Form-Feed for page eject
+
++RQ		The "+" option allows prompting on the status line.
++XK
++XQ
+
+-XTr		The "-" option displays the number left justified.
+
+nYEA		Set the window attributes to 'n' (color, reverse video, etc)
+YEC		Clears the window
+nYEH		Position cursor horizontally to column 'n'
+YEL		Perform erase to end of line (within the window)
+YES		Perform erase to end of screen (within the window)
+nYEV		Position cursor vertically to line 'n'
+
+YM		Search for the matching (nested) parenthesis.  
+		Great for 'C' programming and VEDIT PLUS macros.
+
+YWD		Delete current window.
+YWDw		Delete window 'w'.
+
+YWI		Initialize screen - delete all windows, reset attributes.
+
+YWSw		Switch to window 'w'.
+
+YWZ		Zoom current window to full screen.
+
+YWBw n		Create window 'w' of 'n' lines at bottom.
+YWLw n		Create window 'w' of 'n' columns at left.
+YWRw n		Create window 'w' of 'n' columns at right.
+YWTw n		Create window 'w' of 'n' lines at top.
+
+
+
+OTHER THINGS
+------------
+
+
+|<	Match beginning of line (zero length match)
+|>	Match end of line (zero length match)
+
+
+.es	Search error flag.  Only set/reset by "F", "S", "EM" amd "RM"
+	This flag is preferable to the ".er" flag for most applications.
+.rtR 	The "type" for register 'R': 0 = unused, 
+	1 = text register, 2 = edit buffer.
+.t	Next tab position based on ".x"
+.vm	Visual mode "1 END" marker's offset in edit buffer
+.wa	Attribute for displayed text in current window
+.we	Attribute for erased parts in current window
+.wh	Horizontal size (in columns) of current window
+.wv	Vertical size (in lines) of current window
+.wx	Horizontal ('x') position of cursor in window
+.wy	Vertical ('y') position of cursor in window
+
+
+
+POP-UP MENUS and KEYSTOKE MACROS
+--------------------------------
+
+The Visual Mode text register and text marker functions are now available 
+through the "pop-up" menus.  However, since you probably don't want to see 
+menus for these common operations, you can access them directly using
+"keystroke macros".  This is precisely what the "Expert Keyboard Layout" 
+does.
+
+One of the most useful new features are the keystroke macros.  See pages 86, 
+87, 105 and 107.  Remember that keystroke macros let you create macros 
+(editing functions) without using a text register.
+
+To learn more about the changes made in the Visual Mode, read the following 
+pages in the manual:
+
+Pages: 53-60, 72-73, 81-83, 86-88, 89-92, 94-97.
+
+
+
+INSTALLATION
+------------
+
+The previous [HOME] and [ZEND] functions are now part of the [GOTO] 
+function.  Most keyboard layouts simulate the [HOME] and [ZEND] 
+functions using keystroke macros.  
+
+As many keystroke macros as you like can be built into VEDIT PLUS during 
+Installation.
+
+Task 7.6 lets you select the character used for displaying <TAB> characters
+on the screen.  By default it is a space.
+
+Task 7.7 lets you select a character for indicating the end of a line.
+By default it is a space, i.e. there is no end-of-line indicator.
+
+Task 10 gives you better control over screen attributes and colors.
+
+
+
+MISC
+----
+
+The "FILE" status line message displays additional information - see page 54.
+
+The [FIND] and [REPLACE] functions can now operate in the reverse direction.
+The options prompt is now different.  See page 68.
+
+Changing the Tab Positions no longer affects the Help messages.
+
+Lines ending in just a Line-Feed (without a Carriage-Return) can now be edited
+without trouble in Visual Mode.  Each displayed line will end in a "<LF>" as 
+a reminder that the Carriage-Return is missing.
+
+Large files containing only Carriage-Returns (without Line-Feeds) can now be 
+loaded into VEDIT PLUS.  However they cannot be edited in Visual Mode until 
+the Carriage-Returns are changed to Carriage-Return Line-Feeds with the 
+Command Mode command:
+
+	#_S<CTRL-Q><RETURN><ESC><RETURN><ESC>
+

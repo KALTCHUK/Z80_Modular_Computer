@@ -1,0 +1,209 @@
+
+		SUPPORTING NEW CRT TERMINALS
+
+This file explains how to use the supplied program INTMOD to add 
+a new CRT terminal to the INSTALL menu of  supported  terminals. 
+INTMOD  can  also  be  used  to  change the table entries for an 
+existing terminal.  If your  CRT  terminal  is  already  on  the 
+INSTALL menu, it is unlikely that you will need to use INTMOD.
+
+To use INTMOD, you will need the following items:
+
+1)  A  copy  of  INTMOD.EXE  and  INSTALL.INI  on  your  default 
+    (logged-in)  disk  drive.   (INTMOD.COM  for  CP/M  systems, 
+    INTMOD.CMD for CP/M-86). 
+
+2)  A list of Control or Escape sequences used by your  terminal 
+    or computer for controlling the display (consult your user's 
+    manual).
+
+3)  An ASCII conversion chart.
+
+The file INSTALL.INI contains the names and associated tables of 
+Escape   sequences  for  the  supported  CRT  Terminals.   These 
+sequences are used by the program INSTALL to customize VEDIT  to 
+run on a particular machine or terminal.
+
+INTMOD   allows   you   to  work  interactively  with  the  file 
+INSTALL.INI.  New terminal entries can be added, while  existing 
+entries can be modified, deleted, displayed, or printed.
+
+The  INTMOD  program contains on-line help messages which should 
+give the information necessary to effectively use  the  program.  
+Note  that  any  changes  made  (including  adding  or  deleting 
+terminal entries) are not permanent until you  exit  INTMOD  and 
+specify that changes are to be saved.
+
+
+ADDING OR MODIFYING A CRT TABLE ENTRY
+-------------------------------------
+
+At the operating system prompt, type:
+
+	INTMOD<RETURN>  
+
+INTMOD  will  display  a  brief  description of  its  operation,  
+followed by the main options menu:
+
+    INTMOD : Modification Options 
+
+	0. EXIT Program without update 
+	1. DISPLAY terminal entries 
+	2. ADD a  new terminal entry 
+	3. DELETE existing terminal entry 
+	4. MODIFY existing terminal entry 
+	5. PRINT ONE or ALL entries
+
+    Enter option number  (DISPLAY terminal entries) 
+
+At the prompt, type the  number  of  your  selected  option.   A 
+default  selection  is  displayed  in  parentheses  and  can  be 
+selected by typing <RETURN>.
+
+
+0. EXIT Program without update 
+------------------------------
+This  option  allows  you  to  exit  INTMOD at any point without 
+saving changes you have made.  Each of the other options  allows 
+you to exit and save the changes to disk.
+
+
+1. DISPLAY terminal entries
+--------------------------- 
+This option displays an alphabetical list of currently supported 
+terminals.   At this point you can type the number corresponding 
+to the terminal entry you wish to work with, or exit back to the 
+main  menu.   The terminal you select in this option will be the 
+default terminal for all other options.
+
+You can select this option to save your changes to disk.
+
+
+2. ADD a new terminal entry
+---------------------------
+This  option  allows  you  to  create an all-new terminal entry.  
+INTMOD will prompt you for the name of the new  terminal,  which 
+can  be up to 30 characters long.  INTMOD then asks if you would 
+like to initialize the new table from an existing entry.  If you 
+answer   yes   to  this  prompt,  INTMOD  asks  for  the  number 
+corresponding to that entry.  
+
+Assuming the name you entered for the new entry does not already 
+exist,  INTMOD  creates it and initializes the table to the same 
+values as in the existing entry chosen above, or initializes all 
+values  to  zero if no existing entry was used.  If the name for 
+the new table already exists, INTMOD issues an error message.
+
+It is usually easier to create a new entry from an existing one, 
+rather that starting completely from scratch.  Try to  choose  a 
+terminal that is close to the one you ultimately want.  Once you 
+have created a new terminal entry, you can proceed to the MODIFY 
+option.
+
+Note:  INTMOD  automatically re-sorts the list of terminals into 
+alphabetical order, so the number corresponding to some  entries 
+may  change.  It is a good idea to DISPLAY the list of terminals 
+again before proceeding.
+
+
+3. DELETE existing terminal entry
+---------------------------------
+This option allows you to remove an unwanted terminal entry from 
+the  menu.  INTMOD will prompt for the number of the terminal to 
+be deleted (defaults  to terminal  chosen  in  DISPLAY  option).  
+Since  this  option  will  cause  the  list  of  terminals to be 
+re-sorted, the number corresponding to some entries may change.
+
+
+4. MODIFY existing terminal entry 
+---------------------------------
+This option allows you to change  one  or  more  of  the  escape 
+sequences  in  a specific table.  Use this option to 'fine tune' 
+an existing table or a new table ADDed  with  option  2.   After 
+selecting  the  MODIFY  option,  you  will  be  prompted  with a 
+sub-menu of terminal control functions (see notes below).  Enter 
+the  number  corresponding  to  the function you wish to modify.  
+You will be asked  to  enter  the  hexadecimal  values  for  the 
+characters in the sequence.  Typing <RETURN> when asked to enter 
+a new value will keep the original setting.
+
+After modifying a table entry, you have  the  option  of  making 
+additional  changes to the entry, returning to the main menu, or 
+exiting INTMOD.
+
+5. PRINT ONE or ALL entries
+---------------------------
+With this option, you can print the current values in a specific 
+table entry, or optionally, all table entries.
+
+
+NOTES:
+------
+Below is an example CRT table entry.  Each table consists of  16 
+control  sequences  of  up  to  7  bytes, plus cursor addressing 
+information (ADDOFF) of 3 bytes.  Each control  sequence  begins 
+with  a  count byte of the number of characters in the sequence, 
+followed by those characters,  followed  by  a  delay  byte  (in 
+milliseconds).  
+
+Most of the functions in the table  should be  self-explanatory.  
+Those which may not be so obvious are described below.
+
+CURSOR ADDRESSING  is  broken  down  into  three  parts:  Cursor 
+Leadin, Characters between X and Y, and Cursor Lead Out.   These 
+are best described by example.  In the table below, the sequence 
+for direct cursor addressing is "ESC [ r ; c H",  where  'r'  is 
+the  row  and `c` is the column.  In this example, Cursor Leadin 
+is "ESC [", Chars between X and Y is ";", and Cursor Lead Out is 
+"H".
+
+ADDOFF  is a three byte sequence that performs several functions 
+related to cursor addressing.  Byte one determines  whether  the 
+row or column value is sent first, and also whether these values 
+are sent in binary or ASCII format.  The second and third  bytes 
+are  the values of any offset that is to be added to the row and 
+column values.  
+
+Example:  Many terminals use a one byte binary value for row and 
+column  addressing.   To  avoid  sending ASCII control codes, an 
+offset of 20H is added to the row or column position to get  the 
+actual value sent to the terminal.
+
+ENABLE and DISABLE  STATUS  LINE  are  used  on  terminals  that 
+support  an optional 25th status line.  This can only be used by 
+VEDIT if it can be addressed as a  normal  line  (i.e.  reserved 
+status lines are not supported).  If this function is supported, 
+VEDIT will use the 25th status line as its own status line.
+
+ENTER and EXIT VEDIT can be used to enable a  terminal  function 
+while  in VEDIT and disable that function when leaving VEDIT.  A 
+common use for this function is on terminals that have a numeric 
+keypad  that  can  also be used as function keys.  In this case, 
+VEDIT would put the keypad in alternate (function key)  mode  in 
+and upon exit return it to normal mode.
+
+
+Example Terminal Entry:
+
+2,1bH,5bH,0,0,0,0	  Cursor Leadin
+1,3bH,0,0,0,0,0		  Chars between X and Y
+1,48H,0,0,0,0,0		  Cursor Lead Out
+80H,1,1			  Addoff
+4,1bH,5bH,32H,4aH,10H,0	  Clear Screen
+4,1bH,5bH,30H,4aH,10H,0	  EOS (erase to end of screen)
+4,1bH,5bH,30H,4bH,0,0	  EOL (erase to end of line)
+4,1bH,5bH,31H,4cH,0,0	  Insert Line
+4,1bH,5bH,31H,4dH,0,0	  Delete Line
+1,0aH,0,0,0,0,0		  Forward Scroll
+4,1bH,5bH,31H,4cH,0,0	  Reverse Scroll
+4,1bH,5bH,37H,6dH,0,0	  Begin Reverse Video
+4,1bH,5bH,30H,6dH,0,0	  End Reverse Video
+0,0,0,0,0,0,0		  Enable Status Line (not used)
+0,0,0,0,0,0,0		  Disable Status Line (not used)
+0,0,0,0,0,0,0		  Enter VEDIT (not used)
+0,0,0,0,0,0,0		  Exit VEDIT (not used)
+
+
+If   you  need  further  assistance  with  INTMOD,  please  call 
+CompuView at (313) 996-1299.
+                                                                                       

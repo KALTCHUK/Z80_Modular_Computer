@@ -1,0 +1,274 @@
+
+		-----------------------------------------
+		|    MANUAL ERRATA and Recent Changes   |
+		-----------------------------------------
+
+There are several typos in the manual which you should correct.  Several
+last minute enhancements to the program are also not reflected in the manual.
+We apologize for the inconvenience.
+
+To print this file, give the DOS command:
+
+	VPLUS -X PRINT.VDM ERRATA.DOC
+
+
+Note that the on-line help files are completely up to date.
+
+
+
+ERRATA
+------
+
+Pg. 188		Change ".lm" to ".ml".  Note that several new internal 
+		values have been added.  These are described below.
+
+Pg. 361		Change ".lm" to ".ml".  
+
+Pg. 251		In "Notes", delete the last sentence beginning with
+		"However, ...".
+
+Pg. 302		Task (2) begins with the prompt:
+
+		"Load new keyboard layout from the file VEDIT.KEY (Y/N)?"
+
+		Normally answer this with "N".  See "Installation" below.
+
+Pg. 329		(IBM PC Only)  There are two new keystroke macros:   
+
+		<ALT-N>  Prompts for the name of a file to simultaneously
+			 edit in its own window.  (The current window is
+			 split into two.)
+
+		<ALT-T>  Toggles between the files being edited.
+
+		Note:   These keystroke macros use text register "X" and
+			numeric registers 98 and 99.
+		       
+
+
+NEW FILES
+---------
+
+CV203.VDM	This is a macro which converts version 2.02 macros into
+		2.03 macros.
+
+STRIPV.VDM	This macro strips comments from VEDIT PLUS macros.  Primarily
+		for CP/M (8080 / Z80) machines, where it is important to save
+		memory space.
+
+WHATS.NEW	Documents the changes made in VEDIT PLUS from version 2.03 to
+		2.03b and from version 2.02 to 2.03.  This is primarily of
+		interest to existing VEDIT users.
+
+
+
+ENHANCEMENTS	(These technical commands are not important to new users!)
+------------
+
+EA command	The command "-EA" saves the file being edited, but leaves the 
+		edit position at the beginning of the file.  (Note: the text 
+		markers may not be preserved with "-EA".)
+
+ES command	"ES 6 n" now has three settings.  The normal setting "ES 6 0" 
+		writes files in their exact length; "ES 6 1" writes files with
+		one EOF mark (1A hex); "ES 6 2" writes files with one EOF mark
+		and padding (00 hex) to the next 128 byte boundary.
+
+OD command	Displays the system date.  ":OD" suppresses the final <CR>
+		<LF>.  Use the command "YI OD -YI" to insert the date into
+		your text.
+
+OT command	Displays the system time.  ":OD" suppresses the final <CR>
+		<LF>. "+OT" displays the time with hundreth-second resolution.
+
+V command	The command "-V" performs an update-only of the visual mode 
+		window.  It is useful inside macros which need to update a 
+		window.  (Otherwise visual mode windows only update while 
+		waiting for keyboard input.)
+
+YB command	"YB" rings the bell. (It sends a <CTRL-G> to DOS.)
+
+YL command	The command form "+YL file" performs an extended search for
+		the keyboard layout file 'file'.
+
+YO command	"YO" re-routes the following console output directly to DOS.  
+		"-YO" stops the re-routing.  It is unlikely you will ever 
+		need this command.
+
+YWS command	The command "YWS?" switches to use the status line as a one 
+		line window.  This allows displaying messages on the status 
+		line.  (It is more flexible than using "+YT", "+XQ" and 
+		"+RQ".)  You should explicitly switch back to a normal window 
+		when done.  (".wn" is the current window name.)
+
+.ml value	The internal value ".ml" is the current left margin, i,e.
+		the indent position in Visual Mode.
+
+.mr value	".mr" is the current right margin, i,e. the word wrap column.
+		(Same as EP 7.)
+		
+.ms value	".ms" is the horizontal scroll amount in visual mode, i.e. 
+		the number on the left side of the status line.
+
+.os value	".os" is the operating system type: 0 = CP/M, 1 = CP/M-86 2 = 
+		MSDOS/PCDOS.  (Useful in macros which use the "OT", "OD", 
+		"OC" and "OS" commands.)
+
+.wsW value	".wsW" is the status of window "W".  It has value "1" if 
+		window "W" exists, otherwise value "0".
+
+.wz value	".wz" indicates whether any window has been zoomed to full 
+		screen: 0 = not zoomed, 1 = zoomed.
+
+Window 		You can use the value of a numeric register to specify the
+commands	desired window in all window commands.  The form is:
+		"YWS#r", "YWD#r", "YWB#r n", etc.  See page 198.
+
+
+
+[CANCEL] and <CTRL-C>
+---------------------
+
+On the IBM PC, [CANCEL] can be used as an alternative to <CTRL-C> to cancel 
+edit functions which are prompting on the status line.  [CANCEL] can also be 
+used in place of <CTRL-C> in Command Mode to abort macros, etc.
+
+
+
+Keystroke Macros
+----------------
+
+Keystroke macros can be used in both Visual Mode and in Command Mode.  For 
+example, you could use the [DEFINE] function to assign the command "ED *.ASM 
+<RETURN>" to the key <SHIFT-F1>.  Pressing <SHIFT-F1> in Command Mode would 
+then execute the command.  There is one restriction: keystroke macros used in 
+Command Mode cannot be accessed via multi-key "escape sequences".  This is a 
+serious restriction for CRT terminals, but not for the IBM PC.
+
+Visual Mode keystroke macros can be a combination of visual mode functions 
+and Command Mode commands.  This allows virtually any edit function to be 
+created.  Page 105 of the manual gives several useful examples.
+
+Keystroke macros can be built into VEDIT PLUS during Installation.  There is 
+no absolute limit to how many keystroke macros can be built in or added with 
+[DEFINE].  Of course, keystroke macros take up memory space.  INSTALL limits 
+the length of EACH keystroke macro to 200 characters.  The "VPLUS.COM" file 
+will grow in size as keystroke macros are added.
+
+
+
+INSTALLATION
+------------
+
+The entire keyboard layout, including any keystroke macros created with the 
+[DEFINE] function, may be saved to disk from within VEDIT PLUS with the "YK" 
+command.  This file may now be used to setup the keyboard layout during 
+Installation.  (The file must be saved with the name "VEDIT.KEY".)
+
+TASK (2) of the Installation now asks the following question:
+
+	Load new keyboard layout from the file VEDIT.KEY (Y/N)?
+
+Answer with "Y" to load the file "VEDIT.KEY" and return to the main menu.
+You can then select Task 2 and/or Task 3 to futher modify the keyboard layout.
+
+You can create keystroke macros within VEDIT PLUS, save them to disk, and use 
+this Installation feature to have them "built-in".
+
+This also makes it easier to update from one version of VEDIT PLUS to the 
+next.  For example, if you are updating from 2.03 to 2.03b, you can copy the 
+keyboard layout from the old VEDIT PLUS to the new one:
+
+1.  Invoke the 2.03 VEDIT PLUS and enter Command Mode.
+
+2.  Give the command: "YK VEDIT.KEY".
+
+3.  Exit the editor with the command: "EQY".
+
+4.  Give the command to install the 2.03b VEDIT PLUS: "INSTALL VPLUS.COM".
+
+5.  Select Task 2 and enter "Y" for the first question.
+
+6.  Exit the Installation.
+
+(Note: this does not work with 2.02 or earlier versions of VEDIT PLUS.)
+
+
+
+SMALL MEMORY MODE  (8086 Only)
+-----------------
+
+For optimum performance VEDIT PLUS will use a lot, or even all, of memory.  
+In particular, it will try to reserve one 64K memory segment for the text 
+registers, another 64K for the main edit buffer, and additional 64K segments 
+for each edit buffer, until all memory is used up.  The program itself takes 
+another 36K.  Normally this works best.  However, if you try to run other 
+programs from within VEDIT PLUS (via the "OC" and "OS" commands), you may 
+find that you don't have enough memory left.  If this happens you should 
+first "quit" any unused edit buffers.  If this is not enough, you can run 
+VEDIT PLUS in its "small memory mode", in which it only uses 64K of memory 
+for all edit buffers and text registers.  (Total memory usage = 100K).  You 
+may also want to run in "small memory mode" with multi-tasking programs such 
+as TopView, Microsoft Windows or DESQView.  To run in "small memory mode", 
+invoke VEDIT PLUS as follows:
+
+	VPLUS -S filename
+
+
+
+ERROR HANDLING  (MS-DOS Only)
+--------------
+
+VEDIT PLUS handles all disk errors, including having a disk drive door open, 
+read and write errors.  It also handles printer errors.  When an error 
+occurs, the status line displays a descriptive message and prompts with:
+
+CANCEL, IGNORE, RETRY (C/I/R)?
+
+Type "C" to cancel the operation.  This is safe because it returns to VEDIT 
+PLUS.  Type "R" to re-try the operation, such as after closing the drive 
+door.  You can type "I" to ignore, but this usually just leads to another 
+error.
+
+
+
+PRESERVING YOUR FILES
+---------------------
+
+VEDIT PLUS is designed to make it as unlikely as possible for you to 
+accidentally lose a file or your edited text.  However, nothing is foolproof.  
+The best safeguard is to save your edited file to disk at least once an hour 
+(using [FILE]-Save or the "EA" command) and backing up your work at the end 
+of each day.  
+
+You should use the following commands with additional care:
+
+1.  The "EK" command erases files similar to the DOS "ERASE" command.  "EK" 
+    is actually safer to use since it displays the filenames about to be 
+    erased and requests confirmation.
+
+2.  The "EQ" and "EZ" commands and the [FILE]-Quit operation abandon the edit 
+    changes you have just made.  They are very useful, but you don't want to 
+    use them when you really wanted to save your changes.  These commands 
+    request confirmation before throwing your text away.  Also, they do not 
+    change or erase the original files on disk.
+
+3.  The "EF" command is primarily intended for splitting large files into 
+    smaller ones.  "EF" is almost always preceded by a "W" command.  Don't 
+    use "EF" to quit or save your editing.  This command requests confirmation.
+
+4.  The "OS" command lets you enter DOS for as long as you wish.  However, it
+    does not save the files you are editing to disk.  Therefore, be sure to 
+    return to VEDIT PLUS (with the DOS command "EXIT") to save your files.
+    It is easy to forget that you are still in VEDIT PLUS and turn the
+    computer off - losing your edit changes.  As a safeguard, you may wish
+    to save your files (use "EY" or "EA" commands) before entering DOS.
+
+As an additional safeguard, VEDIT PLUS always creates a "backup" when you 
+revise an existing file.  The backup has a filename extension of ".BAK" and 
+is created whenever you save the newest revisions to disk.  Therefore, if you 
+accidentally erase an important file (either with VEDIT PLUS or DOS) you will 
+still have the backup (unless you explicitly erased it).  To use the backup, 
+just rename it to the desired filename; you cannot directly edit a ".BAK" 
+file.
+

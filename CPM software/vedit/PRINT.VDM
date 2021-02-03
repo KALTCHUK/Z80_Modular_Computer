@@ -1,0 +1,53 @@
+r*	PRINT.EXC - Simple print formatter macro
+r*
+r* You can save space by deleting all comment lines with the command:
+r*	[Fr*<ESC> 0KK]
+r*
+r* The "_B" allows printing to start from the beginning of the file
+_B
+r* The "PP 2<ESC> .rvXS2" saves the number of lines/page in register 2
+r* The "PP 2 66" disables VEDIT's auto-page-eject
+r* The "1XS1" sets numeric register 1 used as a page counter to 1
+r* The "YP" reroutes output to the printer
+r*
+PP 2 .rvXS2
+PP 2 66
+1XS1
+YP
+r* First 2 blank lines are printed
+[@YT/
+
+/
+r* Then the file name and page number are printed
+r*
+@YT/FILE: /
+:EW
+@YT/                                       PAGE  /
+-XT1
+r* Next print 2 more blank lines
+r*
+@YT/
+
+/
+r* Now print 58 lines of text, performing auto-buffering if necessary
+r*
+58_T
+r* The command "58:L" will break out of the iteration when the end-of-file
+r* is reached
+r*
+58:L
+r* Otherwise start a new page and increment the page counter
+r*
+PE
+XA1
+r* End the iteration loop
+r*
+]
+r*
+r*
+PE
+r* Restore the original printed lines/page value
+PP 2 Q2
+r*
+r* Thats the end
+

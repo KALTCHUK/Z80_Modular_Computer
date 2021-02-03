@@ -1,0 +1,642 @@
+
+[CURSOR UP]		<CTRL-E>	[CURSOR DOWN]		<CTRL-C>
+[CURSOR RIGHT]		<CTRL-S>	[CURSOR LEFT]		<CTRL-D>
+[BACK TAB]		<CTRL-Q>	[TAB CURSOR]		<CTRL-B>
+[ZIP]			<CTRL-G>	[LINE TOGGLE]		NOT USED
+[NEXT LINE]		<CTRL-J>	[SCROLL UP]		<CTRL-R>
+[SCROLL DOWN]		<CTRL-V>	[SCROLL RIGHT]		<CTRL-Y>
+[SCROLL LEFT]		<CTRL-T>	[PREVIOUS WORD]		<CTRL-A>
+[NEXT WORD]		<CTRL-F>	[PREVIOUS PARAGRAPH]	ESC - W
+[NEXT PARAGRAPH]	ESC - X		[PAGE UP]		<CTRL-W>
+[PAGE DOWN]		<CTRL-X>	[SCREEN TOGGLE]		NOT USED
+[INSERT]		<CTRL-N>	[DELETE]		<Del>
+[BACKSPACE]		<---		[DEL PREVIOUS WORD]	ESC - A
+[DEL NEXT WORD]		ESC - F		[ERASE TO END OF LINE]	<CTRL-L>
+[ERASE LINE]		<CTRL-K>	[UNDO]			<CTRL-U>
+[TAB CHARACTER]		--->|		[NEXT CHAR LITERAL]	ESC - Q
+[REPEAT]		ESC - R		[FIND]			ESC - 2
+[REPLACE]		ESC - 3		[CANCEL]		<CTRL-Z>
+[INDENT]		<CTRL-P>	[UNDENT]		<CTRL-O>
+[FORMAT PARAGRAPH]	ESC - J		[MACRO]			ESC - C
+[VISUAL EXIT]		ESC - E		[VISUAL ESCAPE]		ESC - ESC
+[DEFINE]		ESC - D		[HELP]			ESC - ?
+
+Press the key for the desired function or RETURN for next screen: 
+
+\RT\
+
+------------------------ DEFAULT KEYBOARD LAYOUT ----------------------------
+
+[GOTO]			ESC - G		[FILE]			ESC - 0
+[BLOCK]			ESC - B		[PRINT]			ESC - P
+[WINDOW]		ESC - 9		[USER]			ESC - U
+[MISC]			ESC - M
+
+----------------------- BUILT-IN KEYSTROKE MACROS ---------------------------
+
+[BLOCK]-Copy		ESC - 4		[BLOCK]-Move		ESC - 5
+[BLOCK]-Insert		ESC - 6		[CANCEL]		ESC - 1
+[GOTO]-Set		ESC - 7		[GOTO]-Jump		ESC - 8
+[GOTO]-Home		ESC - H		[GOTO]-Zend		ESC - Z
+
+Press the key for the desired function or RETURN for next screen: 
+
+\RT\
+
+{1END}		1 END	Status line message
+{TEXT}		TEXT	Status line message
+{MORE}		MORE	Status line message
+{FULL}		FULL	Status line message
+{LINE}		LINE:	Status line message
+{COL}		COL:	Status line message
+{FILE}		FILE:	Status line message
+{INS}		INSERT	Status line message
+
+{WRAP}			Setting word wrap column (right margin)
+{MARG}			Setting left margin
+{FORM}			Formatting paragraphs
+{HZ}			Horizontal scrolling
+{IC}			Inserting control characters
+{CONV}			Lower / upper case conversion
+{EMPTY}			Emptying a text register (free more memory space)
+{SWITCH}		Switch to simultaneously editing another file
+{COMWIN}		Creating a window for Command Mode
+{FILEWIN}		Creating a window for another file
+{EXIT}			Exit from Visual Mode to Command Mode
+
+
+Type the word between "{" and "}" for help on above topics: 
+
+\CU\
+
+[CURSOR UP]		Moves the cursor up one line, to the same horizontal
+			position if possible.  If the position is in the middle
+			of a tab, moves to the end of the tab.  The "Cursor
+			Positioning Mode" determines whether cursor can be
+			positioned past shorter lines.
+
+\CD\
+
+[CURSOR DOWN]		Moves the cursor down one line, to the same horizontal
+			position if possible.
+
+\CR\
+
+[CURSOR RIGHT]		Moves the cursor to the next character.  At the end of
+			the line, it moves to the beginning of next the line.
+
+\CL\
+
+[CURSOR LEFT]		Moves the cursor to the previous character.  At the
+			beginning of a line, it moves to the end of the
+			previous line.
+
+\BT\
+
+[BACK TAB]		Moves the cursor to the first character of the screen
+			line or, if already there, to the first character of
+			the previous screen line.
+
+\TC\
+
+[TAB CURSOR]		Moves the cursor to the character at the next tab
+			position.  Note that this only moves the cursor; use
+			the <TAB> key to insert a tab character.
+
+\ZP\
+
+[ZIP]			Moves the cursor to the end of the current screen line
+			or, if already there, to the end of the next text line.
+
+\LT\
+
+[LINE TOGGLE]		Is a combination of [ZIP] and [BACK TAB].  Moves the
+			cursor to the end of the line or, if already there, to
+			the beginning of the line.
+
+\NL\
+
+[NEXT LINE]		Moves the cursor to the beginning of next text line.
+
+
+\SU\
+
+[SCROLL UP]		Similar to [CURSOR UP], except that the cursor remains
+			on the same screen line and the screen moves down
+			instead.
+
+\SD\
+
+[SCROLL DOWN]		Similar to [CURSOR DOWN], except that the cursor
+			remains on the same screen line and the screen moves up
+			instead.
+
+\SR\
+
+[SCROLL RIGHT]		Moves the screen window right to view long lines going
+			off the right side of the screen.
+
+\SL\
+
+[SCROLL LEFT]		Moves the screen window left to view the beginning part
+			of long lines.
+
+\PW\
+
+[PREVIOUS WORD]		Moves the cursor to the first character of the current
+			word or, if already there, to the beginning of the
+			previous word.
+
+\NW\
+
+[NEXT WORD]		Moves the cursor to the first character of next word.
+
+\PP\
+
+[PREVIOUS PARA]		Moves the cursor to the beginning of the current
+			paragraph or, if already there, to the beginning of the
+			previous paragraph.
+
+\NP\
+
+[NEXT PARA]		Moves the cursor to the beginning of next paragraph.
+
+
+\PU\
+
+[PAGE UP]		Moves to previous "page" of text - similar to typing
+			[CURSOR UP] for 3/4 screen lines.
+
+\PD\
+
+[PAGE DOWN]		Moves to next "page" of text - similar to typing
+			[CURSOR DOWN] for 3/4 screen lines.
+
+\ST\
+
+[SCREEN TOGGLE]		Moves the cursor first to the last allowed screen line,
+			or if already there, to the first allowed screen line.
+
+\IN\
+
+[INSERT]		Toggles the "Insert"/"Overstrike" mode to its opposite.
+
+\DC\
+
+[DELETE]		Deletes the character at the cursor position. The
+			cursor doesn't move.  A lone <CR> or <LF> will also be
+			deleted, but a <CR> <LF> pair will both be deleted as
+			one.
+
+\BS\
+
+[BACKSPACE]		Moves the cursor left and deletes the character at that
+			position.
+
+\DP\
+
+[DEL PREVIOUS WORD]	Deletes the previous word and any following spaces if
+			the cursor is at the beginning of a word.  Otherwise
+			deletes only that portion of the word to the left of
+			the cursor.
+
+\DN\
+
+[DEL NEXT WORD]		Deletes the entire word and any following spaces if
+			the cursor is at the beginning of a word.  Otherwise
+			deletes from the cursor position to the end of the
+			word.
+
+\EE\
+
+[ERASE EOL]		Deletes (erases) all characters from the cursor
+			position to the end of the text line.  If the text
+			line is blank, it deletes the blank line.
+
+\EL\
+
+[ERASE LINE]		Deletes (erases) the entire text line. This also
+			closes up the screen line.
+
+\UN\
+
+[UNDO]			Rewrites the screen and ignores the changes made to
+			the text line the cursor is on.
+
+\TB\
+
+[TAB CHARACTER]		Enters the tab character (<CTRL-I>) into the text.
+			Optionally expands with space characters to the next
+			tab position.
+
+\LC\
+
+[NEXT CHAR LITERAL]	Enter the next character, whether a displayable
+			character, a control character or an 8 Bit character,
+			into the edit buffer.
+
+\RE\
+
+[REPEAT]		The next typed character or edit function is repeated.
+			This is either a multiple of four or the number typed
+			in.  Press [CANCEL] to abort.
+
+\FI\
+
+[FIND]		Performs a search operation.  Prompts for the search string -
+		enter the search string of up to 80 characters and a RETURN.
+		Use <CTRL-N> to search for RETURN.  Press [FIND] again to
+		search for the next occurrence.  Pressing RETURN immediately
+		following the "FIND" prompt gives the search options prompt:
+
+		OPTIONS (Again / Begin / Global / Reverse)
+
+		Select one or more options by typing the corresponding letters
+		"A", "B", "G" and/or "R" followed by a RETURN.
+
+	Again	Causes the previous search and replace strings to be used
+		again.
+
+	Begin	Starts search from beginning of edit buffer/file.
+
+	Global	Causes search/replace to operate to the end of the file,
+		performing disk buffering if necessary.  Also causes "Begin"
+		option to start search from beginning of the file.
+
+	Reverse Cause search/replace to operate in the reverse direction, i.e.
+		toward the beginning of the file.
+\RP\
+
+[REPLACE]	Performs a selective replace.  Prompts for string to be
+		replaced, then prompts for replacement string. Searches for
+		the next occurrence of the string, and if found gives the
+		prompt:
+
+		REPLACE (Y / N / REST / CANCEL)?
+
+		Select one option by typing the corresponding letter "Y", "N",
+		"R" or "C".
+
+	Y	Make the replacement.
+	N	Do not make the replacement.
+	R	Make the replacement and replace all other occurrences
+		without prompting.
+	C	Do not make the replacement and cancel function.
+
+		Press [REPLACE] again to replace the next occurrence.
+		Use [REPEAT] nn [REPLACE] to replace up to "nn"
+		occurrences with prompting.
+
+\CA\
+
+[CANCEL]		[FIND] and [REPLACE] reuse the previous strings until
+			they are canceled with [CANCEL] or the search string
+			is not found.  [CANCEL] will also abort any function
+			taking place because of a [REPEAT], cancel the
+			"1 END" block marker and cancel status line prompts.
+
+\ID\
+
+[INDENT]		Increase the "Indent Position" by the amount of the
+			"Indent Increment".  Each new line is then
+			automatically padded with tabs and spaces to the
+			Indent position.  The padding will also take place on
+			the current line if the cursor is before any text on
+			the line.
+
+\UD\
+
+[UNDENT]		Decreases the "Indent Position" by the "Indent
+			Increment", until it is zero.  One [UNDENT] therefore
+			cancels one [INDENT].
+
+\FP\
+
+[FORMAT PARAGRAPH]	Formats the current paragraph so that all text appears
+			between the left and right margins.  The left margin
+			is the current Indent Position, and the right margin
+			is the current Word Wrap margin.  At completion, the
+			cursor is positioned at the beginning of the next
+			paragraph.  Print Formatter commands will not be
+			formatted.  The paragraph will also be justified if
+			the justify option is set with the [USER] menu.
+
+\VM\
+
+[MACRO]			Executes a command macro.  Prompts for the name of the
+			text register which contains the macro to be executed.
+
+\EX\
+
+[VISUAL EXIT]		Visual Mode is exited to Command Mode.  The current
+			cursor position in the edit buffer becomes the Command
+			Mode edit pointer position.
+
+\ES\
+
+[VISUAL ESCAPE]		This is identical to the [VISUAL EXIT], except that
+			any current command execution is aborted.
+
+\DF\
+
+[DEFINE]		Prompts for the strings necessary to set up "keystroke
+			macros".  First prompts for "Function/control key" -
+			this is usually an unused function (or <ALT>) key to
+			which a sequence of key strokes are then assigned.
+			Next prompts for the sequence of key strokes.
+
+\HE\
+
+
+[HELP]			You are successfully using the [HELP] function.  In
+			addition to help with the edit functions, the last
+			help menu screen includes a menu of common Visual Mode
+			topics.  Help is available in the Command Mode with
+			the "H" and "EH" commands.
+\GO\
+
+[GOTO]	-- [B]egin [H]ome [S]et [J]ump [L]ine [Z]end [E]nd
+
+[B]egin		Moves cursor to first character in the file.
+
+[H]ome		Moves cursor to first character in edit buffer.
+
+[S]et		Prompts for a digit "0 - 9".  Sets an invisible text marker to
+		which you can later "jump" back with [GOTO]-Jump.
+
+[J]ump		Prompts for a digit "0 - 9".  "Jumps" to a previously set text 
+		marker.  If the marker has not been set or has been reset the
+		cursor does not move.
+
+[L]ine		Prompts for a line number.  Moves the cursor to the beginning
+		of the specified line.
+
+[Z]end		Moves cursor past last character in edit buffer.
+
+[E]nd		Moves cursor past last character in file.
+
+\FL\
+
+[FILE]	-- [E]xit [Q]uit [N]ew [S]ave [D]irectory
+
+[E]xit		Exits VEDIT PLUS (window) and saves file.  This is the normal
+		way to leave VEDIT PLUS.
+	
+[Q]uit		Quits VEDIT PLUS (window) and abandons file - any edit changes
+		to the file ARE NOT SAVED.
+
+[N]ew		Sets up to edit a new file.  Current file may be saved to disk
+		or abandoned.
+
+[S]ave		Saves current file to disk for continued editing.  Protection
+		against power failure or major mistakes.
+
+[D]irectory   	Displays the directory of any desired drive or subdirectory.
+		Allows use of wildcard characters, i.e. "*.TXT".
+
+\BL\
+
+[BLOCK]	--  [C]opy [M]ove [I]nsert [D]elete [S]wap
+
+[C]opy	First time, marks the beginning of the desired block of text and
+	displays 1 END on status line.  Second time, prompts for name of text
+	register to be used.  The text block between the previously marked
+	position and the current cursor position is then copied to the text
+	register.  Status line message changes to TEXT.  Optionally, the name
+	may be preceded with a "+" to append the block of text to any text
+	already in the register.  Pressing [BLOCK]-C twice in a row (without
+	moving the cursor) empties the specified text register.  Note that
+	either the beginning or the end of the text block may be set first.
+
+[M]ove	Similar to "[C]opy", except that the text block is deleted from the 
+	edit buffer after it is moved to the text register.
+
+[I]nsert   Prompts for the name of the text register which is to be inserted
+	at the current cursor position.  The register itself is not changed.
+
+[D]elete   Similar to "[C]opy", except the text block is simply deleted.
+
+[S]wap	Swaps the position of the cursor with the previously marked block
+	position.  Pressing it twice restores the cursor and block marker.
+\PR\
+
+[PRINT]	--  [A]ll [B]lock [E]ject [L]ines [M]argin
+
+[A]ll		Prints the entire file.  All text is offset from the left edge
+		of the paper by the "Printer margin".  Typically prints 60
+		lines of text on each page, with a 3 line margin at the top
+		and bottom of each page.
+
+[B]lock		Prints a block of text.  The block is specified similar to
+		"[BLOCK]-Copy".
+
+[E]ject		Advances the printer to the top of the next page.  (Depending
+		upon the "PP" command parameter, either line feeds or a form
+		feed is used.)
+
+[L]ines		Prompts for the number of lines to be printed on each page. 
+		Reducing the number increases both the top and bottom margin. 
+		(The physical number of lines per page is set with the "PP" 
+		command.)
+
+[M]argin	Prompts for the "Printer Margin".  This is the number of 
+		columns that all text is offset from the left edge of the 
+		paper.
+\WI\
+
+[WINDOW] --  [C]reate [D]elete [S]witch [Z]oom
+
+[C]reate	Creates a new window in current window.  Prompts for window
+		position, size and name.
+
+[D]elete	Prompts for and deletes the selected window.  Switches to the
+		main "@" edit buffer and window.
+
+[S]witch	Switches to the selected edit buffer.  If the corresponding 
+		window exists, the edit buffer will be displayed in that 
+		window.  Otherwise the edit buffer will be displayed in the
+		current window.
+
+[Z]oom		Zooms current window to the full screen.  Stays in effect
+		until next window switch.
+
+\US\
+
+[USER]	--  [W]ord Wrap [J]ustify [I]ndent [A]uto-Indent
+
+[W]ord Wrap	Prompts for the new Word Wrap or "right" margin for word
+		processing and [FORMAT PARAGRAPH].
+
+[J]ustify	Enables or disables the right margin justification option for
+		[FORMAT PARAGRAPH].
+
+[I]ndent	Prompts for a new "Indent Increment" used by [INDENT] and
+		[UNDENT].
+
+[A]uto-Indent	Enables or disables "Auto-Indent" mode - the indent for new
+		lines is set to be the same as the previous text line.
+
+\MI\
+
+[MISC]	--  [M]atch Parentheses [U]c/Lc [I]nsert [O]verstrike
+
+[M]atch Paren.	Performs nested parentheses matching for structured
+		programming languages.  With the cursor positioned at one of
+		the eight characters {, }, [, ], <, >, (, ), it moves the
+		cursor forward or backward to the matching pair.  Otherwise,
+		searches forwards for one of the characters.
+
+[U]c/Lc		Changes upper case letter at cursor to lower case and vice
+		versa.  Moves cursor to next character.
+
+[I]nsert	Changes to "Insert" mode if not already set.
+
+[O]verstrike	Change to "Overstrike" mode if not already set.
+
+
+\1END\
+1 END		Appears when you have marked one end of the text with the
+		[PRINT]-Block, [BLOCK]-Copy or [BLOCK]-Move functions. If you
+		forget where the text is marked, type [BLOCK]-Swap to swap the
+		cursor position with the marked position. Type it again to
+		restore cursor position.  Press [CANCEL] to remove the marker.
+
+\TEXT\
+TEXT		Indicates there there is text in at least one text register
+		which is not also an edit buffer.
+
+\MORE\
+MORE		Indicates that they is no text in a simple text register, but
+		at least one text register is being used as an edit buffer.
+
+\FULL\
+FULL		Appears when memory is full, or following a [BLOCK] function
+		if there was insufficient memory to perform it.  Try emptying
+		unused text registers, or use the Command Mode "EN" command
+		to make more memory free.
+\LINE\
+LINE:		Indicates on what line of the file the cursor is on.  The line
+		number for a particular line of text decreases if any
+		preceding lines are deleted, and increases if lines are
+		inserted into the preceding text.  You can jump to a
+		particular line number with the [GOTO]-Line function.
+
+\COL\
+COL:		Indicates in what column of the text line the cursor is on.
+
+\FILE\
+FILE:		Indicates the name of the file being edited.  "FILE" indicates
+		that both the beginning and the end of the file are in memory.
+		When the beginning of the file is not in memory, the "F"
+		changes to "f"; when the end of the file is not in memory, the
+		"ILE" changes to "ile".
+
+\INS\
+INSERT		Indicates that you are in Insert Mode.  Any typed text will be
+		inserted and not overwrite the existing text.
+
+\WRAP\
+
+To enable word wrap, the word wrap column (the right margin for paragraphs)
+must be set with [USER]-Word-Wrap.  A value of 00 turns word wrap off.
+
+\MARG\
+
+Set the indentation (the left margin for paragraphs) with the [INDENT] and
+[UNDENT] keys.  This changes the margin by an "increment", typically 4.
+Change the "increment" with the [USER]-Indent function.
+
+\FORM\
+
+[FORMAT PARAGRAPH] will format (or re-format) a paragraph between the current
+left margin (set with [INDENT] and [UNDENT]) and the current word wrap column.
+Optionally the paragraph will be right justified if this is selected with the
+[USER]-Justify function.
+
+\HZ\
+
+The screen may be scrolled horizontally by pressing [SCROLL RIGHT] and [SCROLL
+LEFT].  The status line indicates which column the left edge of the screen is
+set to.  The maximum line length with horizontal scrolling is set with the
+Command Mode parameter "EP 10 nnn".  Lines longer than this margin are wrapped
+to the next screen line.  The horizontal scrolling works in "increments",
+typically 20 columns.  Change the scrolling increment with the Command Mode
+parameter "EP 11 nn".
+
+\IC\
+
+Control characters may be inserted into the text by first pressing [NEXT
+CHAR LITERAL] and then typing the desired control character such as <ESC>,
+<CTRL-C>, etc.  Control characters in the text are often needed to control
+printer functions such as font changes, underlining and overstrike. The
+Command Mode "EI" command can also be used to insert control characters.  If
+you use a sequence of control characters over and over again, you may want to
+store it in a text register and then insert the text register when needed.
+
+\CONV\
+
+Several options are available for converting lower case letters to upper
+case.  They are controlled with the Command Mode parameter "EP 4 n".
+
+	EP 4 0	No conversion is made
+
+	EP 4 1	All lower case letters are converted to upper case
+
+	EP 4 2	Only lower case letters to the left of the "conditional
+		conversion character", typically ";" are converted to upper
+		case.  Useful for assembly language programming.
+
+	EP 4 3	To the left of the "conditional conversion character", lower
+		case letters are converted to upper case and upper case
+		letters are converted to lower case.
+
+		The "conditional conversion character" may be changed with the
+		Command Mode parameter "EP 5 nn".
+
+\EMPTY\
+
+It is best to empty a text register when its contents are no longer needed.
+This frees up more memory space too.
+
+In Visual Mode type [BLOCK]-Copy twice in succession.  It does not matter
+where the cursor is.  When prompted, type the name "0 - 9" or "A" - "Z" to
+specify which register to empty.
+
+Registers can also be emptied in Command Mode.  The command to empty register
+9 is "RE9", to empty register Z is "REZ", etc.
+
+\SWITCH\
+
+To switch from editing one file to editing another, type [WINDOW]-Switch,
+followed by the name of the corresponding edit-buffer, or RETURN to edit the
+file in buffer @.  If the new file has its own window, it will be displayed
+there, otherwise, it will be displayed in the current window.
+
+\COMWIN\
+
+It is typical to place the command mode window at the bottom of the screen.
+For this press [WINDOW], then "C" (Create), then "$" (name of command mode
+window), then "B" (Bottom) and finally the number of lines, typically "5".
+To delete the Command Mode window, it is best to enter Command Mode and give
+the command "YWI" which deletes all windows on the screen.
+
+\FILEWIN\
+
+To create a window for another file, press [WINDOW] and "C" (create). Then
+enter the name of the edit buffer which is to hold the file, then select the
+location and size of the window.  This only creates the window.  To edit the
+file type [WINDOW]-Switch followed by the name of the corresponding edit
+buffer.  To begin editing a file type [FILE]-New followed by the name of the
+file to be edited.
+
+
+\EXIT\
+
+You can exit from Visual Mode to Command Mode with the functions [VISUAL
+EXIT] or [VISUAL ESCAPE].  In most cases there will is no difference and you
+can press either function. However, if a command macro or an iteration loop
+is executing, [VISUAL EXIT] will exit and leave the macro or loop executing,
+while [VISUAL ESCAPE] will abort any macro or iteration loop.
+
+\\
+                       
