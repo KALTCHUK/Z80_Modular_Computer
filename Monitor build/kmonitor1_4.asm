@@ -2,7 +2,7 @@
 ;Monitor 1.1: Commands added: write Hex to memory, Test memory range.
 ;Monitor 1.2: Commands modified: Read memory accepts multiple scrolls.
 ;Monitor 1.3: Improved version of H command.
-;Monitor 1.4: No additional features, just cosmetics and prepared to use with PuTTY.
+;Monitor 1.4: No additional features, just cosmetics.
 ;
 ;==================================================================================
 ; Monitor for Z80 Modular Computer by P.R.Kaltchuk 2020
@@ -172,11 +172,11 @@ CONTCP:	CALL	CONOUT
 		LD	C,LF
 		CALL	CONOUT
 		CALL	PRINTSEQ			; print options
-		.TEXT ">[ENTER] = Read next page. [ESC] = Quit"
+		.TEXT ">[ENTER] = Read next page."
 		.DB	CR,LF,'>',0
 		CALL	CONIN				; What's your answer?
-		CP	ESC
-		JP	NZ,SCROLL
+		CP	CR
+		JP	Z,SCROLL
 		CALL	FLUSHBUF
 		JP	WAITCMD
 SCROLL:	PUSH	IY
