@@ -14,7 +14,7 @@
 ;
 ;==================================================================================
 
-TPA	.EQU	100H
+TPA		.EQU	100H
 REBOOT	.EQU	0H
 BDOS	.EQU	5H
 CONIO	.EQU	6
@@ -27,10 +27,10 @@ WRITES	.EQU	21
 DELF	.EQU	19
 SETUSR	.EQU	32
 
-CR	.EQU	0DH
-LF	.EQU	0AH
+CR		.EQU	0DH
+LF		.EQU	0AH
 
-FCB	.EQU	05CH
+FCB		.EQU	05CH
 BUFF	.EQU	080H
 
 	.ORG TPA
