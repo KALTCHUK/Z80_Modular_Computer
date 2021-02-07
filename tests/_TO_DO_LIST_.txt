@@ -1,0 +1,3 @@
+- implement flash-boot CP/M
+- write RECEIVE.ASM
+- write SEND.PY
