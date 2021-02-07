@@ -18,10 +18,14 @@
 ; 04/02/21 - This version corrects a bug in wboot.
 ;
 ;==================================================================================
+CCP				.EQU	0D000h			; Base of CCP (or Monitor).
+BIOS			.EQU	0E600h			; Base of BIOS.
+ROM_CCP			.EQU	01000h			; Base of CCP in ROM
+ROM_BIOS		.EQU	02600h			; Base of BIOS in ROM
 
 ccp				.EQU	0D000h			; Base of CCP.
 bdos			.EQU	ccp + 0806h		; Base of BDOS.
-bios			.EQU	ccp + 1600h		; Base of BIOS.
+bios			.EQU	0E600h		; Base of BIOS.
 
 ; Set CP/M low memory data, vector and buffer addresses.
 
