@@ -1,0 +1,90 @@
+0001   0000             ;==================================================================================
+0002   0000             ; RECEIVE is a program that runs on CP/M. It reads incoming characters from the
+0003   0000             ; console till a '#' is received. The characters are gathered two by two and
+0004   0000             ; converted to a byte and the final archive is written to disk using the file
+0005   0000             ; name passed as a parameter.
+0006   0000             ;==================================================================================
+0007   0000             TPA			.EQU	100H
+0008   0000             REBOOT		.EQU	0H
+0009   0000             BDOS		.EQU	5H
+0010   0000             CONIO		.EQU	6
+0011   0000             CONINP		.EQU	1
+0012   0000             CONOUT		.EQU	2
+0013   0000             PSTRING		.EQU	9
+0014   0000             MAKEF		.EQU	22
+0015   0000             CLOSEF		.EQU	16
+0016   0000             WRITES		.EQU	21
+0017   0000             DELF		.EQU	19
+0018   0000             SETUSR		.EQU	32
+0019   0000             
+0020   0000             CR			.EQU	0DH
+0021   0000             LF			.EQU	0AH
+0022   0000             		
+0023   0000             FCB			.EQU	05CH
+0024   0000             BUFF		.EQU	080H
+0025   0000             ;==================================================================================
+0026   0000             
+0027   0100             			.ORG TPA
+0028   0100 0E 09       			LD	C,PSTRING
+0029   0102 11 51 01    			LD	DE,MSG1
+0030   0105 CD 05 00    			CALL BDOS
+0031   0108 CD 41 01    			CALL CRLF
+0032   010B             			
+0033   010B 0E 06       GETC:		LD	C,CONIO
+0034   010D 1E FF       			LD	E,0FFh
+0035   010F CD 05 00    			CALL	BDOS
+0036   0112 FE 00       			CP	0
+0037   0114 28 F5       			JR	Z,GETC
+0038   0116 FE 23       			CP	'#'
+0039   0118 28 09       			JR	Z,OVER
+0040   011A             			
+0041   011A 3A 50 01    			LD	A,(BYTECTR)					;increment the byte counter
+0042   011D 3C          			INC	A
+0043   011E 32 50 01    			LD	(BYTECTR),A
+0044   0121 18 E8       			JR	GETC
+0045   0123             			
+0046   0123 0E 09       OVER:		LD	C,PSTRING
+0047   0125 11 70 01    			LD	DE,MSG2
+0048   0128 CD 05 00    			CALL BDOS
+0049   012B             			
+0050   012B 3A 50 01    			LD	A,(BYTECTR)
+0051   012E F6 30       			OR	030H
+0052   0130             					
+0053   0130 0E 02       			LD	C,CONOUT
+0054   0132 5F          			LD	E,A
+0055   0133 CD 05 00    			CALL BDOS
+0056   0136             
+0057   0136 0E 09       			LD	C,PSTRING
+0058   0138 11 77 01    			LD	DE,MSG3
+0059   013B CD 05 00    			CALL BDOS
+0060   013E             			
+0061   013E C3 00 00    			JP	REBOOT
+0062   0141             			
+0063   0141 0E 02       CRLF:		LD	C,CONOUT
+0064   0143 1E 0D       			LD	E,CR
+0065   0145 CD 05 00    			CALL BDOS
+0066   0148 0E 02       			LD	C,CONOUT
+0067   014A 1E 0A       			LD	E,LF
+0068   014C CD 05 00    			CALL BDOS
+0069   014F C9          			RET
+0070   0150             			
+0071   0150 00          BYTECTR		.BYTE	0
+0072   0151             
+0073   0151 53 65 6E 64 MSG1		.BYTE	"Send archive ending with '#'. $"
+0073   0155 20 61 72 63 
+0073   0159 68 69 76 65 
+0073   015D 20 65 6E 64 
+0073   0161 69 6E 67 20 
+0073   0165 77 69 74 68 
+0073   0169 20 27 23 27 
+0073   016D 2E 20 24 
+0074   0170 49 20 67 6F MSG2		.BYTE	"I got $"
+0074   0174 74 20 24 
+0075   0177 20 63 68 61 MSG3		.BYTE	" characters.$"
+0075   017B 72 61 63 74 
+0075   017F 65 72 73 2E 
+0075   0183 24 
+0076   0184             
+0077   0184             
+0078   0184             			.END
+tasm: Number of errors = 0
