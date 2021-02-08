@@ -42,7 +42,11 @@ while i < 9:
             i+=1
 
 while i < 12:
-            
+    if (dot != -1) and (len(file_name) >= (dot + i - 8)):
+        listFCB[i] = file_name[dot + i - 9]
+    else:
+        listFCB[i] = " "
+    i+=1
 
 print("".join(listFCB) + "<")
 e = input("continue?")
