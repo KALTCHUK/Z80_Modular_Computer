@@ -12,18 +12,29 @@ com_port = 16
 Z80_port = serial.Serial(port = "COM" + str(com_port), baudrate = 9600)
 
 # Which drive?
-drive = input("Target drive (A through P)?")
+FCB = "            "
 CheckSum = 0
+all_drives = "ABCDEFGHIJKLMNOP"
+
+While True:
+    drive = input("Target drive in CP/M (A through P)?").upper()
+    if drive[0] in all_drives:
+        break
+FCB[0] = drive[0]
 
 # Which file?
 file_name = ""
 while len(file_name) < 1:
-    file_name = input("File name? ")
+    file_name = input("File name? ").upper()
 
 i = 1
-while True:
-    if len(file) >= i:
-        
+while i < 9:
+    if (len(file_name) >= i) AND (file_name[i-1] !='.'):
+        FCB [i] = file_name[i-1]
+        i+=1
+    else if (len(file_name) >= i) AND (file_name[i-1] =='.'):
+        for 
+
 
 
 
