@@ -66,12 +66,19 @@ Z80_port.write(b'RECEIVE')
 Z80_port.write(b'\r\n')
 print('Waiting for ACK...')
 # Wait for <ACK>
+print('Waiting for ACK...')
 while Z80_port.read(1) != ACK:
     a=1
 
 # Send FCB
+FCB = ''.join(listFCB)
+Z80_port.write(FCB)
 
 # Wait for <ACK>
+print('Waiting for ACK...')
+while Z80_port.read(1) != ACK:
+    a=1
+a=input("continue?")
 
 # Open file and star sending it, in chunks of 256 charcters (1 CP/M disk block)
 with open(file_name,"rb") as f:
