@@ -15,7 +15,7 @@ DT		.EQU	1			; delta t (s)
 
 SPACE		.EQU	020H
 
-		.ORG	0200h
+		.ORG	0100h
 
 		CALL	LCDINIT
 AGAIN:

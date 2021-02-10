@@ -1,0 +1,226 @@
+0001   0000             ;================================================================================================
+0002   0000             ; Read console (no echo) and send to LCD. Ctrl-C terminates the program and returns to CCP.
+0003   0000             ; When <CR><LF> occurs on the 2nd line, the display scrolls down 1 line. 
+0004   0000             ; Converts non printable characters (from 0x0 to 0x1F) to tag.
+0005   0000             ;
+0006   0000             ; 00 --> [NUL]
+0007   0000             ; 01 --> [SOH]
+0008   0000             ; 02 --> [STX]
+0009   0000             ;    ...
+0010   0000             ; 1F --> [US]
+0011   0000             ; 
+0012   0000             ; CPU @ 4.0MHz (this is important for the delay routines)
+0013   0000             ;
+0014   0000             ; RS  = A0 from CPU
+0015   0000             ; R/W = A1 from CPU
+0016   0000             ; E   = 74LS85 output pin 'A=B'
+0017   0000             ;================================================================================================
+0018   0000             
+0019   0000             DAT_WR		.EQU	0E1H			;
+0020   0000             DAT_RD		.EQU	0E3H			;
+0021   0000             CMD_WR		.EQU	0E0H			;
+0022   0000             CMD_RD		.EQU	0E2H			;
+0023   0000             
+0024   0000             BOOT		.EQU	0				; Boot address (return control to CCP)
+0025   0000             TPA			.EQU	0100H			; Transient Program Area initial address
+0026   0000             BDOS		.EQU	5H
+0027   0000             ; BDOS functions
+0028   0000             C_RAWIO		.EQU	6
+0029   0000             C_READ		.EQU	1
+0030   0000             C_WRITE		.EQU	2
+0031   0000             C_WRITESTR	.EQU	9
+0032   0000             
+0033   0000             SPACE		.EQU	020H
+0034   0000             
+0035   0000             ;================================================================================================
+0036   0000             ; Main program
+0037   0000             ;================================================================================================
+0038   0100             			.ORG	TPA
+0039   0100             
+0040   0100 CD 06 01    			CALL LCDINIT
+0041   0103 CD 47 01    			CALL LCDCLEAR
+0042   0106             		
+0043   0106             
+0044   0106             
+0045   0106             ;================================================================================================
+0046   0106             ; Initialize LCD
+0047   0106             ;================================================================================================
+0048   0106 06 0F       LCDINIT:	LD	B,15			; wait 15ms
+0049   0108 CD B5 01    			CALL	DELAYMS
+0050   010B 3E 30       			LD	A,030H		; write command 030h
+0051   010D D3 E0       			OUT	(CMD_WR),A
+0052   010F 06 05       			LD	B,5			; wait 5ms
+0053   0111 CD B5 01    			CALL	DELAYMS
+0054   0114 3E 30       			LD	A,030H		; write command 030h
+0055   0116 D3 E0       			OUT	(CMD_WR),A
+0056   0118 0E 14       			LD	C,20			; wait (5x20) 100us
+0057   011A CD C1 01    			CALL	DELAY5US
+0058   011D 3E 30       			LD	A,030H		; write command 030h
+0059   011F D3 E0       			OUT	(CMD_WR),A
+0060   0121 0E 14       			LD	C,20			; wait (5x20) 100us
+0061   0123 CD C1 01    			CALL	DELAY5US
+0062   0126 3E 38       			LD	A,038H		; write command 038h = function set (8-bits, 2-lines, 5x7dots)
+0063   0128 D3 E0       			OUT	(CMD_WR),A
+0064   012A CD C8 01    			CALL	BWAIT
+0065   012D 3E 08       			LD	A,08H			; write command 08h = display (off)
+0066   012F D3 E0       			OUT	(CMD_WR),A
+0067   0131 CD C8 01    			CALL	BWAIT
+0068   0134 3E 01       			LD	A,01H			; write command 01h = clear display
+0069   0136 D3 E0       			OUT	(CMD_WR),A
+0070   0138 CD C8 01    			CALL	BWAIT
+0071   013B 3E 06       			LD	A,06H			; write command 06h = entry mode (increment)
+0072   013D D3 E0       			OUT	(CMD_WR),A
+0073   013F CD C8 01    			CALL	BWAIT
+0074   0142 3E 0C       			LD	A,0CH			; write command 0Ch = display (on)
+0075   0144 D3 E0       			OUT	(CMD_WR),A
+0076   0146 C9          			RET	
+0077   0147             
+0078   0147             ;================================================================================================
+0079   0147             ; Clear LCD and goto line 1, column 1.
+0080   0147             ;================================================================================================
+0081   0147 CD C8 01    LCDCLEAR:	CALL	BWAIT
+0082   014A 3E 01       			LD	A,01H			; write command 01h = clear display
+0083   014C D3 E0       			OUT	(CMD_WR),A
+0084   014E C9          			RET
+0085   014F             
+0086   014F             ;================================================================================================
+0087   014F             ; Send to LCD char in regC. Print at current position (what ever it is)
+0088   014F             ;================================================================================================
+0089   014F CD C8 01    LCDPUT:		CALL	BWAIT
+0090   0152 79          			LD	A,C			; write command 01h = clear display
+0091   0153 D3 E1       			OUT	(DAT_WR),A
+0092   0155 C9          			RET
+0093   0156             
+0094   0156             ;================================================================================================
+0095   0156             ; Position LCD cursor at line regH, column regL.
+0096   0156             ;================================================================================================
+0097   0156 25          LCDPOS:		DEC	H
+0098   0157 CB 24       			SLA	H
+0099   0159 CB 24       			SLA	H
+0100   015B CB 24       			SLA	H
+0101   015D CB 24       			SLA	H
+0102   015F CB 24       			SLA	H
+0103   0161 CB 24       			SLA	H
+0104   0163 7C          			LD	A,H
+0105   0164 2D          			DEC	L
+0106   0165 B5          			OR	L
+0107   0166 F6 80       			OR	080H
+0108   0168 67          			LD	H,A
+0109   0169 CD C8 01    			CALL	BWAIT
+0110   016C 7C          			LD	A,H
+0111   016D D3 E0       			OUT	(CMD_WR),A
+0112   016F C9          			RET
+0113   0170             
+0114   0170             ;================================================================================================
+0115   0170             ; (pseudo) Line Feed - De facto, it performs <LF><CR>.
+0116   0170             ; 
+0117   0170             ;================================================================================================
+0118   0170 C5          LCDLF:		PUSH 	BC
+0119   0171 CD C8 01    			CALL	BWAIT
+0120   0174 DB E2       			IN A,(CMD_RD)
+0121   0176 07          			RLCA
+0122   0177 07          			RLCA
+0123   0178 30 33       			JR	NC,LINEONE
+0124   017A             
+0125   017A 06 00       			LD	B,0				; initialize position counter
+0126   017C CD C8 01    NEWSRC:		CALL	BWAIT
+0127   017F 78          			LD	A,B
+0128   0180 F6 C0       			OR	0C0H
+0129   0182 D3 E0       			OUT	(CMD_WR),A		; set addr counter to source position
+0130   0184 CD C8 01    			CALL	BWAIT
+0131   0187 DB E3       			IN	A,(DAT_RD)		; get data from source position
+0132   0189 4F          			LD	C,A
+0133   018A CD C8 01    			CALL	BWAIT
+0134   018D 78          			LD	A,B
+0135   018E F6 80       			OR	080H
+0136   0190 D3 E0       			OUT	(CMD_WR),A		; set addr counter to target position
+0137   0192 CD C8 01    			CALL	BWAIT
+0138   0195 79          			LD	A,C
+0139   0196 D3 E1       			OUT	(DAT_WR),A		; put data in target position
+0140   0198 CD C8 01    			CALL	BWAIT
+0141   019B 78          			LD	A,B
+0142   019C F6 C0       			OR	0C0H
+0143   019E D3 E0       			OUT	(CMD_WR),A		; set addr counter back to source position
+0144   01A0 CD C8 01    			CALL	BWAIT
+0145   01A3 3E 20       			LD	A,SPACE
+0146   01A5 D3 E1       			OUT	(DAT_WR),A		; put blank space in source position
+0147   01A7 04          			INC	B
+0148   01A8 78          			LD	A,B
+0149   01A9 D6 10       			SUB	010H
+0150   01AB 20 CF       			JR	NZ,NEWSRC
+0151   01AD             
+0152   01AD 21 01 02    LINEONE:	LD	HL,0201H
+0153   01B0 CD 56 01    			CALL	LCDPOS
+0154   01B3             
+0155   01B3 C1          			POP 	BC
+0156   01B4 C9          			RET
+0157   01B5             
+0158   01B5             ;================================================================================================
+0159   01B5             ; Delay X miliseconds, with X passed on reg B
+0160   01B5             ;================================================================================================
+0161   01B5 C5          DELAYMS:	PUSH	BC
+0162   01B6 0E C8       DECB:		LD	C,0C8H
+0163   01B8 00          DECC:		NOP
+0164   01B9 0D          			DEC	C
+0165   01BA 20 FC       			JR	NZ,DECC
+0166   01BC 05          			DEC	B
+0167   01BD 20 F7       			JR	NZ,DECB
+0168   01BF C1          			POP	BC
+0169   01C0 C9          			RET
+0170   01C1             
+0171   01C1             ;================================================================================================
+0172   01C1             ; Delay 5*X microseconds, with X passed on reg C
+0173   01C1             ;================================================================================================
+0174   01C1 C5          DELAY5US:	PUSH	BC
+0175   01C2 00          DEC:		NOP
+0176   01C3 0D          			DEC	C
+0177   01C4 20 FC       			JR	NZ,DEC
+0178   01C6 C1          			POP	BC
+0179   01C7 C9          			RET
+0180   01C8             
+0181   01C8             ;================================================================================================
+0182   01C8             ; Wait until Busy flag = 0
+0183   01C8             ;================================================================================================
+0184   01C8 DB E2       BWAIT:		IN A,(CMD_RD)
+0185   01CA 07          			RLCA
+0186   01CB 38 FB       			JR	C,BWAIT
+0187   01CD C9          			RET
+0188   01CE             
+0189   01CE             ;================================================================================================
+0190   01CE             ; Conversion table for non printable characters
+0191   01CE             ;================================================================================================
+0192   01CE 4E 55 4C    CODETAB:	.DB		"NUL"			; Null
+0193   01D1 53 4F 48    			.DB		"SOH"			; Start of Header
+0194   01D4 53 54 58    			.DB		"STX"			; Start of Text
+0195   01D7 45 54 58    			.DB		"ETX"			; End of Text
+0196   01DA 45 4F 54    			.DB		"EOT"			; End of Transmission
+0197   01DD 45 4E 51    			.DB		"ENQ"			; Enquiry
+0198   01E0 41 43 4B    			.DB		"ACK"			; Acknowledge
+0199   01E3 42 45 4C    			.DB		"BEL"			; Bell
+0200   01E6 42 53 09    			.DB		"BS	"			; Backspace
+0201   01E9 48 54 09    			.DB		"HT	"			; Horizontal Tab
+0202   01EC 4C 46 09    			.DB		"LF	"			; Line Feed
+0203   01EF 56 54 09    			.DB		"VT	"			; Vertical Tab
+0204   01F2 46 46 09    			.DB		"FF	"			; Form Feed
+0205   01F5 43 52 09    			.DB		"CR	"			; Carriage Return
+0206   01F8 53 4F 09    			.DB		"SO	"			; Shift Out
+0207   01FB 53 49 09    			.DB		"SI	"			; Shift In
+0208   01FE 44 4C 45    			.DB		"DLE"			; Data Link Escape
+0209   0201 44 43 31    			.DB		"DC1"			; Device Control 1
+0210   0204 44 43 32    			.DB		"DC2"			; Device Control 2
+0211   0207 44 43 33    			.DB		"DC3"			; Device Control 3
+0212   020A 44 43 34    			.DB		"DC4"			; Device Control 4
+0213   020D 4E 41 4B    			.DB		"NAK"			; Negative Acknowledge
+0214   0210 53 59 4E    			.DB		"SYN"			; Synchronize
+0215   0213 45 54 42    			.DB		"ETB"			; End of Transmission Block
+0216   0216 43 41 4E    			.DB		"CAN"			; Cancel
+0217   0219 45 4D 09    			.DB		"EM	"			; End of Medium
+0218   021C 53 55 42    			.DB		"SUB"			; Substitute
+0219   021F 45 53 43    			.DB		"ESC"			; Escape
+0220   0222 46 53 09    			.DB		"FS	"			; File Separator
+0221   0225 47 53 09    			.DB		"GS	"			; Group Separator
+0222   0228 52 53 09    			.DB		"RS	"			; Record Separator
+0223   022B 55 53 09    			.DB		"US	"			; Unit Separator
+0224   022E             
+0225   022E             			.END
+tasm: Number of errors = 0
