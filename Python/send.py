@@ -14,10 +14,10 @@ print('\r\n')
 # Which COM port?
 com_port = input("COM port number? ")
 #com_port = 16
-Z80_port = serial.Serial(port = "COM" + str(com_port), baudrate = 9600)
+Z80_port = serial.Serial(port = "COM" + str(com_port), baudrate = 9600, timeout = 0)
+Z80_port.flushInput()
 
 listFCB = list("            ") 
-CheckSum = 0
 all_drives = "ABCDEFGHIJKLMNOP"
 
 # Which drive?
@@ -33,7 +33,7 @@ while True:
     if len(file_name) >= 1:
         break
 
-# Transform drive + file_name into FCB
+# Transform drive + file_name into FCB format
 dot = file_name.find(".")
 i = 1
 if dot == -1:                               # name has no extension
@@ -62,32 +62,38 @@ else:                                       # name has extension
         i+=1
 
 # Start RECEIVE.COM on CP/M
+print('Starting RECEIVE on CP/M...')
 Z80_port.write(b'RECEIVE')
 Z80_port.write(b'\r\n')
-print('Waiting for ACK...')
 # Wait for <ACK>
 print('Waiting for ACK...')
-while Z80_port.read(1) != ACK:
-    a=1
+while True:
+    rec_byte = Z80_port.read(1)
+    if rec_byte == ACK:
+        break
 
 # Send FCB
+print('Sending FCB...')
 FCB = ''.join(listFCB)
-Z80_port.write(FCB)
+Z80_port.write(b'FCB)
 
 # Wait for <ACK>
 print('Waiting for ACK...')
-while Z80_port.read(1) != ACK:
-    a=1
-a=input("continue?")
+while True:
+    rec_byte = Z80_port.read(1)
+    if rec_byte == ACK:
+        break
 
-# Open file and star sending it, in chunks of 256 charcters (1 CP/M disk block)
+# ******************************************************************************
+# ******************************************************************************
+# Open file and star sending it, in chunks of 256 charcters (=1 CP/M disk block)
+CheckSum = 0
+bytes_xmitted = 0
 with open(file_name,"rb") as f:
-    
     while True:
         br = f.read(1)
         if br == b'':
             break
-        byte_counter += 1
         nbr = int.from_bytes(br, "big")
         CheckSum += nbr
         
@@ -105,24 +111,45 @@ with open(file_name,"rb") as f:
                 
         Z80_port.write(msn.to_bytes(1, 'big'))
         Z80_port.write(lsn.to_bytes(1, 'big'))
+        bytes_xmitted += 1
+        if bytes_xmitted = 128:    # Print dot and wait for ACK
+            print('.', end='')
+            bytes_xmitted = 0
+            while True:
+                rec_byte = Z80_port.read(1)
+                if rec_byte == ACK:
+                    break
+# ******************************************************************************
+# ******************************************************************************
 
+# Send EOT
+Z80_port.write(b'EOT)
 
+# Send checksum
+print('\r\n' + 'Sending Checksum...')
+msn = CheckSum // 16
+if msn < 0xa:
+    msn += 0x30
+else:
+    msn += 0x37
+lsn = CheckSum % 16
+    if lsn < 0xa:
+        lsn += 0x30
+    else:
+        lsn += 0x37
+Z80_port.write(msn.to_bytes(1, 'big'))
+Z80_port.write(lsn.to_bytes(1, 'big'))
 
+# Wait for ACK or NAK
+print('Waiting for ACK or NAK...')
+while True:
+    rec_byte = Z80_port.read(1)
+    if rec_byte == ACK:
+        print('Transmission successful.')
+        break
+    if rec_byte == NAK:
+        print('Houston, we had a problem.')
+        break
 
-
-
-
-
-
-            
-# End the transmission with CR+LF
-Z80_port.write(b'\r\n')
-
-# Calculate number of pages to be used with SAVE command        
-pages = byte_counter / 0x100
-if byte_counter % 0x100 > 0:
-     pages += 1
-
-print("Transmission complete." + '\r\n')
-print("Use: SAVE " + str(int(pages)))
 print('\r\n')    
+Z80_port.close()
