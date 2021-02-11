@@ -1,4 +1,6 @@
 ;================================================================================================
+; ****************** ONLY FOR CP/M. USES BDOS CALL FOR CONSOLE INPUT ****************************
+;
 ; Read console (no echo) and send to LCD. Ctrl-C terminates the program and returns to CCP.
 ; When <CR><LF> occurs on the 2nd line, the display scrolls down 1 line. 
 ; Converts non printable characters (from 0x0 to 0x1F) to tag.
@@ -14,23 +16,29 @@
 ; RS  = A0 from CPU
 ; R/W = A1 from CPU
 ; E   = 74LS85 output pin 'A=B'
+;
+; By Kaltchuk, feb/2021.
 ;================================================================================================
+LCDADDR		.EQU	0E0H			; LCD card address
+DAT_WR		.EQU	LCDADDR + 1
+DAT_RD		.EQU	LCDADDR + 3
+CMD_WR		.EQU	LCDADDR + 0
+CMD_RD		.EQU	LCDADDR + 2
 
-DAT_WR		.EQU	0E1H			;
-DAT_RD		.EQU	0E3H			;
-CMD_WR		.EQU	0E0H			;
-CMD_RD		.EQU	0E2H			;
-
-BOOT		.EQU	0				; Boot address (return control to CCP)
-TPA			.EQU	0100H			; Transient Program Area initial address
+BOOT		.EQU	0				; Boot address (return control to CCP).
+TPA			.EQU	0100H			; Transient Program Area initial address.
 BDOS		.EQU	5H
+
 ; BDOS functions
 C_RAWIO		.EQU	6
 C_READ		.EQU	1
 C_WRITE		.EQU	2
 C_WRITESTR	.EQU	9
 
-SPACE		.EQU	020H
+CTRLC		.EQU	3
+LF			.EQU	0AH
+CR			.EQU	0DH
+SPACE		.EQU	20H
 
 ;================================================================================================
 ; Main program
@@ -39,39 +47,49 @@ SPACE		.EQU	020H
 
 			CALL LCDINIT
 			CALL LCDCLEAR
-		
-
+LOOP:		CALL GETCHAR
+			LD	C,A					; Copy it to C in case we need to print it later.
+			CP	CTRLC
+			JP	Z,BOOT				; CTRL-C --> return control to CCP.
+			CP	CR
+			JR	Z,LCDCR				; It's a <CR>, do nothing.
+			CP	LF
+			JP	Z,LCDLF				; It's a <LF>. It will be treated as <CR><LF>.
+			CP	20H
+			JP	M,NONPRTBLE			; It's a non printable character.
+			CALL LCDPUT
+			JR	LOOP
 
 ;================================================================================================
 ; Initialize LCD
 ;================================================================================================
-LCDINIT:	LD	B,15			; wait 15ms
+LCDINIT:	LD	B,15				; wait 15ms
 			CALL	DELAYMS
-			LD	A,030H		; write command 030h
+			LD	A,030H				; write command 030h
 			OUT	(CMD_WR),A
-			LD	B,5			; wait 5ms
+			LD	B,5					; wait 5ms
 			CALL	DELAYMS
-			LD	A,030H		; write command 030h
+			LD	A,030H				; write command 030h
 			OUT	(CMD_WR),A
-			LD	C,20			; wait (5x20) 100us
+			LD	C,20				; wait (5x20) 100us
 			CALL	DELAY5US
-			LD	A,030H		; write command 030h
+			LD	A,030H				; write command 030h
 			OUT	(CMD_WR),A
-			LD	C,20			; wait (5x20) 100us
+			LD	C,20				; wait (5x20) 100us
 			CALL	DELAY5US
-			LD	A,038H		; write command 038h = function set (8-bits, 2-lines, 5x7dots)
+			LD	A,038H				; write command 038h = function set (8-bits, 2-lines, 5x7dots)
 			OUT	(CMD_WR),A
 			CALL	BWAIT
-			LD	A,08H			; write command 08h = display (off)
+			LD	A,08H				; write command 08h = display (off)
 			OUT	(CMD_WR),A
 			CALL	BWAIT
-			LD	A,01H			; write command 01h = clear display
+			LD	A,01H				; write command 01h = clear display
 			OUT	(CMD_WR),A
 			CALL	BWAIT
-			LD	A,06H			; write command 06h = entry mode (increment)
+			LD	A,06H				; write command 06h = entry mode (increment)
 			OUT	(CMD_WR),A
 			CALL	BWAIT
-			LD	A,0CH			; write command 0Ch = display (on)
+			LD	A,0CH				; write command 0Ch = display (on)
 			OUT	(CMD_WR),A
 			RET	
 
@@ -79,7 +97,7 @@ LCDINIT:	LD	B,15			; wait 15ms
 ; Clear LCD and goto line 1, column 1.
 ;================================================================================================
 LCDCLEAR:	CALL	BWAIT
-			LD	A,01H			; write command 01h = clear display
+			LD	A,01H				; write command 01h = clear display
 			OUT	(CMD_WR),A
 			RET
 
@@ -87,7 +105,7 @@ LCDCLEAR:	CALL	BWAIT
 ; Send to LCD char in regC. Print at current position (what ever it is)
 ;================================================================================================
 LCDPUT:		CALL	BWAIT
-			LD	A,C			; write command 01h = clear display
+			LD	A,C
 			OUT	(DAT_WR),A
 			RET
 
@@ -112,48 +130,82 @@ LCDPOS:		DEC	H
 			RET
 
 ;================================================================================================
-; (pseudo) Line Feed - De facto, it performs <LF><CR>.
-; 
+; Carriage Return.
 ;================================================================================================
-LCDLF:		PUSH 	BC
-			CALL	BWAIT
+LCDCR:		CALL BWAIT
+			IN	A,(CMD_RD)
+			RLCA					; Find out if cursor is on 1st or 2nd line.
+			RLCA					; carry=0 --> 1st line, carry=1 --> 2nd line.
+			LD	H,2
+			LD	L,1
+			JR	C,LINE2
+			LD	H,1
+LINE2:		CALL LCDPOS
+			JP	LOOP
+
+;================================================================================================
+; Line Feed.
+;================================================================================================
+LCDLF:		CALL	BWAIT
 			IN A,(CMD_RD)
+			LD	H,2
+			LD	L,A
+			INC	L					; L hold the current column
 			RLCA
 			RLCA
 			JR	NC,LINEONE
 
-			LD	B,0				; initialize position counter
+			LD	B,0					; initialize position counter
 NEWSRC:		CALL	BWAIT
 			LD	A,B
 			OR	0C0H
-			OUT	(CMD_WR),A		; set addr counter to source position
+			OUT	(CMD_WR),A			; set addr counter to source position
 			CALL	BWAIT
-			IN	A,(DAT_RD)		; get data from source position
+			IN	A,(DAT_RD)			; get data from source position
 			LD	C,A
 			CALL	BWAIT
 			LD	A,B
 			OR	080H
-			OUT	(CMD_WR),A		; set addr counter to target position
+			OUT	(CMD_WR),A			; set addr counter to target position
 			CALL	BWAIT
 			LD	A,C
-			OUT	(DAT_WR),A		; put data in target position
+			OUT	(DAT_WR),A			; put data in target position
 			CALL	BWAIT
 			LD	A,B
 			OR	0C0H
-			OUT	(CMD_WR),A		; set addr counter back to source position
+			OUT	(CMD_WR),A			; set addr counter back to source position
 			CALL	BWAIT
 			LD	A,SPACE
-			OUT	(DAT_WR),A		; put blank space in source position
+			OUT	(DAT_WR),A			; put blank space in source position
 			INC	B
 			LD	A,B
 			SUB	010H
 			JR	NZ,NEWSRC
+LINEONE:	CALL	LCDPOS
+			JP	LOOP
 
-LINEONE:	LD	HL,0201H
-			CALL	LCDPOS
-
-			POP 	BC
-			RET
+;================================================================================================
+; Do the non printable characters
+;================================================================================================
+NONPRTBLE:	LD	HL,CODETAB
+			ADD	A,C
+			ADD A,C
+			LD	C,A
+			LD	B,0
+			ADD	HL,BC				; HL holds the position for the char in translation table
+			LD	C,'['
+			CALL LCDPUT
+			LD	C,(HL)				; 1st char from table
+			CALL LCDPUT
+			INC	HL
+			LD	C,(HL)				; 2nd char from table
+			CALL LCDPUT
+			INC	HL
+			LD	C,(HL)				; 3rd char from table
+			CALL LCDPUT
+			LD	C,']'
+			CALL LCDPUT
+			JP	LOOP
 
 ;================================================================================================
 ; Delay X miliseconds, with X passed on reg B
@@ -186,6 +238,15 @@ BWAIT:		IN A,(CMD_RD)
 			JR	C,BWAIT
 			RET
 
+;================================================================================================
+; Wait for a char, return it in A (no echo)
+;================================================================================================
+GETCHAR:	LD	E,$FF
+			LD 	C,C_RAWIO
+			CALL BDOS
+			CP	0
+			JR	Z,GETCHAR
+			RET
 ;================================================================================================
 ; Conversion table for non printable characters
 ;================================================================================================
