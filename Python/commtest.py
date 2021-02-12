@@ -15,14 +15,21 @@ print('\r\n')
 
 # Which COM port?
 #com_port = input("COM port number? ")
-com_port = 1
+com_port = 16
 Z80_port = serial.Serial(port = "COM" + str(com_port), baudrate = 9600, timeout = 5)
 Z80_port.flushInput()
 
 # Start RECEIVE.COM on CP/M
 print('Starting RECEIVE.COM on CP/M...')
-Z80_port.write(b'RECEIVE')
-Z80_port.write(b'\r\n')
+Z80_port.write(b'LCDECHO')
+Z80_port.write(b'\r')
+Z80_port.write(STX)
+Z80_port.write(EOT)
+Z80_port.write(Ctrl_C)
+exit()
+
+
+
 
 # Wait for <ACK>
 #print('Waiting for ACK...')
