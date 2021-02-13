@@ -1,5 +1,5 @@
 #************************************************************************************************
-# This program sends 1 or more files to CP/M. The files must be in the same directory as SEND.PY.
+# This program sends a file to CP/M. The file must be in the same directory as SEND.PY.
 #************************************************************************************************
 import serial
 
@@ -15,17 +15,17 @@ print('\r\n')
 # Which COM port?
 com_port = input("COM port number? ")
 #com_port = 16
-Z80_port = serial.Serial(port = "COM" + str(com_port), baudrate = 9600, timeout = 5)
+Z80_port = serial.Serial(port = "COM" + str(com_port), baudrate = 9600, timeout = 10)
 Z80_port.flushInput()
 
 # Start RECEIVE.COM on CP/M
 print('Starting RECEIVE.COM on CP/M...')
-Z80_port.write(b'RECEIVE')
-Z80_port.write(b'\r\n')
+Z80_port.write(b'receive' + b'\r')
 
 # Wait for <ACK>
 print('Waiting for ACK...')
 rec_byte = Z80_port.read(1)
+print(rec_byte)
 if rec_byte != ACK:
     print('No ACK. Transmisson aborted.'+'\r\n')
     Z80_port.close()
@@ -87,11 +87,17 @@ while True:
         rec_byte = Z80_port.read(1)
         if rec_byte == ACK:
             break
+        elif rec_byte == NAK:
+            print("Fail to create target file." +'\r\n')
+            Z80_port.close()
+            exit()
 
-    # Open file and star sending it, in chunks of 256 charcters (=1 CP/M disk block)
+
+    exit()
+    # Open file and star sending it
     CheckSum = 0
-    bytes_xmitted = 0
     with open(file_name,"rb") as f:
+        print("Transmitting file", end='')
         while True:
             br = f.read(1)
             if br == b'':
@@ -113,14 +119,12 @@ while True:
                     
             Z80_port.write(msn.to_bytes(1, 'big'))
             Z80_port.write(lsn.to_bytes(1, 'big'))
-            bytes_xmitted += 1
-            if bytes_xmitted == 128:    # Print dot and wait for ACK
-                print('.', end='')
-                bytes_xmitted = 0
-                while True:
-                    rec_byte = Z80_port.read(1)
-                    if rec_byte == ACK:
-                        break
+            while True:
+                rec_byte = Z80_port.read(1)
+                if rec_byte == ACK:
+                    break
+                elif rec_byte == EM:
+                    print('.', end='')
 
     # Send EOT
     Z80_port.write(EOT)
@@ -146,19 +150,9 @@ while True:
     if rec_byte == ACK:
         print('Transmission successful.')
     elif rec_byte == NAK:
-        print('Houston, we had a problem.')
+        print('Checksum error.')
     else:
         print('No answer from RECEIVE.')
-        break
-
-    # Xmit another file?
-    more = input('Transmit another file? (y or n)')
-    if more.upper() != 'Y':
-        # Send STX to restart the receiving process
-        Z80_port.write(STX)
-    else:
-        # Send ACK to release RECEIVE and return command to CCP
-        Z80_port.write(ACK)
         break
 
 print('\r\n')    

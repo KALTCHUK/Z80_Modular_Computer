@@ -20,34 +20,36 @@ F_WRITE		.EQU	21
 F_MAKE		.EQU	22
 F_DMAOFF	.EQU	26
 
-ETX			.EQU	03H
+EOT			.EQU	04H
 ACK			.EQU	06H
 LF			.EQU	0AH
 CR			.EQU	0DH
 NAK			.EQU	015H
 EM			.EQU	019H
 		
-FCB			.EQU	05CH
+FCB			.EQU	0005CH
 FCBEX		.EQU	FCB+12
 FCBCR		.EQU	FCB+32
 DMA			.EQU	080H
 ;==================================================================================
 			.ORG TPA
-			
-			LD	A,ACK				; Ok, I'm alive. You can start communication.
+
+			LD	A,ACK
 			CALL PUTCHAR
 
-NEWFILE:	LD	HL,FCB
-			CALL GETCHAR			; Get Drive letter (A...P)
+NEWFILE:	CALL GETCHAR			; Get Drive letter (A...P)
 			SUB	040H				; convert from ASCII letter to byte (A=1, B=2...)
+			LD	HL,FCB
 			LD	(HL),A
 			INC	HL
 			LD	B,11
 NEXT1:		PUSH BC
+			PUSH HL
 			CALL GETCHAR			; Get 11 chars,8 from name + 3 type (NNNNNNNN.TTT)
-			LD	(HL),A
-			INC	HL
+			POP	HL
 			POP	BC
+			LD	(HL),A				; and write them to FCB
+			INC	HL
 			DEC	B
 			JR	NZ,NEXT1
 			
@@ -57,14 +59,24 @@ NEXT1:		PUSH BC
 			LD	HL,FCBCR
 			LD (HL),A				; CR = 0
 
+			LD	C,F_DMAOFF			; Set DMA for file operations.
+			LD	DE,DMA
+			CALL BDOS
+			
 			LD	C,F_DELETE			; Delete file
 			LD	DE,FCB
 			CALL BDOS
-
+			
 			LD	C,F_MAKE			; Create file
 			LD	DE,FCB
 			CALL BDOS
-			
+			CP	0FFH
+			LD	A,ACK
+			JR	NZ,CONT				; Tell SEND to abort xmit.
+			LD	A,NAK
+CONT:		CALL PUTCHAR
+			HALT
+		
 			LD	A,0					; Set initial parameters
 			LD	(checkSum),A
 			LD	HL,DMA
@@ -73,15 +85,15 @@ NEXT1:		PUSH BC
 GETHEX:		LD	A,ACK				; Tell SEND to start xmit archive.
 			CALL PUTCHAR
 
-			CALL GETCHAR			; Start receiving the archive
+			CALL GETCHAR			; Get 1st char
 			CP	EOT
 			JR	Z,CLOSE
 			LD	B,A
 			PUSH BC
-			CALL GETCHAR
+			CALL GETCHAR			; Get 2nd char
 			POP	BC
 			LD	C,A
-			CALL BCTOA
+			CALL BCTOA				; Convert ASCII to byte
 			LD	B,A					; Update checksum
 			LD	A,(checkSum)
 			ADD	A,B
@@ -94,20 +106,23 @@ GETHEX:		LD	A,ACK				; Tell SEND to start xmit archive.
 			LD	A,H
 			CP	1					; Check if we reached the end of the buffer
 			JR	NZ,GETHEX
+			
 			LD	A,EM				; Tell SEND to pause, because we got a full buffer. 
 			CALL PUTCHAR
 			LD	C,F_WRITE			; Write it on disk.
 			LD	DE,FCB
 			CALL BDOS
-
-			LD	HL,BUFF				; Reset buffer.
-			LD	(buffPtr),HL
-			
-			LD	A,ACK				; Tell SEND to resume transmission.
+			CP	0FFH
+			JR	NZ,CONT2
+			LD	A,NAK				; Tell SEND to abort xmit.
 			CALL PUTCHAR
+			JP	REBOOT
+
+CONT2:		LD	HL,DMA				; Reset buffer.
+			LD	(buffPtr),HL
 			JR	GETHEX
 
-CLOSE:		LD	BC,BUFF				; Check if buffer is empty
+CLOSE:		LD	BC,DMA				; Check if buffer is empty
 			LD	HL,(buffPtr)
 			SCF
 			CCF
@@ -117,15 +132,20 @@ CLOSE:		LD	BC,BUFF				; Check if buffer is empty
 			LD	C,F_WRITE			; Write the last block to file.
 			LD	DE,FCB
 			CALL BDOS
+			CP	0FFH
+			JR	NZ,BEMPTY
+			LD	A,NAK				; Tell SEND to abort xmit.
+			CALL PUTCHAR
+			JP	REBOOT
 
 BEMPTY:		LD	C,F_CLOSE			; Close the file.
 			LD	DE,FCB
 			CALL BDOS
 
-			CALL GETCHAR			; Get checksum
+			CALL GETCHAR			; Get 1st char from checksum
 			LD   B,A
 			PUSH BC
-			CALL GETCHAR
+			CALL GETCHAR			; Get 2nd char from checksum
 			POP BC
 			LD   C,A
 			CALL BCTOA
@@ -134,20 +154,16 @@ BEMPTY:		LD	C,F_CLOSE			; Close the file.
 			SUB	B
 			CP	0
 			LD	A,ACK
-			JR	Z,CHECKOK
+			JR	Z,CHECKOUT
 			LD	A,NAK
-CHECKOK:	CALL PUTCHAR
-
-			CALL GETCHAR
-			CP	STX
-			JP	Z,NEWFILE
+CHECKOUT:	CALL PUTCHAR
 
 			JP	REBOOT
 
 ;==================================================================================
 ; Wait for a char into A (no echo)
 ;==================================================================================
-GETCHAR:	LD	E,$FF
+GETCHAR:	LD	E,0FFH
 			LD 	C,C_RAWIO
 			CALL BDOS
 			CP	0
