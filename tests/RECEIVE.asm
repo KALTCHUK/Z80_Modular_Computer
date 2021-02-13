@@ -1,47 +1,45 @@
 ;==================================================================================
-; RECEIVE is a program that runs on CP/M. On the Windows console the is a 
+; RECEIVE is a program that runs on CP/M. On the Windows console there's a 
 ; counterpart program called SEND.PY.
 ;
 ; How it works? SEND sends an archive, converting each byte into a pair of
 ; ASCII characters. For example, byte 0x2F will be transmitted as 0x32 0x46.
-; Packets of 128 bytes (256 characters) are transmitted. This gives time to the 
-; receiver to save a block on disk. After completing the disk write operation,
-; the reciver sends an ACK (6) to the transmitter so it can continue transmitting.
-; When the end of file has been reached, an EOT (4) is sent, followed by the CRC,
-; also in ASCII (2 bytes).
-; RECEIVE writes the last block, closes the file and sends an ACK if all went OK.
-; Otherwise, it sends a NAK (21).
+; After all archive has been xmitted, SEND sends the checksum (also ASCII pair).
 ;==================================================================================
-TPA			.EQU	100H
 REBOOT		.EQU	0H
 BDOS		.EQU	5H
+TPA			.EQU	0100H
 
-C_RAWIO		.EQU	6
 C_READ		.EQU	1
 C_WRITE		.EQU	2
+C_RAWIO		.EQU	6
 C_WRITESTR	.EQU	9
-F_MAKE		.EQU	22
 F_CLOSE		.EQU	16
-F_WRITE		.EQU	21
 F_DELETE	.EQU	19
+F_WRITE		.EQU	21
+F_MAKE		.EQU	22
+F_DMAOFF	.EQU	26
 
-STX			.EQU	02H
-EOT			.EQU	04H
+ETX			.EQU	03H
 ACK			.EQU	06H
 LF			.EQU	0AH
 CR			.EQU	0DH
 NAK			.EQU	015H
+EM			.EQU	019H
 		
-FCB			.EQU	060H
-BUFF		.EQU	080H
+FCB			.EQU	05CH
+FCBEX		.EQU	FCB+12
+FCBCR		.EQU	FCB+32
+DMA			.EQU	080H
 ;==================================================================================
 			.ORG TPA
+			
 			LD	A,ACK				; Ok, I'm alive. You can start communication.
 			CALL PUTCHAR
 
-NEWFILE:	CALL GETCHAR			; Get Drive letter (A...P)
+NEWFILE:	LD	HL,FCB
+			CALL GETCHAR			; Get Drive letter (A...P)
 			SUB	040H				; convert from ASCII letter to byte (A=1, B=2...)
-			LD	HL,FCB
 			LD	(HL),A
 			INC	HL
 			LD	B,11
@@ -52,14 +50,13 @@ NEXT1:		PUSH BC
 			POP	BC
 			DEC	B
 			JR	NZ,NEXT1
-			LD	A,0
-			LD (HL),A				; Extension = 0
-
-			LD	A,0					; Set initial parameters
-			LD	(checkSum),A
-			LD	HL,BUFF
-			LD	(buffPtr),HL
 			
+			LD	A,0
+			LD	HL,FCBEX
+			LD (HL),A				; EX = 0
+			LD	HL,FCBCR
+			LD (HL),A				; CR = 0
+
 			LD	C,F_DELETE			; Delete file
 			LD	DE,FCB
 			CALL BDOS
@@ -68,10 +65,15 @@ NEXT1:		PUSH BC
 			LD	DE,FCB
 			CALL BDOS
 			
-			LD	A,ACK				; Tell SEND to start xmit archive.
+			LD	A,0					; Set initial parameters
+			LD	(checkSum),A
+			LD	HL,DMA
+			LD	(buffPtr),HL
+			
+GETHEX:		LD	A,ACK				; Tell SEND to start xmit archive.
 			CALL PUTCHAR
 
-GETHEX:		CALL GETCHAR				; Start receiving the archive
+			CALL GETCHAR			; Start receiving the archive
 			CP	EOT
 			JR	Z,CLOSE
 			LD	B,A
@@ -80,12 +82,10 @@ GETHEX:		CALL GETCHAR				; Start receiving the archive
 			POP	BC
 			LD	C,A
 			CALL BCTOA
-
 			LD	B,A					; Update checksum
 			LD	A,(checkSum)
 			ADD	A,B
 			LD	(checkSum),A
-			
 			LD	A,B					; Put received byte in buffer
 			LD	HL,(buffPtr)
 			LD	(HL),A
@@ -94,8 +94,9 @@ GETHEX:		CALL GETCHAR				; Start receiving the archive
 			LD	A,H
 			CP	1					; Check if we reached the end of the buffer
 			JR	NZ,GETHEX
-
-			LD	C,F_WRITE			; We got a full buffer. Write it on disk.
+			LD	A,EM				; Tell SEND to pause, because we got a full buffer. 
+			CALL PUTCHAR
+			LD	C,F_WRITE			; Write it on disk.
 			LD	DE,FCB
 			CALL BDOS
 
