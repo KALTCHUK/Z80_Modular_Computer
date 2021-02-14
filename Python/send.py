@@ -20,17 +20,16 @@ Z80_port.flushInput()
 
 # Start RECEIVE.COM on CP/M
 print('Starting RECEIVE.COM on CP/M...')
-Z80_port.write(b'receive' + b'\r')
+Z80_port.write(b'RECEIVE' + b'\r')
 
 # Wait for <ACK>
-print('Waiting for ACK...')
-rec_byte = Z80_port.read(1)
-print(rec_byte)
-if rec_byte != ACK:
-    print('No ACK. Transmisson aborted.'+'\r\n')
-    Z80_port.close()
-    exit()
-
+print('Waiting for ACK... ', end ='')
+while True:
+    rec_byte = Z80_port.read(1)
+    if rec_byte == ACK:
+        print('Clear to go.')
+        break
+        
 all_drives = "ABCDEFGHIJKLMNOP"
 while True:
     listFCB = list("            ") 
@@ -81,19 +80,15 @@ while True:
     FCB = ''.join(listFCB)
     Z80_port.write(FCB)
 
-    # Wait for <ACK>
-    print('Waiting for ACK...')
     while True:
         rec_byte = Z80_port.read(1)
         if rec_byte == ACK:
             break
         elif rec_byte == NAK:
-            print("Fail to create target file." +'\r\n')
+            print("Fail to create file." +'\r\n')
             Z80_port.close()
             exit()
 
-
-    exit()
     # Open file and star sending it
     CheckSum = 0
     with open(file_name,"rb") as f:
@@ -146,14 +141,14 @@ while True:
 
     # Wait for ACK or NAK
     print('Waiting for ACK or NAK...')
-    rec_byte = Z80_port.read(1)
-    if rec_byte == ACK:
-        print('Transmission successful.')
-    elif rec_byte == NAK:
-        print('Checksum error.')
-    else:
-        print('No answer from RECEIVE.')
-        break
+    while True:
+        rec_byte = Z80_port.read(1)
+        if rec_byte == ACK:
+            print('Transmission successful.')
+            break
+        elif rec_byte == NAK:
+            print('File operation error or Checksum error.')
+            break
 
 print('\r\n')    
 Z80_port.close()

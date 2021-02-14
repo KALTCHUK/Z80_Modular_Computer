@@ -34,7 +34,10 @@ DMA			.EQU	080H
 ;==================================================================================
 			.ORG TPA
 
-			LD	A,ACK
+			JR	JUMPMSG
+			.DB	"START SEND.PY ON WINDOWS CONSOLE "
+			.DB "AND IT WILL STAR RECEIVE.COM."
+JUMPMSG:	LD	A,ACK
 			CALL PUTCHAR
 
 NEWFILE:	CALL GETCHAR			; Get Drive letter (A...P)
@@ -53,12 +56,15 @@ NEXT1:		PUSH BC
 			DEC	B
 			JR	NZ,NEXT1
 			
-			LD	A,0
+			LD	A,0					; Set initial parameters
 			LD	HL,FCBEX
 			LD (HL),A				; EX = 0
 			LD	HL,FCBCR
 			LD (HL),A				; CR = 0
-
+			LD	(checkSum),A
+			LD	HL,DMA
+			LD	(buffPtr),HL
+			
 			LD	C,F_DMAOFF			; Set DMA for file operations.
 			LD	DE,DMA
 			CALL BDOS
@@ -70,19 +76,13 @@ NEXT1:		PUSH BC
 			LD	C,F_MAKE			; Create file
 			LD	DE,FCB
 			CALL BDOS
-			CP	0FFH
-			LD	A,ACK
-			JR	NZ,CONT				; Tell SEND to abort xmit.
-			LD	A,NAK
-CONT:		CALL PUTCHAR
-			HALT
+			CP	0FFH				; Was file created ok?
+			JR	NZ,GETHEX
+			LD	A,NAK				; Tell SEND to abort xmit.
+			CALL PUTCHAR
+			JP	REBOOT
 		
-			LD	A,0					; Set initial parameters
-			LD	(checkSum),A
-			LD	HL,DMA
-			LD	(buffPtr),HL
-			
-GETHEX:		LD	A,ACK				; Tell SEND to start xmit archive.
+GETHEX:		LD	A,ACK				; Tell SEND to xmit
 			CALL PUTCHAR
 
 			CALL GETCHAR			; Get 1st char
@@ -109,17 +109,18 @@ GETHEX:		LD	A,ACK				; Tell SEND to start xmit archive.
 			
 			LD	A,EM				; Tell SEND to pause, because we got a full buffer. 
 			CALL PUTCHAR
-			LD	C,F_WRITE			; Write it on disk.
+			LD	HL,DMA				; Reset buffer pointer.
+			LD	(buffPtr),HL
+			
+			LD	C,F_WRITE			; Write buffer to disk.
 			LD	DE,FCB
 			CALL BDOS
-			CP	0FFH
-			JR	NZ,CONT2
+			CP	0FFH				; Was file write ok?
+			JR	NZ,GETHEX
 			LD	A,NAK				; Tell SEND to abort xmit.
 			CALL PUTCHAR
 			JP	REBOOT
 
-CONT2:		LD	HL,DMA				; Reset buffer.
-			LD	(buffPtr),HL
 			JR	GETHEX
 
 CLOSE:		LD	BC,DMA				; Check if buffer is empty
@@ -132,7 +133,7 @@ CLOSE:		LD	BC,DMA				; Check if buffer is empty
 			LD	C,F_WRITE			; Write the last block to file.
 			LD	DE,FCB
 			CALL BDOS
-			CP	0FFH
+			CP	0FFH				; Was file write ok?
 			JR	NZ,BEMPTY
 			LD	A,NAK				; Tell SEND to abort xmit.
 			CALL PUTCHAR
@@ -161,7 +162,7 @@ CHECKOUT:	CALL PUTCHAR
 			JP	REBOOT
 
 ;==================================================================================
-; Wait for a char into A (no echo)
+; Wait for a char and return it on A (no echo)
 ;==================================================================================
 GETCHAR:	LD	E,0FFH
 			LD 	C,C_RAWIO
