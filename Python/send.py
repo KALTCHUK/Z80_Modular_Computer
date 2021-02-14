@@ -3,19 +3,20 @@
 #************************************************************************************************
 import serial
 
-STX = 0x2
-EOT	= 0x4
-ACK	= 0x6
-LF	= 0xA
-CR	= 0xD
+STX = 0x02
+EOT	= 0x04
+ACK	= 0x06
+LF	= 0x0A
+CR	= 0x0D
 NAK	= 0x15
+EM  = 0x19
 
 print('\r\n')    
 
 # Which COM port?
-com_port = input("COM port number? ")
-#com_port = 16
-Z80_port = serial.Serial(port = "COM" + str(com_port), baudrate = 9600, timeout = 10)
+#com_port = input("COM port number? ")
+com_port = 16
+Z80_port = serial.Serial(port = "COM" + str(com_port), baudrate = 9600, timeout = 1)
 Z80_port.flushInput()
 
 # Start RECEIVE.COM on CP/M
@@ -23,10 +24,10 @@ print('Starting RECEIVE.COM on CP/M...')
 Z80_port.write(b'RECEIVE' + b'\r')
 
 # Wait for <ACK>
-print('Waiting for ACK... ', end ='')
+print('Waiting for ACK... ')
 while True:
     rec_byte = Z80_port.read(1)
-    if rec_byte == ACK:
+    if int.from_bytes(rec_byte, "big") == ACK:
         print('Clear to go.')
         break
         
@@ -78,19 +79,23 @@ while True:
     # Send FCB
     print('Sending FCB...')
     FCB = ''.join(listFCB)
-    Z80_port.write(FCB)
+    print(FCB)
+    Z80_port.write(FCB.encode())
 
+    print('Waiting for ACK... ')
     while True:
         rec_byte = Z80_port.read(1)
-        if rec_byte == ACK:
+        if int.from_bytes(rec_byte, "big") == ACK:   
+            print('Clear to go.')
             break
-        elif rec_byte == NAK:
-            print("Fail to create file." +'\r\n')
-            Z80_port.close()
-            exit()
+#        elif int.from_bytes(rec_byte, "big") == NAK:
+#            print("Fail to create file." +'\r\n')
+#            Z80_port.close()
+#            exit()
 
     # Open file and star sending it
     CheckSum = 0
+    print('Open file.')
     with open(file_name,"rb") as f:
         print("Transmitting file", end='')
         while True:
@@ -143,10 +148,10 @@ while True:
     print('Waiting for ACK or NAK...')
     while True:
         rec_byte = Z80_port.read(1)
-        if rec_byte == ACK:
+        if int.from_bytes(rec_byte, "big") == ACK:
             print('Transmission successful.')
             break
-        elif rec_byte == NAK:
+        elif int.from_bytes(rec_byte, "big") == NAK:
             print('File operation error or Checksum error.')
             break
 
