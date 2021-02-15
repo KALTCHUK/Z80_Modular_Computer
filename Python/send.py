@@ -22,8 +22,8 @@ if "-h" in opts:
     print('Use: send.py -p<port> -d<drive> -f<file>' + '\n\r')
     print('Where <port>  is the number of the serial COM port')
     print('      <drive> is the target CP/M drive (A, B, C ... P)')
-    print('      <file>  is the name of the file to be transmmited, and it must be in the')
-    print('              same directory with send.py' + '\n\r')
+    print('      <file>  is the name of the file to be transmmited')
+    print('              (must be in the same directory with send.py)' + '\n\r')
     exit()
 
 for i in range(0, len(opts)):
