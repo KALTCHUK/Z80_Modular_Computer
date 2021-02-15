@@ -11,6 +11,7 @@ NAK	= 0x15
 EM  = 0x19
 
 import sys
+import serial
 
 opts = [opt for opt in sys.argv[1:] if opt.startswith("-")]
 
@@ -32,7 +33,7 @@ for i in range(0, len(opts)):
         port = opts[i][2:]
         try:
             Z80_port = serial.Serial(port = "COM" + port, baudrate = 9600, timeout = 1)
-            Z80_port.flushInput()
+            #Z80_port.flushInput()
             print('Serial port : COM' + port)
             goPort = True
         except:
@@ -93,11 +94,10 @@ else:                                       # name has extension
         i+=1
 
 FCB = ''.join(listFCB).upper()
-print('\n\r'+'>'+FCB+'<')
 
 # We're ready to start communication with CP/M
 # Start RECEIVE.COM on CP/M
-print('Starting RECEIVE.COM on CP/M...')
+print('Starting RECEIVE.COM on CP/M.')
 Z80_port.write(b'RECEIVE' + b'\r')
 
 # Wait for <ACK>
@@ -110,23 +110,23 @@ while True:
 
 
 # Send FCB
-print('Sending FCB...')
+print('Sending FCB.')
 Z80_port.write(FCB.encode())
 
 # Wait for <ACK>
 print('Waiting for ACK... ', end='')
 while True:
     rec_byte = Z80_port.read(1)
+    print(rec_byte)
     if int.from_bytes(rec_byte, "big") == ACK:   
-        print('Clear to go.')
+        #print('Clear to go.')
         break
     elif int.from_bytes(rec_byte, "big") == NAK:
         print("Fail to create file." +'\r\n')
         Z80_port.close()
         f.close()
         exit()
-
-print("Transmitting file", end='')
+print("Transmitting file.", end='')
 CheckSum = 0
 while True:
     br = f.read(1)
@@ -149,6 +149,7 @@ while True:
                     
     Z80_port.write(msn.to_bytes(1, 'big'))
     Z80_port.write(lsn.to_bytes(1, 'big'))
+    print('*', end='')
     while True:
         rec_byte = Z80_port.read(1)
         if int.from_bytes(rec_byte, "big") == ACK:   
