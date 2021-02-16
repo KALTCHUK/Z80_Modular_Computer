@@ -2,13 +2,12 @@
 # This program sends a file to CP/M. Run "send.py -h" to see options.
 # REVEIVE.COM must be present in the active drive of CP/M.
 #************************************************************************************************
-STX = 0x02
-EOT	= 0x04
-ACK	= 0x06
+EOT	= 0x23      #0x04
+ACK	= 0x24      #0x06
 LF	= 0x0A
 CR	= 0x0D
-NAK	= 0x15
-EM  = 0x19
+NAK	= 0x25      #0x15
+EM  = 0x26      #0x19
 
 import sys
 import serial
@@ -99,40 +98,39 @@ FCB = ''.join(listFCB).upper()
 # Start RECEIVE.COM on CP/M
 print('Starting RECEIVE.COM on CP/M.')
 Z80_port.write(b'RECEIVE' + b'\r')
+Z80_port.flush()
 
 # Wait for <ACK>
 print('Waiting for ACK... ', end='')
 while True:
     rec_byte = Z80_port.read(1)
-    if int.from_bytes(rec_byte, "big") == ACK:
+    if int.from_bytes(rec_byte, 'big') == ACK:
         print('Clear to go.')
         break
-
 
 # Send FCB
 print('Sending FCB.')
 Z80_port.write(FCB.encode())
+Z80_port.flush()
 
 # Wait for <ACK>
 print('Waiting for ACK... ', end='')
-while True:
+xuxu=0
+while xuxu==0:
     rec_byte = Z80_port.read(1)
-    print(rec_byte)
-    if int.from_bytes(rec_byte, "big") == ACK:   
-        #print('Clear to go.')
-        break
-    elif int.from_bytes(rec_byte, "big") == NAK:
-        print("Fail to create file." +'\r\n')
-        Z80_port.close()
-        f.close()
-        exit()
-print("Transmitting file.", end='')
+    if int.from_bytes(rec_byte, 'big') == ACK:   
+        print('Clear to go.')
+        print('Get me out of here!!!')
+        xuxu=1
+print('Ouch')
 CheckSum = 0
 while True:
     br = f.read(1)
+    print('F',end='')
+    print(br)
     if br == b'':
         break
-    nbr = int.from_bytes(br, "big")
+    nbr = int.from_bytes(br, 'big')
     CheckSum += nbr
             
     msn = nbr // 16
@@ -149,9 +147,11 @@ while True:
                     
     Z80_port.write(msn.to_bytes(1, 'big'))
     Z80_port.write(lsn.to_bytes(1, 'big'))
-    print('*', end='')
+    Z80_port.flush()
     while True:
         rec_byte = Z80_port.read(1)
+        print('R',end='')
+        print(rec_byte)
         if int.from_bytes(rec_byte, "big") == ACK:   
             break
         elif int.from_bytes(rec_byte, "big") == EM:   
@@ -161,6 +161,7 @@ f.close()
 
 # Send EOT
 Z80_port.write(EOT)
+Z80_port.flush()
 
 # Send checksum
 print('\r\n' + 'Sending Checksum...')
@@ -176,6 +177,7 @@ else:
     lsn += 0x37
 Z80_port.write(msn.to_bytes(1, 'big'))
 Z80_port.write(lsn.to_bytes(1, 'big'))
+Z80_port.flush()
 
 # Wait for ACK or NAK
 print('Waiting for ACK or NAK...')
@@ -192,3 +194,9 @@ print('\r\n')
 Z80_port.close()
     
 exit()
+
+#    elif int.from_bytes(rec_byte, "big") == NAK:
+#        print("Fail to create file." +'\r\n')
+#        Z80_port.close()
+#        f.close()
+#        exit()

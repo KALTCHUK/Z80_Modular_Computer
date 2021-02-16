@@ -20,12 +20,12 @@ F_WRITE		.EQU	21
 F_MAKE		.EQU	22
 F_DMAOFF	.EQU	26
 
-EOT			.EQU	04H
-ACK			.EQU	06H
+EOT			.EQU	023H		;04H
+ACK			.EQU	024H		;06H
 LF			.EQU	0AH
 CR			.EQU	0DH
-NAK			.EQU	015H
-EM			.EQU	019H
+NAK			.EQU	025H		;015H
+EM			.EQU	026H		;019H
 		
 FCB			.EQU	0005CH
 FCBEX		.EQU	FCB+12
@@ -34,6 +34,7 @@ DMA			.EQU	080H
 ;==================================================================================
 			.ORG TPA
 
+			LD	SP,STACK			; Set default stack.
 			JR	JUMPMSG
 			.DB	"START SEND.PY ON WINDOWS CONSOLE "
 			.DB "AND IT WILL STAR RECEIVE.COM."
@@ -203,5 +204,8 @@ BCTOA2:		ADD  A,B
 ;==================================================================================
 buffPtr		.DW	0000H
 checkSum 	.DB	0H
+
+			.DS	020h			; Start of stack area.
+STACK:		.EQU	$
 
 			.END

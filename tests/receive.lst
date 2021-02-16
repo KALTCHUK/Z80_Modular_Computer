@@ -20,12 +20,12 @@
 0020   0000             F_MAKE		.EQU	22
 0021   0000             F_DMAOFF	.EQU	26
 0022   0000             
-0023   0000             EOT			.EQU	04H
-0024   0000             ACK			.EQU	06H
+0023   0000             EOT			.EQU	023H		;04H
+0024   0000             ACK			.EQU	024H		;06H
 0025   0000             LF			.EQU	0AH
 0026   0000             CR			.EQU	0DH
-0027   0000             NAK			.EQU	015H
-0028   0000             EM			.EQU	019H
+0027   0000             NAK			.EQU	025H		;015H
+0028   0000             EM			.EQU	026H		;019H
 0029   0000             		
 0030   0000             FCB			.EQU	0005CH
 0031   0000             FCBEX		.EQU	FCB+12
@@ -34,190 +34,194 @@
 0034   0000             ;==================================================================================
 0035   0100             			.ORG TPA
 0036   0100             
-0037   0100 18 3E       			JR	JUMPMSG
-0038   0102 53 54 41 52 			.DB	"START SEND.PY ON WINDOWS CONSOLE "
-0038   0106 54 20 53 45 
-0038   010A 4E 44 2E 50 
-0038   010E 59 20 4F 4E 
-0038   0112 20 57 49 4E 
-0038   0116 44 4F 57 53 
-0038   011A 20 43 4F 4E 
-0038   011E 53 4F 4C 45 
-0038   0122 20 
-0039   0123 41 4E 44 20 			.DB "AND IT WILL STAR RECEIVE.COM."
-0039   0127 49 54 20 57 
-0039   012B 49 4C 4C 20 
-0039   012F 53 54 41 52 
-0039   0133 20 52 45 43 
-0039   0137 45 49 56 45 
-0039   013B 2E 43 4F 4D 
-0039   013F 2E 
-0040   0140 3E 06       JUMPMSG:	LD	A,ACK
-0041   0142 CD 35 02    			CALL PUTCHAR
-0042   0145             
-0043   0145 CD 29 02    NEWFILE:	CALL GETCHAR			; Get Drive letter (A...P)
-0044   0148 D6 40       			SUB	040H				; convert from ASCII letter to byte (A=1, B=2...)
-0045   014A 21 5C 00    			LD	HL,FCB
-0046   014D 77          			LD	(HL),A
-0047   014E 23          			INC	HL
-0048   014F 06 0B       			LD	B,11
-0049   0151 C5          NEXT1:		PUSH BC
-0050   0152 E5          			PUSH HL
-0051   0153 CD 29 02    			CALL GETCHAR			; Get 11 chars,8 from name + 3 type (NNNNNNNN.TTT)
-0052   0156 E1          			POP	HL
-0053   0157 C1          			POP	BC
-0054   0158 77          			LD	(HL),A				; and write them to FCB
-0055   0159 23          			INC	HL
-0056   015A 05          			DEC	B
-0057   015B 20 F4       			JR	NZ,NEXT1
-0058   015D             			
-0059   015D 3E 00       			LD	A,0					; Set initial parameters
-0060   015F 21 68 00    			LD	HL,FCBEX
-0061   0162 77          			LD (HL),A				; EX = 0
-0062   0163 21 7C 00    			LD	HL,FCBCR
-0063   0166 77          			LD (HL),A				; CR = 0
-0064   0167 32 57 02    			LD	(checkSum),A
-0065   016A 21 80 00    			LD	HL,DMA
-0066   016D 22 55 02    			LD	(buffPtr),HL
-0067   0170             			
-0068   0170 0E 1A       			LD	C,F_DMAOFF			; Set DMA for file operations.
-0069   0172 11 80 00    			LD	DE,DMA
-0070   0175 CD 05 00    			CALL BDOS
-0071   0178             			
-0072   0178 0E 13       			LD	C,F_DELETE			; Delete file
-0073   017A 11 5C 00    			LD	DE,FCB
-0074   017D CD 05 00    			CALL BDOS
-0075   0180             			
-0076   0180 0E 16       			LD	C,F_MAKE			; Create file
-0077   0182 11 5C 00    			LD	DE,FCB
-0078   0185 CD 05 00    			CALL BDOS
-0079   0188 FE FF       			CP	0FFH				; Was file created ok?
-0080   018A 20 08       			JR	NZ,GETHEX
-0081   018C 3E 15       			LD	A,NAK				; Tell SEND to abort xmit.
-0082   018E CD 35 02    			CALL PUTCHAR
-0083   0191 C3 00 00    			JP	REBOOT
-0084   0194             		
-0085   0194 3E 06       GETHEX:		LD	A,ACK				; Tell SEND to xmit
-0086   0196 CD 35 02    			CALL PUTCHAR
-0087   0199             
-0088   0199 CD 29 02    			CALL GETCHAR			; Get 1st char
-0089   019C FE 04       			CP	EOT
-0090   019E 28 41       			JR	Z,CLOSE
-0091   01A0 47          			LD	B,A
-0092   01A1 C5          			PUSH BC
-0093   01A2 CD 29 02    			CALL GETCHAR			; Get 2nd char
-0094   01A5 C1          			POP	BC
-0095   01A6 4F          			LD	C,A
-0096   01A7 CD 3C 02    			CALL BCTOA				; Convert ASCII to byte
-0097   01AA 47          			LD	B,A					; Update checksum
-0098   01AB 3A 57 02    			LD	A,(checkSum)
-0099   01AE 80          			ADD	A,B
-0100   01AF 32 57 02    			LD	(checkSum),A
-0101   01B2 78          			LD	A,B					; Put received byte in buffer
-0102   01B3 2A 55 02    			LD	HL,(buffPtr)
-0103   01B6 77          			LD	(HL),A
-0104   01B7 23          			INC	HL
-0105   01B8 22 55 02    			LD	(buffPtr),HL
-0106   01BB 7C          			LD	A,H
-0107   01BC FE 01       			CP	1					; Check if we reached the end of the buffer
-0108   01BE 20 D4       			JR	NZ,GETHEX
-0109   01C0             			
-0110   01C0 3E 19       			LD	A,EM				; Tell SEND to pause, because we got a full buffer. 
-0111   01C2 CD 35 02    			CALL PUTCHAR
-0112   01C5 21 80 00    			LD	HL,DMA				; Reset buffer pointer.
-0113   01C8 22 55 02    			LD	(buffPtr),HL
-0114   01CB             			
-0115   01CB 0E 15       			LD	C,F_WRITE			; Write buffer to disk.
-0116   01CD 11 5C 00    			LD	DE,FCB
-0117   01D0 CD 05 00    			CALL BDOS
-0118   01D3 FE FF       			CP	0FFH				; Was file write ok?
-0119   01D5 20 BD       			JR	NZ,GETHEX
-0120   01D7 3E 15       			LD	A,NAK				; Tell SEND to abort xmit.
-0121   01D9 CD 35 02    			CALL PUTCHAR
-0122   01DC C3 00 00    			JP	REBOOT
-0123   01DF             
-0124   01DF 18 B3       			JR	GETHEX
-0125   01E1             
-0126   01E1 01 80 00    CLOSE:		LD	BC,DMA				; Check if buffer is empty
-0127   01E4 2A 55 02    			LD	HL,(buffPtr)
-0128   01E7 37          			SCF
-0129   01E8 3F          			CCF
-0130   01E9 ED 42       			SBC	HL,BC
-0131   01EB 28 14       			JR	Z,BEMPTY
-0132   01ED             
-0133   01ED 0E 15       			LD	C,F_WRITE			; Write the last block to file.
-0134   01EF 11 5C 00    			LD	DE,FCB
-0135   01F2 CD 05 00    			CALL BDOS
-0136   01F5 FE FF       			CP	0FFH				; Was file write ok?
-0137   01F7 20 08       			JR	NZ,BEMPTY
-0138   01F9 3E 15       			LD	A,NAK				; Tell SEND to abort xmit.
-0139   01FB CD 35 02    			CALL PUTCHAR
-0140   01FE C3 00 00    			JP	REBOOT
-0141   0201             
-0142   0201 0E 10       BEMPTY:		LD	C,F_CLOSE			; Close the file.
-0143   0203 11 5C 00    			LD	DE,FCB
-0144   0206 CD 05 00    			CALL BDOS
-0145   0209             
-0146   0209 CD 29 02    			CALL GETCHAR			; Get 1st char from checksum
-0147   020C 47          			LD   B,A
-0148   020D C5          			PUSH BC
-0149   020E CD 29 02    			CALL GETCHAR			; Get 2nd char from checksum
-0150   0211 C1          			POP BC
-0151   0212 4F          			LD   C,A
-0152   0213 CD 3C 02    			CALL BCTOA
-0153   0216 47          			LD	B,A
-0154   0217 3A 57 02    			LD	A,(checkSum)
-0155   021A 90          			SUB	B
-0156   021B FE 00       			CP	0
-0157   021D 3E 06       			LD	A,ACK
-0158   021F 28 02       			JR	Z,CHECKOUT
-0159   0221 3E 15       			LD	A,NAK
-0160   0223 CD 35 02    CHECKOUT:	CALL PUTCHAR
-0161   0226             
-0162   0226 C3 00 00    			JP	REBOOT
-0163   0229             
-0164   0229             ;==================================================================================
-0165   0229             ; Wait for a char and return it on A (no echo)
-0166   0229             ;==================================================================================
-0167   0229 1E FF       GETCHAR:	LD	E,0FFH
-0168   022B 0E 06       			LD 	C,C_RAWIO
-0169   022D CD 05 00    			CALL BDOS
-0170   0230 FE 00       			CP	0
-0171   0232 28 F5       			JR	Z,GETCHAR
-0172   0234 C9          			RET
-0173   0235             
-0174   0235             ;==================================================================================
-0175   0235             ; Write A to output
-0176   0235             ;==================================================================================
-0177   0235 0E 02       PUTCHAR:	LD C,C_WRITE
-0178   0237 5F          			LD E,A
-0179   0238 CD 05 00    			CALL BDOS
-0180   023B C9          			RET
-0181   023C             
-0182   023C             ;==================================================================================
-0183   023C             ; Convert ASCII characters in BC to a byte in A
-0184   023C             ;==================================================================================
-0185   023C 78          BCTOA:		LD   A,B				
-0186   023D D6 30       			SUB  $30
-0187   023F FE 0A       			CP   $0A
-0188   0241 38 02       			JR   C,BCTOA1
-0189   0243 D6 07       			SUB  $07
-0190   0245 07          BCTOA1:		RLCA
-0191   0246 07          			RLCA
-0192   0247 07          			RLCA
-0193   0248 07          			RLCA
-0194   0249 47          			LD   B,A
-0195   024A 79          			LD   A,C
-0196   024B D6 30       			SUB  $30
-0197   024D FE 0A       			CP   $0A
-0198   024F 38 02       			JR   C,BCTOA2
-0199   0251 D6 07       			SUB  $07
-0200   0253 80          BCTOA2:		ADD  A,B
-0201   0254 C9          			RET
-0202   0255             			
-0203   0255             ;==================================================================================
-0204   0255 00 00       buffPtr		.DW	0000H
-0205   0257 00          checkSum 	.DB	0H
-0206   0258             
-0207   0258             			.END
+0037   0100 31 7B 02    			LD	SP,STACK			; Set default stack.
+0038   0103 18 3E       			JR	JUMPMSG
+0039   0105 53 54 41 52 			.DB	"START SEND.PY ON WINDOWS CONSOLE "
+0039   0109 54 20 53 45 
+0039   010D 4E 44 2E 50 
+0039   0111 59 20 4F 4E 
+0039   0115 20 57 49 4E 
+0039   0119 44 4F 57 53 
+0039   011D 20 43 4F 4E 
+0039   0121 53 4F 4C 45 
+0039   0125 20 
+0040   0126 41 4E 44 20 			.DB "AND IT WILL STAR RECEIVE.COM."
+0040   012A 49 54 20 57 
+0040   012E 49 4C 4C 20 
+0040   0132 53 54 41 52 
+0040   0136 20 52 45 43 
+0040   013A 45 49 56 45 
+0040   013E 2E 43 4F 4D 
+0040   0142 2E 
+0041   0143 3E 24       JUMPMSG:	LD	A,ACK
+0042   0145 CD 38 02    			CALL PUTCHAR
+0043   0148             
+0044   0148 CD 2C 02    NEWFILE:	CALL GETCHAR			; Get Drive letter (A...P)
+0045   014B D6 40       			SUB	040H				; convert from ASCII letter to byte (A=1, B=2...)
+0046   014D 21 5C 00    			LD	HL,FCB
+0047   0150 77          			LD	(HL),A
+0048   0151 23          			INC	HL
+0049   0152 06 0B       			LD	B,11
+0050   0154 C5          NEXT1:		PUSH BC
+0051   0155 E5          			PUSH HL
+0052   0156 CD 2C 02    			CALL GETCHAR			; Get 11 chars,8 from name + 3 type (NNNNNNNN.TTT)
+0053   0159 E1          			POP	HL
+0054   015A C1          			POP	BC
+0055   015B 77          			LD	(HL),A				; and write them to FCB
+0056   015C 23          			INC	HL
+0057   015D 05          			DEC	B
+0058   015E 20 F4       			JR	NZ,NEXT1
+0059   0160             			
+0060   0160 3E 00       			LD	A,0					; Set initial parameters
+0061   0162 21 68 00    			LD	HL,FCBEX
+0062   0165 77          			LD (HL),A				; EX = 0
+0063   0166 21 7C 00    			LD	HL,FCBCR
+0064   0169 77          			LD (HL),A				; CR = 0
+0065   016A 32 5A 02    			LD	(checkSum),A
+0066   016D 21 80 00    			LD	HL,DMA
+0067   0170 22 58 02    			LD	(buffPtr),HL
+0068   0173             			
+0069   0173 0E 1A       			LD	C,F_DMAOFF			; Set DMA for file operations.
+0070   0175 11 80 00    			LD	DE,DMA
+0071   0178 CD 05 00    			CALL BDOS
+0072   017B             			
+0073   017B 0E 13       			LD	C,F_DELETE			; Delete file
+0074   017D 11 5C 00    			LD	DE,FCB
+0075   0180 CD 05 00    			CALL BDOS
+0076   0183             			
+0077   0183 0E 16       			LD	C,F_MAKE			; Create file
+0078   0185 11 5C 00    			LD	DE,FCB
+0079   0188 CD 05 00    			CALL BDOS
+0080   018B FE FF       			CP	0FFH				; Was file created ok?
+0081   018D 20 08       			JR	NZ,GETHEX
+0082   018F 3E 25       			LD	A,NAK				; Tell SEND to abort xmit.
+0083   0191 CD 38 02    			CALL PUTCHAR
+0084   0194 C3 00 00    			JP	REBOOT
+0085   0197             		
+0086   0197 3E 24       GETHEX:		LD	A,ACK				; Tell SEND to xmit
+0087   0199 CD 38 02    			CALL PUTCHAR
+0088   019C             
+0089   019C CD 2C 02    			CALL GETCHAR			; Get 1st char
+0090   019F FE 23       			CP	EOT
+0091   01A1 28 41       			JR	Z,CLOSE
+0092   01A3 47          			LD	B,A
+0093   01A4 C5          			PUSH BC
+0094   01A5 CD 2C 02    			CALL GETCHAR			; Get 2nd char
+0095   01A8 C1          			POP	BC
+0096   01A9 4F          			LD	C,A
+0097   01AA CD 3F 02    			CALL BCTOA				; Convert ASCII to byte
+0098   01AD 47          			LD	B,A					; Update checksum
+0099   01AE 3A 5A 02    			LD	A,(checkSum)
+0100   01B1 80          			ADD	A,B
+0101   01B2 32 5A 02    			LD	(checkSum),A
+0102   01B5 78          			LD	A,B					; Put received byte in buffer
+0103   01B6 2A 58 02    			LD	HL,(buffPtr)
+0104   01B9 77          			LD	(HL),A
+0105   01BA 23          			INC	HL
+0106   01BB 22 58 02    			LD	(buffPtr),HL
+0107   01BE 7C          			LD	A,H
+0108   01BF FE 01       			CP	1					; Check if we reached the end of the buffer
+0109   01C1 20 D4       			JR	NZ,GETHEX
+0110   01C3             			
+0111   01C3 3E 26       			LD	A,EM				; Tell SEND to pause, because we got a full buffer. 
+0112   01C5 CD 38 02    			CALL PUTCHAR
+0113   01C8 21 80 00    			LD	HL,DMA				; Reset buffer pointer.
+0114   01CB 22 58 02    			LD	(buffPtr),HL
+0115   01CE             			
+0116   01CE 0E 15       			LD	C,F_WRITE			; Write buffer to disk.
+0117   01D0 11 5C 00    			LD	DE,FCB
+0118   01D3 CD 05 00    			CALL BDOS
+0119   01D6 FE FF       			CP	0FFH				; Was file write ok?
+0120   01D8 20 BD       			JR	NZ,GETHEX
+0121   01DA 3E 25       			LD	A,NAK				; Tell SEND to abort xmit.
+0122   01DC CD 38 02    			CALL PUTCHAR
+0123   01DF C3 00 00    			JP	REBOOT
+0124   01E2             
+0125   01E2 18 B3       			JR	GETHEX
+0126   01E4             
+0127   01E4 01 80 00    CLOSE:		LD	BC,DMA				; Check if buffer is empty
+0128   01E7 2A 58 02    			LD	HL,(buffPtr)
+0129   01EA 37          			SCF
+0130   01EB 3F          			CCF
+0131   01EC ED 42       			SBC	HL,BC
+0132   01EE 28 14       			JR	Z,BEMPTY
+0133   01F0             
+0134   01F0 0E 15       			LD	C,F_WRITE			; Write the last block to file.
+0135   01F2 11 5C 00    			LD	DE,FCB
+0136   01F5 CD 05 00    			CALL BDOS
+0137   01F8 FE FF       			CP	0FFH				; Was file write ok?
+0138   01FA 20 08       			JR	NZ,BEMPTY
+0139   01FC 3E 25       			LD	A,NAK				; Tell SEND to abort xmit.
+0140   01FE CD 38 02    			CALL PUTCHAR
+0141   0201 C3 00 00    			JP	REBOOT
+0142   0204             
+0143   0204 0E 10       BEMPTY:		LD	C,F_CLOSE			; Close the file.
+0144   0206 11 5C 00    			LD	DE,FCB
+0145   0209 CD 05 00    			CALL BDOS
+0146   020C             
+0147   020C CD 2C 02    			CALL GETCHAR			; Get 1st char from checksum
+0148   020F 47          			LD   B,A
+0149   0210 C5          			PUSH BC
+0150   0211 CD 2C 02    			CALL GETCHAR			; Get 2nd char from checksum
+0151   0214 C1          			POP BC
+0152   0215 4F          			LD   C,A
+0153   0216 CD 3F 02    			CALL BCTOA
+0154   0219 47          			LD	B,A
+0155   021A 3A 5A 02    			LD	A,(checkSum)
+0156   021D 90          			SUB	B
+0157   021E FE 00       			CP	0
+0158   0220 3E 24       			LD	A,ACK
+0159   0222 28 02       			JR	Z,CHECKOUT
+0160   0224 3E 25       			LD	A,NAK
+0161   0226 CD 38 02    CHECKOUT:	CALL PUTCHAR
+0162   0229             
+0163   0229 C3 00 00    			JP	REBOOT
+0164   022C             
+0165   022C             ;==================================================================================
+0166   022C             ; Wait for a char and return it on A (no echo)
+0167   022C             ;==================================================================================
+0168   022C 1E FF       GETCHAR:	LD	E,0FFH
+0169   022E 0E 06       			LD 	C,C_RAWIO
+0170   0230 CD 05 00    			CALL BDOS
+0171   0233 FE 00       			CP	0
+0172   0235 28 F5       			JR	Z,GETCHAR
+0173   0237 C9          			RET
+0174   0238             
+0175   0238             ;==================================================================================
+0176   0238             ; Write A to output
+0177   0238             ;==================================================================================
+0178   0238 0E 02       PUTCHAR:	LD C,C_WRITE
+0179   023A 5F          			LD E,A
+0180   023B CD 05 00    			CALL BDOS
+0181   023E C9          			RET
+0182   023F             
+0183   023F             ;==================================================================================
+0184   023F             ; Convert ASCII characters in BC to a byte in A
+0185   023F             ;==================================================================================
+0186   023F 78          BCTOA:		LD   A,B				
+0187   0240 D6 30       			SUB  $30
+0188   0242 FE 0A       			CP   $0A
+0189   0244 38 02       			JR   C,BCTOA1
+0190   0246 D6 07       			SUB  $07
+0191   0248 07          BCTOA1:		RLCA
+0192   0249 07          			RLCA
+0193   024A 07          			RLCA
+0194   024B 07          			RLCA
+0195   024C 47          			LD   B,A
+0196   024D 79          			LD   A,C
+0197   024E D6 30       			SUB  $30
+0198   0250 FE 0A       			CP   $0A
+0199   0252 38 02       			JR   C,BCTOA2
+0200   0254 D6 07       			SUB  $07
+0201   0256 80          BCTOA2:		ADD  A,B
+0202   0257 C9          			RET
+0203   0258             			
+0204   0258             ;==================================================================================
+0205   0258 00 00       buffPtr		.DW	0000H
+0206   025A 00          checkSum 	.DB	0H
+0207   025B             
+0208   025B             			.DS	020h			; Start of stack area.
+0209   027B             STACK:		.EQU	$
+0210   027B             
+0211   027B             			.END
 tasm: Number of errors = 0
