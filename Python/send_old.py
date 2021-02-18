@@ -48,7 +48,6 @@ for i in range(0, len(opts)):
             goDrive = False
     if opts[i].startswith("-f"):
         file = opts[i][2:]
-        ufile = file.upper()
         try:
             f = open(file,"rb")
             print('Source file : ' + file)
@@ -64,10 +63,42 @@ if (goPort != True) or (goDrive != True) or (goFile != True):
         f.close()
     exit()
 
+# Transform drive and file into FCB format
+dot = file.find(".")
+i = 1
+listFCB[0] = drive
+if dot == -1:                               # name has no extension
+    while i < 9:
+        if (len(file) >= i):
+            listFCB[i] = file[i-1]
+        else:
+            for i in range(i, 8):
+                listFCB[i] = " "
+        i+=1
+    while i < 12:
+        listFCB[i] = " "
+        i+=1
+else:                                       # name has extension
+    while i < 9:
+        if i <= dot:
+            listFCB[i] = file[i-1]
+        else:
+            listFCB[i] = " "
+        i+=1
+    while i < 12:
+        if len(file) >= (dot+i-7):
+            listFCB[i] = file[dot+i-8]
+        else:
+            listFCB[i] = " "
+        i+=1
+
+FCB = ''.join(listFCB).upper()
+
 # We're ready to start communication with CP/M
 # Start RECEIVE.COM on CP/M
 print('Starting RECEIVE.COM on CP/M.')
-Z80_port.write(b'RECEIVE ' + (drive + ':' + file).encode() + b'\r')
+Z80_port.write(b'RECEIVE' + b'\r')
+Z80_port.flush()
 
 # Wait for <ACK>
 print('Waiting for ACK... ', end='')
@@ -76,18 +107,30 @@ while True:
     if int.from_bytes(rec_byte, 'big') == ACK:
         print('Clear to go.')
         break
-exit()
 
+# Send FCB
+print('Sending FCB.')
+Z80_port.write(FCB.encode())
+Z80_port.flush()
+
+# Wait for <ACK>
+print('Waiting for ACK... ', end='')
+xuxu=0
+while xuxu==0:
+    rec_byte = Z80_port.read(1)
+    if int.from_bytes(rec_byte, 'big') == ACK:   
+        print('Clear to go.')
+        xuxu=1
 CheckSum = 0
-byte_count = 0
 while True:
     br = f.read(1)
+    print('O',end='')
+    print(br,end='')
     if br == b'':
         break
     nbr = int.from_bytes(br, 'big')
     CheckSum += nbr
-    byte_count += 1
-    
+            
     msn = nbr // 16
     if msn < 0xa:
         msn += 0x30
@@ -102,17 +145,21 @@ while True:
                     
     Z80_port.write(msn.to_bytes(1, 'big'))
     Z80_port.write(lsn.to_bytes(1, 'big'))
-    if byte_count == 128:
-        while True:
-            rec_byte = Z80_port.read(1)
-            if int.from_bytes(rec_byte, "big") == ACK:   
-                byte_count = 0
-                break
+    Z80_port.flush()
+    while True:
+        rec_byte = Z80_port.read(1)
+        print('I',end='')
+        print(rec_byte)
+        if int.from_bytes(rec_byte, "big") == ACK:   
+            break
+        elif int.from_bytes(rec_byte, "big") == EM:   
+            print('.', end='')
 
 f.close()
 
 # Send EOT
 Z80_port.write(EOT)
+Z80_port.flush()
 
 # Send checksum
 print('\r\n' + 'Sending Checksum...')
@@ -128,6 +175,7 @@ else:
     lsn += 0x37
 Z80_port.write(msn.to_bytes(1, 'big'))
 Z80_port.write(lsn.to_bytes(1, 'big'))
+Z80_port.flush()
 
 # Wait for ACK or NAK
 print('Waiting for ACK or NAK...')
@@ -144,3 +192,9 @@ print('\r\n')
 Z80_port.close()
     
 exit()
+
+#    elif int.from_bytes(rec_byte, "big") == NAK:
+#        print("Fail to create file." +'\r\n')
+#        Z80_port.close()
+#        f.close()
+#        exit()
