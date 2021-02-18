@@ -120,14 +120,12 @@ while xuxu==0:
     rec_byte = Z80_port.read(1)
     if int.from_bytes(rec_byte, 'big') == ACK:   
         print('Clear to go.')
-        print('Get me out of here!!!')
         xuxu=1
-print('Ouch')
 CheckSum = 0
 while True:
     br = f.read(1)
-    print('F',end='')
-    print(br)
+    print('O',end='')
+    print(br,end='')
     if br == b'':
         break
     nbr = int.from_bytes(br, 'big')
@@ -150,7 +148,7 @@ while True:
     Z80_port.flush()
     while True:
         rec_byte = Z80_port.read(1)
-        print('R',end='')
+        print('I',end='')
         print(rec_byte)
         if int.from_bytes(rec_byte, "big") == ACK:   
             break
