@@ -10,8 +10,8 @@ import serial
 print('\r\n')    
 
 # Which COM port?
-#com_port = input("COM port number? ")
-com_port = 16
+com_port = input("COM port number? ")
+#com_port = 16
 Z80_port = serial.Serial(port = "COM" + str(com_port), baudrate = 9600)
 
 # Which file?
