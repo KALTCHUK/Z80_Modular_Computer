@@ -103,33 +103,10 @@ CLOSE:		LD	BC,DMA				; Check if buffer is empty
 			LD	C,F_WRITE			; Write the last block to file.
 			LD	DE,FCB
 			CALL BDOS
-			CP	0FFH				; Was file write ok?
-			JR	NZ,BEMPTY
-			LD	A,NAK				; Tell SEND to abort xmit.
-			CALL PUTCHAR
-			CALL GETCHAR			; Get 2 chars from checksum before boot
-			CALL GETCHAR
-			JP	REBOOT
 
 BEMPTY:		LD	C,F_CLOSE			; Close the file.
 			LD	DE,FCB
 			CALL BDOS
-
-			CALL GETCHAR			; Get 1st char from checksum
-			LD   B,A
-			PUSH BC
-			CALL GETCHAR			; Get 2nd char from checksum
-			POP BC
-			LD   C,A
-			CALL BCTOA
-			LD	B,A
-			LD	A,(checkSum)
-			SUB	B
-			CP	0
-			LD	A,ACK
-			JR	Z,CHECKOUT
-			LD	A,NAK
-CHECKOUT:	CALL PUTCHAR
 
 			JP	REBOOT
 

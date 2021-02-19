@@ -62,7 +62,6 @@ if (goPort != True) or (goDrive != True) or (goFile != True):
         Z80_port.close()
     if goFile == True:
         f.close()
-    exit()
 
 # We're ready to start communication with CP/M
 # Start RECEIVE.COM on CP/M
@@ -73,15 +72,17 @@ Z80_port.write(b'RECEIVE ' + (drive + ':' + file).encode() + b'\r')
 print('Waiting for ACK... ', end='')
 while True:
     rec_byte = Z80_port.read(1)
+    print(rec_byte)
     if int.from_bytes(rec_byte, 'big') == ACK:
         print('Clear to go.')
         break
-exit()
 
 CheckSum = 0
 byte_count = 0
 while True:
     br = f.read(1)
+    print('File=',end='')
+    print(rec_byte)
     if br == b'':
         break
     nbr = int.from_bytes(br, 'big')
@@ -105,6 +106,7 @@ while True:
     if byte_count == 128:
         while True:
             rec_byte = Z80_port.read(1)
+            print(rec_byte)
             if int.from_bytes(rec_byte, "big") == ACK:   
                 byte_count = 0
                 break
@@ -113,6 +115,10 @@ f.close()
 
 # Send EOT
 Z80_port.write(EOT)
+print('\r\n')    
+Z80_port.close()
+    
+exit()
 
 # Send checksum
 print('\r\n' + 'Sending Checksum...')
