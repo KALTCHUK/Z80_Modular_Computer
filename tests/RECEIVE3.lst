@@ -1,0 +1,176 @@
+0001   0000             ;==================================================================================
+0002   0000             ; Receive version 2
+0003   0000             ;
+0004   0000             ; RECEIVE is a program that runs on CP/M. On the Windows console there's a 
+0005   0000             ; counterpart program called SEND.PY.
+0006   0000             ;
+0007   0000             ; How it works? SEND sends an archive, converting each byte into a pair of
+0008   0000             ; ASCII characters. For example, byte 0x2F will be transmitted as 0x32 0x46.
+0009   0000             ; After all archive has been xmitted, SEND sends the checksum (also ASCII pair).
+0010   0000             ;==================================================================================
+0011   0000             REBOOT		.EQU	0H
+0012   0000             BDOS		.EQU	5H
+0013   0000             TPA			.EQU	0100H
+0014   0000             
+0015   0000             C_READ		.EQU	1
+0016   0000             C_WRITE		.EQU	2
+0017   0000             C_STRING	.EQU	9
+0018   0000             F_CLOSE		.EQU	16
+0019   0000             F_DELETE	.EQU	19
+0020   0000             F_WRITE		.EQU	21
+0021   0000             F_MAKE		.EQU	22
+0022   0000             F_DMAOFF	.EQU	26
+0023   0000             
+0024   0000             EOT			.EQU	04H
+0025   0000             ACK			.EQU	06H
+0026   0000             LF			.EQU	0AH
+0027   0000             CR			.EQU	0DH
+0028   0000             NAK			.EQU	015H
+0029   0000             EM			.EQU	019H
+0030   0000             		
+0031   0000             FCB			.EQU	0005CH
+0032   0000             DMA			.EQU	080H
+0033   0000             ;==================================================================================
+0034   0100             			.ORG TPA
+0035   0100             
+0036   0100 31 45 02    			LD	SP,STACK			; Set default stack.
+0037   0103 3A 5D 00    			LD	A,(FCB+1)
+0038   0106 FE 20       			CP	' '					; Test if program has argument (file name)
+0039   0108 20 0B       			JR	NZ,START
+0040   010A 11 AE 01    			LD	DE,MSG
+0041   010D 0E 09       			LD	C,C_STRING
+0042   010F CD 05 00    			CALL BDOS
+0043   0112 C3 00 00    			JP	REBOOT
+0044   0115             
+0045   0115 21 80 00    START:		LD	HL,DMA
+0046   0118 22 22 02    			LD	(buffPtr),HL
+0047   011B             			
+0048   011B 0E 13       			LD	C,F_DELETE			; Delete file
+0049   011D 11 5C 00    			LD	DE,FCB
+0050   0120 CD 05 00    			CALL BDOS
+0051   0123             			
+0052   0123 0E 16       			LD	C,F_MAKE			; Create file
+0053   0125 11 5C 00    			LD	DE,FCB
+0054   0128 CD 05 00    			CALL BDOS
+0055   012B FE FF       			CP	0FFH				; Was file created ok?
+0056   012D 20 08       			JR	NZ,GETHEX
+0057   012F 3E 15       			LD	A,NAK				; Tell SEND to abort xmit.
+0058   0131 CD 8E 01    			CALL PUTCHAR
+0059   0134 C3 00 00    			JP	REBOOT
+0060   0137             		
+0061   0137 CD 84 01    GETHEX:		CALL GETCHAR			; Get 1st char
+0062   013A FE 04       			CP	EOT
+0063   013C 28 27       			JR	Z,CLOSE
+0064   013E 47          			LD	B,A
+0065   013F C5          			PUSH BC
+0066   0140 CD 84 01    			CALL GETCHAR			; Get 2nd char
+0067   0143 C1          			POP	BC
+0068   0144 4F          			LD	C,A
+0069   0145 CD 95 01    			CALL BC2A				; Convert ASCII to byte
+0070   0148 2A 22 02    			LD	HL,(buffPtr)
+0071   014B 77          			LD	(HL),A
+0072   014C 23          			INC	HL
+0073   014D 22 22 02    			LD	(buffPtr),HL
+0074   0150 7C          			LD	A,H
+0075   0151 FE 01       			CP	1					; Check if we reached the end of the buffer
+0076   0153 20 E2       			JR	NZ,GETHEX
+0077   0155 0E 15       			LD	C,F_WRITE			; Write buffer to disk.
+0078   0157 11 5C 00    			LD	DE,FCB
+0079   015A CD 05 00    			CALL BDOS
+0080   015D 21 80 00    			LD	HL,DMA
+0081   0160 22 22 02    			LD	(buffPtr),HL
+0082   0163 18 D2       			JR	GETHEX
+0083   0165             
+0084   0165 01 80 00    CLOSE:		LD	BC,DMA				; Check if buffer is empty
+0085   0168 2A 22 02    			LD	HL,(buffPtr)
+0086   016B 37          			SCF
+0087   016C 3F          			CCF
+0088   016D ED 42       			SBC	HL,BC
+0089   016F 28 08       			JR	Z,BUFVOID
+0090   0171             
+0091   0171 0E 15       			LD	C,F_WRITE			; Write the last block to file.
+0092   0173 11 5C 00    			LD	DE,FCB
+0093   0176 CD 05 00    			CALL BDOS
+0094   0179             
+0095   0179 0E 10       BUFVOID:	LD	C,F_CLOSE			; Close the file.
+0096   017B 11 5C 00    			LD	DE,FCB
+0097   017E CD 05 00    			CALL BDOS
+0098   0181 C3 00 00    			JP	REBOOT
+0099   0184             
+0100   0184             ;==================================================================================
+0101   0184             ; Wait for a char and return it on A (no echo)
+0102   0184             ;==================================================================================
+0103   0184 0E 01       GETCHAR:	LD 	C,C_READ
+0104   0186 CD 05 00    			CALL BDOS
+0105   0189 FE 00       			CP	0
+0106   018B 28 F7       			JR	Z,GETCHAR
+0107   018D C9          			RET
+0108   018E             
+0109   018E             ;==================================================================================
+0110   018E             ; Write A to output
+0111   018E             ;==================================================================================
+0112   018E 0E 02       PUTCHAR:	LD C,C_WRITE
+0113   0190 5F          			LD E,A
+0114   0191 CD 05 00    			CALL BDOS
+0115   0194 C9          			RET
+0116   0195             
+0117   0195             ;==================================================================================
+0118   0195             ; Convert ASCII characters in BC to a byte in A
+0119   0195             ;==================================================================================
+0120   0195 78          BC2A:		LD   A,B				
+0121   0196 D6 30       			SUB  $30
+0122   0198 FE 0A       			CP   $0A
+0123   019A 38 02       			JR   C,BC2A1
+0124   019C D6 07       			SUB  $07
+0125   019E 07          BC2A1:		RLCA
+0126   019F 07          			RLCA
+0127   01A0 07          			RLCA
+0128   01A1 07          			RLCA
+0129   01A2 47          			LD   B,A
+0130   01A3 79          			LD   A,C
+0131   01A4 D6 30       			SUB  $30
+0132   01A6 FE 0A       			CP   $0A
+0133   01A8 38 02       			JR   C,BC2A2
+0134   01AA D6 07       			SUB  $07
+0135   01AC 80          BC2A2:		ADD  A,B
+0136   01AD C9          			RET
+0137   01AE             			
+0138   01AE             ;==================================================================================
+0139   01AE 52 45 43 45 MSG:		.DB	"RECEIVE 2.0 - Receive file from console and store on disk."
+0139   01B2 49 56 45 20 
+0139   01B6 32 2E 30 20 
+0139   01BA 2D 20 52 65 
+0139   01BE 63 65 69 76 
+0139   01C2 65 20 66 69 
+0139   01C6 6C 65 20 66 
+0139   01CA 72 6F 6D 20 
+0139   01CE 63 6F 6E 73 
+0139   01D2 6F 6C 65 20 
+0139   01D6 61 6E 64 20 
+0139   01DA 73 74 6F 72 
+0139   01DE 65 20 6F 6E 
+0139   01E2 20 64 69 73 
+0139   01E6 6B 2E 
+0140   01E8 0D 0A       			.DB	CR,LF
+0141   01EA 55 73 65 20 			.DB	"Use 'SEND.PY' on Windows console to start this program.$"
+0141   01EE 27 53 45 4E 
+0141   01F2 44 2E 50 59 
+0141   01F6 27 20 6F 6E 
+0141   01FA 20 57 69 6E 
+0141   01FE 64 6F 77 73 
+0141   0202 20 63 6F 6E 
+0141   0206 73 6F 6C 65 
+0141   020A 20 74 6F 20 
+0141   020E 73 74 61 72 
+0141   0212 74 20 74 68 
+0141   0216 69 73 20 70 
+0141   021A 72 6F 67 72 
+0141   021E 61 6D 2E 24 
+0142   0222 00 00       buffPtr		.DW	0000H
+0143   0224 00          checkSum 	.DB	0H
+0144   0225             
+0145   0225             			.DS	020h			; Start of stack area.
+0146   0245             STACK		.EQU	$
+0147   0245             
+0148   0245             			.END
+tasm: Number of errors = 0

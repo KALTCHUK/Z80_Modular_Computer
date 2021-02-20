@@ -2,12 +2,12 @@
 # This program sends a file to CP/M. Run "send.py -h" to see options.
 # REVEIVE.COM must be present in the active drive of CP/M.
 #************************************************************************************************
-EOT	= 0x23      #0x04
-ACK	= 0x24      #0x06
+EOT	= 0x04
+ACK	= 0x06
 LF	= 0x0A
 CR	= 0x0D
-NAK	= 0x25      #0x15
-EM  = 0x26      #0x19
+NAK	= 0x15
+EM  = 0x19
 
 import sys
 import serial
@@ -68,27 +68,13 @@ if (goPort != True) or (goDrive != True) or (goFile != True):
 print('Starting RECEIVE.COM on CP/M.')
 Z80_port.write(b'RECEIVE ' + (drive + ':' + file).encode() + b'\r')
 
-# Wait for <ACK>
-print('Waiting for ACK... ', end='')
-while True:
-    rec_byte = Z80_port.read(1)
-    print(rec_byte)
-    if int.from_bytes(rec_byte, 'big') == ACK:
-        print('Clear to go.')
-        break
-
-CheckSum = 0
-byte_count = 0
+print('Starting transmission.')
 while True:
     br = f.read(1)
-    print('File=',end='')
-    print(rec_byte)
+    print(str(br)[2],end='')
     if br == b'':
         break
     nbr = int.from_bytes(br, 'big')
-    CheckSum += nbr
-    byte_count += 1
-    
     msn = nbr // 16
     if msn < 0xa:
         msn += 0x30
@@ -103,50 +89,15 @@ while True:
                     
     Z80_port.write(msn.to_bytes(1, 'big'))
     Z80_port.write(lsn.to_bytes(1, 'big'))
-    if byte_count == 128:
-        while True:
-            rec_byte = Z80_port.read(1)
-            print(rec_byte)
-            if int.from_bytes(rec_byte, "big") == ACK:   
-                byte_count = 0
-                break
+    Z80_port.flushInput()
 
 f.close()
-
+print('\r\n' + 'Sending EOT.')
 # Send EOT
 Z80_port.write(EOT)
-print('\r\n')    
-Z80_port.close()
     
-exit()
-
-# Send checksum
-print('\r\n' + 'Sending Checksum...')
-msn = CheckSum // 16
-if msn < 0xa:
-    msn += 0x30
-else:
-    msn += 0x37
-lsn = CheckSum % 16
-if lsn < 0xa:
-    lsn += 0x30
-else:
-    lsn += 0x37
-Z80_port.write(msn.to_bytes(1, 'big'))
-Z80_port.write(lsn.to_bytes(1, 'big'))
-
-# Wait for ACK or NAK
-print('Waiting for ACK or NAK...')
-while True:
-    rec_byte = Z80_port.read(1)
-    if int.from_bytes(rec_byte, "big") == ACK:
-        print('Transmission successful.')
-        break
-    elif int.from_bytes(rec_byte, "big") == NAK:
-        print('File operation error or Checksum error.')
-        break
-
-print('\r\n')    
+print('\r\n')
+Z80_port.flushInput()    
 Z80_port.close()
     
 exit()
