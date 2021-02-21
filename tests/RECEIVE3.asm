@@ -1,12 +1,9 @@
 ;==================================================================================
-; Receive version 2
+; Receive version 3
 ;
 ; RECEIVE is a program that runs on CP/M. On the Windows console there's a 
 ; counterpart program called SEND.PY.
 ;
-; How it works? SEND sends an archive, converting each byte into a pair of
-; ASCII characters. For example, byte 0x2F will be transmitted as 0x32 0x46.
-; After all archive has been xmitted, SEND sends the checksum (also ASCII pair).
 ;==================================================================================
 REBOOT		.EQU	0H
 BDOS		.EQU	5H
