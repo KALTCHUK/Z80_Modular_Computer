@@ -1,5 +1,5 @@
 ;==================================================================================
-; Receive version 4
+; Receive version 1.4
 ;
 ; RECEIVE is a program that runs on CP/M. On the Windows console there's a 
 ; counterpart program called SEND.PY.
@@ -40,13 +40,13 @@ DMA			.EQU	080H
 			CALL BDOS
 			JP	REBOOT
 
-START:		LD	HL,DMA
+START:		LD	HL,DMA				; Initialize buffer pointer
 			LD	(BuffPtr),HL
-			LD	A,0
+			LD	A,0					; Initialize checksum
 			LD	(CheckSum),A
 			
-			CALL DELFILE
-			CALL MAKEFILE
+			CALL DELFILE			; Delete file
+			CALL MAKEFILE			; Create file
 			CP	0FFH				; Was file created ok? (0FFH = error)
 			JR	NZ,GETHEX
 			CALL SENDNAK
@@ -54,7 +54,7 @@ START:		LD	HL,DMA
 		
 GETHEX:		CALL SENDACK
 			CALL CONIN				; Get 1st char
-			CP	EOT
+			CP	EOT					; Is it the end?
 			JR	Z,CLOSE
 			LD	B,A
 			PUSH BC
@@ -63,7 +63,7 @@ GETHEX:		CALL SENDACK
 			LD	C,A
 			CALL BC2A				; Convert ASCII to byte
 			LD	B,A
-			LD	A,(CheckSum)
+			LD	A,(CheckSum)		; Update checksum
 			ADD A,B
 			LD	(CheckSum),A
 			LD	HL,(BuffPtr)
@@ -71,7 +71,7 @@ GETHEX:		CALL SENDACK
 			INC	HL
 			LD	(BuffPtr),HL
 			LD	A,H
-			CP	1					; Check if we reached the end of the buffer
+			CP	1					; Check if we reached the end of the buffer (0100h)
 			JR	NZ,GETHEX
 			CALL SENDEM				; Tell SEND to wait
 			LD	HL,DMA
@@ -88,18 +88,16 @@ CLOSE:		LD	HL,(BuffPtr)
 			CP	DMA
 			JR	Z,BUFVOID
 			CALL WRITEBLK
-			CP	0
+			CP	0					; 0 = write OK
 			JR	Z,BUFVOID
-			CALL CONIN
+			CALL CONIN				; Get 2 chars from checksum, just to clean the pipe
 			CALL CONIN
 			JR	CLOSENAK
 			
-BUFVOID:	LD	C,F_CLOSE			; Close the file.
-			LD	DE,FCB
-			CALL BDOS
+BUFVOID:	CALL CLOSFILE			; Close the file.
 			CP	4					; 0, 1, 2 or 3 = OK
 			JP	M,CHKSM
-			CALL CONIN
+			CALL CONIN				; Get 2 chars from checksum, just to clean the pipe
 			CALL CONIN
 			JR	EXIT
 
@@ -190,7 +188,7 @@ BC2A2:		ADD  A,B
 			RET
 			
 ;==================================================================================
-MSG:		.DB	"RECEIVE 2.0 - Receive file from console and store on disk."
+MSG:		.DB	"RECEIVE 1.4 - Receive a file from console and store it on disk."
 			.DB	CR,LF
 			.DB	"Use 'SEND.PY' on Windows console to start this program.$"
 BuffPtr		.DW	0000H
