@@ -136,17 +136,16 @@ else:
 Z80_port.write(msn.to_bytes(1, 'big'))
 Z80_port.write(lsn.to_bytes(1, 'big'))
 
-
-
-
-# VVV                            VVV
-# |||     UNDER CONSTRUCTION     |||
-# VVV                            VVV
-
-
-
-
-
+# Wait for <ACK>
+print('Waiting for ACK... ', end='')
+while True:
+    rec_byte = Z80_port.read(1)
+    if int.from_bytes(rec_byte, 'big') == ACK:
+        print('File successfully transmitted.')
+        break
+    if int.from_bytes(rec_byte, 'big') == NAK:
+        print('CheckSum error!')
+        break
     
 print('\r\n')
 Z80_port.flushInput()    
