@@ -1,5 +1,5 @@
 0001   0000             ;==================================================================================
-0002   0000             ; Receive version 1.4
+0002   0000             ; Receive version 1.4 - Kaltchuk, feb/2021
 0003   0000             ;
 0004   0000             ; RECEIVE is a program that runs on CP/M. On the Windows console there's a 
 0005   0000             ; counterpart program called SEND.PY.
@@ -31,199 +31,196 @@
 0031   0000             ;==================================================================================
 0032   0100             			.ORG TPA
 0033   0100             
-0034   0100 31 9A 02    			LD	SP,STACK			; Set default stack.
+0034   0100 31 94 02    			LD	SP,STACK			; Set default stack.
 0035   0103 3A 5D 00    			LD	A,(FCB+1)
 0036   0106 FE 20       			CP	' '					; Test if program has argument (file name)
 0037   0108 20 0B       			JR	NZ,START
-0038   010A 11 FE 01    			LD	DE,MSG
+0038   010A 11 F8 01    			LD	DE,MSG
 0039   010D 0E 09       			LD	C,C_STRING
 0040   010F CD 05 00    			CALL BDOS
 0041   0112 C3 00 00    			JP	REBOOT
 0042   0115             
 0043   0115 21 80 00    START:		LD	HL,DMA				; Initialize buffer pointer
-0044   0118 22 77 02    			LD	(BuffPtr),HL
+0044   0118 22 71 02    			LD	(BuffPtr),HL
 0045   011B 3E 00       			LD	A,0					; Initialize checksum
-0046   011D 32 79 02    			LD	(CheckSum),A
+0046   011D 32 73 02    			LD	(CheckSum),A
 0047   0120             			
-0048   0120 CD B2 01    			CALL DELFILE			; Delete file
-0049   0123 CD BB 01    			CALL MAKEFILE			; Create file
-0050   0126 FE FF       			CP	0FFH				; Was file created ok? (0FFH = error)
-0051   0128 20 06       			JR	NZ,GETHEX
-0052   012A CD D2 01    			CALL SENDNAK
-0053   012D C3 00 00    			JP	REBOOT
-0054   0130             		
-0055   0130 CD CC 01    GETHEX:		CALL SENDACK
-0056   0133 CD 09 E6    			CALL CONIN				; Get 1st char
-0057   0136 FE 04       			CP	EOT					; Is it the end?
-0058   0138 28 38       			JR	Z,CLOSE
-0059   013A 47          			LD	B,A
-0060   013B C5          			PUSH BC
-0061   013C CD 09 E6    			CALL CONIN				; Get 2nd char
-0062   013F C1          			POP	BC
-0063   0140 4F          			LD	C,A
-0064   0141 CD E5 01    			CALL BC2A				; Convert ASCII to byte
-0065   0144 47          			LD	B,A
-0066   0145 3A 79 02    			LD	A,(CheckSum)		; Update checksum
-0067   0148 80          			ADD A,B
-0068   0149 32 79 02    			LD	(CheckSum),A
-0069   014C 2A 77 02    			LD	HL,(BuffPtr)
-0070   014F 70          			LD	(HL),B				; Put byte in buffer
-0071   0150 23          			INC	HL
-0072   0151 22 77 02    			LD	(BuffPtr),HL
-0073   0154 7C          			LD	A,H
-0074   0155 FE 01       			CP	1					; Check if we reached the end of the buffer (0100h)
-0075   0157 20 D7       			JR	NZ,GETHEX
-0076   0159 CD D8 01    			CALL SENDEM				; Tell SEND to wait
-0077   015C 21 80 00    			LD	HL,DMA
-0078   015F 22 77 02    			LD	(BuffPtr),HL
-0079   0162 CD DC 01    			CALL WRITEBLK
-0080   0165 FE 00       			CP	0					; 0 = write OK
-0081   0167 28 C7       			JR	Z,GETHEX
-0082   0169 CD C4 01    CLOSENAK:	CALL CLOSFILE
-0083   016C CD D2 01    EXIT:		CALL SENDNAK
-0084   016F C3 00 00    			JP	REBOOT
-0085   0172             
-0086   0172 2A 77 02    CLOSE:		LD	HL,(BuffPtr)
-0087   0175 7D          			LD	A,L
-0088   0176 FE 80       			CP	DMA
-0089   0178 28 0F       			JR	Z,BUFVOID
-0090   017A CD DC 01    			CALL WRITEBLK
-0091   017D FE 00       			CP	0					; 0 = write OK
-0092   017F 28 08       			JR	Z,BUFVOID
-0093   0181 CD 09 E6    			CALL CONIN				; Get 2 chars from checksum, just to clean the pipe
-0094   0184 CD 09 E6    			CALL CONIN
-0095   0187 18 E0       			JR	CLOSENAK
-0096   0189             			
-0097   0189 CD C4 01    BUFVOID:	CALL CLOSFILE			; Close the file.
-0098   018C FE 04       			CP	4					; 0, 1, 2 or 3 = OK
-0099   018E FA 99 01    			JP	M,CHKSM
-0100   0191 CD 09 E6    			CALL CONIN				; Get 2 chars from checksum, just to clean the pipe
-0101   0194 CD 09 E6    			CALL CONIN
-0102   0197 18 D3       			JR	EXIT
-0103   0199             
-0104   0199 CD 09 E6    CHKSM:		CALL CONIN				; Get 1st checksum char
-0105   019C 47          			LD	B,A
-0106   019D C5          			PUSH BC
-0107   019E CD 09 E6    			CALL CONIN				; Get 2nd checksum char
-0108   01A1 C1          			POP	BC
-0109   01A2 4F          			LD	C,A
-0110   01A3 CD E5 01    			CALL BC2A				; Convert ASCII to byte
-0111   01A6 21 79 02    			LD	HL,CheckSum
-0112   01A9 BE          			CP	(HL)				; test checksum
-0113   01AA 20 C0       			JR	NZ,EXIT
-0114   01AC CD CC 01    			CALL SENDACK
-0115   01AF C3 00 00    			JP	REBOOT
-0116   01B2             
-0117   01B2             ;==================================================================================
-0118   01B2             ; Delete file
-0119   01B2             ;==================================================================================
-0120   01B2 0E 13       DELFILE:	LD	C,F_DELETE			; Delete file
-0121   01B4 11 5C 00    			LD	DE,FCB
-0122   01B7 CD 05 00    			CALL BDOS
-0123   01BA C9          			RET
-0124   01BB             			
-0125   01BB             ;==================================================================================
-0126   01BB             ; Make file
-0127   01BB             ;==================================================================================
-0128   01BB 0E 16       MAKEFILE:	LD	C,F_MAKE			; Create file
-0129   01BD 11 5C 00    			LD	DE,FCB
-0130   01C0 CD 05 00    			CALL BDOS
-0131   01C3 C9          			RET
-0132   01C4             
-0133   01C4             ;==================================================================================
-0134   01C4             ; Close file
-0135   01C4             ;==================================================================================
-0136   01C4 0E 10       CLOSFILE:	LD	C,F_CLOSE			; Close file
-0137   01C6 11 5C 00    			LD	DE,FCB
-0138   01C9 CD 05 00    			CALL BDOS
-0139   01CC             			
-0140   01CC             ;==================================================================================
-0141   01CC             ; Send ACK
-0142   01CC             ;==================================================================================
-0143   01CC 0E 06       SENDACK:	LD C,ACK
-0144   01CE CD 0C E6    			CALL CONOUT
-0145   01D1 C9          			RET
-0146   01D2             
-0147   01D2             ;==================================================================================
-0148   01D2             ; Send NAK
-0149   01D2             ;==================================================================================
-0150   01D2 0E 15       SENDNAK:	LD C,NAK
-0151   01D4 CD 0C E6    			CALL CONOUT
-0152   01D7 C9          			RET
-0153   01D8             
-0154   01D8             ;==================================================================================
-0155   01D8             ; Send EM
-0156   01D8             ;==================================================================================
-0157   01D8             SENDEM	:	LD C,EM
-0158   01D8 CD 0C E6    			CALL CONOUT
-0159   01DB C9          			RET
-0160   01DC             
-0161   01DC             ;==================================================================================
-0162   01DC             ; Write block to file
-0163   01DC             ;==================================================================================
-0164   01DC 0E 15       WRITEBLK:	LD	C,F_WRITE			; Write buffer to disk.
-0165   01DE 11 5C 00    			LD	DE,FCB
-0166   01E1 CD 05 00    			CALL BDOS
-0167   01E4 C9          			RET
-0168   01E5             
-0169   01E5             ;==================================================================================
-0170   01E5             ; Convert ASCII characters in BC to a byte in A
-0171   01E5             ;==================================================================================
-0172   01E5 78          BC2A:		LD   A,B				
-0173   01E6 D6 30       			SUB  $30
-0174   01E8 FE 0A       			CP   $0A
-0175   01EA 38 02       			JR   C,BC2A1
-0176   01EC D6 07       			SUB  $07
-0177   01EE 07          BC2A1:		RLCA
-0178   01EF 07          			RLCA
-0179   01F0 07          			RLCA
-0180   01F1 07          			RLCA
-0181   01F2 47          			LD   B,A
-0182   01F3 79          			LD   A,C
-0183   01F4 D6 30       			SUB  $30
-0184   01F6 FE 0A       			CP   $0A
-0185   01F8 38 02       			JR   C,BC2A2
-0186   01FA D6 07       			SUB  $07
-0187   01FC 80          BC2A2:		ADD  A,B
-0188   01FD C9          			RET
-0189   01FE             			
-0190   01FE             ;==================================================================================
-0191   01FE 52 45 43 45 MSG:		.DB	"RECEIVE 1.4 - Receive a file from console and store it on disk."
-0191   0202 49 56 45 20 
-0191   0206 31 2E 34 20 
-0191   020A 2D 20 52 65 
-0191   020E 63 65 69 76 
-0191   0212 65 20 61 20 
-0191   0216 66 69 6C 65 
-0191   021A 20 66 72 6F 
-0191   021E 6D 20 63 6F 
-0191   0222 6E 73 6F 6C 
-0191   0226 65 20 61 6E 
-0191   022A 64 20 73 74 
-0191   022E 6F 72 65 20 
-0191   0232 69 74 20 6F 
-0191   0236 6E 20 64 69 
-0191   023A 73 6B 2E 
-0192   023D 0D 0A       			.DB	CR,LF
-0193   023F 55 73 65 20 			.DB	"Use 'SEND.PY' on Windows console to start this program.$"
-0193   0243 27 53 45 4E 
-0193   0247 44 2E 50 59 
-0193   024B 27 20 6F 6E 
-0193   024F 20 57 69 6E 
-0193   0253 64 6F 77 73 
-0193   0257 20 63 6F 6E 
-0193   025B 73 6F 6C 65 
-0193   025F 20 74 6F 20 
-0193   0263 73 74 61 72 
-0193   0267 74 20 74 68 
-0193   026B 69 73 20 70 
-0193   026F 72 6F 67 72 
-0193   0273 61 6D 2E 24 
-0194   0277 00 00       BuffPtr		.DW	0000H
-0195   0279 00          CheckSum 	.DB	0H
-0196   027A             
-0197   027A             			.DS	020h			; Start of stack area.
-0198   029A             STACK		.EQU	$
-0199   029A             
-0200   029A             			.END
+0048   0120 CD AB 01    			CALL DELFILE			; Delete file
+0049   0123 CD B4 01    			CALL MAKEFILE			; Create file
+0050   0126 FE 04       			CP	4					; 0, 1, 2 or 3 = OK
+0051   0128 FA 31 01    			JP	M,GETHEX
+0052   012B CD CC 01    			CALL SENDNAK
+0053   012E C3 00 00    			JP	REBOOT
+0054   0131             		
+0055   0131 CD C6 01    GETHEX:		CALL SENDACK
+0056   0134 CD 09 E6    			CALL CONIN				; Get 1st char
+0057   0137 FE 04       			CP	EOT					; Is it the end?
+0058   0139 28 38       			JR	Z,CLOSE
+0059   013B 47          			LD	B,A
+0060   013C C5          			PUSH BC
+0061   013D CD 09 E6    			CALL CONIN				; Get 2nd char
+0062   0140 C1          			POP	BC
+0063   0141 4F          			LD	C,A
+0064   0142 CD DF 01    			CALL BC2A				; Convert ASCII to byte
+0065   0145 47          			LD	B,A
+0066   0146 3A 73 02    			LD	A,(CheckSum)		; Update checksum
+0067   0149 80          			ADD A,B
+0068   014A 32 73 02    			LD	(CheckSum),A
+0069   014D 2A 71 02    			LD	HL,(BuffPtr)
+0070   0150 70          			LD	(HL),B				; Put byte in buffer
+0071   0151 23          			INC	HL
+0072   0152 22 71 02    			LD	(BuffPtr),HL
+0073   0155 7C          			LD	A,H
+0074   0156 FE 01       			CP	1					; Check if we reached the end of the buffer (0FFh is the last valid position)
+0075   0158 20 D7       			JR	NZ,GETHEX
+0076   015A CD D2 01    			CALL SENDEM				; Tell SEND to wait
+0077   015D 21 80 00    			LD	HL,DMA
+0078   0160 22 71 02    			LD	(BuffPtr),HL
+0079   0163 CD D6 01    			CALL WRITEBLK
+0080   0166 FE 00       			CP	0					; 0 = write OK
+0081   0168 28 C7       			JR	Z,GETHEX
+0082   016A CD BD 01    CLOSENAK:	CALL CLOSFILE
+0083   016D CD CC 01    NAKEXIT:	CALL SENDNAK
+0084   0170 C3 00 00    			JP	REBOOT
+0085   0173             
+0086   0173 2A 71 02    CLOSE:		LD	HL,(BuffPtr)
+0087   0176 7D          			LD	A,L
+0088   0177 FE 80       			CP	DMA
+0089   0179 28 0F       			JR	Z,BUFVOID
+0090   017B CD D6 01    			CALL WRITEBLK
+0091   017E FE 00       			CP	0					; 0 = write OK
+0092   0180 28 08       			JR	Z,BUFVOID
+0093   0182 CD 09 E6    PIPECLR:	CALL CONIN				; Get 2 chars from checksum, just to clean the pipe
+0094   0185 CD 09 E6    			CALL CONIN
+0095   0188 18 E0       			JR	CLOSENAK
+0096   018A             			
+0097   018A CD BD 01    BUFVOID:	CALL CLOSFILE			; Close the file.
+0098   018D FE 04       			CP	4					; 0, 1, 2 or 3 = OK
+0099   018F F2 82 01    			JP	P,PIPECLR
+0100   0192 CD 09 E6    			CALL CONIN				; Get 1st checksum char
+0101   0195 47          			LD	B,A
+0102   0196 C5          			PUSH BC
+0103   0197 CD 09 E6    			CALL CONIN				; Get 2nd checksum char
+0104   019A C1          			POP	BC
+0105   019B 4F          			LD	C,A
+0106   019C CD DF 01    			CALL BC2A				; Convert ASCII to byte. regA holds the
+0107   019F 21 73 02    			LD	HL,CheckSum			; received checksum byte.
+0108   01A2 BE          			CP	(HL)				; test checksum
+0109   01A3 20 C8       			JR	NZ,NAKEXIT
+0110   01A5 CD C6 01    			CALL SENDACK
+0111   01A8 C3 00 00    			JP	REBOOT
+0112   01AB             
+0113   01AB             ;==================================================================================
+0114   01AB             ; Delete file. Returns 0, 1, 2 or 3 if successful.
+0115   01AB             ;==================================================================================
+0116   01AB 0E 13       DELFILE:	LD	C,F_DELETE			; Delete file
+0117   01AD 11 5C 00    			LD	DE,FCB
+0118   01B0 CD 05 00    			CALL BDOS
+0119   01B3 C9          			RET
+0120   01B4             			
+0121   01B4             ;==================================================================================
+0122   01B4             ; Make file. Returns 0, 1, 2 or 3 if successful.
+0123   01B4             ;==================================================================================
+0124   01B4 0E 16       MAKEFILE:	LD	C,F_MAKE			; Create file
+0125   01B6 11 5C 00    			LD	DE,FCB
+0126   01B9 CD 05 00    			CALL BDOS
+0127   01BC C9          			RET
+0128   01BD             
+0129   01BD             ;==================================================================================
+0130   01BD             ; Close file. Returns 0, 1, 2 or 3 if successful.
+0131   01BD             ;==================================================================================
+0132   01BD 0E 10       CLOSFILE:	LD	C,F_CLOSE			; Close file
+0133   01BF 11 5C 00    			LD	DE,FCB
+0134   01C2 CD 05 00    			CALL BDOS
+0135   01C5 C9          			RET
+0136   01C6             			
+0137   01C6             ;==================================================================================
+0138   01C6             ; Send ACK
+0139   01C6             ;==================================================================================
+0140   01C6 0E 06       SENDACK:	LD C,ACK
+0141   01C8 CD 0C E6    			CALL CONOUT
+0142   01CB C9          			RET
+0143   01CC             
+0144   01CC             ;==================================================================================
+0145   01CC             ; Send NAK
+0146   01CC             ;==================================================================================
+0147   01CC 0E 15       SENDNAK:	LD C,NAK
+0148   01CE CD 0C E6    			CALL CONOUT
+0149   01D1 C9          			RET
+0150   01D2             
+0151   01D2             ;==================================================================================
+0152   01D2             ; Send EM
+0153   01D2             ;==================================================================================
+0154   01D2             SENDEM	:	LD C,EM
+0155   01D2 CD 0C E6    			CALL CONOUT
+0156   01D5 C9          			RET
+0157   01D6             
+0158   01D6             ;==================================================================================
+0159   01D6             ; Write block to file. Returns 0 if successful.
+0160   01D6             ;==================================================================================
+0161   01D6 0E 15       WRITEBLK:	LD	C,F_WRITE			; Write buffer to disk.
+0162   01D8 11 5C 00    			LD	DE,FCB
+0163   01DB CD 05 00    			CALL BDOS
+0164   01DE C9          			RET
+0165   01DF             
+0166   01DF             ;==================================================================================
+0167   01DF             ; Convert ASCII characters in BC to a byte in A
+0168   01DF             ;==================================================================================
+0169   01DF 78          BC2A:		LD   A,B				
+0170   01E0 D6 30       			SUB  $30
+0171   01E2 FE 0A       			CP   $0A
+0172   01E4 38 02       			JR   C,BC2A1
+0173   01E6 D6 07       			SUB  $07
+0174   01E8 07          BC2A1:		RLCA
+0175   01E9 07          			RLCA
+0176   01EA 07          			RLCA
+0177   01EB 07          			RLCA
+0178   01EC 47          			LD   B,A
+0179   01ED 79          			LD   A,C
+0180   01EE D6 30       			SUB  $30
+0181   01F0 FE 0A       			CP   $0A
+0182   01F2 38 02       			JR   C,BC2A2
+0183   01F4 D6 07       			SUB  $07
+0184   01F6 80          BC2A2:		ADD  A,B
+0185   01F7 C9          			RET
+0186   01F8             			
+0187   01F8             ;==================================================================================
+0188   01F8 52 45 43 45 MSG:		.DB	"RECEIVE 1.4 - Receive a file from console and store it on disk."
+0188   01FC 49 56 45 20 
+0188   0200 31 2E 34 20 
+0188   0204 2D 20 52 65 
+0188   0208 63 65 69 76 
+0188   020C 65 20 61 20 
+0188   0210 66 69 6C 65 
+0188   0214 20 66 72 6F 
+0188   0218 6D 20 63 6F 
+0188   021C 6E 73 6F 6C 
+0188   0220 65 20 61 6E 
+0188   0224 64 20 73 74 
+0188   0228 6F 72 65 20 
+0188   022C 69 74 20 6F 
+0188   0230 6E 20 64 69 
+0188   0234 73 6B 2E 
+0189   0237 0D 0A       			.DB	CR,LF
+0190   0239 55 73 65 20 			.DB	"Use 'SEND.PY' on Windows console to start this program.$"
+0190   023D 27 53 45 4E 
+0190   0241 44 2E 50 59 
+0190   0245 27 20 6F 6E 
+0190   0249 20 57 69 6E 
+0190   024D 64 6F 77 73 
+0190   0251 20 63 6F 6E 
+0190   0255 73 6F 6C 65 
+0190   0259 20 74 6F 20 
+0190   025D 73 74 61 72 
+0190   0261 74 20 74 68 
+0190   0265 69 73 20 70 
+0190   0269 72 6F 67 72 
+0190   026D 61 6D 2E 24 
+0191   0271 00 00       BuffPtr		.DW	0000H
+0192   0273 00          CheckSum 	.DB	0H
+0193   0274             
+0194   0274             			.DS	020h			; Start of stack area.
+0195   0294             STACK		.EQU	$
+0196   0294             
+0197   0294             			.END
 tasm: Number of errors = 0
