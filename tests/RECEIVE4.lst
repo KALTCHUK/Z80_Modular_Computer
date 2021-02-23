@@ -31,7 +31,7 @@
 0031   0000             ;==================================================================================
 0032   0100             			.ORG TPA
 0033   0100             
-0034   0100 31 95 02    			LD	SP,STACK			; Set default stack.
+0034   0100 31 9A 02    			LD	SP,STACK			; Set default stack.
 0035   0103 3A 5D 00    			LD	A,(FCB+1)
 0036   0106 FE 20       			CP	' '					; Test if program has argument (file name)
 0037   0108 20 0B       			JR	NZ,START
@@ -41,9 +41,9 @@
 0041   0112 C3 00 00    			JP	REBOOT
 0042   0115             
 0043   0115 21 80 00    START:		LD	HL,DMA				; Initialize buffer pointer
-0044   0118 22 72 02    			LD	(BuffPtr),HL
+0044   0118 22 77 02    			LD	(BuffPtr),HL
 0045   011B 3E 00       			LD	A,0					; Initialize checksum
-0046   011D 32 74 02    			LD	(CheckSum),A
+0046   011D 32 79 02    			LD	(CheckSum),A
 0047   0120             			
 0048   0120 CD B2 01    			CALL DELFILE			; Delete file
 0049   0123 CD BB 01    			CALL MAKEFILE			; Create file
@@ -63,19 +63,19 @@
 0063   0140 4F          			LD	C,A
 0064   0141 CD E5 01    			CALL BC2A				; Convert ASCII to byte
 0065   0144 47          			LD	B,A
-0066   0145 3A 74 02    			LD	A,(CheckSum)		; Update checksum
+0066   0145 3A 79 02    			LD	A,(CheckSum)		; Update checksum
 0067   0148 80          			ADD A,B
-0068   0149 32 74 02    			LD	(CheckSum),A
-0069   014C 2A 72 02    			LD	HL,(BuffPtr)
+0068   0149 32 79 02    			LD	(CheckSum),A
+0069   014C 2A 77 02    			LD	HL,(BuffPtr)
 0070   014F 70          			LD	(HL),B				; Put byte in buffer
 0071   0150 23          			INC	HL
-0072   0151 22 72 02    			LD	(BuffPtr),HL
+0072   0151 22 77 02    			LD	(BuffPtr),HL
 0073   0154 7C          			LD	A,H
 0074   0155 FE 01       			CP	1					; Check if we reached the end of the buffer (0100h)
 0075   0157 20 D7       			JR	NZ,GETHEX
 0076   0159 CD D8 01    			CALL SENDEM				; Tell SEND to wait
 0077   015C 21 80 00    			LD	HL,DMA
-0078   015F 22 72 02    			LD	(BuffPtr),HL
+0078   015F 22 77 02    			LD	(BuffPtr),HL
 0079   0162 CD DC 01    			CALL WRITEBLK
 0080   0165 FE 00       			CP	0					; 0 = write OK
 0081   0167 28 C7       			JR	Z,GETHEX
@@ -83,7 +83,7 @@
 0083   016C CD D2 01    EXIT:		CALL SENDNAK
 0084   016F C3 00 00    			JP	REBOOT
 0085   0172             
-0086   0172 2A 72 02    CLOSE:		LD	HL,(BuffPtr)
+0086   0172 2A 77 02    CLOSE:		LD	HL,(BuffPtr)
 0087   0175 7D          			LD	A,L
 0088   0176 FE 80       			CP	DMA
 0089   0178 28 0F       			JR	Z,BUFVOID
@@ -108,7 +108,7 @@
 0108   01A1 C1          			POP	BC
 0109   01A2 4F          			LD	C,A
 0110   01A3 CD E5 01    			CALL BC2A				; Convert ASCII to byte
-0111   01A6 21 74 02    			LD	HL,CheckSum
+0111   01A6 21 79 02    			LD	HL,CheckSum
 0112   01A9 BE          			CP	(HL)				; test checksum
 0113   01AA 20 C0       			JR	NZ,EXIT
 0114   01AC CD CC 01    			CALL SENDACK
@@ -188,41 +188,42 @@
 0188   01FD C9          			RET
 0189   01FE             			
 0190   01FE             ;==================================================================================
-0191   01FE 52 45 43 45 MSG:		.DB	"RECEIVE 2.0 - Receive file from console and store on disk."
+0191   01FE 52 45 43 45 MSG:		.DB	"RECEIVE 1.4 - Receive a file from console and store it on disk."
 0191   0202 49 56 45 20 
-0191   0206 32 2E 30 20 
+0191   0206 31 2E 34 20 
 0191   020A 2D 20 52 65 
 0191   020E 63 65 69 76 
-0191   0212 65 20 66 69 
-0191   0216 6C 65 20 66 
-0191   021A 72 6F 6D 20 
-0191   021E 63 6F 6E 73 
-0191   0222 6F 6C 65 20 
-0191   0226 61 6E 64 20 
-0191   022A 73 74 6F 72 
-0191   022E 65 20 6F 6E 
-0191   0232 20 64 69 73 
-0191   0236 6B 2E 
-0192   0238 0D 0A       			.DB	CR,LF
-0193   023A 55 73 65 20 			.DB	"Use 'SEND.PY' on Windows console to start this program.$"
-0193   023E 27 53 45 4E 
-0193   0242 44 2E 50 59 
-0193   0246 27 20 6F 6E 
-0193   024A 20 57 69 6E 
-0193   024E 64 6F 77 73 
-0193   0252 20 63 6F 6E 
-0193   0256 73 6F 6C 65 
-0193   025A 20 74 6F 20 
-0193   025E 73 74 61 72 
-0193   0262 74 20 74 68 
-0193   0266 69 73 20 70 
-0193   026A 72 6F 67 72 
-0193   026E 61 6D 2E 24 
-0194   0272 00 00       BuffPtr		.DW	0000H
-0195   0274 00          CheckSum 	.DB	0H
-0196   0275             
-0197   0275             			.DS	020h			; Start of stack area.
-0198   0295             STACK		.EQU	$
-0199   0295             
-0200   0295             			.END
+0191   0212 65 20 61 20 
+0191   0216 66 69 6C 65 
+0191   021A 20 66 72 6F 
+0191   021E 6D 20 63 6F 
+0191   0222 6E 73 6F 6C 
+0191   0226 65 20 61 6E 
+0191   022A 64 20 73 74 
+0191   022E 6F 72 65 20 
+0191   0232 69 74 20 6F 
+0191   0236 6E 20 64 69 
+0191   023A 73 6B 2E 
+0192   023D 0D 0A       			.DB	CR,LF
+0193   023F 55 73 65 20 			.DB	"Use 'SEND.PY' on Windows console to start this program.$"
+0193   0243 27 53 45 4E 
+0193   0247 44 2E 50 59 
+0193   024B 27 20 6F 6E 
+0193   024F 20 57 69 6E 
+0193   0253 64 6F 77 73 
+0193   0257 20 63 6F 6E 
+0193   025B 73 6F 6C 65 
+0193   025F 20 74 6F 20 
+0193   0263 73 74 61 72 
+0193   0267 74 20 74 68 
+0193   026B 69 73 20 70 
+0193   026F 72 6F 67 72 
+0193   0273 61 6D 2E 24 
+0194   0277 00 00       BuffPtr		.DW	0000H
+0195   0279 00          CheckSum 	.DB	0H
+0196   027A             
+0197   027A             			.DS	020h			; Start of stack area.
+0198   029A             STACK		.EQU	$
+0199   029A             
+0200   029A             			.END
 tasm: Number of errors = 0
