@@ -72,7 +72,7 @@ if noDrive == True:
 else:
     Z80_port.write(b'RECEIVE ' + (drive + ':' + ufile).encode() + b'\r')
 
-# Wait for <ACK>
+# Wait for <ACK> or <NAK>
 print('Waiting for ACK... ', end='')
 while True:
     rec_byte = Z80_port.read(1)
@@ -122,7 +122,6 @@ while True:
 f.close()                               # We don't need the file anymore
 Z80_port.write(EOT)                     # Send EOT
 
-print('\r\n' + 'Sending CheckSum.')
 msn = checksum // 16                    # Calculate most significant nibble
 if msn < 0xa:
     msn += 0x30
@@ -133,6 +132,7 @@ if lsn < 0xa:
     lsn += 0x30
 else:
     lsn += 0x37
+print('\r\n' + 'Sending CheckSum.')
 Z80_port.write(msn.to_bytes(1, 'big'))
 Z80_port.write(lsn.to_bytes(1, 'big'))
 
