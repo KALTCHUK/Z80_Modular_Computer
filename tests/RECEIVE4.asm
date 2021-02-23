@@ -47,8 +47,8 @@ START:		LD	HL,DMA				; Initialize buffer pointer
 			
 			CALL DELFILE			; Delete file
 			CALL MAKEFILE			; Create file
-			CP	0FFH				; Was file created ok? (0FFH = error)
-			JR	NZ,GETHEX
+			CP	4					; 0, 1, 2 or 3 = OK
+			JP	M,GETHEX
 			CALL SENDNAK
 			JP	REBOOT
 		
@@ -71,7 +71,7 @@ GETHEX:		CALL SENDACK
 			INC	HL
 			LD	(BuffPtr),HL
 			LD	A,H
-			CP	1					; Check if we reached the end of the buffer (0100h)
+			CP	1					; Check if we reached the end of the buffer (0FFh is the last valid position)
 			JR	NZ,GETHEX
 			CALL SENDEM				; Tell SEND to wait
 			LD	HL,DMA
@@ -80,7 +80,7 @@ GETHEX:		CALL SENDACK
 			CP	0					; 0 = write OK
 			JR	Z,GETHEX
 CLOSENAK:	CALL CLOSFILE
-EXIT:		CALL SENDNAK
+NAKEXIT:	CALL SENDNAK
 			JP	REBOOT
 
 CLOSE:		LD	HL,(BuffPtr)
@@ -90,32 +90,28 @@ CLOSE:		LD	HL,(BuffPtr)
 			CALL WRITEBLK
 			CP	0					; 0 = write OK
 			JR	Z,BUFVOID
-			CALL CONIN				; Get 2 chars from checksum, just to clean the pipe
+PIPECLR:	CALL CONIN				; Get 2 chars from checksum, just to clean the pipe
 			CALL CONIN
 			JR	CLOSENAK
 			
 BUFVOID:	CALL CLOSFILE			; Close the file.
 			CP	4					; 0, 1, 2 or 3 = OK
-			JP	M,CHKSM
-			CALL CONIN				; Get 2 chars from checksum, just to clean the pipe
-			CALL CONIN
-			JR	EXIT
-
-CHKSM:		CALL CONIN				; Get 1st checksum char
+			JP	P,PIPECLR
+			CALL CONIN				; Get 1st checksum char
 			LD	B,A
 			PUSH BC
 			CALL CONIN				; Get 2nd checksum char
 			POP	BC
 			LD	C,A
-			CALL BC2A				; Convert ASCII to byte
+			CALL BC2A				; Convert ASCII to byte. regA holds the received checksum byte
 			LD	HL,CheckSum
 			CP	(HL)				; test checksum
-			JR	NZ,EXIT
+			JR	NZ,NAKEXIT
 			CALL SENDACK
 			JP	REBOOT
 
 ;==================================================================================
-; Delete file
+; Delete file. Returns 0, 1, 2 or 3 if successful.
 ;==================================================================================
 DELFILE:	LD	C,F_DELETE			; Delete file
 			LD	DE,FCB
@@ -123,7 +119,7 @@ DELFILE:	LD	C,F_DELETE			; Delete file
 			RET
 			
 ;==================================================================================
-; Make file
+; Make file. Returns 0, 1, 2 or 3 if successful.
 ;==================================================================================
 MAKEFILE:	LD	C,F_MAKE			; Create file
 			LD	DE,FCB
@@ -131,11 +127,12 @@ MAKEFILE:	LD	C,F_MAKE			; Create file
 			RET
 
 ;==================================================================================
-; Close file
+; Close file. Returns 0, 1, 2 or 3 if successful.
 ;==================================================================================
 CLOSFILE:	LD	C,F_CLOSE			; Close file
 			LD	DE,FCB
 			CALL BDOS
+			RET
 			
 ;==================================================================================
 ; Send ACK
@@ -159,7 +156,7 @@ SENDEM	:	LD C,EM
 			RET
 
 ;==================================================================================
-; Write block to file
+; Write block to file. Returns 0 if successful.
 ;==================================================================================
 WRITEBLK:	LD	C,F_WRITE			; Write buffer to disk.
 			LD	DE,FCB
