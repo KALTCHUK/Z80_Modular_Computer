@@ -1,5 +1,5 @@
 ;==================================================================================
-; Receive version 1.4
+; Receive version 1.4 - Kaltchuk, feb/2021
 ;
 ; RECEIVE is a program that runs on CP/M. On the Windows console there's a 
 ; counterpart program called SEND.PY.
@@ -103,8 +103,8 @@ BUFVOID:	CALL CLOSFILE			; Close the file.
 			CALL CONIN				; Get 2nd checksum char
 			POP	BC
 			LD	C,A
-			CALL BC2A				; Convert ASCII to byte. regA holds the received checksum byte
-			LD	HL,CheckSum
+			CALL BC2A				; Convert ASCII to byte. regA holds the
+			LD	HL,CheckSum			; received checksum byte.
 			CP	(HL)				; test checksum
 			JR	NZ,NAKEXIT
 			CALL SENDACK
