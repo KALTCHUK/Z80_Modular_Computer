@@ -28,6 +28,7 @@ EM			.EQU	019H
 		
 FCB			.EQU	0005CH
 DMA			.EQU	080H
+LOGBUF		.EQU	0300H
 ;==================================================================================
 			.ORG TPA
 
@@ -84,7 +85,10 @@ CLOSENAK:	CALL CLOSFILE
 NAKEXIT:	CALL SENDNAK
 			JP	REBOOT
 
-CLOSE:		LD	HL,(BuffPtr)
+CLOSE:		LD	A,'='
+			CALL LOG
+			
+			LD	HL,(BuffPtr)
 			LD	A,L
 			CP	DMA
 			JR	Z,BUFVOID
@@ -114,7 +118,10 @@ BUFVOID:	CALL CLOSFILE			; Close the file.
 ;==================================================================================
 ; Delete file. Returns 0, 1, 2 or 3 if successful.
 ;==================================================================================
-DELFILE:	LD	C,F_DELETE			; Delete file
+DELFILE:	LD	A,'-'
+			CALL LOG
+			
+			LD	C,F_DELETE			; Delete file
 			LD	DE,FCB
 			CALL BDOS
 			RET
@@ -122,7 +129,10 @@ DELFILE:	LD	C,F_DELETE			; Delete file
 ;==================================================================================
 ; Make file. Returns 0, 1, 2 or 3 if successful.
 ;==================================================================================
-MAKEFILE:	LD	C,F_MAKE			; Create file
+MAKEFILE:	LD	A,'+'
+			CALL LOG
+
+			LD	C,F_MAKE			; Create file
 			LD	DE,FCB
 			CALL BDOS
 			RET
@@ -130,7 +140,10 @@ MAKEFILE:	LD	C,F_MAKE			; Create file
 ;==================================================================================
 ; Close file. Returns 0, 1, 2 or 3 if successful.
 ;==================================================================================
-CLOSFILE:	LD	C,F_CLOSE			; Close file
+CLOSFILE:	LD	A,'#'
+			CALL LOG
+			
+			LD	C,F_CLOSE			; Close file
 			LD	DE,FCB
 			CALL BDOS
 			RET
@@ -138,28 +151,40 @@ CLOSFILE:	LD	C,F_CLOSE			; Close file
 ;==================================================================================
 ; Send ACK
 ;==================================================================================
-SENDACK:	LD C,ACK
+SENDACK:	LD	A,'@'
+			CALL LOG
+			
+			LD C,ACK
 			CALL CONOUT
 			RET
 
 ;==================================================================================
 ; Send NAK
 ;==================================================================================
-SENDNAK:	LD C,NAK
+SENDNAK:	LD	A,'%'
+			CALL LOG
+			
+			LD C,NAK
 			CALL CONOUT
 			RET
 
 ;==================================================================================
 ; Send EM
 ;==================================================================================
-SENDEM	:	LD C,EM
+SENDEM	:	LD	A,'!'
+			CALL LOG
+			
+			LD C,EM
 			CALL CONOUT
 			RET
 
 ;==================================================================================
 ; Write block to file. Returns 0 if successful.
 ;==================================================================================
-WRITEBLK:	LD	C,F_WRITE			; Write buffer to disk.
+WRITEBLK:	LD	A,'&'
+			CALL LOG
+			
+			LD	C,F_WRITE			; Write buffer to disk.
 			LD	DE,FCB
 			CALL BDOS
 			RET
@@ -183,25 +208,38 @@ BC2A1:		RLCA
 			JR   C,BC2A2
 			SUB  $07
 BC2A2:		ADD  A,B
+
+			CALL LOG
+			
 			RET
 			
 ;==================================================================================
 ; Initialize debug log
 ;==================================================================================
-LOGINI:
+LOGINI:		LD	HL,LOGBUF
+			LD	(LOGPTR),HL
+			RET
 
+;==================================================================================
+; Write regA to Log
+;==================================================================================
+LOG:		LD	HL,(LOGPTR)
+			LD	(HL),A
+			INC	HL
+			LD	(LOGPTR),HL
 			RET
 
 ;==================================================================================
 MSG:		.DB	"RECEIVE 1.4 - Receive a file from console and store it on disk."
 			.DB	CR,LF
 			.DB	"Use 'SEND.PY' on Windows console to start this program.$"
+
 BuffPtr		.DW	0000H
 CheckSum 	.DB	0H
+LOGPTR		.DW	0000H			; pointer no next position in debug log
 
 			.DS	020h			; Start of stack area.
 STACK		.EQU	$
-LOGPTR		.DW	0000H			; pointer no next position in debug log
-LOG			.EQU	$
+
 
 			.END
