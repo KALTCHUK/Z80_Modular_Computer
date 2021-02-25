@@ -25,10 +25,12 @@ LF			.EQU	0AH
 CR			.EQU	0DH
 NAK			.EQU	015H
 EM			.EQU	019H
+RS			.EQU	01EH
 		
 FCB			.EQU	0005CH
 DMA			.EQU	080H
-LOGBUF		.EQU	0300H
+LOGPTR		.EQU	0300H
+LOGBUF		.EQU	LOGPTR+2
 ;==================================================================================
 			.ORG TPA
 
@@ -85,7 +87,7 @@ CLOSENAK:	CALL CLOSFILE
 NAKEXIT:	CALL SENDNAK
 			JP	REBOOT
 
-CLOSE:		LD	A,'='
+CLOSE:		LD	A,EOT
 			CALL LOG
 			
 			LD	HL,(BuffPtr)
@@ -151,7 +153,7 @@ CLOSFILE:	LD	A,'#'
 ;==================================================================================
 ; Send ACK
 ;==================================================================================
-SENDACK:	LD	A,'@'
+SENDACK:	LD	A,ACK
 			CALL LOG
 			
 			LD C,ACK
@@ -161,7 +163,7 @@ SENDACK:	LD	A,'@'
 ;==================================================================================
 ; Send NAK
 ;==================================================================================
-SENDNAK:	LD	A,'%'
+SENDNAK:	LD	A,NAK
 			CALL LOG
 			
 			LD C,NAK
@@ -171,7 +173,7 @@ SENDNAK:	LD	A,'%'
 ;==================================================================================
 ; Send EM
 ;==================================================================================
-SENDEM	:	LD	A,'!'
+SENDEM	:	LD	A,EM
 			CALL LOG
 			
 			LD C,EM
@@ -181,7 +183,7 @@ SENDEM	:	LD	A,'!'
 ;==================================================================================
 ; Write block to file. Returns 0 if successful.
 ;==================================================================================
-WRITEBLK:	LD	A,'&'
+WRITEBLK:	LD	A,RS
 			CALL LOG
 			
 			LD	C,F_WRITE			; Write buffer to disk.
@@ -236,7 +238,6 @@ MSG:		.DB	"RECEIVE 1.4 - Receive a file from console and store it on disk."
 
 BuffPtr		.DW	0000H
 CheckSum 	.DB	0H
-LOGPTR		.DW	0000H			; pointer no next position in debug log
 
 			.DS	020h			; Start of stack area.
 STACK		.EQU	$
