@@ -25,250 +25,251 @@
 0025   0000             CR			.EQU	0DH
 0026   0000             NAK			.EQU	015H
 0027   0000             EM			.EQU	019H
-0028   0000             		
-0029   0000             FCB			.EQU	0005CH
-0030   0000             DMA			.EQU	080H
-0031   0000             LOGBUF		.EQU	0300H
-0032   0000             ;==================================================================================
-0033   0100             			.ORG TPA
-0034   0100             
-0035   0100 31 D4 02    			LD	SP,STACK			; Set default stack.
-0036   0103 3A 5D 00    			LD	A,(FCB+1)
-0037   0106 FE 20       			CP	' '					; Test if program has argument (file name)
-0038   0108 20 0B       			JR	NZ,START
-0039   010A 11 36 02    			LD	DE,MSG
-0040   010D 0E 09       			LD	C,C_STRING
-0041   010F CD 05 00    			CALL BDOS
-0042   0112 C3 00 00    			JP	REBOOT
-0043   0115             
-0044   0115 CD 26 02    START:		CALL LOGINI
-0045   0118 21 80 00    			LD	HL,DMA				; Initialize buffer pointer
-0046   011B 22 AF 02    			LD	(BuffPtr),HL
-0047   011E 3E 00       			LD	A,0					; Initialize checksum
-0048   0120 32 B1 02    			LD	(CheckSum),A
-0049   0123             			
-0050   0123 CD B3 01    			CALL DELFILE			; Delete file
-0051   0126 CD C1 01    			CALL MAKEFILE			; Create file
-0052   0129 FE 04       			CP	4					; 0, 1, 2 or 3 = OK
-0053   012B FA 34 01    			JP	M,GETHEX
-0054   012E CD E8 01    			CALL SENDNAK
-0055   0131 C3 00 00    			JP	REBOOT
-0056   0134             		
-0057   0134 CD DD 01    GETHEX:		CALL SENDACK
-0058   0137 CD 09 E6    			CALL CONIN				; Get 1st char
-0059   013A FE 04       			CP	EOT					; Is it the end?
-0060   013C 28 38       			JR	Z,CLOSE
-0061   013E 47          			LD	B,A
-0062   013F C5          			PUSH BC
-0063   0140 CD 09 E6    			CALL CONIN				; Get 2nd char
-0064   0143 C1          			POP	BC
-0065   0144 4F          			LD	C,A
-0066   0145 CD 0A 02    			CALL BC2A				; Convert ASCII to byte
-0067   0148 47          			LD	B,A
-0068   0149 3A B1 02    			LD	A,(CheckSum)		; Update checksum
-0069   014C 80          			ADD A,B
-0070   014D 32 B1 02    			LD	(CheckSum),A
-0071   0150 2A AF 02    			LD	HL,(BuffPtr)
-0072   0153 70          			LD	(HL),B				; Put byte in buffer
-0073   0154 23          			INC	HL
-0074   0155 22 AF 02    			LD	(BuffPtr),HL
-0075   0158 7C          			LD	A,H
-0076   0159 FE 01       			CP	1					; Check if we reached the end of the buffer (0FFh is the last valid position)
-0077   015B 20 D7       			JR	NZ,GETHEX
-0078   015D CD F3 01    			CALL SENDEM				; Tell SEND to wait
-0079   0160 21 80 00    			LD	HL,DMA
-0080   0163 22 AF 02    			LD	(BuffPtr),HL
-0081   0166 CD FC 01    			CALL WRITEBLK
-0082   0169 FE 00       			CP	0					; 0 = write OK
-0083   016B 28 C7       			JR	Z,GETHEX
-0084   016D CD CF 01    CLOSENAK:	CALL CLOSFILE
-0085   0170 CD E8 01    NAKEXIT:	CALL SENDNAK
-0086   0173 C3 00 00    			JP	REBOOT
-0087   0176             
-0088   0176 3E 3D       CLOSE:		LD	A,'='
-0089   0178 CD 2D 02    			CALL LOG
-0090   017B             			
-0091   017B 2A AF 02    			LD	HL,(BuffPtr)
-0092   017E 7D          			LD	A,L
-0093   017F FE 80       			CP	DMA
-0094   0181 28 0F       			JR	Z,BUFVOID
-0095   0183 CD FC 01    			CALL WRITEBLK
-0096   0186 FE 00       			CP	0					; 0 = write OK
-0097   0188 28 08       			JR	Z,BUFVOID
-0098   018A CD 09 E6    PIPECLR:	CALL CONIN				; Get 2 chars from checksum, just to clean the pipe
-0099   018D CD 09 E6    			CALL CONIN
-0100   0190 18 DB       			JR	CLOSENAK
-0101   0192             			
-0102   0192 CD CF 01    BUFVOID:	CALL CLOSFILE			; Close the file.
-0103   0195 FE 04       			CP	4					; 0, 1, 2 or 3 = OK
-0104   0197 F2 8A 01    			JP	P,PIPECLR
-0105   019A CD 09 E6    			CALL CONIN				; Get 1st checksum char
-0106   019D 47          			LD	B,A
-0107   019E C5          			PUSH BC
-0108   019F CD 09 E6    			CALL CONIN				; Get 2nd checksum char
-0109   01A2 C1          			POP	BC
-0110   01A3 4F          			LD	C,A
-0111   01A4 CD 0A 02    			CALL BC2A				; Convert ASCII to byte. regA holds the
-0112   01A7 21 B1 02    			LD	HL,CheckSum			; received checksum byte.
-0113   01AA BE          			CP	(HL)				; test checksum
-0114   01AB 20 C3       			JR	NZ,NAKEXIT
-0115   01AD CD DD 01    			CALL SENDACK
-0116   01B0 C3 00 00    			JP	REBOOT
-0117   01B3             
-0118   01B3             ;==================================================================================
-0119   01B3             ; Delete file. Returns 0, 1, 2 or 3 if successful.
+0028   0000             RS			.EQU	01EH
+0029   0000             		
+0030   0000             FCB			.EQU	0005CH
+0031   0000             DMA			.EQU	080H
+0032   0000             LOGPTR		.EQU	0300H
+0033   0000             LOGBUF		.EQU	LOGPTR+2
+0034   0000             ;==================================================================================
+0035   0100             			.ORG TPA
+0036   0100             
+0037   0100 31 D2 02    			LD	SP,STACK			; Set default stack.
+0038   0103 3A 5D 00    			LD	A,(FCB+1)
+0039   0106 FE 20       			CP	' '					; Test if program has argument (file name)
+0040   0108 20 0B       			JR	NZ,START
+0041   010A 11 36 02    			LD	DE,MSG
+0042   010D 0E 09       			LD	C,C_STRING
+0043   010F CD 05 00    			CALL BDOS
+0044   0112 C3 00 00    			JP	REBOOT
+0045   0115             
+0046   0115 CD 26 02    START:		CALL LOGINI
+0047   0118 21 80 00    			LD	HL,DMA				; Initialize buffer pointer
+0048   011B 22 AF 02    			LD	(BuffPtr),HL
+0049   011E 3E 00       			LD	A,0					; Initialize checksum
+0050   0120 32 B1 02    			LD	(CheckSum),A
+0051   0123             			
+0052   0123 CD B3 01    			CALL DELFILE			; Delete file
+0053   0126 CD C1 01    			CALL MAKEFILE			; Create file
+0054   0129 FE 04       			CP	4					; 0, 1, 2 or 3 = OK
+0055   012B FA 34 01    			JP	M,GETHEX
+0056   012E CD E8 01    			CALL SENDNAK
+0057   0131 C3 00 00    			JP	REBOOT
+0058   0134             		
+0059   0134 CD DD 01    GETHEX:		CALL SENDACK
+0060   0137 CD 09 E6    			CALL CONIN				; Get 1st char
+0061   013A FE 04       			CP	EOT					; Is it the end?
+0062   013C 28 38       			JR	Z,CLOSE
+0063   013E 47          			LD	B,A
+0064   013F C5          			PUSH BC
+0065   0140 CD 09 E6    			CALL CONIN				; Get 2nd char
+0066   0143 C1          			POP	BC
+0067   0144 4F          			LD	C,A
+0068   0145 CD 0A 02    			CALL BC2A				; Convert ASCII to byte
+0069   0148 47          			LD	B,A
+0070   0149 3A B1 02    			LD	A,(CheckSum)		; Update checksum
+0071   014C 80          			ADD A,B
+0072   014D 32 B1 02    			LD	(CheckSum),A
+0073   0150 2A AF 02    			LD	HL,(BuffPtr)
+0074   0153 70          			LD	(HL),B				; Put byte in buffer
+0075   0154 23          			INC	HL
+0076   0155 22 AF 02    			LD	(BuffPtr),HL
+0077   0158 7C          			LD	A,H
+0078   0159 FE 01       			CP	1					; Check if we reached the end of the buffer (0FFh is the last valid position)
+0079   015B 20 D7       			JR	NZ,GETHEX
+0080   015D CD F3 01    			CALL SENDEM				; Tell SEND to wait
+0081   0160 21 80 00    			LD	HL,DMA
+0082   0163 22 AF 02    			LD	(BuffPtr),HL
+0083   0166 CD FC 01    			CALL WRITEBLK
+0084   0169 FE 00       			CP	0					; 0 = write OK
+0085   016B 28 C7       			JR	Z,GETHEX
+0086   016D CD CF 01    CLOSENAK:	CALL CLOSFILE
+0087   0170 CD E8 01    NAKEXIT:	CALL SENDNAK
+0088   0173 C3 00 00    			JP	REBOOT
+0089   0176             
+0090   0176 3E 04       CLOSE:		LD	A,EOT
+0091   0178 CD 2D 02    			CALL LOG
+0092   017B             			
+0093   017B 2A AF 02    			LD	HL,(BuffPtr)
+0094   017E 7D          			LD	A,L
+0095   017F FE 80       			CP	DMA
+0096   0181 28 0F       			JR	Z,BUFVOID
+0097   0183 CD FC 01    			CALL WRITEBLK
+0098   0186 FE 00       			CP	0					; 0 = write OK
+0099   0188 28 08       			JR	Z,BUFVOID
+0100   018A CD 09 E6    PIPECLR:	CALL CONIN				; Get 2 chars from checksum, just to clean the pipe
+0101   018D CD 09 E6    			CALL CONIN
+0102   0190 18 DB       			JR	CLOSENAK
+0103   0192             			
+0104   0192 CD CF 01    BUFVOID:	CALL CLOSFILE			; Close the file.
+0105   0195 FE 04       			CP	4					; 0, 1, 2 or 3 = OK
+0106   0197 F2 8A 01    			JP	P,PIPECLR
+0107   019A CD 09 E6    			CALL CONIN				; Get 1st checksum char
+0108   019D 47          			LD	B,A
+0109   019E C5          			PUSH BC
+0110   019F CD 09 E6    			CALL CONIN				; Get 2nd checksum char
+0111   01A2 C1          			POP	BC
+0112   01A3 4F          			LD	C,A
+0113   01A4 CD 0A 02    			CALL BC2A				; Convert ASCII to byte. regA holds the
+0114   01A7 21 B1 02    			LD	HL,CheckSum			; received checksum byte.
+0115   01AA BE          			CP	(HL)				; test checksum
+0116   01AB 20 C3       			JR	NZ,NAKEXIT
+0117   01AD CD DD 01    			CALL SENDACK
+0118   01B0 C3 00 00    			JP	REBOOT
+0119   01B3             
 0120   01B3             ;==================================================================================
-0121   01B3 3E 2D       DELFILE:	LD	A,'-'
-0122   01B5 CD 2D 02    			CALL LOG
-0123   01B8             			
-0124   01B8 0E 13       			LD	C,F_DELETE			; Delete file
-0125   01BA 11 5C 00    			LD	DE,FCB
-0126   01BD CD 05 00    			CALL BDOS
-0127   01C0 C9          			RET
-0128   01C1             			
-0129   01C1             ;==================================================================================
-0130   01C1             ; Make file. Returns 0, 1, 2 or 3 if successful.
+0121   01B3             ; Delete file. Returns 0, 1, 2 or 3 if successful.
+0122   01B3             ;==================================================================================
+0123   01B3 3E 2D       DELFILE:	LD	A,'-'
+0124   01B5 CD 2D 02    			CALL LOG
+0125   01B8             			
+0126   01B8 0E 13       			LD	C,F_DELETE			; Delete file
+0127   01BA 11 5C 00    			LD	DE,FCB
+0128   01BD CD 05 00    			CALL BDOS
+0129   01C0 C9          			RET
+0130   01C1             			
 0131   01C1             ;==================================================================================
-0132   01C1 3E 2B       MAKEFILE:	LD	A,'+'
-0133   01C3 CD 2D 02    			CALL LOG
-0134   01C6             
-0135   01C6 0E 16       			LD	C,F_MAKE			; Create file
-0136   01C8 11 5C 00    			LD	DE,FCB
-0137   01CB CD 05 00    			CALL BDOS
-0138   01CE C9          			RET
-0139   01CF             
-0140   01CF             ;==================================================================================
-0141   01CF             ; Close file. Returns 0, 1, 2 or 3 if successful.
+0132   01C1             ; Make file. Returns 0, 1, 2 or 3 if successful.
+0133   01C1             ;==================================================================================
+0134   01C1 3E 2B       MAKEFILE:	LD	A,'+'
+0135   01C3 CD 2D 02    			CALL LOG
+0136   01C6             
+0137   01C6 0E 16       			LD	C,F_MAKE			; Create file
+0138   01C8 11 5C 00    			LD	DE,FCB
+0139   01CB CD 05 00    			CALL BDOS
+0140   01CE C9          			RET
+0141   01CF             
 0142   01CF             ;==================================================================================
-0143   01CF 3E 23       CLOSFILE:	LD	A,'#'
-0144   01D1 CD 2D 02    			CALL LOG
-0145   01D4             			
-0146   01D4 0E 10       			LD	C,F_CLOSE			; Close file
-0147   01D6 11 5C 00    			LD	DE,FCB
-0148   01D9 CD 05 00    			CALL BDOS
-0149   01DC C9          			RET
-0150   01DD             			
-0151   01DD             ;==================================================================================
-0152   01DD             ; Send ACK
+0143   01CF             ; Close file. Returns 0, 1, 2 or 3 if successful.
+0144   01CF             ;==================================================================================
+0145   01CF 3E 23       CLOSFILE:	LD	A,'#'
+0146   01D1 CD 2D 02    			CALL LOG
+0147   01D4             			
+0148   01D4 0E 10       			LD	C,F_CLOSE			; Close file
+0149   01D6 11 5C 00    			LD	DE,FCB
+0150   01D9 CD 05 00    			CALL BDOS
+0151   01DC C9          			RET
+0152   01DD             			
 0153   01DD             ;==================================================================================
-0154   01DD 3E 40       SENDACK:	LD	A,'@'
-0155   01DF CD 2D 02    			CALL LOG
-0156   01E2             			
-0157   01E2 0E 06       			LD C,ACK
-0158   01E4 CD 0C E6    			CALL CONOUT
-0159   01E7 C9          			RET
-0160   01E8             
-0161   01E8             ;==================================================================================
-0162   01E8             ; Send NAK
+0154   01DD             ; Send ACK
+0155   01DD             ;==================================================================================
+0156   01DD 3E 06       SENDACK:	LD	A,ACK
+0157   01DF CD 2D 02    			CALL LOG
+0158   01E2             			
+0159   01E2 0E 06       			LD C,ACK
+0160   01E4 CD 0C E6    			CALL CONOUT
+0161   01E7 C9          			RET
+0162   01E8             
 0163   01E8             ;==================================================================================
-0164   01E8 3E 25       SENDNAK:	LD	A,'%'
-0165   01EA CD 2D 02    			CALL LOG
-0166   01ED             			
-0167   01ED 0E 15       			LD C,NAK
-0168   01EF CD 0C E6    			CALL CONOUT
-0169   01F2 C9          			RET
-0170   01F3             
-0171   01F3             ;==================================================================================
-0172   01F3             ; Send EM
+0164   01E8             ; Send NAK
+0165   01E8             ;==================================================================================
+0166   01E8 3E 15       SENDNAK:	LD	A,NAK
+0167   01EA CD 2D 02    			CALL LOG
+0168   01ED             			
+0169   01ED 0E 15       			LD C,NAK
+0170   01EF CD 0C E6    			CALL CONOUT
+0171   01F2 C9          			RET
+0172   01F3             
 0173   01F3             ;==================================================================================
-0174   01F3             SENDEM	:	LD	A,'!'
-0175   01F3 CD 2D 02    			CALL LOG
-0176   01F6             			
-0177   01F6 0E 19       			LD C,EM
-0178   01F8 CD 0C E6    			CALL CONOUT
-0179   01FB C9          			RET
-0180   01FC             
-0181   01FC             ;==================================================================================
-0182   01FC             ; Write block to file. Returns 0 if successful.
+0174   01F3             ; Send EM
+0175   01F3             ;==================================================================================
+0176   01F3             SENDEM	:	LD	A,EM
+0177   01F3 CD 2D 02    			CALL LOG
+0178   01F6             			
+0179   01F6 0E 19       			LD C,EM
+0180   01F8 CD 0C E6    			CALL CONOUT
+0181   01FB C9          			RET
+0182   01FC             
 0183   01FC             ;==================================================================================
-0184   01FC 3E 26       WRITEBLK:	LD	A,'&'
-0185   01FE CD 2D 02    			CALL LOG
-0186   0201             			
-0187   0201 0E 15       			LD	C,F_WRITE			; Write buffer to disk.
-0188   0203 11 5C 00    			LD	DE,FCB
-0189   0206 CD 05 00    			CALL BDOS
-0190   0209 C9          			RET
-0191   020A             
-0192   020A             ;==================================================================================
-0193   020A             ; Convert ASCII characters in BC to a byte in A
+0184   01FC             ; Write block to file. Returns 0 if successful.
+0185   01FC             ;==================================================================================
+0186   01FC 3E 1E       WRITEBLK:	LD	A,RS
+0187   01FE CD 2D 02    			CALL LOG
+0188   0201             			
+0189   0201 0E 15       			LD	C,F_WRITE			; Write buffer to disk.
+0190   0203 11 5C 00    			LD	DE,FCB
+0191   0206 CD 05 00    			CALL BDOS
+0192   0209 C9          			RET
+0193   020A             
 0194   020A             ;==================================================================================
-0195   020A 78          BC2A:		LD   A,B				
-0196   020B D6 30       			SUB  $30
-0197   020D FE 0A       			CP   $0A
-0198   020F 38 02       			JR   C,BC2A1
-0199   0211 D6 07       			SUB  $07
-0200   0213 07          BC2A1:		RLCA
-0201   0214 07          			RLCA
-0202   0215 07          			RLCA
-0203   0216 07          			RLCA
-0204   0217 47          			LD   B,A
-0205   0218 79          			LD   A,C
-0206   0219 D6 30       			SUB  $30
-0207   021B FE 0A       			CP   $0A
-0208   021D 38 02       			JR   C,BC2A2
-0209   021F D6 07       			SUB  $07
-0210   0221 80          BC2A2:		ADD  A,B
-0211   0222             
-0212   0222 CD 2D 02    			CALL LOG
-0213   0225             			
-0214   0225 C9          			RET
-0215   0226             			
-0216   0226             ;==================================================================================
-0217   0226             ; Initialize debug log
+0195   020A             ; Convert ASCII characters in BC to a byte in A
+0196   020A             ;==================================================================================
+0197   020A 78          BC2A:		LD   A,B				
+0198   020B D6 30       			SUB  $30
+0199   020D FE 0A       			CP   $0A
+0200   020F 38 02       			JR   C,BC2A1
+0201   0211 D6 07       			SUB  $07
+0202   0213 07          BC2A1:		RLCA
+0203   0214 07          			RLCA
+0204   0215 07          			RLCA
+0205   0216 07          			RLCA
+0206   0217 47          			LD   B,A
+0207   0218 79          			LD   A,C
+0208   0219 D6 30       			SUB  $30
+0209   021B FE 0A       			CP   $0A
+0210   021D 38 02       			JR   C,BC2A2
+0211   021F D6 07       			SUB  $07
+0212   0221 80          BC2A2:		ADD  A,B
+0213   0222             
+0214   0222 CD 2D 02    			CALL LOG
+0215   0225             			
+0216   0225 C9          			RET
+0217   0226             			
 0218   0226             ;==================================================================================
-0219   0226 21 00 03    LOGINI:		LD	HL,LOGBUF
-0220   0229 22 B2 02    			LD	(LOGPTR),HL
-0221   022C C9          			RET
-0222   022D             
-0223   022D             ;==================================================================================
-0224   022D             ; Write regA to Log
+0219   0226             ; Initialize debug log
+0220   0226             ;==================================================================================
+0221   0226 21 02 03    LOGINI:		LD	HL,LOGBUF
+0222   0229 22 00 03    			LD	(LOGPTR),HL
+0223   022C C9          			RET
+0224   022D             
 0225   022D             ;==================================================================================
-0226   022D 2A B2 02    LOG:		LD	HL,(LOGPTR)
-0227   0230 77          			LD	(HL),A
-0228   0231 23          			INC	HL
-0229   0232 22 B2 02    			LD	(LOGPTR),HL
-0230   0235 C9          			RET
-0231   0236             
-0232   0236             ;==================================================================================
-0233   0236 52 45 43 45 MSG:		.DB	"RECEIVE 1.4 - Receive a file from console and store it on disk."
-0233   023A 49 56 45 20 
-0233   023E 31 2E 34 20 
-0233   0242 2D 20 52 65 
-0233   0246 63 65 69 76 
-0233   024A 65 20 61 20 
-0233   024E 66 69 6C 65 
-0233   0252 20 66 72 6F 
-0233   0256 6D 20 63 6F 
-0233   025A 6E 73 6F 6C 
-0233   025E 65 20 61 6E 
-0233   0262 64 20 73 74 
-0233   0266 6F 72 65 20 
-0233   026A 69 74 20 6F 
-0233   026E 6E 20 64 69 
-0233   0272 73 6B 2E 
-0234   0275 0D 0A       			.DB	CR,LF
-0235   0277 55 73 65 20 			.DB	"Use 'SEND.PY' on Windows console to start this program.$"
-0235   027B 27 53 45 4E 
-0235   027F 44 2E 50 59 
-0235   0283 27 20 6F 6E 
-0235   0287 20 57 69 6E 
-0235   028B 64 6F 77 73 
-0235   028F 20 63 6F 6E 
-0235   0293 73 6F 6C 65 
-0235   0297 20 74 6F 20 
-0235   029B 73 74 61 72 
-0235   029F 74 20 74 68 
-0235   02A3 69 73 20 70 
-0235   02A7 72 6F 67 72 
-0235   02AB 61 6D 2E 24 
-0236   02AF             
-0237   02AF 00 00       BuffPtr		.DW	0000H
-0238   02B1 00          CheckSum 	.DB	0H
-0239   02B2 00 00       LOGPTR		.DW	0000H			; pointer no next position in debug log
-0240   02B4             
-0241   02B4             			.DS	020h			; Start of stack area.
-0242   02D4             STACK		.EQU	$
-0243   02D4             
-0244   02D4             
-0245   02D4             			.END
+0226   022D             ; Write regA to Log
+0227   022D             ;==================================================================================
+0228   022D 2A 00 03    LOG:		LD	HL,(LOGPTR)
+0229   0230 77          			LD	(HL),A
+0230   0231 23          			INC	HL
+0231   0232 22 00 03    			LD	(LOGPTR),HL
+0232   0235 C9          			RET
+0233   0236             
+0234   0236             ;==================================================================================
+0235   0236 52 45 43 45 MSG:		.DB	"RECEIVE 1.4 - Receive a file from console and store it on disk."
+0235   023A 49 56 45 20 
+0235   023E 31 2E 34 20 
+0235   0242 2D 20 52 65 
+0235   0246 63 65 69 76 
+0235   024A 65 20 61 20 
+0235   024E 66 69 6C 65 
+0235   0252 20 66 72 6F 
+0235   0256 6D 20 63 6F 
+0235   025A 6E 73 6F 6C 
+0235   025E 65 20 61 6E 
+0235   0262 64 20 73 74 
+0235   0266 6F 72 65 20 
+0235   026A 69 74 20 6F 
+0235   026E 6E 20 64 69 
+0235   0272 73 6B 2E 
+0236   0275 0D 0A       			.DB	CR,LF
+0237   0277 55 73 65 20 			.DB	"Use 'SEND.PY' on Windows console to start this program.$"
+0237   027B 27 53 45 4E 
+0237   027F 44 2E 50 59 
+0237   0283 27 20 6F 6E 
+0237   0287 20 57 69 6E 
+0237   028B 64 6F 77 73 
+0237   028F 20 63 6F 6E 
+0237   0293 73 6F 6C 65 
+0237   0297 20 74 6F 20 
+0237   029B 73 74 61 72 
+0237   029F 74 20 74 68 
+0237   02A3 69 73 20 70 
+0237   02A7 72 6F 67 72 
+0237   02AB 61 6D 2E 24 
+0238   02AF             
+0239   02AF 00 00       BuffPtr		.DW	0000H
+0240   02B1 00          CheckSum 	.DB	0H
+0241   02B2             
+0242   02B2             			.DS	020h			; Start of stack area.
+0243   02D2             STACK		.EQU	$
+0244   02D2             
+0245   02D2             
+0246   02D2             			.END
 tasm: Number of errors = 0

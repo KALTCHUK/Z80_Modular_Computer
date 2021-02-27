@@ -4,6 +4,7 @@
 #************************************************************************************************
 import sys
 import serial
+import time
 
 EOT	= 0x04
 ACK	= 0x06
@@ -85,7 +86,8 @@ while True:
         f.close()
         exit
 
-print('Starting transmission.')
+print('Starting transmission.',end='')
+time.sleep(3)
 checksum = 0
 while True:
     br = f.read(1)
@@ -120,7 +122,7 @@ while True:
             print('.', end='')
 
 f.close()                               # We don't need the file anymore
-Z80_port.write(EOT)                     # Send EOT
+Z80_port.write(EOT.to_bytes(1, 'big'))                     # Send EOT
 
 msn = checksum // 16                    # Calculate most significant nibble
 if msn < 0xa:
@@ -133,6 +135,7 @@ if lsn < 0xa:
 else:
     lsn += 0x37
 print('\r\n' + 'Sending CheckSum.')
+print(checksum)
 Z80_port.write(msn.to_bytes(1, 'big'))
 Z80_port.write(lsn.to_bytes(1, 'big'))
 

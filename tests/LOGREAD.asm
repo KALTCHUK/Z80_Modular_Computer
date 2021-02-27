@@ -32,9 +32,12 @@ LOGBUF		.EQU	LOGPTR+2
 
 			LD	SP,STACK			; Set default stack.
 			LD	BC,(LOGPTR)
+			INC	BC
 			LD	HL,LOGBUF
 			
-			LD	A,(HL)
+NEXT:		LD	A,(HL)
+			PUSH BC					; Keep pointers safe
+			PUSH HL
 			CP	EOT
 			JR	Z,CEOT
 			CP	EOT
@@ -51,31 +54,38 @@ LOGBUF		.EQU	LOGPTR+2
 			JR	Z,CRS
 			LD	C,A
 			CALL CONOUT
-			
+			JR	CONTINUE
 
+CEOT:		LD	DE,SYMEOT
+			JR	PSYMBOL
+CACK:		LD	DE,SYMACK
+			JR	PSYMBOL
+CLF:		LD	DE,SYMLF
+			JR	PSYMBOL
+CCR:		LD	DE,SYMCR
+			JR	PSYMBOL
+CNAK:		LD	DE,SYMNAK
+			JR	PSYMBOL
+CEM:		LD	DE,SYMEM
+			JR	PSYMBOL
+CRS:		LD	DE,SYMRS
+			JR	PSYMBOL
+
+
+PSYMBOL:	LD	C,C_STRING
+			CALL BDOS
+
+
+CONTINUE:	POP	HL				; Recover pointers
+			POP	BC
+			INC	HL
 			SCF
 			CCF
-			LD	BC,(LOGPTR)
 			SBC	HL,BC
-			JP	Z,FINISH
+			JP	NZ,NEXT
+			JP	REBOOT
 
 			
-;==================================================================================
-; Initialize debug log
-;==================================================================================
-LOGINI:		LD	HL,LOGBUF
-			LD	(LOGPTR),HL
-			RET
-
-;==================================================================================
-; Write regA to Log
-;==================================================================================
-LOG:		LD	HL,(LOGPTR)
-			LD	(HL),A
-			INC	HL
-			LD	(LOGPTR),HL
-			RET
-
 ;==================================================================================
 SYMEOT		.DB	"<EOT>$"
 SYMACK		.DB	"<ACK>$"

@@ -1,0 +1,27 @@
+0001   0000             ;==================================================================================
+0002   0000             ; Receive version 1.4 - Kaltchuk, feb/2021
+0003   0000             ;
+0004   0000             ;==================================================================================
+0005   0000             REBOOT		.EQU	0H
+0006   0000             TPA			.EQU	0100H
+0007   0000             BIOS		.EQU	0E600h			; Base of BIOS.
+0008   0000             
+0009   0000             CONIN		.EQU	BIOS+(3*3)		; BIOS entry for Console Input (console --> regA)
+0010   0000             CONOUT		.EQU	BIOS+(3*4)		; BIOS entry for Console Output (regC --> console)
+0011   0000             C_STRING	.EQU	9
+0012   0000             
+0013   0000             LOGPTR		.EQU	0300H
+0014   0000             LOGBUF		.EQU	LOGPTR+2
+0015   0000             ;==================================================================================
+0016   0100             			.ORG TPA
+0017   0100             
+0018   0100 21 02 03    			LD	HL,LOGBUF
+0019   0103             
+0020   0103 CD 09 E6    NEXT:		CALL CONIN				; Get 1st char
+0021   0106 77          			LD	(HL),A				; Put byte in buffer
+0022   0107 23          			INC	HL
+0023   0108 22 00 03    			LD	(LOGPTR),HL
+0024   010B 18 F6       			JR	NEXT
+0025   010D             
+0026   010D             			.END
+tasm: Number of errors = 0
