@@ -176,20 +176,20 @@ WRITEBLK:	LD	C,F_WRITE			; Write buffer to disk.
 ; Convert ASCII characters in BC to a byte in A
 ;==================================================================================
 BC2A:		LD   A,B				
-			SUB  $30
-			CP   $0A
+			SUB  030H
+			CP   0AH
 			JR   C,BC2A1
-			SUB  $07
+			SUB  07H
 BC2A1:		RLCA
 			RLCA
 			RLCA
 			RLCA
 			LD   B,A
 			LD   A,C
-			SUB  $30
-			CP   $0A
+			SUB  030H
+			CP   0AH
 			JR   C,BC2A2
-			SUB  $07
+			SUB  07H
 BC2A2:		ADD  A,B
 			RET
 			
