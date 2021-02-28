@@ -1,0 +1,240 @@
+0001   0000             ;==================================================================================
+0002   0000             ; XMODEM.ASM version 1 - Kaltchuk, feb/2021
+0003   0000             ;
+0004   0000             ; This program implements xmodem protocol on CP/M. 
+0005   0000             ; Only uploads (Windows --> CP/M)
+0006   0000             ;
+0007   0000             ; On the Windows console there's a counterpart program - XMODEM.PY, which starts
+0008   0000             ; the application on CP/M.
+0009   0000             ;==================================================================================
+0010   0000             REBOOT		.EQU	0H
+0011   0000             BDOS		.EQU	5H
+0012   0000             TPA			.EQU	0100H
+0013   0000             BIOS		.EQU	0E600h			; Base of BIOS.
+0014   0000             
+0015   0000             CONIN		.EQU	BIOS+(3*3)		; BIOS entry for Console Input (console --> regA)
+0016   0000             CONOUT		.EQU	BIOS+(3*4)		; BIOS entry for Console Output (regC --> console)
+0017   0000             C_STRING	.EQU	9
+0018   0000             F_CLOSE		.EQU	16
+0019   0000             F_DELETE	.EQU	19
+0020   0000             F_WRITE		.EQU	21
+0021   0000             F_MAKE		.EQU	22
+0022   0000             F_DMAOFF	.EQU	26
+0023   0000             
+0024   0000             SOH			.EQU	01H
+0025   0000             EOT			.EQU	04H
+0026   0000             ACK			.EQU	06H
+0027   0000             LF			.EQU	0AH
+0028   0000             CR			.EQU	0DH
+0029   0000             NAK			.EQU	015H
+0030   0000             CAN			.EQU	018H
+0031   0000             SUB			.EQU	01AH
+0032   0000             		
+0033   0000             FCB			.EQU	0005CH
+0034   0000             DMA			.EQU	080H
+0035   0000             ;==================================================================================
+0036   0100             			.ORG TPA
+0037   0100             
+0038   0100 31 A8 02    			LD	SP,STACK			; Set default stack.
+0039   0103 3A 5D 00    			LD	A,(FCB+1)
+0040   0106 FE 20       			CP	' '					; Test if program has argument (file name)
+0041   0108 20 0B       			JR	NZ,START
+0042   010A 11 09 02    			LD	DE,MSG
+0043   010D 0E 09       			LD	C,C_STRING
+0044   010F CD 05 00    			CALL BDOS
+0045   0112 C3 00 00    			JP	REBOOT
+0046   0115 21 80 00    START:		LD	HL,DMA				; Initialize buffer pointer
+0047   0118 22 83 02    			LD	(BUFPTR),HL
+0048   011B 3E 00       			LD	A,0
+0049   011D 32 86 02    			LD	(RETRY),A			; Initialize retry counter
+0050   0120 3C          			INC	A
+0051   0121 32 87 02    			LD	(BLOCK),A			; Initialize block counter
+0052   0124 CD BA 01    			CALL DELFILE			; Delete file
+0053   0127 CD C3 01    			CALL MAKEFILE			; Create file
+0054   012A FE 04       			CP	4					; 0, 1, 2 or 3 = OK
+0055   012C FA 35 01    			JP	M,ALIVE
+0056   012F CD E1 01    CANCEL:		CALL SENDCAN
+0057   0132 C3 00 00    			JP	REBOOT
+0058   0135             
+0059   0135 CD DB 01    ALIVE:		CALL SENDNAK
+0060   0138 CD 09 E6    GETCHAR:	CALL CONIN				; Get 1st char
+0061   013B FE 04       			CP	EOT					; Is it the end?
+0062   013D 28 72       			JR	Z,CLOSE
+0063   013F FE 01       			CP	SOH					; Is a new block arriving?
+0064   0141 20 F5       			JR	NZ,GETCHAR
+0065   0143 3E 00       			LD	A,0
+0066   0145 32 85 02    			LD	(CHKSUM),A			; Reset checksum
+0067   0148 21 80 00    			LD	HL,DMA
+0068   014B 22 83 02    			LD	(BUFPTR),HL			; Reset buffer pointer
+0069   014E CD 09 E6    			CALL CONIN				; Get block number
+0070   0151 47          			LD	B,A
+0071   0152 CD 09 E6    			CALL CONIN				; Get /block number
+0072   0155 80          			ADD	A,B
+0073   0156 FE FF       			CP	0FFH
+0074   0158 20 D5       			JR	NZ, CANCEL
+0075   015A 3A 87 02    			LD	A,(BLOCK)
+0076   015D 2F          			CPL
+0077   015E B8          			CP	B
+0078   015F 28 10       			JR	Z,GOOD2GO
+0079   0161 18 CC       			JR	CANCEL
+0080   0163             			
+0081   0163 3A 86 02    AGAIN:		LD	A,(RETRY)
+0082   0166 3C          			INC	A
+0083   0167 32 86 02    			LD	(RETRY),A			; Increment retry counter
+0084   016A FE 04       			CP	4
+0085   016C F2 2F 01    			JP	P,CANCEL
+0086   016F 18 C4       			JR	ALIVE
+0087   0171             
+0088   0171 CD 09 E6    GOOD2GO:	CALL CONIN
+0089   0174 2A 83 02    			LD	HL,(BUFPTR)
+0090   0177 77          			LD	(HL),A				; Put received byte in buffer
+0091   0178 23          			INC	HL
+0092   0179 22 83 02    			LD	(BUFPTR),HL			; Increment buffer pointer
+0093   017C 47          			LD	B,A
+0094   017D 3A 85 02    			LD	A,(CHKSUM)
+0095   0180 80          			ADD	A,B
+0096   0181 32 85 02    			LD	(CHKSUM),A			; Update checksum
+0097   0184 7C          			LD	A,H
+0098   0185 FE 01       			CP	1					; Check if we reached the end of the buffer (0FFh is the last valid position)
+0099   0187 20 E8       			JR	NZ,GOOD2GO
+0100   0189 CD 09 E6    			CALL CONIN				; Receive checksum
+0101   018C 47          			LD	B,A
+0102   018D 3A 85 02    			LD	A,(CHKSUM)
+0103   0190 B8          			CP	B
+0104   0191 20 D0       			JR	NZ,AGAIN			; See if checksum is OK
+0105   0193 3A 87 02    			LD	A, (BLOCK)
+0106   0196 3C          			INC	A
+0107   0197 32 87 02    			LD	(BLOCK),A			; Increment block counter
+0108   019A 3E 00       			LD	A,0
+0109   019C 32 86 02    			LD	(RETRY),A			; Reset retry counter
+0110   019F 21 80 00    			LD	HL,DMA
+0111   01A2 22 83 02    			LD	(BUFPTR),HL			; Reset buffer pointer
+0112   01A5 CD E7 01    			CALL WRITEBLK
+0113   01A8 FE 00       			CP	0
+0114   01AA 20 83       			JR	NZ,CANCEL
+0115   01AC CD D5 01    			CALL SENDACK
+0116   01AF 18 87       			JR	GETCHAR
+0117   01B1             			
+0118   01B1 CD D5 01    CLOSE:		CALL SENDACK
+0119   01B4 CD CC 01    			CALL CLOSFILE
+0120   01B7 C3 00 00    			JP	REBOOT
+0121   01BA             			
+0122   01BA             ;==================================================================================
+0123   01BA             ; Delete file. Returns 0, 1, 2 or 3 if successful.
+0124   01BA             ;==================================================================================
+0125   01BA 0E 13       DELFILE:	LD	C,F_DELETE			; Delete file
+0126   01BC 11 5C 00    			LD	DE,FCB
+0127   01BF CD 05 00    			CALL BDOS
+0128   01C2 C9          			RET
+0129   01C3             			
+0130   01C3             ;==================================================================================
+0131   01C3             ; Make file. Returns 0, 1, 2 or 3 if successful.
+0132   01C3             ;==================================================================================
+0133   01C3 0E 16       MAKEFILE:	LD	C,F_MAKE			; Create file
+0134   01C5 11 5C 00    			LD	DE,FCB
+0135   01C8 CD 05 00    			CALL BDOS
+0136   01CB C9          			RET
+0137   01CC             
+0138   01CC             ;==================================================================================
+0139   01CC             ; Close file. Returns 0, 1, 2 or 3 if successful.
+0140   01CC             ;==================================================================================
+0141   01CC 0E 10       CLOSFILE:	LD	C,F_CLOSE			; Close file
+0142   01CE 11 5C 00    			LD	DE,FCB
+0143   01D1 CD 05 00    			CALL BDOS
+0144   01D4 C9          			RET
+0145   01D5             			
+0146   01D5             ;==================================================================================
+0147   01D5             ; Send ACK
+0148   01D5             ;==================================================================================
+0149   01D5 0E 06       SENDACK:	LD C,ACK
+0150   01D7 CD 0C E6    			CALL CONOUT
+0151   01DA C9          			RET
+0152   01DB             
+0153   01DB             ;==================================================================================
+0154   01DB             ; Send NAK
+0155   01DB             ;==================================================================================
+0156   01DB 0E 15       SENDNAK:	LD C,NAK
+0157   01DD CD 0C E6    			CALL CONOUT
+0158   01E0 C9          			RET
+0159   01E1             
+0160   01E1             ;==================================================================================
+0161   01E1             ; Send CAN
+0162   01E1             ;==================================================================================
+0163   01E1 0E 18       SENDCAN:	LD C,CAN
+0164   01E3 CD 0C E6    			CALL CONOUT
+0165   01E6 C9          			RET
+0166   01E7             
+0167   01E7             ;==================================================================================
+0168   01E7             ; Write block to file. Returns 0 if successful.
+0169   01E7             ;==================================================================================
+0170   01E7 0E 15       WRITEBLK:	LD	C,F_WRITE			; Write buffer to disk.
+0171   01E9 11 5C 00    			LD	DE,FCB
+0172   01EC CD 05 00    			CALL BDOS
+0173   01EF C9          			RET
+0174   01F0             
+0175   01F0             ;==================================================================================
+0176   01F0             ; Convert ASCII characters in BC to a byte in A
+0177   01F0             ;==================================================================================
+0178   01F0 78          BC2A:		LD   A,B				
+0179   01F1 D6 30       			SUB  $30
+0180   01F3 FE 0A       			CP   $0A
+0181   01F5 38 02       			JR   C,BC2A1
+0182   01F7 D6 07       			SUB  $07
+0183   01F9 07          BC2A1:		RLCA
+0184   01FA 07          			RLCA
+0185   01FB 07          			RLCA
+0186   01FC 07          			RLCA
+0187   01FD 47          			LD   B,A
+0188   01FE 79          			LD   A,C
+0189   01FF D6 30       			SUB  $30
+0190   0201 FE 0A       			CP   $0A
+0191   0203 38 02       			JR   C,BC2A2
+0192   0205 D6 07       			SUB  $07
+0193   0207 80          BC2A2:		ADD  A,B
+0194   0208 C9          			RET
+0195   0209             			
+0196   0209             ;==================================================================================
+0197   0209 58 4D 4F 44 MSG:		.DB	"XMODEM 1.0 - Receive a file from console and store it on disk."
+0197   020D 45 4D 20 31 
+0197   0211 2E 30 20 2D 
+0197   0215 20 52 65 63 
+0197   0219 65 69 76 65 
+0197   021D 20 61 20 66 
+0197   0221 69 6C 65 20 
+0197   0225 66 72 6F 6D 
+0197   0229 20 63 6F 6E 
+0197   022D 73 6F 6C 65 
+0197   0231 20 61 6E 64 
+0197   0235 20 73 74 6F 
+0197   0239 72 65 20 69 
+0197   023D 74 20 6F 6E 
+0197   0241 20 64 69 73 
+0197   0245 6B 2E 
+0198   0247 0D 0A       			.DB	CR,LF
+0199   0249 55 73 65 20 			.DB	"Use 'XMODEM.PY' on Windows console to start this program.$"
+0199   024D 27 58 4D 4F 
+0199   0251 44 45 4D 2E 
+0199   0255 50 59 27 20 
+0199   0259 6F 6E 20 57 
+0199   025D 69 6E 64 6F 
+0199   0261 77 73 20 63 
+0199   0265 6F 6E 73 6F 
+0199   0269 6C 65 20 74 
+0199   026D 6F 20 73 74 
+0199   0271 61 72 74 20 
+0199   0275 74 68 69 73 
+0199   0279 20 70 72 6F 
+0199   027D 67 72 61 6D 
+0199   0281 2E 24 
+0200   0283             
+0201   0283 00 00       BUFPTR		.DW	0
+0202   0285 00          CHKSUM	 	.DB	0
+0203   0286 00          RETRY		.DB 0
+0204   0287 00          BLOCK		.DB	0
+0205   0288             
+0206   0288             			.DS	020h			; Start of stack area.
+0207   02A8             STACK		.EQU	$
+0208   02A8             
+0209   02A8             
+0210   02A8             			.END
+tasm: Number of errors = 0
