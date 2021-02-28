@@ -1,3 +1,6 @@
+- write XMODEM.ASM
+- write XMODEM.PY
+- upload and test WordStar
+- upload and test BDSC
+- upload and test BASCOM
 - implement flash-boot CP/M
-- write RECEIVE.ASM
-- write SEND.PY
