@@ -325,7 +325,7 @@ CONST:
 		PUSH	HL
 		LD	BC,(WRPTR)
 		LD	HL,(RDPTR)
-		XOR	A
+		XOR	A					; Reset carry flag
 		SBC	HL,BC
 		JR	Z,CONVOID
 		LD	A,0FFH

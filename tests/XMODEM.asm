@@ -12,6 +12,7 @@ BDOS		.EQU	5H
 TPA			.EQU	0100H
 BIOS		.EQU	0E600h			; Base of BIOS.
 
+CONST		.EQU	BIOS+(3*2)		; BIOS entry for Console Status (regA=0FFh, char waiting. regA=0, buff empty)
 CONIN		.EQU	BIOS+(3*3)		; BIOS entry for Console Input (console --> regA)
 CONOUT		.EQU	BIOS+(3*4)		; BIOS entry for Console Output (regC --> console)
 C_STRING	.EQU	9
@@ -59,10 +60,12 @@ CANCEL:		CALL SENDCAN
 ALIVE:		CALL SENDNAK
 GETCHAR:	CALL CONIN				; Get 1st char
 			CP	EOT					; Is it the end?
-			JR	Z,CLOSE
+			JP	Z,CLOSE
+			CP	CAN					; Is it a cancel request?
+			JP	Z,REBOOT
 			CP	SOH					; Is a new block arriving?
 			JR	NZ,GETCHAR
-			LD	A,0
+HEADER:		LD	A,0
 			LD	(CHKSUM),A			; Reset checksum
 			LD	HL,DMA
 			LD	(BUFPTR),HL			; Reset buffer pointer
@@ -76,7 +79,11 @@ GETCHAR:	CALL CONIN				; Get 1st char
 			CPL
 			CP	B
 			JR	Z,GOOD2GO
-			JR	CANCEL
+			DEC	A
+			CP	B					; Xmitter repeating last block?
+			JR	NZ,CANCEL			; Probably he missed my ACK signal.
+			CALL SENDACK			; Resend ACK and go wait for next SOH
+			JR	GETCHAR
 			
 AGAIN:		LD	A,(RETRY)
 			INC	A
@@ -111,11 +118,15 @@ GOOD2GO:	CALL CONIN
 			LD	(BUFPTR),HL			; Reset buffer pointer
 			CALL WRITEBLK
 			CP	0
-			JR	NZ,CANCEL
+			JP	NZ,CANCEL
 			CALL SENDACK
-			JR	GETCHAR
+			JP	GETCHAR
 			
-CLOSE:		CALL SENDACK
+CLOSE:		CALL SENDNAK
+			CALL CONIN
+			CP	EOT
+			JP	NZ, CANCEL
+			CALL SENDACK
 			CALL CLOSFILE
 			JP	REBOOT
 			
@@ -172,27 +183,6 @@ WRITEBLK:	LD	C,F_WRITE			; Write buffer to disk.
 			CALL BDOS
 			RET
 
-;==================================================================================
-; Convert ASCII characters in BC to a byte in A
-;==================================================================================
-BC2A:		LD   A,B				
-			SUB  030H
-			CP   0AH
-			JR   C,BC2A1
-			SUB  07H
-BC2A1:		RLCA
-			RLCA
-			RLCA
-			RLCA
-			LD   B,A
-			LD   A,C
-			SUB  030H
-			CP   0AH
-			JR   C,BC2A2
-			SUB  07H
-BC2A2:		ADD  A,B
-			RET
-			
 ;==================================================================================
 MSG:		.DB	"XMODEM 1.0 - Receive a file from console and store it on disk."
 			.DB	CR,LF
