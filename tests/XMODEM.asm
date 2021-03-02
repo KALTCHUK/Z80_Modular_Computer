@@ -1,28 +1,31 @@
 ;==================================================================================
 ; XMODEM.ASM version 1 - Kaltchuk, feb/2021
 ;
-; This program implements xmodem protocol on CP/M. 
-; Only uploads (Windows --> CP/M)
+; This program implements xmodem protocol on CP/M.
+; (128byte data packets, 1byte CheckSum).
 ;
-; On the Windows console there's a counterpart program - XMODEM.PY, which starts
-; the application on CP/M.
+; <SOH> <BlkNum> </BlkNum> <byte1>...<byte128> <ChkSum>
 ;==================================================================================
 REBOOT		.EQU	0H
 BDOS		.EQU	5H
 TPA			.EQU	0100H
 BIOS		.EQU	0E600h			; Base of BIOS.
 
+FCB			.EQU	0005CH
+DMA			.EQU	080H
+
 CONST		.EQU	BIOS+(3*2)		; BIOS entry for Console Status (regA=0FFh, char waiting. regA=0, buff empty)
 CONIN		.EQU	BIOS+(3*3)		; BIOS entry for Console Input (console --> regA)
 CONOUT		.EQU	BIOS+(3*4)		; BIOS entry for Console Output (regC --> console)
-C_STRING	.EQU	9
+
+C_STRING	.EQU	9				; BDOS functions
 F_CLOSE		.EQU	16
 F_DELETE	.EQU	19
 F_WRITE		.EQU	21
 F_MAKE		.EQU	22
 F_DMAOFF	.EQU	26
 
-SOH			.EQU	01H
+SOH			.EQU	01H				; ASCII characters
 EOT			.EQU	04H
 ACK			.EQU	06H
 LF			.EQU	0AH
@@ -30,9 +33,8 @@ CR			.EQU	0DH
 NAK			.EQU	015H
 CAN			.EQU	018H
 SUB			.EQU	01AH
-		
-FCB			.EQU	0005CH
-DMA			.EQU	080H
+
+TIMEOUT		.EQU	10				; Time out for console input		
 ;==================================================================================
 			.ORG TPA
 
@@ -184,16 +186,41 @@ WRITEBLK:	LD	C,F_WRITE			; Write buffer to disk.
 			RET
 
 ;==================================================================================
+; Timed Out Console Input - X seconds, with X passed on reg B
+;==================================================================================
+TOCONIN:	PUSH	BC
+			PUSH	HL
+			LD		B,TIMEOUT
+LOOP0:		LD	HL,655		;2.5					\
+LOOP1:		LD	C,255		;1.75	\				|
+LOOP2:		DEC	C			;1		|				|
+			CALL CONST		;36.5	|t=41.5C+0.5	| 
+			INC	A			;1		|				|
+			JR	Z,BWAITING	;3/1.75	|				| t=HL(41.5C+6.5)+1.25
+			LD	A,C			;1		|				|
+			JR	NZ,LOOP2	;3/1.75	/				| with HL=685 and c=35,
+			DEC	HL			;1						|  t=0.9994sec (WOW!!!)
+			LD	A,H			;1						|
+			OR	L			;1						|
+			JR	NZ,LOOP1	;3/1.75					/
+			DJNZ	LOOP0	;3.25/2
+BWAITING:	CALL CONIN
+			POP	HL
+			POP	BC
+			RET
+
+;==================================================================================
 MSG:		.DB	"XMODEM 1.0 - Receive a file from console and store it on disk."
 			.DB	CR,LF
-			.DB	"Use 'XMODEM.PY' on Windows console to start this program.$"
+			.DB	"Use: XMODEM [drive:]filename.$"
 
-BUFPTR		.DW	0
-CHKSUM	 	.DB	0
-RETRY		.DB 0
-BLOCK		.DB	0
+BUFPTR		.DW	0					; Buffer pointer
+CHKSUM	 	.DB	0					; Checksum
+RETRY		.DB 0					; Retry counter
+BLOCK		.DB	0					; Block counter
+TIMEOUT		.DB	0					; Console input timeout (in sec)
 
-			.DS	020h			; Start of stack area.
+			.DS	020h				; Start of stack area.
 STACK		.EQU	$
 
 

@@ -62,17 +62,17 @@ AGAIN:
 DELAYS:
 		PUSH	BC
 		PUSH	HL
-LOOP0:	LD	HL,655
-LOOP1:	LD	C,255		;1.75					\
-LOOP2:	DEC	C		;1		\			|
-		NOP			;1		| t=6(X-1)+1.75	| (7.75+t)(y-1)
-		LD	A,C		;1		|			|
+LOOP0:	LD	HL,655		;2.5				\
+LOOP1:	LD	C,255		;1.75	\			|
+LOOP2:	DEC	C			;1		|			|
+		NOP				;1		| t=6C+0.5	| 
+		LD	A,C			;1		|			| t=HL(6C+6.5)+1.25
 		JR	NZ,LOOP2	;3/1.75	/			|
-		DEC	HL		;1					|
-		LD	A,H		;1					|
-		OR	L		;1					|
+		DEC	HL			;1					| with HL=655 and c=255, t=1.006sec (WOW!!!)
+		LD	A,H			;1					|
+		OR	L			;1					|
 		JR	NZ,LOOP1	;3/1.75				/
-		DJNZ	LOOP0
+		DJNZ	LOOP0	;3.25/2
 		POP	HL
 		POP	BC
 		RET
