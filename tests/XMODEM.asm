@@ -34,7 +34,7 @@ NAK			.EQU	015H
 CAN			.EQU	018H
 SUB			.EQU	01AH
 
-TIMEOUT		.EQU	10				; Time out for console input		
+MAXTRY		.EQU	10
 ;==================================================================================
 			.ORG TPA
 
@@ -46,7 +46,38 @@ TIMEOUT		.EQU	10				; Time out for console input
 			LD	C,C_STRING
 			CALL BDOS
 			JP	REBOOT
-START:		LD	HL,DMA				; Initialize buffer pointer
+			
+START:		LD	A,0
+			LD	(RETRY),A
+			INC	A
+			LD	(BLOCK),A
+			CALL DELFILE			; Delete file
+			CALL MAKEFILE			; Create file
+			CP	4					; 0, 1, 2 or 3 = OK
+			JP	M,ALIVE
+OUT1:		CALL SENDCAN
+			JP	REBOOT
+
+ALIVE:		CALL SENDNAK
+			LD	B,10
+			CALL TOCONIN			;10s timeout
+			JR	C,REPEAT
+			CP	EOT
+			JR	Z,GOTEOT
+			CP	CAN
+			JR	Z,GOTCAN
+			CP	SOH
+			JR	Z,GOTSOH
+REPEAT:		LD	A,(RETRY)
+			INC	A
+			LD	(RETRY),A
+			CP	MAXTRY
+			JR	NZ,ALIVE
+			CALL DELFILE
+			JR	OUT1
+
+
+			LD	HL,DMA				; Initialize buffer pointer
 			LD	(BUFPTR),HL
 			LD	A,0
 			LD	(RETRY),A			; Initialize retry counter
@@ -187,6 +218,8 @@ WRITEBLK:	LD	C,F_WRITE			; Write buffer to disk.
 
 ;==================================================================================
 ; Timed Out Console Input - X seconds, with X passed on reg B
+; Incoming byte, if any, returns in A
+; Carry flag set if timed out.
 ;==================================================================================
 TOCONIN:	PUSH	BC
 			PUSH	HL
@@ -204,8 +237,11 @@ LOOP2:		DEC	C			;1		|				|
 			OR	L			;1						|
 			JR	NZ,LOOP1	;3/1.75					/
 			DJNZ	LOOP0	;3.25/2
+			SCF
+			JR	TOUT
 BWAITING:	CALL CONIN
-			POP	HL
+			XOR	A					; Reset carry flag
+TOUT:		POP	HL
 			POP	BC
 			RET
 
@@ -218,7 +254,6 @@ BUFPTR		.DW	0					; Buffer pointer
 CHKSUM	 	.DB	0					; Checksum
 RETRY		.DB 0					; Retry counter
 BLOCK		.DB	0					; Block counter
-TIMEOUT		.DB	0					; Console input timeout (in sec)
 
 			.DS	020h				; Start of stack area.
 STACK		.EQU	$
