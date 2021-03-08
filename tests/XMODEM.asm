@@ -59,7 +59,7 @@ OUT1:		CALL SENDCAN
 			JP	REBOOT
 
 ALIVE:		CALL SENDNAK
-			LD	B,10
+GET1ST:		LD	B,10
 			CALL TOCONIN			;10s timeout
 			JR	C,REPEAT
 			CP	EOT
@@ -73,95 +73,72 @@ REPEAT:		LD	A,(RETRY)
 			LD	(RETRY),A
 			CP	MAXTRY
 			JR	NZ,ALIVE
-			CALL DELFILE
+OUT3:		CALL DELFILE
 			JR	OUT1
-
-
-			LD	HL,DMA				; Initialize buffer pointer
-			LD	(BUFPTR),HL
-			LD	A,0
-			LD	(RETRY),A			; Initialize retry counter
-			INC	A
-			LD	(BLOCK),A			; Initialize block counter
-			CALL DELFILE			; Delete file
-			CALL MAKEFILE			; Create file
-			CP	4					; 0, 1, 2 or 3 = OK
-			JP	M,ALIVE
-CANCEL:		CALL SENDCAN
-			JP	REBOOT
-
-ALIVE:		CALL SENDNAK
-GETCHAR:	CALL CONIN				; Get 1st char
-			CP	EOT					; Is it the end?
-			JP	Z,CLOSE
-			CP	CAN					; Is it a cancel request?
-			JP	Z,REBOOT
-			CP	SOH					; Is a new block arriving?
-			JR	NZ,GETCHAR
-HEADER:		LD	A,0
-			LD	(CHKSUM),A			; Reset checksum
-			LD	HL,DMA
-			LD	(BUFPTR),HL			; Reset buffer pointer
-			CALL CONIN				; Get block number
-			LD	B,A
-			CALL CONIN				; Get /block number
-			ADD	A,B
-			CP	0FFH
-			JR	NZ, CANCEL
-			LD	A,(BLOCK)
-			CPL
-			CP	B
-			JR	Z,GOOD2GO
-			DEC	A
-			CP	B					; Xmitter repeating last block?
-			JR	NZ,CANCEL			; Probably he missed my ACK signal.
-			CALL SENDACK			; Resend ACK and go wait for next SOH
-			JR	GETCHAR
-			
-AGAIN:		LD	A,(RETRY)
-			INC	A
-			LD	(RETRY),A			; Increment retry counter
-			CP	4
-			JP	P,CANCEL
-			JR	ALIVE
-
-GOOD2GO:	CALL CONIN
-			LD	HL,(BUFPTR)
-			LD	(HL),A				; Put received byte in buffer
-			INC	HL
-			LD	(BUFPTR),HL			; Increment buffer pointer
-			LD	B,A
-			LD	A,(CHKSUM)
-			ADD	A,B
-			LD	(CHKSUM),A			; Update checksum
-			LD	A,H
-			CP	1					; Check if we reached the end of the buffer (0FFh is the last valid position)
-			JR	NZ,GOOD2GO
-			CALL CONIN				; Receive checksum
-			LD	B,A
-			LD	A,(CHKSUM)
-			CP	B
-			JR	NZ,AGAIN			; See if checksum is OK
-			LD	A, (BLOCK)
-			INC	A
-			LD	(BLOCK),A			; Increment block counter
-			LD	A,0
-			LD	(RETRY),A			; Reset retry counter
-			LD	HL,DMA
-			LD	(BUFPTR),HL			; Reset buffer pointer
-			CALL WRITEBLK
-			CP	0
-			JP	NZ,CANCEL
-			CALL SENDACK
-			JP	GETCHAR
-			
-CLOSE:		CALL SENDNAK
-			CALL CONIN
-			CP	EOT
-			JP	NZ, CANCEL
+GOTEOT:		CALL SENDNAK
+			LD	B,1
+			CALL TOCONIN
 			CALL SENDACK
 			CALL CLOSFILE
 			JP	REBOOT
+GOTCAN:		CALL DELFILE
+			JP	REBOOT
+GOTSOH:		LD	A,0
+			LD	(CHKSUM),A
+			LD	HL,DMA
+			LD	(BUFPTR),HL
+			LD	B,1
+			CALL TOCONIN
+			JR	C,OUT2
+			LD	C,A
+			CALL TOCONIN
+			JR	C,OUT2
+			CPL
+			CP	C
+			JR	NZ,OUT2
+			LD	A,(BLOCK)
+			CP	C
+			JR	Z,RECBODY
+			DEC	A
+			CP	C
+			JR	NZ,OUT2
+ANTBLK:		CALL PURGE
+			CALL SENDACK
+			JP	GET1ST
+OUT2:		CALL PURGE
+			CALL SENDCAN
+			JR	GOTCAN
+RECBODY:	LD	B,1
+			CALL TOCONIN
+			JR	C,OUT2
+			LD	HL,(BUFPTR)
+			LD	(HL),A				; Put byte in buffer
+			INC	HL
+			LD	(BUFPTR),HL
+			LD	C,A
+			LD	A,(CHKSUM)
+			ADD	A,C
+			LD	(CHKSUM),A			; Update checksum
+			PUSH HL
+			POP	BC
+			XOR	A					; Reset carry flag
+			SBC	HL,BC
+			JR	NZ,RECBODY
+			JR	NZ,OUT3
+			LD	B,1
+			CALL TOCONIN
+			JR	C,OUT2
+			LD	C,A
+			LD	A,(CHKSUM)
+			CP	C
+			JP	NZ,REPEAT
+			LD	A,0
+			LD	(RETRY),A			; Reset retry counter
+			LD	A,(BLOCK)
+			INC	A
+			LD	(BLOCK),A			; Increment block counter
+			CALL SENDACK
+			JP	GET1ST
 			
 ;==================================================================================
 ; Delete file. Returns 0, 1, 2 or 3 if successful.
@@ -214,6 +191,8 @@ SENDCAN:	LD C,CAN
 WRITEBLK:	LD	C,F_WRITE			; Write buffer to disk.
 			LD	DE,FCB
 			CALL BDOS
+			LD	HL,DMA
+			LD	(BUFPTR),HL			; Reset buffer pointer
 			RET
 
 ;==================================================================================
@@ -223,7 +202,6 @@ WRITEBLK:	LD	C,F_WRITE			; Write buffer to disk.
 ;==================================================================================
 TOCONIN:	PUSH	BC
 			PUSH	HL
-			LD		B,TIMEOUT
 LOOP0:		LD	HL,655		;2.5					\
 LOOP1:		LD	C,255		;1.75	\				|
 LOOP2:		DEC	C			;1		|				|
@@ -243,6 +221,14 @@ BWAITING:	CALL CONIN
 			XOR	A					; Reset carry flag
 TOUT:		POP	HL
 			POP	BC
+			RET
+
+;==================================================================================
+; Purge console input.
+;==================================================================================
+PURGE:		LD	B,3
+			CALL TOCONIN
+			JR	NC,PURGE
 			RET
 
 ;==================================================================================
