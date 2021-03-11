@@ -2,9 +2,11 @@
 ; XMODEM.ASM version 1 - Kaltchuk, feb/2021
 ;
 ; This program implements xmodem protocol on CP/M.
-; (128byte data packets, 1byte CheckSum).
+; (3 bytes header, 128byte data packets, 1byte CheckSum).
 ;
-; <SOH> <BlkNum> </BlkNum> <byte1>...<byte128> <ChkSum>
+: +-------- header --------+------- data packet -------+
+; |                        |                           |
+;  <SOH> <BlkNum> </BlkNum> <byte1> <byte2>...<byte128> <ChkSum>
 ;==================================================================================
 REBOOT		.EQU	0H
 BDOS		.EQU	5H
@@ -48,31 +50,31 @@ MAXTRY		.EQU	10
 			JP	REBOOT
 			
 START:		LD	A,0
-			LD	(RETRY),A
+			LD	(RETRY),A			; Init retry counter
 			INC	A
-			LD	(BLOCK),A
+			LD	(BLOCK),A			; Init block counter
 			CALL DELFILE			; Delete file
 			CALL MAKEFILE			; Create file
 			CP	4					; 0, 1, 2 or 3 = OK
-			JP	M,ALIVE
+			JP	M,ALIVE				; File created OK?
 OUT1:		CALL SENDCAN
 			JP	REBOOT
 
 ALIVE:		CALL SENDNAK
 GET1ST:		LD	B,10
 			CALL TOCONIN			;10s timeout
-			JR	C,REPEAT
+			JR	C,REPEAT			; Timed out?
 			CP	EOT
-			JR	Z,GOTEOT
+			JR	Z,GOTEOT			; EOT?
 			CP	CAN
-			JR	Z,GOTCAN
+			JR	Z,GOTCAN			; CAN?
 			CP	SOH
-			JR	Z,GOTSOH
+			JR	Z,GOTSOH			; SOH?
 REPEAT:		LD	A,(RETRY)
 			INC	A
 			LD	(RETRY),A
 			CP	MAXTRY
-			JR	NZ,ALIVE
+			JR	NZ,ALIVE			; Try again?
 OUT3:		CALL DELFILE
 			JR	OUT1
 GOTEOT:		CALL SENDNAK
@@ -84,54 +86,56 @@ GOTEOT:		CALL SENDNAK
 GOTCAN:		CALL DELFILE
 			JP	REBOOT
 GOTSOH:		LD	A,0
-			LD	(CHKSUM),A
+			LD	(CHKSUM),A			; Reset checksum
 			LD	HL,DMA
-			LD	(BUFPTR),HL
+			LD	(BUFPTR),HL			; Reset buffer pointer
 			LD	B,1
-			CALL TOCONIN
-			JR	C,OUT2
-			LD	C,A
-			CALL TOCONIN
-			JR	C,OUT2
+			CALL TOCONIN			; Get incoming block number
+			JR	C,OUT2				; Timed out?
+			LD	C,A					; Save incoming block number
+			LD	B,1
+			CALL TOCONIN			; Get complement of incoming block number
+			JR	C,OUT2				; Timed out?
 			CPL
 			CP	C
-			JR	NZ,OUT2
+			JR	NZ,OUT2				; block = //block?
 			LD	A,(BLOCK)
-			CP	C
-			JR	Z,RECBODY
+			CP	C					; Is block number what we expected?
+			JR	Z,RECPACK
 			DEC	A
-			CP	C
+			CP	C					; block number is the anterior? Probably sender missed our ACK.
 			JR	NZ,OUT2
-ANTBLK:		CALL PURGE
+ANTBLK:		CALL PURGE				; Purge input buffer before sending ACK
 			CALL SENDACK
 			JP	GET1ST
 OUT2:		CALL PURGE
 			CALL SENDCAN
 			JR	GOTCAN
-RECBODY:	LD	B,1
+RECPACK:	LD	B,1					; Start receiving data packet (128 bytes)
 			CALL TOCONIN
-			JR	C,OUT2
+			JR	C,OUT2				; Timed out?
 			LD	HL,(BUFPTR)
 			LD	(HL),A				; Put byte in buffer
-			INC	HL
+			INC	HL					; Inc buffer pointer
 			LD	(BUFPTR),HL
 			LD	C,A
 			LD	A,(CHKSUM)
 			ADD	A,C
 			LD	(CHKSUM),A			; Update checksum
-			PUSH HL
-			POP	BC
+			LD	BC,TPA
 			XOR	A					; Reset carry flag
-			SBC	HL,BC
-			JR	NZ,RECBODY
-			JR	NZ,OUT3
+			SBC	HL,BC				; If buffer pointer = TPA, we got a full buffer 
+			JR	NZ,RECPACK
+			CALL WRITEBLK
+			CP	0
+			JR	NZ,OUT3				; Write op OK?
 			LD	B,1
-			CALL TOCONIN
-			JR	C,OUT2
+			CALL TOCONIN			; Get checksum
+			JR	C,OUT2				; Timed out?
 			LD	C,A
 			LD	A,(CHKSUM)
 			CP	C
-			JP	NZ,REPEAT
+			JP	NZ,REPEAT			; Checksum OK?
 			LD	A,0
 			LD	(RETRY),A			; Reset retry counter
 			LD	A,(BLOCK)
@@ -141,25 +145,25 @@ RECBODY:	LD	B,1
 			JP	GET1ST
 			
 ;==================================================================================
-; Delete file. Returns 0, 1, 2 or 3 if successful.
+; Delete file. RegA returns 0, 1, 2 or 3 if successful.
 ;==================================================================================
-DELFILE:	LD	C,F_DELETE			; Delete file
+DELFILE:	LD	C,F_DELETE
 			LD	DE,FCB
 			CALL BDOS
 			RET
 			
 ;==================================================================================
-; Make file. Returns 0, 1, 2 or 3 if successful.
+; Make file. RegA returns 0, 1, 2 or 3 if successful.
 ;==================================================================================
-MAKEFILE:	LD	C,F_MAKE			; Create file
+MAKEFILE:	LD	C,F_MAKE
 			LD	DE,FCB
 			CALL BDOS
 			RET
 
 ;==================================================================================
-; Close file. Returns 0, 1, 2 or 3 if successful.
+; Close file. RegA returns 0, 1, 2 or 3 if successful.
 ;==================================================================================
-CLOSFILE:	LD	C,F_CLOSE			; Close file
+CLOSFILE:	LD	C,F_CLOSE
 			LD	DE,FCB
 			CALL BDOS
 			RET
@@ -186,7 +190,7 @@ SENDCAN:	LD C,CAN
 			RET
 
 ;==================================================================================
-; Write block to file. Returns 0 if successful.
+; Write block to file. RegA returns 0 if successful.
 ;==================================================================================
 WRITEBLK:	LD	C,F_WRITE			; Write buffer to disk.
 			LD	DE,FCB
@@ -202,19 +206,19 @@ WRITEBLK:	LD	C,F_WRITE			; Write buffer to disk.
 ;==================================================================================
 TOCONIN:	PUSH	BC
 			PUSH	HL
-LOOP0:		LD	HL,655		;2.5					\
-LOOP1:		LD	C,255		;1.75	\				|
-LOOP2:		DEC	C			;1		|				|
-			CALL CONST		;36.5	|t=41.5C+0.5	| 
-			INC	A			;1		|				|
-			JR	Z,BWAITING	;3/1.75	|				| t=HL(41.5C+6.5)+1.25
-			LD	A,C			;1		|				|
-			JR	NZ,LOOP2	;3/1.75	/				| with HL=685 and c=35,
-			DEC	HL			;1						|  t=0.9994sec (WOW!!!)
-			LD	A,H			;1						|
-			OR	L			;1						|
-			JR	NZ,LOOP1	;3/1.75					/
-			DJNZ	LOOP0	;3.25/2
+LOOP0:		LD	HL,655				;2.5					\
+LOOP1:		LD	C,255				;1.75	\				|
+LOOP2:		DEC	C					;1		|				|
+			CALL CONST				;36.5	|t=41.5C+0.5	| 
+			INC	A					;1		|				|
+			JR	Z,BWAITING			;3/1.75	|				| t=HL(41.5C+6.5)+1.25
+			LD	A,C					;1		|				|
+			JR	NZ,LOOP2			;3/1.75	/				| with HL=685 and c=35,
+			DEC	HL					;1						|  t=0.9994sec (WOW!!!)
+			LD	A,H					;1						|
+			OR	L					;1						|
+			JR	NZ,LOOP1			;3/1.75					/
+			DJNZ	LOOP0			;3.25/2
 			SCF
 			JR	TOUT
 BWAITING:	CALL CONIN
