@@ -1,0 +1,448 @@
+0001   0000             ;==================================================================================
+0002   0000             ; XMODEM.ASM version 1 - Kaltchuk, feb/2021
+0003   0000             ;
+0004   0000             ; This program implements xmodem protocol on CP/M.
+0005   0000             ; (3 bytes header, 128byte data packets, 1byte CheckSum).
+0006   0000             ;
+0007   0000             : +-------- header --------+------- data packet -------+
+0008   0000             ; |                        |                           |
+0009   0000             ;  <SOH> <BlkNum> </BlkNum> <byte1> <byte2>...<byte128> <ChkSum>
+0010   0000             ;==================================================================================
+0011   0000             REBOOT		.EQU	0H
+0012   0000             BDOS		.EQU	5H
+0013   0000             TPA			.EQU	0100H
+0014   0000             BIOS		.EQU	0E600h			; Base of BIOS.
+0015   0000             
+0016   0000             FCB			.EQU	0005CH
+0017   0000             DMA			.EQU	080H
+0018   0000             
+0019   0000             CONST		.EQU	BIOS+(3*2)		; BIOS entry for Console Status (regA=0FFh, char waiting. regA=0, buff empty)
+0020   0000             CONIN		.EQU	BIOS+(3*3)		; BIOS entry for Console Input (console --> regA)
+0021   0000             CONOUT		.EQU	BIOS+(3*4)		; BIOS entry for Console Output (regC --> console)
+0022   0000             
+0023   0000             C_STRING	.EQU	9				; BDOS functions
+0024   0000             F_CLOSE		.EQU	16
+0025   0000             F_DELETE	.EQU	19
+0026   0000             F_WRITE		.EQU	21
+0027   0000             F_MAKE		.EQU	22
+0028   0000             F_DMAOFF	.EQU	26
+0029   0000             
+0030   0000             SOH			.EQU	01H				; ASCII characters
+0031   0000             EOT			.EQU	04H
+0032   0000             ACK			.EQU	06H
+0033   0000             LF			.EQU	0AH
+0034   0000             CR			.EQU	0DH
+0035   0000             NAK			.EQU	015H
+0036   0000             CAN			.EQU	018H
+0037   0000             SUB			.EQU	01AH
+0038   0000             
+0039   0000             MAXTRY		.EQU	10
+0040   0000             
+0041   0000             DAT_WR	.EQU	0E1H			;
+0042   0000             DAT_RD	.EQU	0E3H			;
+0043   0000             CMD_WR	.EQU	0E0H			;
+0044   0000             CMD_RD	.EQU	0E2H			;
+0045   0000             ;==================================================================================
+0046   0100             			.ORG TPA
+0047   0100             
+0048   0100 31 A7 04    			LD	SP,STACK			; Set default stack.
+0049   0103 3A 5D 00    			LD	A,(FCB+1)
+0050   0106 FE 20       			CP	' '					; Test if program has argument (file name)
+0051   0108 20 0B       			JR	NZ,START
+0052   010A 11 44 03    			LD	DE,MSGNOARG
+0053   010D 0E 09       			LD	C,C_STRING
+0054   010F CD 05 00    			CALL BDOS
+0055   0112 C3 00 00    			JP	REBOOT
+0056   0115             			
+0057   0115 11 23 03    START:		LD	DE,MSGOK
+0058   0118 0E 09       			LD	C,C_STRING
+0059   011A CD 05 00    			CALL BDOS
+0060   011D CD 9F 02    			CALL LCDINIT
+0061   0120 CD E0 02    			CALL LCDCLEAR
+0062   0123 CD 09 03    			CALL LCDPRINT
+0063   0126 53 54 41 52 			.DB	"START",0
+0063   012A 54 00 
+0064   012C             			
+0065   012C 3E 00       			LD	A,0
+0066   012E 32 A5 03    			LD	(RETRY),A			; Init retry counter
+0067   0131 3C          			INC	A
+0068   0132 32 A6 03    			LD	(BLOCK),A			; Init block counter
+0069   0135 CD 04 02    			CALL DELFILE			; Delete file
+0070   0138 CD 0D 02    			CALL MAKEFILE			; Create file
+0071   013B FE 04       			CP	4					; 0, 1, 2 or 3 = OK
+0072   013D FA 46 01    			JP	M,ALIVE				; File created OK?
+0073   0140 CD 2B 02    OUT1:		CALL SENDCAN
+0074   0143 C3 00 00    			JP	REBOOT
+0075   0146             
+0076   0146 CD 25 02    ALIVE:		CALL SENDNAK
+0077   0149 06 05       GET1ST:		LD	B,5
+0078   014B CD 5B 02    			CALL TOCONIN			; 5s timeout
+0079   014E 38 0C       			JR	C,REPEAT			; Timed out?
+0080   0150 FE 04       			CP	EOT
+0081   0152 28 18       			JR	Z,GOTEOT			; EOT?
+0082   0154 FE 18       			CP	CAN
+0083   0156 28 25       			JR	Z,GOTCAN			; CAN?
+0084   0158 FE 01       			CP	SOH
+0085   015A 28 27       			JR	Z,GOTSOH			; SOH?
+0086   015C 3A A5 03    REPEAT:		LD	A,(RETRY)
+0087   015F 3C          			INC	A
+0088   0160 32 A5 03    			LD	(RETRY),A
+0089   0163 FE 0A       			CP	MAXTRY
+0090   0165 20 DF       			JR	NZ,ALIVE			; Try again?
+0091   0167 CD 04 02    OUT3:		CALL DELFILE
+0092   016A 18 D4       			JR	OUT1
+0093   016C CD 25 02    GOTEOT:		CALL SENDNAK
+0094   016F 06 01       			LD	B,1
+0095   0171 CD 5B 02    			CALL TOCONIN
+0096   0174 CD 1F 02    			CALL SENDACK
+0097   0177 CD 16 02    			CALL CLOSFILE
+0098   017A C3 00 00    			JP	REBOOT
+0099   017D CD 04 02    GOTCAN:		CALL DELFILE
+0100   0180 C3 00 00    			JP	REBOOT
+0101   0183 3E 00       GOTSOH:		LD	A,0
+0102   0185 32 A4 03    			LD	(CHKSUM),A			; Reset checksum
+0103   0188 21 80 00    			LD	HL,DMA
+0104   018B 22 A2 03    			LD	(BUFPTR),HL			; Reset buffer pointer
+0105   018E 06 01       			LD	B,1
+0106   0190 CD 5B 02    			CALL TOCONIN			; Get incoming block number
+0107   0193 38 1F       			JR	C,OUT2				; Timed out?
+0108   0195 4F          			LD	C,A					; Save incoming block number
+0109   0196 06 01       			LD	B,1
+0110   0198 CD 5B 02    			CALL TOCONIN			; Get complement of incoming block number
+0111   019B 38 17       			JR	C,OUT2				; Timed out?
+0112   019D 2F          			CPL
+0113   019E B9          			CP	C
+0114   019F 20 13       			JR	NZ,OUT2				; block = //block?
+0115   01A1 3A A6 03    			LD	A,(BLOCK)
+0116   01A4 B9          			CP	C					; Is block number what we expected?
+0117   01A5 28 15       			JR	Z,RECPACK
+0118   01A7 3D          			DEC	A
+0119   01A8 B9          			CP	C					; block number is the anterior? Probably sender missed our ACK.
+0120   01A9 20 09       			JR	NZ,OUT2
+0121   01AB CD 7E 02    ANTBLK:		CALL PURGE				; Purge input buffer before sending ACK
+0122   01AE CD 1F 02    			CALL SENDACK
+0123   01B1 C3 49 01    			JP	GET1ST
+0124   01B4 CD 7E 02    OUT2:		CALL PURGE
+0125   01B7 CD 2B 02    			CALL SENDCAN
+0126   01BA 18 C1       			JR	GOTCAN
+0127   01BC 06 01       RECPACK:	LD	B,1					; Start receiving data packet (128 bytes)
+0128   01BE CD 5B 02    			CALL TOCONIN
+0129   01C1 38 F1       			JR	C,OUT2				; Timed out?
+0130   01C3 2A A2 03    			LD	HL,(BUFPTR)
+0131   01C6 77          			LD	(HL),A				; Put byte in buffer
+0132   01C7 23          			INC	HL					; Inc buffer pointer
+0133   01C8 22 A2 03    			LD	(BUFPTR),HL
+0134   01CB 4F          			LD	C,A
+0135   01CC 3A A4 03    			LD	A,(CHKSUM)
+0136   01CF 81          			ADD	A,C
+0137   01D0 32 A4 03    			LD	(CHKSUM),A			; Update checksum
+0138   01D3 01 00 01    			LD	BC,TPA
+0139   01D6 AF          			XOR	A					; Reset carry flag
+0140   01D7 ED 42       			SBC	HL,BC				; If buffer pointer = TPA, we got a full buffer 
+0141   01D9 20 E1       			JR	NZ,RECPACK
+0142   01DB CD 31 02    			CALL WRITEBLK
+0143   01DE FE 00       			CP	0
+0144   01E0 C2 67 01    			JP	NZ,OUT3				; Write op OK?
+0145   01E3 06 01       			LD	B,1
+0146   01E5 CD 5B 02    			CALL TOCONIN			; Get checksum
+0147   01E8 38 CA       			JR	C,OUT2				; Timed out?
+0148   01EA 4F          			LD	C,A
+0149   01EB 3A A4 03    			LD	A,(CHKSUM)
+0150   01EE B9          			CP	C
+0151   01EF C2 5C 01    			JP	NZ,REPEAT			; Checksum OK?
+0152   01F2 3E 00       			LD	A,0
+0153   01F4 32 A5 03    			LD	(RETRY),A			; Reset retry counter
+0154   01F7 3A A6 03    			LD	A,(BLOCK)
+0155   01FA 3C          			INC	A
+0156   01FB 32 A6 03    			LD	(BLOCK),A			; Increment block counter
+0157   01FE CD 1F 02    			CALL SENDACK
+0158   0201 C3 49 01    			JP	GET1ST
+0159   0204             			
+0160   0204             ;==================================================================================
+0161   0204             ; Delete file. RegA returns 0, 1, 2 or 3 if successful.
+0162   0204             ;==================================================================================
+0163   0204 0E 13       DELFILE:	LD	C,F_DELETE
+0164   0206 11 5C 00    			LD	DE,FCB
+0165   0209 CD 05 00    			CALL BDOS
+0166   020C C9          			RET
+0167   020D             			
+0168   020D             ;==================================================================================
+0169   020D             ; Make file. RegA returns 0, 1, 2 or 3 if successful.
+0170   020D             ;==================================================================================
+0171   020D 0E 16       MAKEFILE:	LD	C,F_MAKE
+0172   020F 11 5C 00    			LD	DE,FCB
+0173   0212 CD 05 00    			CALL BDOS
+0174   0215 C9          			RET
+0175   0216             
+0176   0216             ;==================================================================================
+0177   0216             ; Close file. RegA returns 0, 1, 2 or 3 if successful.
+0178   0216             ;==================================================================================
+0179   0216 0E 10       CLOSFILE:	LD	C,F_CLOSE
+0180   0218 11 5C 00    			LD	DE,FCB
+0181   021B CD 05 00    			CALL BDOS
+0182   021E C9          			RET
+0183   021F             			
+0184   021F             ;==================================================================================
+0185   021F             ; Send ACK
+0186   021F             ;==================================================================================
+0187   021F 0E 06       SENDACK:	LD C,ACK
+0188   0221 CD 0C E6    			CALL CONOUT
+0189   0224 C9          			RET
+0190   0225             
+0191   0225             ;==================================================================================
+0192   0225             ; Send NAK
+0193   0225             ;==================================================================================
+0194   0225 0E 15       SENDNAK:	LD C,NAK
+0195   0227 CD 0C E6    			CALL CONOUT
+0196   022A C9          			RET
+0197   022B             
+0198   022B             ;==================================================================================
+0199   022B             ; Send CAN
+0200   022B             ;==================================================================================
+0201   022B 0E 18       SENDCAN:	LD C,CAN
+0202   022D CD 0C E6    			CALL CONOUT
+0203   0230 C9          			RET
+0204   0231             
+0205   0231             ;==================================================================================
+0206   0231             ; Write block to file. RegA returns 0 if successful.
+0207   0231             ;==================================================================================
+0208   0231 CD 09 03    WRITEBLK:	CALL LCDPRINT
+0209   0234 42 4C 4F 43 			.DB	"BLOCK ",0
+0209   0238 4B 20 00 
+0210   023B 3A A6 03    			LD	A,(BLOCK)
+0211   023E C6 30       			ADD	A,30H
+0212   0240 4F          			LD	C,A
+0213   0241 CD E8 02    			CALL LCDPUT
+0214   0244             			
+0215   0244 0E 1A       			LD	C,F_DMAOFF			; Set DMA before writing.
+0216   0246 11 80 00    			LD	DE,DMA
+0217   0249 CD 05 00    			CALL BDOS
+0218   024C 0E 15       			LD	C,F_WRITE			; Write buffer to disk.
+0219   024E 11 5C 00    			LD	DE,FCB
+0220   0251 CD 05 00    			CALL BDOS
+0221   0254 21 80 00    			LD	HL,DMA
+0222   0257 22 A2 03    			LD	(BUFPTR),HL			; Reset buffer pointer
+0223   025A C9          			RET
+0224   025B             
+0225   025B             ;==================================================================================
+0226   025B             ; Timed Out Console Input - X seconds, with X passed on reg B
+0227   025B             ; Incoming byte, if any, returns in A
+0228   025B             ; Carry flag set if timed out.
+0229   025B             ;==================================================================================
+0230   025B C5          TOCONIN:	PUSH	BC
+0231   025C E5          			PUSH	HL
+0232   025D 21 AD 02    LOOP0:		LD	HL,685				;2.5					\
+0233   0260 0E 23       LOOP1:		LD	C,35				;1.75	\				|
+0234   0262 CD 06 E6    LOOP2:		CALL CONST				;36.5	|t=41.5C+0.5	| 
+0235   0265 3C          			INC	A					;1		|				|
+0236   0266 28 0E       			JR	Z,BWAITING			;3/1.75	|				| t=HL(41.5C+6.5)+1.25
+0237   0268 79          			LD	A,C					;1		|				|
+0238   0269 0D          			DEC	C					;1		|				|
+0239   026A 20 F6       			JR	NZ,LOOP2			;3/1.75	/				| with HL=685 and c=35,
+0240   026C 2B          			DEC	HL					;1						|  t=0.9994sec (WOW!!!)
+0241   026D 7C          			LD	A,H					;1						|
+0242   026E B5          			OR	L					;1						|
+0243   026F 20 EF       			JR	NZ,LOOP1			;3/1.75					/
+0244   0271 10 EA       			DJNZ	LOOP0			;3.25/2
+0245   0273 37          			SCF
+0246   0274 18 05       			JR	TOUT
+0247   0276 CD 09 E6    BWAITING:	CALL CONIN
+0248   0279 37          			SCF						; Reset carry flag
+0249   027A 3F          			CCF
+0250   027B E1          TOUT:		POP	HL
+0251   027C C1          			POP	BC
+0252   027D C9          			RET
+0253   027E             
+0254   027E             ;==================================================================================
+0255   027E             ; Purge console input.
+0256   027E             ;==================================================================================
+0257   027E 06 03       PURGE:		LD	B,3
+0258   0280 CD 5B 02    			CALL TOCONIN
+0259   0283 30 F9       			JR	NC,PURGE
+0260   0285 C9          			RET
+0261   0286             
+0262   0286             ;**********************************************************************************
+0263   0286             ;                                  LCD STUFF
+0264   0286             ;**********************************************************************************
+0265   0286             ;================================================================================================
+0266   0286             ; Delay X miliseconds, with X passed on reg B
+0267   0286             ;================================================================================================
+0268   0286             DELAYMS:
+0269   0286 C5          		PUSH	BC
+0270   0287 0E C8       DECB:		LD	C,0C8H
+0271   0289 00          DECC:		NOP
+0272   028A 0D          		DEC	C
+0273   028B 20 FC       		JR	NZ,DECC
+0274   028D 05          		DEC	B
+0275   028E 20 F7       		JR	NZ,DECB
+0276   0290 C1          		POP	BC
+0277   0291 C9          		RET
+0278   0292             
+0279   0292             ;================================================================================================
+0280   0292             ; Delay 5*X microseconds, with X passed on reg C
+0281   0292             ;================================================================================================
+0282   0292             DELAY5US:
+0283   0292 C5          		PUSH	BC
+0284   0293 00          DEC:		NOP
+0285   0294 0D          		DEC	C
+0286   0295 20 FC       		JR	NZ,DEC
+0287   0297 C1          		POP	BC
+0288   0298 C9          		RET
+0289   0299             
+0290   0299             ;================================================================================================
+0291   0299             ; Wait until Busy flag = 0
+0292   0299             ;================================================================================================
+0293   0299 DB E2       BWAIT:	IN A,(CMD_RD)
+0294   029B 07          		RLCA
+0295   029C 38 FB       		JR	C,BWAIT
+0296   029E C9          		RET
+0297   029F             
+0298   029F             ;================================================================================================
+0299   029F             ; Initialize LCD
+0300   029F             ;================================================================================================
+0301   029F             LCDINIT:
+0302   029F 06 0F       		LD	B,15			; wait 15ms
+0303   02A1 CD 86 02    		CALL	DELAYMS
+0304   02A4 3E 30       		LD	A,030H		; write command 030h
+0305   02A6 D3 E0       		OUT	(CMD_WR),A
+0306   02A8 06 05       		LD	B,5			; wait 5ms
+0307   02AA CD 86 02    		CALL	DELAYMS
+0308   02AD 3E 30       		LD	A,030H		; write command 030h
+0309   02AF D3 E0       		OUT	(CMD_WR),A
+0310   02B1 0E 14       		LD	C,20			; wait (5X20) 100us
+0311   02B3 CD 92 02    		CALL	DELAY5US
+0312   02B6 3E 30       		LD	A,030H		; write command 030h
+0313   02B8 D3 E0       		OUT	(CMD_WR),A
+0314   02BA 0E 14       		LD	C,20			; wait (5X20) 100us
+0315   02BC CD 92 02    		CALL	DELAY5US
+0316   02BF 3E 38       		LD	A,038H		; write command 038h = function set (8-bits, 2-lines, 5x7dots)
+0317   02C1 D3 E0       		OUT	(CMD_WR),A
+0318   02C3 CD 99 02    		CALL	BWAIT
+0319   02C6 3E 08       		LD	A,08H			; write command 08h = display (off)
+0320   02C8 D3 E0       		OUT	(CMD_WR),A
+0321   02CA CD 99 02    		CALL	BWAIT
+0322   02CD 3E 01       		LD	A,01H			; write command 01h = clear display
+0323   02CF D3 E0       		OUT	(CMD_WR),A
+0324   02D1 CD 99 02    		CALL	BWAIT
+0325   02D4 3E 06       		LD	A,06H			; write command 06h = entry mode (increment)
+0326   02D6 D3 E0       		OUT	(CMD_WR),A
+0327   02D8 CD 99 02    		CALL	BWAIT
+0328   02DB 3E 0C       		LD	A,0CH			; write command 0Ch = display (on)
+0329   02DD D3 E0       		OUT	(CMD_WR),A
+0330   02DF C9          		RET
+0331   02E0             
+0332   02E0             ;================================================================================================
+0333   02E0             ; Clear LCD and goto line 1, column 1.
+0334   02E0             ;================================================================================================
+0335   02E0             LCDCLEAR:
+0336   02E0 CD 99 02    		CALL	BWAIT
+0337   02E3 3E 01       		LD	A,01H			; write command 01h = clear display
+0338   02E5 D3 E0       		OUT	(CMD_WR),A
+0339   02E7 C9          		RET
+0340   02E8             
+0341   02E8             ;================================================================================================
+0342   02E8             ; Send to LCD char in regC. Print at current position (what ever it is)
+0343   02E8             ;================================================================================================
+0344   02E8             LCDPUT:
+0345   02E8 CD 99 02    		CALL	BWAIT
+0346   02EB 79          		LD	A,C			; write command 01h = clear display
+0347   02EC D3 E1       		OUT	(DAT_WR),A
+0348   02EE C9          		RET
+0349   02EF             
+0350   02EF             ;================================================================================================
+0351   02EF             ; Position LCD cursor at line regH, column regL.
+0352   02EF             ;================================================================================================
+0353   02EF             LCDPOS:
+0354   02EF 25          		DEC	H
+0355   02F0 CB 24       		SLA	H
+0356   02F2 CB 24       		SLA	H
+0357   02F4 CB 24       		SLA	H
+0358   02F6 CB 24       		SLA	H
+0359   02F8 CB 24       		SLA	H
+0360   02FA CB 24       		SLA	H
+0361   02FC 7C          		LD	A,H
+0362   02FD 2D          		DEC	L
+0363   02FE B5          		OR	L
+0364   02FF F6 80       		OR	080H
+0365   0301 67          		LD	H,A
+0366   0302 CD 99 02    		CALL	BWAIT
+0367   0305 7C          		LD	A,H
+0368   0306 D3 E0       		OUT	(CMD_WR),A
+0369   0308 C9          		RET
+0370   0309             
+0371   0309             ;================================================================================================
+0372   0309             ; Send to LCD a sequence of characters ending with zero
+0373   0309             ;================================================================================================
+0374   0309             LCDPRINT:
+0375   0309 CD E0 02    		CALL LCDCLEAR
+0376   030C E3          		EX 	(SP),HL 		; Push HL and put RET address into HL
+0377   030D F5          		PUSH 	AF
+0378   030E C5          		PUSH 	BC
+0379   030F             NEXTCHAR:
+0380   030F 7E          		LD 	A,(HL)
+0381   0310 FE 00       		CP	0
+0382   0312 28 0A       		JR	Z,ENDOFPRINT
+0383   0314 4F          		LD	C,A
+0384   0315 CD 99 02    		CALL	BWAIT
+0385   0318 79          		LD	A,C
+0386   0319 D3 E1       		OUT	(DAT_WR),A
+0387   031B 23          		INC 	HL
+0388   031C 18 F1       		JR	NEXTCHAR
+0389   031E             ENDOFPRINT:
+0390   031E 23          		INC 	HL 			; Get past "null" terminator
+0391   031F C1          		POP 	BC
+0392   0320 F1          		POP 	AF
+0393   0321 E3          		EX 	(SP),HL 		; Push new RET address on stack and restore HL
+0394   0322 C9          		RET
+0395   0323             
+0396   0323             ;==================================================================================
+0397   0323 58 4D 4F 44 MSGOK:		.DB	"XMODEM 1.0 - Receiving file..."
+0397   0327 45 4D 20 31 
+0397   032B 2E 30 20 2D 
+0397   032F 20 52 65 63 
+0397   0333 65 69 76 69 
+0397   0337 6E 67 20 66 
+0397   033B 69 6C 65 2E 
+0397   033F 2E 2E 
+0398   0341 0D 0A 24    			.DB	CR,LF,"$"
+0399   0344             			
+0400   0344 58 4D 4F 44 MSGNOARG:	.DB	"XMODEM 1.0 - Receive a file from console and store it on disk."
+0400   0348 45 4D 20 31 
+0400   034C 2E 30 20 2D 
+0400   0350 20 52 65 63 
+0400   0354 65 69 76 65 
+0400   0358 20 61 20 66 
+0400   035C 69 6C 65 20 
+0400   0360 66 72 6F 6D 
+0400   0364 20 63 6F 6E 
+0400   0368 73 6F 6C 65 
+0400   036C 20 61 6E 64 
+0400   0370 20 73 74 6F 
+0400   0374 72 65 20 69 
+0400   0378 74 20 6F 6E 
+0400   037C 20 64 69 73 
+0400   0380 6B 2E 
+0401   0382 0D 0A       			.DB	CR,LF,
+0402   0384 55 73 65 3A 			.DB	"Use: XMODEM [drive:]filename.$"
+0402   0388 20 58 4D 4F 
+0402   038C 44 45 4D 20 
+0402   0390 5B 64 72 69 
+0402   0394 76 65 3A 5D 
+0402   0398 66 69 6C 65 
+0402   039C 6E 61 6D 65 
+0402   03A0 2E 24 
+0403   03A2             
+0404   03A2 00 00       BUFPTR		.DW	0					; Buffer pointer
+0405   03A4 00          CHKSUM	 	.DB	0					; Checksum
+0406   03A5 00          RETRY		.DB 0					; Retry counter
+0407   03A6 00          BLOCK		.DB	0					; Block counter
+0408   03A7             
+0409   03A7             			.DS	0100h				; Start of stack area.
+0410   04A7             STACK		.EQU	$
+0411   04A7             
+0412   04A7             
+0413   04A7             
+0414   04A7             
+0415   04A7             
+0416   04A7             			.END
+tasm: Number of errors = 0

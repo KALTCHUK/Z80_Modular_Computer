@@ -37,6 +37,11 @@ CAN			.EQU	018H
 SUB			.EQU	01AH
 
 MAXTRY		.EQU	10
+
+DAT_WR	.EQU	0E1H			;
+DAT_RD	.EQU	0E3H			;
+CMD_WR	.EQU	0E0H			;
+CMD_RD	.EQU	0E2H			;
 ;==================================================================================
 			.ORG TPA
 
@@ -52,6 +57,11 @@ MAXTRY		.EQU	10
 START:		LD	DE,MSGOK
 			LD	C,C_STRING
 			CALL BDOS
+			CALL LCDINIT
+			CALL LCDCLEAR
+			CALL LCDPRINT
+			.DB	"START",0
+			
 			LD	A,0
 			LD	(RETRY),A			; Init retry counter
 			INC	A
@@ -131,7 +141,7 @@ RECPACK:	LD	B,1					; Start receiving data packet (128 bytes)
 			JR	NZ,RECPACK
 			CALL WRITEBLK
 			CP	0
-			JR	NZ,OUT3				; Write op OK?
+			JP	NZ,OUT3				; Write op OK?
 			LD	B,1
 			CALL TOCONIN			; Get checksum
 			JR	C,OUT2				; Timed out?
@@ -195,7 +205,14 @@ SENDCAN:	LD C,CAN
 ;==================================================================================
 ; Write block to file. RegA returns 0 if successful.
 ;==================================================================================
-WRITEBLK:	LD	C,F_DMAOFF			; Set DMA before writing.
+WRITEBLK:	CALL LCDPRINT
+			.DB	"BLOCK ",0
+			LD	A,(BLOCK)
+			ADD	A,30H
+			LD	C,A
+			CALL LCDPUT
+			
+			LD	C,F_DMAOFF			; Set DMA before writing.
 			LD	DE,DMA
 			CALL BDOS
 			LD	C,F_WRITE			; Write buffer to disk.
@@ -228,7 +245,8 @@ LOOP2:		CALL CONST				;36.5	|t=41.5C+0.5	|
 			SCF
 			JR	TOUT
 BWAITING:	CALL CONIN
-			XOR	A					; Reset carry flag
+			SCF						; Reset carry flag
+			CCF
 TOUT:		POP	HL
 			POP	BC
 			RET
@@ -240,6 +258,140 @@ PURGE:		LD	B,3
 			CALL TOCONIN
 			JR	NC,PURGE
 			RET
+
+;**********************************************************************************
+;                                  LCD STUFF
+;**********************************************************************************
+;================================================================================================
+; Delay X miliseconds, with X passed on reg B
+;================================================================================================
+DELAYMS:
+		PUSH	BC
+DECB:		LD	C,0C8H
+DECC:		NOP
+		DEC	C
+		JR	NZ,DECC
+		DEC	B
+		JR	NZ,DECB
+		POP	BC
+		RET
+
+;================================================================================================
+; Delay 5*X microseconds, with X passed on reg C
+;================================================================================================
+DELAY5US:
+		PUSH	BC
+DEC:		NOP
+		DEC	C
+		JR	NZ,DEC
+		POP	BC
+		RET
+
+;================================================================================================
+; Wait until Busy flag = 0
+;================================================================================================
+BWAIT:	IN A,(CMD_RD)
+		RLCA
+		JR	C,BWAIT
+		RET
+
+;================================================================================================
+; Initialize LCD
+;================================================================================================
+LCDINIT:
+		LD	B,15			; wait 15ms
+		CALL	DELAYMS
+		LD	A,030H		; write command 030h
+		OUT	(CMD_WR),A
+		LD	B,5			; wait 5ms
+		CALL	DELAYMS
+		LD	A,030H		; write command 030h
+		OUT	(CMD_WR),A
+		LD	C,20			; wait (5X20) 100us
+		CALL	DELAY5US
+		LD	A,030H		; write command 030h
+		OUT	(CMD_WR),A
+		LD	C,20			; wait (5X20) 100us
+		CALL	DELAY5US
+		LD	A,038H		; write command 038h = function set (8-bits, 2-lines, 5x7dots)
+		OUT	(CMD_WR),A
+		CALL	BWAIT
+		LD	A,08H			; write command 08h = display (off)
+		OUT	(CMD_WR),A
+		CALL	BWAIT
+		LD	A,01H			; write command 01h = clear display
+		OUT	(CMD_WR),A
+		CALL	BWAIT
+		LD	A,06H			; write command 06h = entry mode (increment)
+		OUT	(CMD_WR),A
+		CALL	BWAIT
+		LD	A,0CH			; write command 0Ch = display (on)
+		OUT	(CMD_WR),A
+		RET
+
+;================================================================================================
+; Clear LCD and goto line 1, column 1.
+;================================================================================================
+LCDCLEAR:
+		CALL	BWAIT
+		LD	A,01H			; write command 01h = clear display
+		OUT	(CMD_WR),A
+		RET
+
+;================================================================================================
+; Send to LCD char in regC. Print at current position (what ever it is)
+;================================================================================================
+LCDPUT:
+		CALL	BWAIT
+		LD	A,C			; write command 01h = clear display
+		OUT	(DAT_WR),A
+		RET
+
+;================================================================================================
+; Position LCD cursor at line regH, column regL.
+;================================================================================================
+LCDPOS:
+		DEC	H
+		SLA	H
+		SLA	H
+		SLA	H
+		SLA	H
+		SLA	H
+		SLA	H
+		LD	A,H
+		DEC	L
+		OR	L
+		OR	080H
+		LD	H,A
+		CALL	BWAIT
+		LD	A,H
+		OUT	(CMD_WR),A
+		RET
+
+;================================================================================================
+; Send to LCD a sequence of characters ending with zero
+;================================================================================================
+LCDPRINT:
+		CALL LCDCLEAR
+		EX 	(SP),HL 		; Push HL and put RET address into HL
+		PUSH 	AF
+		PUSH 	BC
+NEXTCHAR:
+		LD 	A,(HL)
+		CP	0
+		JR	Z,ENDOFPRINT
+		LD	C,A
+		CALL	BWAIT
+		LD	A,C
+		OUT	(DAT_WR),A
+		INC 	HL
+		JR	NEXTCHAR
+ENDOFPRINT:
+		INC 	HL 			; Get past "null" terminator
+		POP 	BC
+		POP 	AF
+		EX 	(SP),HL 		; Push new RET address on stack and restore HL
+		RET
 
 ;==================================================================================
 MSGOK:		.DB	"XMODEM 1.0 - Receiving file..."
@@ -256,6 +408,9 @@ BLOCK		.DB	0					; Block counter
 
 			.DS	0100h				; Start of stack area.
 STACK		.EQU	$
+
+
+
 
 
 			.END
