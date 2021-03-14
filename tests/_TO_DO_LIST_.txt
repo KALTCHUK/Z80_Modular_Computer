@@ -1,5 +1,10 @@
-- write XMODEM.ASM
-- write XMODEM.PY
+- test xmodem R
+- develop & test xmodem S
+- backup stars.bas
+- erase flash
+- format flash
+- copy xmodem
+- copy all transient progs
 - upload and test WordStar
 - upload and test BDSC
 - upload and test BASCOM

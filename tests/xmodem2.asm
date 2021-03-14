@@ -1,7 +1,7 @@
 ;==================================================================================
-; XMODEM.ASM version 1.0 - Kaltchuk, feb/2021
+; XMODEM.ASM version 1.1 - Kaltchuk, feb/2021
 ;
-; This program implements xmodem protocol on CP/M. Only receive file.
+; This program implements xmodem protocol on CP/M.
 ; (3 bytes header, 128byte data packets, 1byte CheckSum).
 ;
 ; +-------- header --------+------- data packet -------+
@@ -245,12 +245,12 @@ PURGE:		LD	B,3
 
 ;==================================================================================
 
-MSGOK:		.DB	"XMODEM 1.0 - Receiving file..."
+MSGOK:		.DB	"XMODEM 1.1 - Receiving file..."
 			.DB	CR,LF,"$"
 			
-MSGNOARG:	.DB	"XMODEM 1.0 - Receive a file from console and store it on disk."
+MSGNOARG:	.DB	"XMODEM 1.1 - Receive/send a file from/to console."
 			.DB	CR,LF,
-			.DB	"Use: XMODEM [drive:]filename.$"
+			.DB	"Use: XMODEM [drive:]filename R(eceive) or S(end).$"
 
 BUFPTR		.DW	0					; Buffer pointer
 CHKSUM	 	.DB	0					; Checksum

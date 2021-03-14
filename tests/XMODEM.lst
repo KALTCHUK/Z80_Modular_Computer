@@ -38,254 +38,260 @@
 0038   0000             
 0039   0000             MAXTRY		.EQU	10
 0040   0000             ;==================================================================================
-0041   0100             			.ORG TPA
-0042   0100             
-0043   0100 31 E6 03    			LD	SP,STACK			; Set default stack.
-0044   0103 3A 5D 00    			LD	A,(FCB+1)
-0045   0106 FE 20       			CP	' '					; Test if program has argument (file name)
-0046   0108 20 0B       			JR	NZ,START
-0047   010A 11 83 02    			LD	DE,MSGNOARG
-0048   010D 0E 09       			LD	C,C_STRING
-0049   010F CD 05 00    			CALL BDOS
-0050   0112 C3 00 00    			JP	REBOOT
-0051   0115             			
-0052   0115 11 62 02    START:		LD	DE,MSGOK
-0053   0118 0E 09       			LD	C,C_STRING
-0054   011A CD 05 00    			CALL BDOS
-0055   011D 3E 00       			LD	A,0
-0056   011F 32 E4 02    			LD	(RETRY),A			; Init retry counter
-0057   0122 3C          			INC	A
-0058   0123 32 E5 02    			LD	(BLOCK),A			; Init block counter
-0059   0126 CD F4 01    			CALL DELFILE			; Delete file
-0060   0129 CD FD 01    			CALL MAKEFILE			; Create file
-0061   012C FE 04       			CP	4					; 0, 1, 2 or 3 = OK
-0062   012E FA 37 01    			JP	M,ALIVE				; File created OK?
-0063   0131 CD 1B 02    OUT1:		CALL SENDCAN
-0064   0134 C3 00 00    			JP	REBOOT
-0065   0137             
-0066   0137 CD 15 02    ALIVE:		CALL SENDNAK
-0067   013A 06 05       GET1ST:		LD	B,5
-0068   013C CD 38 02    			CALL TOCONIN			; 5s timeout
-0069   013F 38 0C       			JR	C,REPEAT			; Timed out?
-0070   0141 FE 04       			CP	EOT
-0071   0143 28 18       			JR	Z,GOTEOT			; EOT?
-0072   0145 FE 18       			CP	CAN
-0073   0147 28 25       			JR	Z,GOTCAN			; CAN?
-0074   0149 FE 01       			CP	SOH
-0075   014B 28 27       			JR	Z,GOTSOH			; SOH?
-0076   014D 3A E4 02    REPEAT:		LD	A,(RETRY)
-0077   0150 3C          			INC	A
-0078   0151 32 E4 02    			LD	(RETRY),A
-0079   0154 FE 0A       			CP	MAXTRY
-0080   0156 20 DF       			JR	NZ,ALIVE			; Try again?
-0081   0158 CD F4 01    OUT3:		CALL DELFILE
-0082   015B 18 D4       			JR	OUT1
-0083   015D CD 15 02    GOTEOT:		CALL SENDNAK
-0084   0160 06 01       			LD	B,1
-0085   0162 CD 38 02    			CALL TOCONIN
-0086   0165 CD 0F 02    			CALL SENDACK
-0087   0168 CD 06 02    			CALL CLOSFILE
-0088   016B C3 00 00    			JP	REBOOT
-0089   016E CD F4 01    GOTCAN:		CALL DELFILE
-0090   0171 C3 00 00    			JP	REBOOT
-0091   0174 3E 00       GOTSOH:		LD	A,0
-0092   0176 32 E3 02    			LD	(CHKSUM),A			; Reset checksum
-0093   0179 21 80 00    			LD	HL,DMA
-0094   017C 22 E1 02    			LD	(BUFPTR),HL			; Reset buffer pointer
-0095   017F 06 01       			LD	B,1
-0096   0181 CD 38 02    			CALL TOCONIN			; Get incoming block number
-0097   0184 38 1F       			JR	C,OUT2				; Timed out?
-0098   0186 4F          			LD	C,A					; Save incoming block number
-0099   0187 06 01       			LD	B,1
-0100   0189 CD 38 02    			CALL TOCONIN			; Get complement of incoming block number
-0101   018C 38 17       			JR	C,OUT2				; Timed out?
-0102   018E 2F          			CPL
-0103   018F B9          			CP	C
-0104   0190 20 13       			JR	NZ,OUT2				; block = //block?
-0105   0192 3A E5 02    			LD	A,(BLOCK)
-0106   0195 B9          			CP	C					; Is block number what we expected?
-0107   0196 28 15       			JR	Z,RECPACK
-0108   0198 3D          			DEC	A
-0109   0199 B9          			CP	C					; block number is the anterior? Probably sender missed our ACK.
-0110   019A 20 09       			JR	NZ,OUT2
-0111   019C CD 5A 02    ANTBLK:		CALL PURGE				; Purge input buffer before sending ACK
-0112   019F CD 0F 02    			CALL SENDACK
-0113   01A2 C3 3A 01    			JP	GET1ST
-0114   01A5 CD 5A 02    OUT2:		CALL PURGE
-0115   01A8 CD 1B 02    			CALL SENDCAN
-0116   01AB 18 C1       			JR	GOTCAN
-0117   01AD 06 01       RECPACK:	LD	B,1					; Start receiving data packet (128 bytes)
-0118   01AF CD 38 02    			CALL TOCONIN
-0119   01B2 38 F1       			JR	C,OUT2				; Timed out?
-0120   01B4 2A E1 02    			LD	HL,(BUFPTR)
-0121   01B7 77          			LD	(HL),A				; Put byte in buffer
-0122   01B8 23          			INC	HL					; Inc buffer pointer
-0123   01B9 22 E1 02    			LD	(BUFPTR),HL
-0124   01BC 4F          			LD	C,A
-0125   01BD 3A E3 02    			LD	A,(CHKSUM)
-0126   01C0 81          			ADD	A,C
-0127   01C1 32 E3 02    			LD	(CHKSUM),A			; Update checksum
-0128   01C4 01 00 01    			LD	BC,TPA
-0129   01C7 AF          			XOR	A					; Reset carry flag
-0130   01C8 ED 42       			SBC	HL,BC				; If buffer pointer = TPA, we got a full buffer 
-0131   01CA 20 E1       			JR	NZ,RECPACK
-0132   01CC CD 21 02    			CALL WRITEBLK
-0133   01CF FE 00       			CP	0
-0134   01D1 20 85       			JR	NZ,OUT3				; Write op OK?
-0135   01D3 06 01       			LD	B,1
-0136   01D5 CD 38 02    			CALL TOCONIN			; Get checksum
-0137   01D8 38 CB       			JR	C,OUT2				; Timed out?
-0138   01DA 4F          			LD	C,A
-0139   01DB 3A E3 02    			LD	A,(CHKSUM)
-0140   01DE B9          			CP	C
-0141   01DF C2 4D 01    			JP	NZ,REPEAT			; Checksum OK?
-0142   01E2 3E 00       			LD	A,0
-0143   01E4 32 E4 02    			LD	(RETRY),A			; Reset retry counter
-0144   01E7 3A E5 02    			LD	A,(BLOCK)
-0145   01EA 3C          			INC	A
-0146   01EB 32 E5 02    			LD	(BLOCK),A			; Increment block counter
-0147   01EE CD 0F 02    			CALL SENDACK
-0148   01F1 C3 3A 01    			JP	GET1ST
-0149   01F4             			
-0150   01F4             ;==================================================================================
-0151   01F4             ; Delete file. RegA returns 0, 1, 2 or 3 if successful.
-0152   01F4             ;==================================================================================
-0153   01F4 0E 13       DELFILE:	LD	C,F_DELETE
-0154   01F6 11 5C 00    			LD	DE,FCB
-0155   01F9 CD 05 00    			CALL BDOS
-0156   01FC C9          			RET
-0157   01FD             			
-0158   01FD             ;==================================================================================
-0159   01FD             ; Make file. RegA returns 0, 1, 2 or 3 if successful.
-0160   01FD             ;==================================================================================
-0161   01FD 0E 16       MAKEFILE:	LD	C,F_MAKE
-0162   01FF 11 5C 00    			LD	DE,FCB
-0163   0202 CD 05 00    			CALL BDOS
-0164   0205 C9          			RET
-0165   0206             
-0166   0206             ;==================================================================================
-0167   0206             ; Close file. RegA returns 0, 1, 2 or 3 if successful.
-0168   0206             ;==================================================================================
-0169   0206 0E 10       CLOSFILE:	LD	C,F_CLOSE
-0170   0208 11 5C 00    			LD	DE,FCB
-0171   020B CD 05 00    			CALL BDOS
-0172   020E C9          			RET
-0173   020F             			
-0174   020F             ;==================================================================================
-0175   020F             ; Send ACK
-0176   020F             ;==================================================================================
-0177   020F 0E 06       SENDACK:	LD C,ACK
-0178   0211 CD 0C E6    			CALL CONOUT
-0179   0214 C9          			RET
-0180   0215             
-0181   0215             ;==================================================================================
-0182   0215             ; Send NAK
-0183   0215             ;==================================================================================
-0184   0215 0E 15       SENDNAK:	LD C,NAK
-0185   0217 CD 0C E6    			CALL CONOUT
-0186   021A C9          			RET
-0187   021B             
-0188   021B             ;==================================================================================
-0189   021B             ; Send CAN
-0190   021B             ;==================================================================================
-0191   021B 0E 18       SENDCAN:	LD C,CAN
-0192   021D CD 0C E6    			CALL CONOUT
-0193   0220 C9          			RET
-0194   0221             
-0195   0221             ;==================================================================================
-0196   0221             ; Write block to file. RegA returns 0 if successful.
-0197   0221             ;==================================================================================
-0198   0221 0E 1A       WRITEBLK:	LD	C,F_DMAOFF			; Set DMA before writing.
-0199   0223 11 80 00    			LD	DE,DMA
-0200   0226 CD 05 00    			CALL BDOS
-0201   0229 0E 15       			LD	C,F_WRITE			; Write buffer to disk.
-0202   022B 11 5C 00    			LD	DE,FCB
-0203   022E CD 05 00    			CALL BDOS
-0204   0231 21 80 00    			LD	HL,DMA
-0205   0234 22 E1 02    			LD	(BUFPTR),HL			; Reset buffer pointer
-0206   0237 C9          			RET
-0207   0238             
-0208   0238             ;==================================================================================
-0209   0238             ; Timed Out Console Input - X seconds, with X passed on reg B
-0210   0238             ; Incoming byte, if any, returns in A
-0211   0238             ; Carry flag set if timed out.
-0212   0238             ;==================================================================================
-0213   0238 C5          TOCONIN:	PUSH	BC
-0214   0239 E5          			PUSH	HL
-0215   023A 21 AD 02    LOOP0:		LD	HL,685				;2.5					\
-0216   023D 0E 23       LOOP1:		LD	C,35				;1.75	\				|
-0217   023F CD 06 E6    LOOP2:		CALL CONST				;36.5	|t=41.5C+0.5	| 
-0218   0242 3C          			INC	A					;1		|				|
-0219   0243 28 0E       			JR	Z,BWAITING			;3/1.75	|				| t=HL(41.5C+6.5)+1.25
-0220   0245 79          			LD	A,C					;1		|				|
-0221   0246 0D          			DEC	C					;1		|				|
-0222   0247 20 F6       			JR	NZ,LOOP2			;3/1.75	/				| with HL=685 and c=35,
-0223   0249 2B          			DEC	HL					;1						|  t=0.9994sec (WOW!!!)
-0224   024A 7C          			LD	A,H					;1						|
-0225   024B B5          			OR	L					;1						|
-0226   024C 20 EF       			JR	NZ,LOOP1			;3/1.75					/
-0227   024E 10 EA       			DJNZ	LOOP0			;3.25/2
-0228   0250 37          			SCF
-0229   0251 18 04       			JR	TOUT
-0230   0253 CD 09 E6    BWAITING:	CALL CONIN
-0231   0256 AF          			XOR	A					; Reset carry flag
-0232   0257 E1          TOUT:		POP	HL
-0233   0258 C1          			POP	BC
-0234   0259 C9          			RET
-0235   025A             
-0236   025A             ;==================================================================================
-0237   025A             ; Purge console input.
-0238   025A             ;==================================================================================
-0239   025A 06 03       PURGE:		LD	B,3
-0240   025C CD 38 02    			CALL TOCONIN
-0241   025F 30 F9       			JR	NC,PURGE
-0242   0261 C9          			RET
-0243   0262             
-0244   0262             ;==================================================================================
-0245   0262 58 4D 4F 44 MSGOK:		.DB	"XMODEM 1.0 - Receiving file..."
-0245   0266 45 4D 20 31 
-0245   026A 2E 30 20 2D 
-0245   026E 20 52 65 63 
-0245   0272 65 69 76 69 
-0245   0276 6E 67 20 66 
-0245   027A 69 6C 65 2E 
-0245   027E 2E 2E 
-0246   0280 0D 0A 24    			.DB	CR,LF,"$"
-0247   0283             			
-0248   0283 58 4D 4F 44 MSGNOARG:	.DB	"XMODEM 1.0 - Receive a file from console and store it on disk."
-0248   0287 45 4D 20 31 
-0248   028B 2E 30 20 2D 
-0248   028F 20 52 65 63 
-0248   0293 65 69 76 65 
-0248   0297 20 61 20 66 
-0248   029B 69 6C 65 20 
-0248   029F 66 72 6F 6D 
-0248   02A3 20 63 6F 6E 
-0248   02A7 73 6F 6C 65 
-0248   02AB 20 61 6E 64 
-0248   02AF 20 73 74 6F 
-0248   02B3 72 65 20 69 
-0248   02B7 74 20 6F 6E 
-0248   02BB 20 64 69 73 
-0248   02BF 6B 2E 
-0249   02C1 0D 0A       			.DB	CR,LF,
-0250   02C3 55 73 65 3A 			.DB	"Use: XMODEM [drive:]filename.$"
-0250   02C7 20 58 4D 4F 
-0250   02CB 44 45 4D 20 
-0250   02CF 5B 64 72 69 
-0250   02D3 76 65 3A 5D 
-0250   02D7 66 69 6C 65 
-0250   02DB 6E 61 6D 65 
-0250   02DF 2E 24 
-0251   02E1             
-0252   02E1 00 00       BUFPTR		.DW	0					; Buffer pointer
-0253   02E3 00          CHKSUM	 	.DB	0					; Checksum
-0254   02E4 00          RETRY		.DB 0					; Retry counter
-0255   02E5 00          BLOCK		.DB	0					; Block counter
-0256   02E6             
-0257   02E6             			.DS	0100h				; Start of stack area.
-0258   03E6             STACK		.EQU	$
-0259   03E6             
-0260   03E6             
-0261   03E6             			.END
+0041   0000             
+0042   0100             			.ORG TPA
+0043   0100             
+0044   0100 31 E8 03    			LD	SP,STACK			; Set default stack.
+0045   0103 3A 5D 00    			LD	A,(FCB+1)
+0046   0106 FE 20       			CP	' '					; Test if program has argument (file name)
+0047   0108 20 0B       			JR	NZ,START
+0048   010A 11 85 02    			LD	DE,MSGNOARG
+0049   010D 0E 09       			LD	C,C_STRING
+0050   010F CD 05 00    			CALL BDOS
+0051   0112 C3 00 00    			JP	REBOOT
+0052   0115             			
+0053   0115 11 64 02    START:		LD	DE,MSGOK
+0054   0118 0E 09       			LD	C,C_STRING
+0055   011A CD 05 00    			CALL BDOS
+0056   011D 3E 00       			LD	A,0
+0057   011F 32 E6 02    			LD	(RETRY),A			; Init retry counter
+0058   0122 3C          			INC	A
+0059   0123 32 E7 02    			LD	(BLOCK),A			; Init block counter
+0060   0126 CD F5 01    			CALL DELFILE			; Delete file
+0061   0129 CD FE 01    			CALL MAKEFILE			; Create file
+0062   012C FE 04       			CP	4					; 0, 1, 2 or 3 = OK
+0063   012E FA 37 01    			JP	M,ALIVE				; File created OK?
+0064   0131 CD 1C 02    OUT1:		CALL SENDCAN
+0065   0134 C3 00 00    			JP	REBOOT
+0066   0137             
+0067   0137 CD 16 02    ALIVE:		CALL SENDNAK
+0068   013A 06 05       GET1ST:		LD	B,5
+0069   013C CD 39 02    			CALL TOCONIN			; 5s timeout
+0070   013F 38 0C       			JR	C,REPEAT			; Timed out?
+0071   0141 FE 04       			CP	EOT
+0072   0143 28 18       			JR	Z,GOTEOT			; EOT?
+0073   0145 FE 18       			CP	CAN
+0074   0147 28 25       			JR	Z,GOTCAN			; CAN?
+0075   0149 FE 01       			CP	SOH
+0076   014B 28 27       			JR	Z,GOTSOH			; SOH?
+0077   014D 3A E6 02    REPEAT:		LD	A,(RETRY)
+0078   0150 3C          			INC	A
+0079   0151 32 E6 02    			LD	(RETRY),A
+0080   0154 FE 0A       			CP	MAXTRY
+0081   0156 20 DF       			JR	NZ,ALIVE			; Try again?
+0082   0158 CD F5 01    OUT3:		CALL DELFILE
+0083   015B 18 D4       			JR	OUT1
+0084   015D CD 16 02    GOTEOT:		CALL SENDNAK
+0085   0160 06 01       			LD	B,1
+0086   0162 CD 39 02    			CALL TOCONIN
+0087   0165 CD 10 02    			CALL SENDACK
+0088   0168 CD 07 02    			CALL CLOSFILE
+0089   016B C3 00 00    			JP	REBOOT
+0090   016E CD F5 01    GOTCAN:		CALL DELFILE
+0091   0171 C3 00 00    			JP	REBOOT
+0092   0174 3E 00       GOTSOH:		LD	A,0
+0093   0176 32 E5 02    			LD	(CHKSUM),A			; Reset checksum
+0094   0179 21 80 00    			LD	HL,DMA
+0095   017C 22 E3 02    			LD	(BUFPTR),HL			; Reset buffer pointer
+0096   017F 06 01       			LD	B,1
+0097   0181 CD 39 02    			CALL TOCONIN			; Get incoming block number
+0098   0184 38 1F       			JR	C,OUT2				; Timed out?
+0099   0186 4F          			LD	C,A					; Save incoming block number
+0100   0187 06 01       			LD	B,1
+0101   0189 CD 39 02    			CALL TOCONIN			; Get complement of incoming block number
+0102   018C 38 17       			JR	C,OUT2				; Timed out?
+0103   018E 2F          			CPL
+0104   018F B9          			CP	C
+0105   0190 20 13       			JR	NZ,OUT2				; block = //block?
+0106   0192 3A E7 02    			LD	A,(BLOCK)
+0107   0195 B9          			CP	C					; Is block number what we expected?
+0108   0196 28 15       			JR	Z,RECPACK
+0109   0198 3D          			DEC	A
+0110   0199 B9          			CP	C					; block number is the anterior? Probably sender missed our ACK.
+0111   019A 20 09       			JR	NZ,OUT2
+0112   019C CD 5C 02    ANTBLK:		CALL PURGE				; Purge input buffer before sending ACK
+0113   019F CD 10 02    			CALL SENDACK
+0114   01A2 C3 3A 01    			JP	GET1ST
+0115   01A5 CD 5C 02    OUT2:		CALL PURGE
+0116   01A8 CD 1C 02    			CALL SENDCAN
+0117   01AB 18 C1       			JR	GOTCAN
+0118   01AD 06 01       RECPACK:	LD	B,1					; Start receiving data packet (128 bytes)
+0119   01AF CD 39 02    			CALL TOCONIN
+0120   01B2 38 F1       			JR	C,OUT2				; Timed out?
+0121   01B4 2A E3 02    			LD	HL,(BUFPTR)
+0122   01B7 77          			LD	(HL),A				; Put byte in buffer
+0123   01B8 23          			INC	HL					; Inc buffer pointer
+0124   01B9 22 E3 02    			LD	(BUFPTR),HL
+0125   01BC 4F          			LD	C,A
+0126   01BD 3A E5 02    			LD	A,(CHKSUM)
+0127   01C0 81          			ADD	A,C
+0128   01C1 32 E5 02    			LD	(CHKSUM),A			; Update checksum
+0129   01C4 01 00 01    			LD	BC,TPA
+0130   01C7 AF          			XOR	A					; Reset carry flag
+0131   01C8 ED 42       			SBC	HL,BC				; If buffer pointer = TPA, we got a full buffer 
+0132   01CA 20 E1       			JR	NZ,RECPACK
+0133   01CC CD 22 02    			CALL WRITEBLK
+0134   01CF FE 00       			CP	0
+0135   01D1 C2 58 01    			JP	NZ,OUT3				; Write op OK?
+0136   01D4 06 01       			LD	B,1
+0137   01D6 CD 39 02    			CALL TOCONIN			; Get checksum
+0138   01D9 38 CA       			JR	C,OUT2				; Timed out?
+0139   01DB 4F          			LD	C,A
+0140   01DC 3A E5 02    			LD	A,(CHKSUM)
+0141   01DF B9          			CP	C
+0142   01E0 C2 4D 01    			JP	NZ,REPEAT			; Checksum OK?
+0143   01E3 3E 00       			LD	A,0
+0144   01E5 32 E6 02    			LD	(RETRY),A			; Reset retry counter
+0145   01E8 3A E7 02    			LD	A,(BLOCK)
+0146   01EB 3C          			INC	A
+0147   01EC 32 E7 02    			LD	(BLOCK),A			; Increment block counter
+0148   01EF CD 10 02    			CALL SENDACK
+0149   01F2 C3 3A 01    			JP	GET1ST
+0150   01F5             			
+0151   01F5             ;==================================================================================
+0152   01F5             ; Delete file. RegA returns 0, 1, 2 or 3 if successful.
+0153   01F5             ;==================================================================================
+0154   01F5 0E 13       DELFILE:	LD	C,F_DELETE
+0155   01F7 11 5C 00    			LD	DE,FCB
+0156   01FA CD 05 00    			CALL BDOS
+0157   01FD C9          			RET
+0158   01FE             			
+0159   01FE             ;==================================================================================
+0160   01FE             ; Make file. RegA returns 0, 1, 2 or 3 if successful.
+0161   01FE             ;==================================================================================
+0162   01FE 0E 16       MAKEFILE:	LD	C,F_MAKE
+0163   0200 11 5C 00    			LD	DE,FCB
+0164   0203 CD 05 00    			CALL BDOS
+0165   0206 C9          			RET
+0166   0207             
+0167   0207             ;==================================================================================
+0168   0207             ; Close file. RegA returns 0, 1, 2 or 3 if successful.
+0169   0207             ;==================================================================================
+0170   0207 0E 10       CLOSFILE:	LD	C,F_CLOSE
+0171   0209 11 5C 00    			LD	DE,FCB
+0172   020C CD 05 00    			CALL BDOS
+0173   020F C9          			RET
+0174   0210             			
+0175   0210             ;==================================================================================
+0176   0210             ; Send ACK
+0177   0210             ;==================================================================================
+0178   0210 0E 06       SENDACK:	LD C,ACK
+0179   0212 CD 0C E6    			CALL CONOUT
+0180   0215 C9          			RET
+0181   0216             
+0182   0216             ;==================================================================================
+0183   0216             ; Send NAK
+0184   0216             ;==================================================================================
+0185   0216 0E 15       SENDNAK:	LD C,NAK
+0186   0218 CD 0C E6    			CALL CONOUT
+0187   021B C9          			RET
+0188   021C             
+0189   021C             ;==================================================================================
+0190   021C             ; Send CAN
+0191   021C             ;==================================================================================
+0192   021C 0E 18       SENDCAN:	LD C,CAN
+0193   021E CD 0C E6    			CALL CONOUT
+0194   0221 C9          			RET
+0195   0222             
+0196   0222             ;==================================================================================
+0197   0222             ; Write block to file. RegA returns 0 if successful.
+0198   0222             ;==================================================================================
+0199   0222 0E 1A       WRITEBLK:	LD	C,F_DMAOFF			; Set DMA before writing.
+0200   0224 11 80 00    			LD	DE,DMA
+0201   0227 CD 05 00    			CALL BDOS
+0202   022A 0E 15       			LD	C,F_WRITE			; Write buffer to disk.
+0203   022C 11 5C 00    			LD	DE,FCB
+0204   022F CD 05 00    			CALL BDOS
+0205   0232 21 80 00    			LD	HL,DMA
+0206   0235 22 E3 02    			LD	(BUFPTR),HL			; Reset buffer pointer
+0207   0238 C9          			RET
+0208   0239             
+0209   0239             ;==================================================================================
+0210   0239             ; Timed Out Console Input - X seconds, with X passed on reg B
+0211   0239             ; Incoming byte, if any, returns in A
+0212   0239             ; Carry flag set if timed out.
+0213   0239             ;==================================================================================
+0214   0239 C5          TOCONIN:	PUSH	BC
+0215   023A E5          			PUSH	HL
+0216   023B 21 AD 02    LOOP0:		LD	HL,685				;2.5					\
+0217   023E 0E 23       LOOP1:		LD	C,35				;1.75	\				|
+0218   0240 CD 06 E6    LOOP2:		CALL CONST				;36.5	|t=41.5C+0.5	| 
+0219   0243 3C          			INC	A					;1		|				|
+0220   0244 28 0E       			JR	Z,BWAITING			;3/1.75	|				| t=HL(41.5C+6.5)+1.25
+0221   0246 79          			LD	A,C					;1		|				|
+0222   0247 0D          			DEC	C					;1		|				|
+0223   0248 20 F6       			JR	NZ,LOOP2			;3/1.75	/				| with HL=685 and c=35,
+0224   024A 2B          			DEC	HL					;1						|  t=0.9994sec (WOW!!!)
+0225   024B 7C          			LD	A,H					;1						|
+0226   024C B5          			OR	L					;1						|
+0227   024D 20 EF       			JR	NZ,LOOP1			;3/1.75					/
+0228   024F 10 EA       			DJNZ	LOOP0			;3.25/2
+0229   0251 37          			SCF
+0230   0252 18 05       			JR	TOUT
+0231   0254 CD 09 E6    BWAITING:	CALL CONIN
+0232   0257 37          			SCF						; Reset carry flag
+0233   0258 3F          			CCF
+0234   0259 E1          TOUT:		POP	HL
+0235   025A C1          			POP	BC
+0236   025B C9          			RET
+0237   025C             
+0238   025C             ;==================================================================================
+0239   025C             ; Purge console input.
+0240   025C             ;==================================================================================
+0241   025C 06 03       PURGE:		LD	B,3
+0242   025E CD 39 02    			CALL TOCONIN
+0243   0261 30 F9       			JR	NC,PURGE
+0244   0263 C9          			RET
+0245   0264             
+0246   0264             ;==================================================================================
+0247   0264             
+0248   0264 58 4D 4F 44 MSGOK:		.DB	"XMODEM 1.0 - Receiving file..."
+0248   0268 45 4D 20 31 
+0248   026C 2E 30 20 2D 
+0248   0270 20 52 65 63 
+0248   0274 65 69 76 69 
+0248   0278 6E 67 20 66 
+0248   027C 69 6C 65 2E 
+0248   0280 2E 2E 
+0249   0282 0D 0A 24    			.DB	CR,LF,"$"
+0250   0285             			
+0251   0285 58 4D 4F 44 MSGNOARG:	.DB	"XMODEM 1.0 - Receive a file from console and store it on disk."
+0251   0289 45 4D 20 31 
+0251   028D 2E 30 20 2D 
+0251   0291 20 52 65 63 
+0251   0295 65 69 76 65 
+0251   0299 20 61 20 66 
+0251   029D 69 6C 65 20 
+0251   02A1 66 72 6F 6D 
+0251   02A5 20 63 6F 6E 
+0251   02A9 73 6F 6C 65 
+0251   02AD 20 61 6E 64 
+0251   02B1 20 73 74 6F 
+0251   02B5 72 65 20 69 
+0251   02B9 74 20 6F 6E 
+0251   02BD 20 64 69 73 
+0251   02C1 6B 2E 
+0252   02C3 0D 0A       			.DB	CR,LF,
+0253   02C5 55 73 65 3A 			.DB	"Use: XMODEM [drive:]filename.$"
+0253   02C9 20 58 4D 4F 
+0253   02CD 44 45 4D 20 
+0253   02D1 5B 64 72 69 
+0253   02D5 76 65 3A 5D 
+0253   02D9 66 69 6C 65 
+0253   02DD 6E 61 6D 65 
+0253   02E1 2E 24 
+0254   02E3             
+0255   02E3 00 00       BUFPTR		.DW	0					; Buffer pointer
+0256   02E5 00          CHKSUM	 	.DB	0					; Checksum
+0257   02E6 00          RETRY		.DB 0					; Retry counter
+0258   02E7 00          BLOCK		.DB	0					; Block counter
+0259   02E8             
+0260   02E8             			.DS	0100h				; Start of stack area.
+0261   03E8             STACK		.EQU	$
+0262   03E8             
+0263   03E8             
+0264   03E8             
+0265   03E8             
+0266   03E8             
+0267   03E8             			.END
 tasm: Number of errors = 0
