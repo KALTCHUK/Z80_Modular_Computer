@@ -209,8 +209,11 @@ SENDCAN:	LD C,CAN
 WRITEBLK:	CALL LCDPRINT
 			.DB	"BLOCK ",0
 			LD	A,(BLOCK)
-			ADD	A,30H
-			LD	C,A
+			LD	B,A
+			CALL B2HL
+			LD	C,H
+			CALL LCDPUT
+			LD	C,L
 			CALL LCDPUT
 			
 			LD	C,F_DMAOFF			; Set DMA before writing.
@@ -258,6 +261,37 @@ TOUT:		POP	HL
 PURGE:		LD	B,3
 			CALL TOCONIN
 			JR	NC,PURGE
+			RET
+
+;================================================================================================
+; Convert HEX to ASCII (B --> HL)
+;================================================================================================
+B2HL:		PUSH BC
+			LD	A,B
+			AND	0FH
+			LD	L,A
+			SUB	0AH
+			LD	C,030H
+			JP	C,COMPENSE
+			LD	C,037H
+COMPENSE:	LD	A,L
+			ADD	A,C
+			LD	L,A
+			LD	A,B
+			AND	0F0H
+			SRL	A
+			SRL	A
+			SRL	A
+			SRL	A
+			LD	H,A
+			SUB	0AH
+			LD	C,030H
+			JP	C,COMPENSE2
+			LD	C,037H
+COMPENSE2:	LD	A,H
+			ADD	A,C
+			LD	H,A
+			POP	BC
 			RET
 
 ;**********************************************************************************
