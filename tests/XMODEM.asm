@@ -1,10 +1,10 @@
 ;==================================================================================
-; XMODEM.ASM version 1.0 - Kaltchuk, feb/2021
+; XMODEM.ASM version 1.1 - Kaltchuk, feb/2021
 ;
-; This program implements xmodem protocol on CP/M. Only receive file.
+; This program implements xmodem protocol on CP/M.
 ; (3 bytes header, 128byte data packets, 1byte CheckSum).
 ;
-; +-------- header --------+------- data packet -------+
+: +-------- header --------+------- data packet -------+
 ; |                        |                           |
 ;  <SOH> <BlkNum> </BlkNum> <byte1> <byte2>...<byte128> <ChkSum>
 ;==================================================================================
@@ -37,22 +37,53 @@ CAN			.EQU	018H
 SUB			.EQU	01AH
 
 MAXTRY		.EQU	10
-;==================================================================================
 
+LCD_CARD	.EQU	0E0H			; LCD card base address
+DAT_WR		.EQU	LCD_CARD+1
+DAT_RD		.EQU	LCD_CARD+3
+CMD_WR		.EQU	LCD_CARD
+CMD_RD		.EQU	LCD_CARD+2
+;==================================================================================
 			.ORG TPA
 
-			LD	SP,STACK			; Set default stack.
+			LD	SP,STACK			; Set stack.
+			LD	A,0
+			LD	(USELCD),A			; By default, we're not using LCD
 			LD	A,(FCB+1)
-			CP	' '					; Test if program has argument (file name)
-			JR	NZ,START
-			LD	DE,MSGNOARG
+			CP	' '					; Test if program has file_name argument
+			JR	Z,ARGSERR
+
+			
+			LD	A,(FCB+18)
+			CP	'L'					; Test if LCD will be used
+			JR	Z,LCDYES
+			CP	'l'
+			JR	NZ,CHKMODE
+LCDYES:		LD	A,1
+			LD	(USELCD),A			; Yes, we'll use LCD
+CHKMODE:	LD	A,(FCB+17)			; Let's check if it's a Receive or Send op.
+			CP	'R'
+			JR	Z,STARTREC
+			CP	'r'
+			JR	Z,STARTREC
+			CP	'S'
+			JP	Z,STARTSEND
+			CP	's'
+			JP	Z,STARTSEND
+ARGSERR:	LD	DE,MSGERROR
 			LD	C,C_STRING
 			CALL BDOS
 			JP	REBOOT
-			
-START:		LD	DE,MSGOK
+
+;==================================================================================
+; File receive operation starts here.
+;==================================================================================
+STARTREC:	LD	DE,MSGREC
 			LD	C,C_STRING
 			CALL BDOS
+			LD	A,(USELCD)
+			CP	1
+			CALL Z,LCDBS			; If we're not gonna use LCD, jump this crap
 			LD	A,0
 			LD	(RETRY),A			; Init retry counter
 			INC	A
@@ -149,6 +180,18 @@ RECPACK:	LD	B,1					; Start receiving data packet (128 bytes)
 			JP	GET1ST
 			
 ;==================================================================================
+; File send operation starts here.
+;==================================================================================
+STARTSEND:	LD	DE,MSGSEND
+			LD	C,C_STRING
+			CALL BDOS
+			LD	A,(USELCD)
+			CP	1
+			CALL Z,LCDBS			; If we're not gonna use LCD, jump this crap
+			
+			JP	REBOOT
+			
+;==================================================================================
 ; Delete file. RegA returns 0, 1, 2 or 3 if successful.
 ;==================================================================================
 DELFILE:	LD	C,F_DELETE
@@ -196,7 +239,10 @@ SENDCAN:	LD C,CAN
 ;==================================================================================
 ; Write block to file. RegA returns 0 if successful.
 ;==================================================================================
-WRITEBLK:	LD	C,F_DMAOFF			; Set DMA before writing.
+WRITEBLK:	LD	A,(USELCD)
+			CP	1
+			CALL Z,BLK2LCD			; If we're not gonna use LCD, jump this crap
+			LD	C,F_DMAOFF			; Set DMA before writing.
 			LD	DE,DMA
 			CALL BDOS
 			LD	C,F_WRITE			; Write buffer to disk.
@@ -204,6 +250,20 @@ WRITEBLK:	LD	C,F_DMAOFF			; Set DMA before writing.
 			CALL BDOS
 			LD	HL,DMA
 			LD	(BUFPTR),HL			; Reset buffer pointer
+			RET
+
+;==================================================================================
+; Send block number to LCD.
+;==================================================================================
+BLK2LCD:	CALL	BWAIT
+			LD	A,086H				; Position cursor before writing block count
+			OUT	(CMD_WR),A
+			LD	A,(BLOCK)
+			CALL A2HL				; Convert byte to ASCII
+			LD	C,H
+			CALL LCDPUT
+			LD	C,L
+			CALL LCDPUT
 			RET
 
 ;==================================================================================
@@ -243,19 +303,171 @@ PURGE:		LD	B,3
 			JR	NC,PURGE
 			RET
 
-;==================================================================================
+;================================================================================================
+; Convert byte to ASCII (A --> HL)
+;================================================================================================
+A2HL:		PUSH BC
+			AND	0FH
+			LD	L,A
+			SUB	0AH
+			LD	C,030H
+			JP	C,COMPENSE
+			LD	C,037H
+COMPENSE:	LD	A,L
+			ADD	A,C
+			LD	L,A
+			LD	A,B
+			AND	0F0H
+			SRL	A
+			SRL	A
+			SRL	A
+			SRL	A
+			LD	H,A
+			SUB	0AH
+			LD	C,030H
+			JP	C,COMPENSE2
+			LD	C,037H
+COMPENSE2:	LD	A,H
+			ADD	A,C
+			LD	H,A
+			POP	BC
+			RET
 
-MSGOK:		.DB	"XMODEM 1.0 - Receiving file..."
-			.DB	CR,LF,"$"
-			
-MSGNOARG:	.DB	"XMODEM 1.0 - Receive a file from console and store it on disk."
-			.DB	CR,LF,
-			.DB	"Use: XMODEM [drive:]filename.$"
+;************************************************************************************************
+;                                          LCD STUFF
+;************************************************************************************************
+;================================================================================================
+; Delay X miliseconds, with X passed on reg B
+;================================================================================================
+DELAYMS:	PUSH	BC
+DECB:		LD	C,0C8H
+DECC:		NOP
+			DEC	C
+			JR	NZ,DECC
+			DEC	B
+			JR	NZ,DECB
+			POP	BC
+			RET
+
+;================================================================================================
+; Delay 5*X microseconds, with X passed on reg C
+;================================================================================================
+DELAY5US:	PUSH	BC
+DEC:		NOP
+			DEC	C
+			JR	NZ,DEC
+			POP	BC
+			RET
+
+;================================================================================================
+; Wait until Busy flag = 0
+;================================================================================================
+BWAIT:		LD	A,(USELCD)
+			CP	1
+			RET	NZ					; We're not using LCD, so no need to wait.
+			IN A,(CMD_RD)
+			RLCA
+			JR	C,BWAIT
+			RET
+
+;================================================================================================
+; Initialize LCD
+;================================================================================================
+LCDINIT:	LD	B,15				; wait 15ms
+			CALL	DELAYMS
+			LD	A,030H				; write command 030h
+			OUT	(CMD_WR),A
+			LD	B,5					; wait 5ms
+			CALL	DELAYMS
+			LD	A,030H				; write command 030h
+			OUT	(CMD_WR),A
+			LD	C,20				; wait (5X20) 100us
+			CALL	DELAY5US
+			LD	A,030H				; write command 030h
+			OUT	(CMD_WR),A
+			LD	C,20				; wait (5X20) 100us
+			CALL	DELAY5US
+			LD	A,038H				; write command 038h = function set (8-bits, 2-lines, 5x7dots)
+			OUT	(CMD_WR),A
+			CALL	BWAIT
+			LD	A,08H				; write command 08h = display (off)
+			OUT	(CMD_WR),A
+			CALL	BWAIT
+			LD	A,01H				; write command 01h = clear display
+			OUT	(CMD_WR),A
+			CALL	BWAIT
+			LD	A,06H				; write command 06h = entry mode (increment)
+			OUT	(CMD_WR),A
+			CALL	BWAIT
+			LD	A,0CH				; write command 0Ch = display (on)
+			OUT	(CMD_WR),A
+			RET
+
+;================================================================================================
+; Clear LCD and goto line 1, column 1.
+;================================================================================================
+LCDCLEAR:	CALL	BWAIT
+			LD	A,01H				; write command 01h = clear display
+			OUT	(CMD_WR),A
+			RET
+
+;================================================================================================
+; Send to LCD char in regC. Print at current position (what ever it is)
+;================================================================================================
+LCDPUT:		CALL	BWAIT
+			LD	A,C					; write command 01h = clear display
+			OUT	(DAT_WR),A
+			RET
+
+;================================================================================================
+; Send to LCD a sequence of characters ending with zero
+;================================================================================================
+LCDPRINT:	CALL LCDCLEAR
+			EX 	(SP),HL 			; Push HL and put RET address into HL
+			PUSH 	AF
+			PUSH 	BC
+NEXTCHAR:	LD 	A,(HL)
+			CP	0
+			JR	Z,ENDOFPRINT
+			LD	C,A
+			CALL	BWAIT
+			LD	A,C
+			OUT	(DAT_WR),A
+			INC 	HL
+			JR	NEXTCHAR
+ENDOFPRINT:	INC 	HL 				; Get past "null" terminator
+			POP 	BC
+			POP 	AF
+			EX 	(SP),HL 			; Push new RET address on stack and restore HL
+			RET
+
+;================================================================================================
+; Some initial BS with LCD
+;================================================================================================
+LCDBS:		LD	DE,MSGLCD
+			LD	C,C_STRING
+			CALL BDOS
+			CALL LCDINIT
+			CALL LCDCLEAR
+			CALL LCDPRINT
+			.DB	"BLOCK 00",0
+			RET
+
+;==================================================================================
+;==================================================================================
+MSGREC:		.DB	"Receiving file... $"
+MSGLCD:		.DB	"(Block counter on LCD)$"
+MSGSEND:	.DB	"Sending file... $"
+MSGERROR:	.DB	"XMODEM 1.1 by Kaltchuk, march/2021",CR,LF,
+			.DB	"Use: XMODEM [drive:]filename. mode[L]",CR,LF,
+			.DB "     mode = R (reveive) or S (send) file",CR,LF,
+			.DB "        L = use LCD to show block counter$"
 
 BUFPTR		.DW	0					; Buffer pointer
 CHKSUM	 	.DB	0					; Checksum
 RETRY		.DB 0					; Retry counter
 BLOCK		.DB	0					; Block counter
+USELCD		.DB	0					; Use LCD? 1=yes
 
 			.DS	0100h				; Start of stack area.
 STACK		.EQU	$

@@ -1,5 +1,5 @@
 ;==================================================================================
-; XMODEM.ASM version 1 - Kaltchuk, feb/2021
+; XML.ASM version 1 - Kaltchuk, feb/2021
 ;
 ; This program implements xmodem protocol on CP/M.
 ; (3 bytes header, 128byte data packets, 1byte CheckSum).
@@ -38,10 +38,11 @@ SUB			.EQU	01AH
 
 MAXTRY		.EQU	10
 
-DAT_WR	.EQU	0E1H			;
-DAT_RD	.EQU	0E3H			;
-CMD_WR	.EQU	0E0H			;
-CMD_RD	.EQU	0E2H			;
+LCD_CARD	.EQU	0E0H			; LCD card base address
+DAT_WR		.EQU	LCD_CARD+1
+DAT_RD		.EQU	LCD_CARD+3
+CMD_WR		.EQU	LCD_CARD
+CMD_RD		.EQU	LCD_CARD+2
 ;==================================================================================
 			.ORG TPA
 
@@ -405,6 +406,7 @@ BUFPTR		.DW	0					; Buffer pointer
 CHKSUM	 	.DB	0					; Checksum
 RETRY		.DB 0					; Retry counter
 BLOCK		.DB	0					; Block counter
+USELCD		.DB	0					; Use LCD? 1=yes
 
 			.DS	0100h				; Start of stack area.
 STACK		.EQU	$

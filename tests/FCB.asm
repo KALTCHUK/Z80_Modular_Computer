@@ -29,16 +29,28 @@ DMA			.EQU	080H
 			LD	SP,STACK
 			
 			LD	HL,FCB+1
+			LD	DE,FCB1
+			LD	BC,11
+			LDIR
+			LD	C,C_STRING
+			LD	DE,MSG1
+			CALL BDOS
+			
+			LD	HL,FCB+17
 			LD	DE,FCB2
 			LD	BC,11
 			LDIR
 			LD	C,C_STRING
-			LD	DE,MSG
+			LD	DE,MSG2
 			CALL BDOS
+
 			JP	REBOOT
 
 ;==================================================================================
-MSG:		.DB	"FCB="
+MSG1		.DB	"FCB="
+FCB1		.DS	11
+			.DB	".",CR,LF,"$"
+MSG2		.DB	"D  ="
 FCB2		.DS	11
 			.DB	".",CR,LF,"$"
 
