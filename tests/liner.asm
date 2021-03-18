@@ -1,9 +1,17 @@
 ;==================================================================================
-; Monitor 2.0 for Z80 Modular Computer by P.R.Kaltchuk mar/2021
+; LINER.ASM - TEST FOR CONSOLE MANAGER FOR MONITOR 2.0 - USE WITH VT100 TEMINAL
+; (Should behave like CCP on CP/M)
+;
+; Backspace = delete last character
+;   ^U = ^X = delete all the line
+;
+; After user types <ENTER>, the line is saved in line_buffer and control returns
+; to Monitor program.
 ;==================================================================================
 TPA			.EQU	0100H		; Transient Programs Area
 MONITOR		.EQU	0D000H		; Monitor entry point
 BIOS		.EQU	0E600H		; BIOS entry point
+DMA			.EQU	0080H		; Buffer user by liner
 
 ;================================================================================================
 ; BIOS functions.
@@ -38,7 +46,7 @@ EOT			.EQU	04H
 ENQ			.EQU	05H
 QCK			.EQU	06H
 BEL			.EQU	07H
-BS			.EQU	08H
+BS			.EQU	08H			; ^H
 HT			.EQU	09H
 LF			.EQU	0AH
 VT			.EQU	0BH
@@ -51,10 +59,10 @@ DC1			.EQU	11H
 DC2			.EQU	12H
 DC3			.EQU	13H
 DC4			.EQU	14H
-NAK			.EQU	15H
+NAK			.EQU	15H			; ^U
 SYN			.EQU	16H
 ETB			.EQU	17H
-CAN			.EQU	18H
+CAN			.EQU	18H			; ^X
 EM			.EQU	19H
 SUB			.EQU	1AH
 ESC			.EQU	1BH
@@ -64,79 +72,79 @@ RS			.EQU	1EH
 US			.EQU	1FH
 
 ;================================================================================================
-			.ORG MONITOR
-
-
-
-
+; Some constants
+;================================================================================================
+MAXLBUFPTR	.EQU	DMA+80
 
 ;================================================================================================
-; Convert ASCII to HEX (HL --> B)
-;================================================================================================
-HL2B:		PUSH	BC
-			LD	A,060H
-			SUB	H
-			LD	C,057H
-			JP	C,DISCOUNT
-			LD	A,040H
-			SUB	H
-			LD	C,037H
-			JP	C,DISCOUNT
-			LD	C,030H
-DISCOUNT:	LD	A,H
-			SUB	C
-CONVL:		LD	B,A
-			SLA	B
-			SLA	B
-			SLA	B
-			SLA	B
-			LD	A,060H
-			SUB	L
-			LD	C,057H
-			JP	C,DISCOUNT2
-			LD	A,040H
-			SUB	L
-			LD	C,037H
-			JP	C,DISCOUNT2
-			LD	C,030H
-DISCOUNT2:	LD	A,L
-			SUB	C
-			OR	B
-			POP	BC
-			LD	B,A
+			.ORG TPA
+
+			LD	HL,DMA
+			LD	(LBUFPTR),HL
+			LD	(HL),0
+			LD	C,CR
+			CALL CONOUT
+			LD	C,LF
+			CALL CONOUT
+			LD	C,'}'
+			CALL CONOUT
+WAITCHAR:	CALL CONIN
+			CP	CAN
+			JR	Z,GOTCAN
+			CP	CR
+			JR	Z,GOTCR
+			CP	BS
+			JR	Z,GOTBS
+			LD	HL,(LBUFPTR)
+			LD	BC,MAXLBUFPTR
+			SCF
+			CCF
+			SBC	HL,BC
+			JR	Z,LBUFFULL
+			LD	HL,(LBUFPTR)
+			LD	(HL),A
+			INC	HL
+			LD	(LBUFPTR),HL
+			LD	C,A
+OUTWAIT:	CALL CONOUT
+			JR	WAITCHAR
+LBUFFULL:	LD	C,BEL
+			JR	OUTWAIT
+GOTBS:		LD	D,1
+AFTGOTBS:	CALL BSPROC
+			JR	WAITCHAR
+GOTCR:		LD	HL,(LBUFPTR)
+			LD	A,0
+			LD	(HL),A
+			LD	C,CR
+			CALL CONOUT
+			LD	C,LF
+			CALL CONOUT
+			JP	WBOOT
+GOTCAN:		LD	D,0
+			JR	AFTGOTBS
+BSPROC:		LD	HL,(LBUFPTR)
+			LD	BC,DMA
+			SCF
+			CCF
+			SBC	HL,BC
+			JR	Z,LBUFEMPTY
+			LD	HL,(LBUFPTR)
+			DEC	HL
+			LD	(LBUFPTR),HL
+			LD	C,BS
+			CALL CONOUT
+			LD	A,D
+			CP	1
+			RET	Z
+			JR	BSPROC
+LBUFEMPTY:	LD	C,BEL
+			CALL CONOUT
 			RET
+			
 
 ;================================================================================================
-; Convert HEX to ASCII (B --> HL)
-;================================================================================================
-B2HL:		PUSH	BC
-			LD	A,B
-			AND	0FH
-			LD	L,A
-			SUB	0AH
-			LD	C,030H
-			JP	C,COMPENSE
-			LD	C,037H
-COMPENSE:	LD	A,L
-			ADD	A,C
-			LD	L,A
-			LD	A,B
-			AND	0F0H
-			SRL	A
-			SRL	A
-			SRL	A
-			SRL	A
-			LD	H,A
-			SUB	0AH
-			LD	C,030H
-			JP	C,COMPENSE2
-			LD	C,037H
-COMPENSE2:	LD	A,H
-			ADD	A,C
-			LD	H,A
-			POP	BC
-			RET
+LBUFPTR		.DW		0
 
-;================================================================================================
 
 			.END
