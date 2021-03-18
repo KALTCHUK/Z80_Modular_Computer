@@ -1,5 +1,5 @@
 ;==================================================================================
-; LINER.ASM - TEST FOR CONSOLE MANAGER FOR MONITOR 2.0 - USE WITH VT100 TEMINAL
+; LINER.ASM - CONSOLE MANAGER TEST FOR MONITOR 2.0 - USE WITH VT100 TEMINAL
 ; (Should behave like CCP on CP/M)
 ;
 ; Backspace = delete last character
@@ -74,14 +74,13 @@ US			.EQU	1FH
 ;================================================================================================
 ; Some constants
 ;================================================================================================
-MAXLBUFPTR	.EQU	DMA+80
+MAXLBUF		.EQU	DMA+80
 
 ;================================================================================================
 			.ORG TPA
 
 			LD	HL,DMA
 			LD	(LBUFPTR),HL
-			LD	(HL),0
 			LD	C,CR
 			CALL CONOUT
 			LD	C,LF
@@ -96,7 +95,7 @@ WAITCHAR:	CALL CONIN
 			CP	BS
 			JR	Z,GOTBS
 			LD	HL,(LBUFPTR)
-			LD	BC,MAXLBUFPTR
+			LD	BC,MAXLBUF
 			SCF
 			CCF
 			SBC	HL,BC
@@ -123,6 +122,7 @@ GOTCR:		LD	HL,(LBUFPTR)
 			JP	WBOOT
 GOTCAN:		LD	D,0
 			JR	AFTGOTBS
+
 BSPROC:		LD	HL,(LBUFPTR)
 			LD	BC,DMA
 			SCF

@@ -1,5 +1,5 @@
 0001   0000             ;==================================================================================
-0002   0000             ; LINER.ASM - TEST FOR CONSOLE MANAGER FOR MONITOR 2.0 - USE WITH VT100 TEMINAL
+0002   0000             ; LINER.ASM - CONSOLE MANAGER TEST FOR MONITOR 2.0 - USE WITH VT100 TEMINAL
 0003   0000             ; (Should behave like CCP on CP/M)
 0004   0000             ;
 0005   0000             ; Backspace = delete last character
@@ -74,78 +74,78 @@
 0074   0000             ;================================================================================================
 0075   0000             ; Some constants
 0076   0000             ;================================================================================================
-0077   0000             MAXLBUFPTR	.EQU	DMA+80
+0077   0000             MAXLBUF		.EQU	DMA+80
 0078   0000             
 0079   0000             ;================================================================================================
 0080   0100             			.ORG TPA
 0081   0100             
 0082   0100 21 80 00    			LD	HL,DMA
-0083   0103 22 86 01    			LD	(LBUFPTR),HL
-0084   0106 36 00       			LD	(HL),0
-0085   0108 0E 0D       			LD	C,CR
-0086   010A CD 0C E6    			CALL CONOUT
-0087   010D 0E 0A       			LD	C,LF
-0088   010F CD 0C E6    			CALL CONOUT
-0089   0112 0E 7D       			LD	C,'}'
-0090   0114 CD 0C E6    			CALL CONOUT
-0091   0117 CD 09 E6    WAITCHAR:	CALL CONIN
-0092   011A FE 18       			CP	CAN
-0093   011C 28 40       			JR	Z,GOTCAN
-0094   011E FE 0D       			CP	CR
-0095   0120 28 29       			JR	Z,GOTCR
-0096   0122 FE 08       			CP	BS
-0097   0124 28 1E       			JR	Z,GOTBS
-0098   0126 2A 86 01    			LD	HL,(LBUFPTR)
-0099   0129 01 D0 00    			LD	BC,MAXLBUFPTR
-0100   012C 37          			SCF
-0101   012D 3F          			CCF
-0102   012E ED 42       			SBC	HL,BC
-0103   0130 28 0E       			JR	Z,LBUFFULL
-0104   0132 2A 86 01    			LD	HL,(LBUFPTR)
-0105   0135 77          			LD	(HL),A
-0106   0136 23          			INC	HL
-0107   0137 22 86 01    			LD	(LBUFPTR),HL
-0108   013A 4F          			LD	C,A
-0109   013B CD 0C E6    OUTWAIT:	CALL CONOUT
-0110   013E 18 D7       			JR	WAITCHAR
-0111   0140 0E 07       LBUFFULL:	LD	C,BEL
-0112   0142 18 F7       			JR	OUTWAIT
-0113   0144 16 01       GOTBS:		LD	D,1
-0114   0146 CD 62 01    AFTGOTBS:	CALL BSPROC
-0115   0149 18 CC       			JR	WAITCHAR
-0116   014B 2A 86 01    GOTCR:		LD	HL,(LBUFPTR)
-0117   014E 3E 00       			LD	A,0
-0118   0150 77          			LD	(HL),A
-0119   0151 0E 0D       			LD	C,CR
-0120   0153 CD 0C E6    			CALL CONOUT
-0121   0156 0E 0A       			LD	C,LF
-0122   0158 CD 0C E6    			CALL CONOUT
-0123   015B C3 03 E6    			JP	WBOOT
-0124   015E 16 00       GOTCAN:		LD	D,0
-0125   0160 18 E4       			JR	AFTGOTBS
-0126   0162 2A 86 01    BSPROC:		LD	HL,(LBUFPTR)
-0127   0165 01 80 00    			LD	BC,DMA
-0128   0168 37          			SCF
-0129   0169 3F          			CCF
-0130   016A ED 42       			SBC	HL,BC
-0131   016C 28 12       			JR	Z,LBUFEMPTY
-0132   016E 2A 86 01    			LD	HL,(LBUFPTR)
-0133   0171 2B          			DEC	HL
-0134   0172 22 86 01    			LD	(LBUFPTR),HL
-0135   0175 0E 08       			LD	C,BS
-0136   0177 CD 0C E6    			CALL CONOUT
-0137   017A 7A          			LD	A,D
-0138   017B FE 01       			CP	1
-0139   017D C8          			RET	Z
-0140   017E 18 E2       			JR	BSPROC
-0141   0180 0E 07       LBUFEMPTY:	LD	C,BEL
-0142   0182 CD 0C E6    			CALL CONOUT
-0143   0185 C9          			RET
-0144   0186             			
-0145   0186             
-0146   0186             ;================================================================================================
-0147   0186 00 00       LBUFPTR		.DW		0
-0148   0188             
-0149   0188             
-0150   0188             			.END
+0083   0103 22 84 01    			LD	(LBUFPTR),HL
+0084   0106 0E 0D       			LD	C,CR
+0085   0108 CD 0C E6    			CALL CONOUT
+0086   010B 0E 0A       			LD	C,LF
+0087   010D CD 0C E6    			CALL CONOUT
+0088   0110 0E 7D       			LD	C,'}'
+0089   0112 CD 0C E6    			CALL CONOUT
+0090   0115 CD 09 E6    WAITCHAR:	CALL CONIN
+0091   0118 FE 18       			CP	CAN
+0092   011A 28 40       			JR	Z,GOTCAN
+0093   011C FE 0D       			CP	CR
+0094   011E 28 29       			JR	Z,GOTCR
+0095   0120 FE 08       			CP	BS
+0096   0122 28 1E       			JR	Z,GOTBS
+0097   0124 2A 84 01    			LD	HL,(LBUFPTR)
+0098   0127 01 D0 00    			LD	BC,MAXLBUF
+0099   012A 37          			SCF
+0100   012B 3F          			CCF
+0101   012C ED 42       			SBC	HL,BC
+0102   012E 28 0E       			JR	Z,LBUFFULL
+0103   0130 2A 84 01    			LD	HL,(LBUFPTR)
+0104   0133 77          			LD	(HL),A
+0105   0134 23          			INC	HL
+0106   0135 22 84 01    			LD	(LBUFPTR),HL
+0107   0138 4F          			LD	C,A
+0108   0139 CD 0C E6    OUTWAIT:	CALL CONOUT
+0109   013C 18 D7       			JR	WAITCHAR
+0110   013E 0E 07       LBUFFULL:	LD	C,BEL
+0111   0140 18 F7       			JR	OUTWAIT
+0112   0142 16 01       GOTBS:		LD	D,1
+0113   0144 CD 60 01    AFTGOTBS:	CALL BSPROC
+0114   0147 18 CC       			JR	WAITCHAR
+0115   0149 2A 84 01    GOTCR:		LD	HL,(LBUFPTR)
+0116   014C 3E 00       			LD	A,0
+0117   014E 77          			LD	(HL),A
+0118   014F 0E 0D       			LD	C,CR
+0119   0151 CD 0C E6    			CALL CONOUT
+0120   0154 0E 0A       			LD	C,LF
+0121   0156 CD 0C E6    			CALL CONOUT
+0122   0159 C3 03 E6    			JP	WBOOT
+0123   015C 16 00       GOTCAN:		LD	D,0
+0124   015E 18 E4       			JR	AFTGOTBS
+0125   0160             
+0126   0160 2A 84 01    BSPROC:		LD	HL,(LBUFPTR)
+0127   0163 01 80 00    			LD	BC,DMA
+0128   0166 37          			SCF
+0129   0167 3F          			CCF
+0130   0168 ED 42       			SBC	HL,BC
+0131   016A 28 12       			JR	Z,LBUFEMPTY
+0132   016C 2A 84 01    			LD	HL,(LBUFPTR)
+0133   016F 2B          			DEC	HL
+0134   0170 22 84 01    			LD	(LBUFPTR),HL
+0135   0173 0E 08       			LD	C,BS
+0136   0175 CD 0C E6    			CALL CONOUT
+0137   0178 7A          			LD	A,D
+0138   0179 FE 01       			CP	1
+0139   017B C8          			RET	Z
+0140   017C 18 E2       			JR	BSPROC
+0141   017E 0E 07       LBUFEMPTY:	LD	C,BEL
+0142   0180 CD 0C E6    			CALL CONOUT
+0143   0183 C9          			RET
+0144   0184             			
+0145   0184             
+0146   0184             ;================================================================================================
+0147   0184 00 00       LBUFPTR		.DW		0
+0148   0186             
+0149   0186             
+0150   0186             			.END
 tasm: Number of errors = 0
