@@ -77,6 +77,8 @@ US			.EQU	1FH
 MAXLBUF		.EQU	DMA+80
 
 ;================================================================================================
+; MAIN PROGRAM STARTS HERE
+;================================================================================================
 			.ORG TPA
 
 			LD	HL,DMA
@@ -85,7 +87,7 @@ MAXLBUF		.EQU	DMA+80
 			CALL CONOUT
 			LD	C,LF
 			CALL CONOUT
-			LD	C,'}'
+			LD	C,'>'
 			CALL CONOUT
 WAITCHAR:	CALL CONIN
 			CP	CAN
@@ -107,11 +109,14 @@ WAITCHAR:	CALL CONIN
 			LD	C,A
 OUTWAIT:	CALL CONOUT
 			JR	WAITCHAR
+
 LBUFFULL:	LD	C,BEL
 			JR	OUTWAIT
+
 GOTBS:		LD	D,1
 AFTGOTBS:	CALL BSPROC
 			JR	WAITCHAR
+
 GOTCR:		LD	HL,(LBUFPTR)
 			LD	A,0
 			LD	(HL),A
@@ -119,11 +124,18 @@ GOTCR:		LD	HL,(LBUFPTR)
 			CALL CONOUT
 			LD	C,LF
 			CALL CONOUT
-			JP	WBOOT
+			CALL UPPER					; Convert line to uppercase before parsing
+			LD	HL,CMDTBL
+			LD	DE,DMA
+			CALL PARSER					; Find command comparing with Command Table
+			INC	A
+			JP	Z,UNKNOWN
+			JP	(HL)
+
 GOTCAN:		LD	D,0
 			JR	AFTGOTBS
 
-BSPROC:		LD	HL,(LBUFPTR)
+BSPROC:		LD	HL,(LBUFPTR)			; Routine to do the backspace and line delete
 			LD	BC,DMA
 			SCF
 			CCF
@@ -134,16 +146,120 @@ BSPROC:		LD	HL,(LBUFPTR)
 			LD	(LBUFPTR),HL
 			LD	C,BS
 			CALL CONOUT
+			LD	C,' '
+			CALL CONOUT
+			LD	C,BS
+			CALL CONOUT
 			LD	A,D
 			CP	1
 			RET	Z
 			JR	BSPROC
+
 LBUFEMPTY:	LD	C,BEL
 			CALL CONOUT
 			RET
 			
+UPPER:		LD	HL,DMA-1				; Routine to convert line to upper case
+NEXT2UP:	INC	HL
+			LD	A,(HL)
+			CP	0
+			RET	Z
+			CP	'a'
+			JP	M,NEXT2UP
+			CP	'{'
+			JP	P,NEXT2UP
+			SUB	20H
+			LD	(HL),A
+			JR	NEXT2UP
+			
+;================================================================================================
+; Parse command. HL=cmd_table_pointer, DE=line_buffer_pointer.
+; Returns jump address on HL. regA=FFh if no match.
+;================================================================================================
+PARSER:		LD	A,0
+			LD	(CMDNUM),A		; Init command number
+			PUSH DE
+			POP	IX				; Backup line buffer pointer
+NEXT2PARS:	LD	A,(DE)
+			CP	(HL)
+			JR	NZ,NOTEQU
+			INC	HL
+			INC	DE
+			JR	NEXT2PARS
+NOTEQU:		LD	A,(HL)
+			CP	RS
+			
 
 ;================================================================================================
+; Memory Operations
+;================================================================================================
+MEMO:		CALL PRINTSEQ
+			.DB	">Memory Operations",0
+			JP	WBOOT
+
+;================================================================================================
+; Xmodem Command
+;================================================================================================
+XMODEM:		CALL PRINTSEQ
+			.DB	">Xmodem [d:]file",0
+			JP	WBOOT
+
+;================================================================================================
+; Hexadecimal to Executable conversion
+;================================================================================================
+HEX2COM:	CALL PRINTSEQ
+			.DB	">Hex2com aaaa",0
+			JP	WBOOT
+
+;================================================================================================
+; LCD Operations
+;================================================================================================
+LCD:		CALL PRINTSEQ
+			.DB	">LCD Operations",0
+			JP	WBOOT
+
+;================================================================================================
+; Disk Operations
+;================================================================================================
+DISK:		CALL PRINTSEQ
+			.DB	">Disk Operations",0
+			JP	WBOOT
+
+;================================================================================================
+; Execute Command
+;================================================================================================
+RUN:		CALL PRINTSEQ
+			.DB	">Run aaaa",0
+			JP	WBOOT
+
+;================================================================================================
+; Unknown Command message. HL has the address of the line buffer.
+;================================================================================================
+UNKNOWN:	LD	C,(HL)
+			CALL CONOUT
+			INC	HL
+			LD	A,C
+			CP	0
+			JR	NZ,UNKNOWN
+			LD	C,'?'
+			CALL CONOUT
+			JP	WBOOT
+
+;================================================================================================
+CMDTBL:		.DB	"MEMO",RS
+			.DB	"XMODEM",RS
+			.DB	"HEX2COM",RS
+			.DB	"LCD",RS
+			.DB	"DISK",RS
+			.DB	"RUN",ETX
+
+JMPTBL:		JP	MEMO
+			JP	XMODEM
+			JP	HEX2COM
+			JP	LCD
+			JP	DISK
+			JP	RUN
+			
 LBUFPTR		.DW		0
 
 
