@@ -77,93 +77,375 @@
 0077   0000             MAXLBUF		.EQU	DMA+80
 0078   0000             
 0079   0000             ;================================================================================================
-0080   0100             			.ORG TPA
-0081   0100             
-0082   0100 21 80 00    			LD	HL,DMA
-0083   0103 22 A7 01    			LD	(LBUFPTR),HL
-0084   0106 0E 0D       			LD	C,CR
-0085   0108 CD 0C E6    			CALL CONOUT
-0086   010B 0E 0A       			LD	C,LF
-0087   010D CD 0C E6    			CALL CONOUT
-0088   0110 0E 7D       			LD	C,'}'
-0089   0112 CD 0C E6    			CALL CONOUT
-0090   0115 CD 09 E6    WAITCHAR:	CALL CONIN
-0091   0118 FE 18       			CP	CAN
-0092   011A 28 40       			JR	Z,GOTCAN
-0093   011C FE 0D       			CP	CR
-0094   011E 28 29       			JR	Z,GOTCR
-0095   0120 FE 08       			CP	BS
-0096   0122 28 1E       			JR	Z,GOTBS
-0097   0124 2A A7 01    			LD	HL,(LBUFPTR)
-0098   0127 01 D0 00    			LD	BC,MAXLBUF
-0099   012A 37          			SCF
-0100   012B 3F          			CCF
-0101   012C ED 42       			SBC	HL,BC
-0102   012E 28 0E       			JR	Z,LBUFFULL
-0103   0130 2A A7 01    			LD	HL,(LBUFPTR)
-0104   0133 77          			LD	(HL),A
-0105   0134 23          			INC	HL
-0106   0135 22 A7 01    			LD	(LBUFPTR),HL
-0107   0138 4F          			LD	C,A
-0108   0139 CD 0C E6    OUTWAIT:	CALL CONOUT
-0109   013C 18 D7       			JR	WAITCHAR
-0110   013E 0E 07       LBUFFULL:	LD	C,BEL
-0111   0140 18 F7       			JR	OUTWAIT
-0112   0142 16 01       GOTBS:		LD	D,1
-0113   0144 CD 60 01    AFTGOTBS:	CALL BSPROC
-0114   0147 18 CC       			JR	WAITCHAR
-0115   0149 2A A7 01    GOTCR:		LD	HL,(LBUFPTR)
-0116   014C 3E 00       			LD	A,0
-0117   014E 77          			LD	(HL),A
-0118   014F 0E 0D       			LD	C,CR
-0119   0151 CD 0C E6    			CALL CONOUT
-0120   0154 0E 0A       			LD	C,LF
-0121   0156 CD 0C E6    			CALL CONOUT
-0122   0159 C3 8E 01    			JP	UPPER
-0123   015C 16 00       GOTCAN:		LD	D,0
-0124   015E 18 E4       			JR	AFTGOTBS
-0125   0160             
-0126   0160 2A A7 01    BSPROC:		LD	HL,(LBUFPTR)
-0127   0163 01 80 00    			LD	BC,DMA
-0128   0166 37          			SCF
-0129   0167 3F          			CCF
-0130   0168 ED 42       			SBC	HL,BC
-0131   016A 28 1C       			JR	Z,LBUFEMPTY
-0132   016C 2A A7 01    			LD	HL,(LBUFPTR)
-0133   016F 2B          			DEC	HL
-0134   0170 22 A7 01    			LD	(LBUFPTR),HL
-0135   0173 0E 08       			LD	C,BS
-0136   0175 CD 0C E6    			CALL CONOUT
-0137   0178 0E 20       			LD	C,' '
-0138   017A CD 0C E6    			CALL CONOUT
-0139   017D 0E 08       			LD	C,BS
-0140   017F CD 0C E6    			CALL CONOUT
-0141   0182 7A          			LD	A,D
-0142   0183 FE 01       			CP	1
-0143   0185 C8          			RET	Z
-0144   0186 18 D8       			JR	BSPROC
-0145   0188 0E 07       LBUFEMPTY:	LD	C,BEL
-0146   018A CD 0C E6    			CALL CONOUT
-0147   018D C9          			RET
-0148   018E             			
-0149   018E 21 7F 00    UPPER:		LD	HL,DMA-1
-0150   0191 23          NEXT2UP:	INC	HL
-0151   0192 7E          			LD	A,(HL)
-0152   0193 FE 00       			CP	0
-0153   0195 CA 03 E6    			JP	Z,WBOOT
-0154   0198 FE 61       			CP	'a'
-0155   019A FA 91 01    			JP	M,NEXT2UP
-0156   019D FE 7B       			CP	'{'
-0157   019F F2 91 01    			JP	P,NEXT2UP
-0158   01A2 D6 20       			SUB	20H
-0159   01A4 77          			LD	(HL),A
-0160   01A5 18 EA       			JR	NEXT2UP
-0161   01A7             			
-0162   01A7             
-0163   01A7             
-0164   01A7             ;================================================================================================
-0165   01A7 00 00       LBUFPTR		.DW		0
-0166   01A9             
-0167   01A9             
-0168   01A9             			.END
+0080   0000             ; MAIN PROGRAM STARTS HERE
+0081   0000             ;================================================================================================
+0082   0100             			.ORG TPA
+0083   0100             
+0084   0100 21 80 00    			LD	HL,DMA
+0085   0103 22 74 03    			LD	(LBUFPTR),HL
+0086   0106 0E 0D       			LD	C,CR
+0087   0108 CD 0C E6    			CALL CONOUT
+0088   010B 0E 0A       			LD	C,LF
+0089   010D CD 0C E6    			CALL CONOUT
+0090   0110 0E 3E       			LD	C,'>'
+0091   0112 CD 0C E6    			CALL CONOUT
+0092   0115 CD 09 E6    WAITCHAR:	CALL CONIN					; Wait for user's charater.
+0093   0118 FE 18       			CP	CAN
+0094   011A 28 4E       			JR	Z,GOTCAN				; Is it <CAN>? (= delete line).
+0095   011C FE 0D       			CP	CR
+0096   011E 28 29       			JR	Z,GOTCR					; Is it <ENTER>?
+0097   0120 FE 08       			CP	BS
+0098   0122 28 1E       			JR	Z,GOTBS					; Is it <BS>? (= backspace).
+0099   0124 2A 74 03    			LD	HL,(LBUFPTR)			; None of the above options, so let's put it in the buffer.
+0100   0127 01 D0 00    			LD	BC,MAXLBUF				; But 1st, we have to check if we still have space.
+0101   012A 37          			SCF
+0102   012B 3F          			CCF
+0103   012C ED 42       			SBC	HL,BC
+0104   012E 28 0E       			JR	Z,LBUFFULL				; Is buffer full?
+0105   0130 2A 74 03    			LD	HL,(LBUFPTR)
+0106   0133 77          			LD	(HL),A
+0107   0134 23          			INC	HL
+0108   0135 22 74 03    			LD	(LBUFPTR),HL
+0109   0138 4F          			LD	C,A
+0110   0139 CD 0C E6    OUTWAIT:	CALL CONOUT
+0111   013C 18 D7       			JR	WAITCHAR
+0112   013E             
+0113   013E 0E 07       LBUFFULL:	LD	C,BEL					; Buffer is full. Just ring the bell.
+0114   0140 18 F7       			JR	OUTWAIT
+0115   0142             
+0116   0142 16 01       GOTBS:		LD	D,1						; We got a backspace.
+0117   0144 CD 6E 01    AFTGOTBS:	CALL BSPROC
+0118   0147 18 CC       			JR	WAITCHAR
+0119   0149             
+0120   0149 2A 74 03    GOTCR:		LD	HL,(LBUFPTR)			; We got an ENTER, which means the the user
+0121   014C 3E 00       			LD	A,0						; has funished typing the command line.
+0122   014E 77          			LD	(HL),A
+0123   014F 0E 0D       			LD	C,CR
+0124   0151 CD 0C E6    			CALL CONOUT
+0125   0154 0E 0A       			LD	C,LF
+0126   0156 CD 0C E6    			CALL CONOUT					; Output <CR><LF>.
+0127   0159 CD 9C 01    			CALL UPPER					; Convert line to uppercase before parsing.
+0128   015C 21 40 03    			LD	HL,CMDTBL
+0129   015F 11 80 00    			LD	DE,DMA
+0130   0162 CD B3 01    			CALL PARSER					; Find command comparing buffer with Command Table.
+0131   0165 3C          			INC	A
+0132   0166 CA A0 02    			JP	Z,UNKNOWN				; No match found in command table.
+0133   0169 E9          			JP	(HL)					; Jump to Command Routine
+0134   016A             			
+0135   016A             
+0136   016A 16 00       GOTCAN:		LD	D,0						; We got a line delete.
+0137   016C 18 D6       			JR	AFTGOTBS
+0138   016E             
+0139   016E             ;================================================================================================
+0140   016E             ; Routine to do the backspace and line delete. D=1, backspace; D=0, delete line.
+0141   016E             ;================================================================================================
+0142   016E 2A 74 03    BSPROC:		LD	HL,(LBUFPTR)
+0143   0171 01 80 00    			LD	BC,DMA
+0144   0174 37          			SCF
+0145   0175 3F          			CCF
+0146   0176 ED 42       			SBC	HL,BC
+0147   0178 28 1C       			JR	Z,LBUFEMPTY
+0148   017A 2A 74 03    			LD	HL,(LBUFPTR)
+0149   017D 2B          			DEC	HL
+0150   017E 22 74 03    			LD	(LBUFPTR),HL
+0151   0181 0E 08       			LD	C,BS
+0152   0183 CD 0C E6    			CALL CONOUT
+0153   0186 0E 20       			LD	C,' '
+0154   0188 CD 0C E6    			CALL CONOUT
+0155   018B 0E 08       			LD	C,BS
+0156   018D CD 0C E6    			CALL CONOUT
+0157   0190 7A          			LD	A,D
+0158   0191 FE 01       			CP	1
+0159   0193 C8          			RET	Z
+0160   0194 18 D8       			JR	BSPROC
+0161   0196             
+0162   0196 0E 07       LBUFEMPTY:	LD	C,BEL
+0163   0198 CD 0C E6    			CALL CONOUT
+0164   019B C9          			RET
+0165   019C             			
+0166   019C             ;================================================================================================
+0167   019C             ; Routine to convert line buffer content to upper case
+0168   019C             ;================================================================================================
+0169   019C 21 7F 00    UPPER:		LD	HL,DMA-1
+0170   019F 23          NEXT2UP:	INC	HL
+0171   01A0 7E          			LD	A,(HL)
+0172   01A1 FE 00       			CP	0
+0173   01A3 C8          			RET	Z
+0174   01A4 FE 61       			CP	'a'
+0175   01A6 FA 9F 01    			JP	M,NEXT2UP
+0176   01A9 FE 7B       			CP	'{'
+0177   01AB F2 9F 01    			JP	P,NEXT2UP
+0178   01AE D6 20       			SUB	20H
+0179   01B0 77          			LD	(HL),A
+0180   01B1 18 EC       			JR	NEXT2UP
+0181   01B3             			
+0182   01B3             ;================================================================================================
+0183   01B3             ; Parse command. HL=cmd_table_pointer, DE=line_buffer_pointer.
+0184   01B3             ; Returns jump address on HL. regA=cmd_num or FFh if no match.
+0185   01B3             ;================================================================================================
+0186   01B3 C5          PARSER:		PUSH BC
+0187   01B4 3E 00       			LD	A,0
+0188   01B6 32 73 03    			LD	(CMDNUM),A		; Init command number.
+0189   01B9 D5          			PUSH DE
+0190   01BA DD E1       			POP	IX				; Backup line buffer pointer.
+0191   01BC 1A          NEXT2PARS:	LD	A,(DE)
+0192   01BD BE          			CP	(HL)
+0193   01BE 20 04       			JR	NZ,NOTEQU
+0194   01C0 23          			INC	HL
+0195   01C1 13          			INC	DE
+0196   01C2 18 F8       			JR	NEXT2PARS
+0197   01C4 7E          NOTEQU:		LD	A,(HL)
+0198   01C5 FE 1E       			CP	RS
+0199   01C7 28 04       			JR	Z,ISRS
+0200   01C9 FE 03       			CP	ETX
+0201   01CB 20 21       			JR	NZ,NEXTCMD
+0202   01CD 1A          ISRS:		LD	A,(DE)
+0203   01CE FE 00       			CP	0
+0204   01D0 28 04       			JR	Z,ISZERO
+0205   01D2 FE 20       			CP	' '
+0206   01D4 20 18       			JR	NZ,NEXTCMD
+0207   01D6 7E          ISZERO:		LD	A,(HL)
+0208   01D7 FE 03       			CP	ETX
+0209   01D9 28 03       			JR	Z,CMDMATCH
+0210   01DB 23          			INC	HL
+0211   01DC 18 F8       			JR	ISZERO
+0212   01DE 23          CMDMATCH:	INC	HL
+0213   01DF E5          			PUSH HL
+0214   01E0 D1          			POP	DE
+0215   01E1 26 00       			LD	H,0
+0216   01E3 3A 73 03    			LD	A,(CMDNUM)
+0217   01E6 6F          			LD	L,A
+0218   01E7 E5          			PUSH HL
+0219   01E8 C1          			POP	BC
+0220   01E9 09          			ADD	HL,BC			; command_number * 2
+0221   01EA 09          			ADD	HL,BC			; command_number * 3
+0222   01EB 19          			ADD HL,DE
+0223   01EC C1          			POP	BC
+0224   01ED C9          			RET
+0225   01EE 7E          NEXTCMD:	LD	A,(HL)
+0226   01EF FE 1E       			CP	RS
+0227   01F1 28 07       			JR	Z,ISRS2
+0228   01F3 FE 03       			CP	ETX
+0229   01F5 28 10       			JR	Z,NOMATCH
+0230   01F7 23          			INC	HL
+0231   01F8 18 F4       			JR	NEXTCMD
+0232   01FA 23          ISRS2:		INC	HL
+0233   01FB 3A 73 03    			LD	A,(CMDNUM)
+0234   01FE 3C          			INC	A
+0235   01FF 32 73 03    			LD	(CMDNUM),A
+0236   0202 DD E5       			PUSH IX
+0237   0204 D1          			POP	DE
+0238   0205 18 B5       			JR	NEXT2PARS
+0239   0207 21 00 00    NOMATCH:	LD	HL,0
+0240   020A 3E FF       			LD	A,0FFH
+0241   020C C1          			POP	BC
+0242   020D C9          			RET
+0243   020E             
+0244   020E             ;================================================================================================
+0245   020E             ; Fetch address from command line. 
+0246   020E             ; Return A=0 if ok, A=1 if arg missing, A=2 if arg invalid; HL=addr.
+0247   020E             ;================================================================================================
+0248   020E             GETADDR:		
+0249   020E             
+0250   020E             
+0251   020E             
+0252   020E             ;================================================================================================
+0253   020E             ; Memory Operations
+0254   020E             ;================================================================================================
+0255   020E CD 33 E6    MEMO:		CALL PRINTSEQ
+0256   0211 4D 3E 52 65 			.DB	"M>Ready for Memory Operations",0
+0256   0215 61 64 79 20 
+0256   0219 66 6F 72 20 
+0256   021D 4D 65 6D 6F 
+0256   0221 72 79 20 4F 
+0256   0225 70 65 72 61 
+0256   0229 74 69 6F 6E 
+0256   022D 73 00 
+0257   022F C3 03 E6    			JP	WBOOT
+0258   0232             
+0259   0232             ;================================================================================================
+0260   0232             ; Xmodem Command
+0261   0232             ;================================================================================================
+0262   0232 CD 33 E6    XMODEM:		CALL PRINTSEQ
+0263   0235 3E 58 4D 4F 			.DB	">XMODEM aaaa",0
+0263   0239 44 45 4D 20 
+0263   023D 61 61 61 61 
+0263   0241 00 
+0264   0242 C3 03 E6    			JP	WBOOT
+0265   0245             
+0266   0245             ;================================================================================================
+0267   0245             ; Hexadecimal to Executable conversion
+0268   0245             ;================================================================================================
+0269   0245 CD 33 E6    HEX2COM:	CALL PRINTSEQ
+0270   0248 3E 48 45 58 			.DB	">HEX2COM aaaa",0
+0270   024C 32 43 4F 4D 
+0270   0250 20 61 61 61 
+0270   0254 61 00 
+0271   0256 C3 03 E6    			JP	WBOOT
+0272   0259             
+0273   0259             ;================================================================================================
+0274   0259             ; LCD Operations
+0275   0259             ;================================================================================================
+0276   0259 CD 33 E6    LCD:		CALL PRINTSEQ
+0277   025C 4C 3E 52 65 			.DB	"L>Ready for LCD Operations",0
+0277   0260 61 64 79 20 
+0277   0264 66 6F 72 20 
+0277   0268 4C 43 44 20 
+0277   026C 4F 70 65 72 
+0277   0270 61 74 69 6F 
+0277   0274 6E 73 00 
+0278   0277 C3 03 E6    			JP	WBOOT
+0279   027A             
+0280   027A             ;================================================================================================
+0281   027A             ; Disk Operations
+0282   027A             ;================================================================================================
+0283   027A CD 33 E6    DISK:		CALL PRINTSEQ
+0284   027D 44 3E 52 65 			.DB	"D>Ready for Disk Operations",0
+0284   0281 61 64 79 20 
+0284   0285 66 6F 72 20 
+0284   0289 44 69 73 6B 
+0284   028D 20 4F 70 65 
+0284   0291 72 61 74 69 
+0284   0295 6F 6E 73 00 
+0285   0299 C3 03 E6    			JP	WBOOT
+0286   029C             
+0287   029C             ;================================================================================================
+0288   029C             ; Execute Command
+0289   029C             ;================================================================================================
+0290   029C CD C6 02    RUN:		CALL GETBYTE		
+0291   029F 76          			HALT
+0292   02A0             
+0293   02A0             ;================================================================================================
+0294   02A0             ; Unknown Command message. HL has the address of the line buffer.
+0295   02A0             ;================================================================================================
+0296   02A0 4E          UNKNOWN:	LD	C,(HL)
+0297   02A1 CD 0C E6    			CALL CONOUT
+0298   02A4 23          			INC	HL
+0299   02A5 79          			LD	A,C
+0300   02A6 FE 00       			CP	0
+0301   02A8 20 F6       			JR	NZ,UNKNOWN
+0302   02AA 0E 3F       			LD	C,'?'
+0303   02AC CD 0C E6    			CALL CONOUT
+0304   02AF C3 03 E6    			JP	WBOOT
+0305   02B2             
+0306   02B2             ;================================================================================================
+0307   02B2             ; Get word from command line. DE=line_buffer_pointer(should point to where byte starts).
+0308   02B2             ; If successfull, return word in BC. A=0 if missing arg, A=1 if OK, A=2 if invalid arg. 
+0309   02B2             ;================================================================================================
+0310   02B2 CD C6 02    GETWORD:	CALL GETBYTE
+0311   02B5 FE 01       			CP	1
+0312   02B7 C0          			RET	NZ
+0313   02B8 48          			LD	C,B
+0314   02B9 13          			INC	DE
+0315   02BA CD C6 02    			CALL GETBYTE
+0316   02BD FE 01       			CP	1
+0317   02BF C0          			RET NZ
+0318   02C0 78          			LD	A,B
+0319   02C1 41          			LD	B,C
+0320   02C2 4F          			LD	C,A
+0321   02C3 3E 01       			LD	A,1
+0322   02C5 C9          			RET
+0323   02C6             			
+0324   02C6             ;================================================================================================
+0325   02C6             ; Get byte from command line. DE=line_buffer_pointer(should point to where byte starts).
+0326   02C6             ; If successfull, return byte in regC. A=0 if missing arg, A=1 if OK, A=2 if invalid arg. 
+0327   02C6             ;================================================================================================
+0328   02C6 1A          GETBYTE:	LD	A,(DE)
+0329   02C7 FE 00       			CP	0
+0330   02C9 28 1C       			JR	Z,GBNA				; End of buffer and no arg found.
+0331   02CB FE 20       			CP	' '
+0332   02CD 28 1B       			JR	Z,GBSPC				; Trim the space.
+0333   02CF 67          			LD	H,A
+0334   02D0 CD F0 02    			CALL ISITHEX
+0335   02D3 FE 01       			CP	1
+0336   02D5 20 16       			JR	NZ,GBIA				; Invalid arg.
+0337   02D7 13          			INC	DE
+0338   02D8 1A          			LD	A,(DE)
+0339   02D9 6F          			LD	L,A
+0340   02DA CD F0 02    			CALL ISITHEX
+0341   02DD FE 01       			CP	1
+0342   02DF 20 0C       			JR	NZ,GBIA				; Invalid arg.
+0343   02E1 CD 0A 03    			CALL HL2B				; Convert ASCII pair to byte
+0344   02E4 3E 01       			LD	A,1
+0345   02E6 C9          			RET
+0346   02E7 3E 00       GBNA:		LD	A,0
+0347   02E9 C9          			RET
+0348   02EA 13          GBSPC:		INC	DE
+0349   02EB 18 D9       			JR	GETBYTE
+0350   02ED 3E 02       GBIA:		LD	A,2
+0351   02EF C9          			RET
+0352   02F0             
+0353   02F0 FE 47       ISITHEX:	CP	'G'
+0354   02F2 F2 04 03    			JP	P,NOTHEX
+0355   02F5 FE 41       			CP	'A'
+0356   02F7 F2 07 03    			JP	P,ISHEX
+0357   02FA FE 40       			CP	040H
+0358   02FC F2 04 03    			JP	P,NOTHEX
+0359   02FF FE 30       			CP	'0'
+0360   0301 F2 07 03    			JP	P,ISHEX
+0361   0304 3E 00       NOTHEX:		LD	A,0
+0362   0306 C9          			RET
+0363   0307 3E 01       ISHEX:		LD	A,1
+0364   0309 C9          			RET
+0365   030A             
+0366   030A             ;================================================================================================
+0367   030A             ; Convert ASCII to HEX (HL --> B)
+0368   030A             ;================================================================================================
+0369   030A C5          HL2B:		PUSH BC
+0370   030B 3E 60       			LD	A,060H
+0371   030D 94          			SUB	H
+0372   030E 0E 57       			LD	C,057H
+0373   0310 DA 1D 03    			JP	C,DISCOUNT
+0374   0313 3E 40       			LD	A,040H
+0375   0315 94          			SUB	H
+0376   0316 0E 37       			LD	C,037H
+0377   0318 DA 1D 03    			JP	C,DISCOUNT
+0378   031B 0E 30       			LD	C,030H
+0379   031D 7C          DISCOUNT:	LD	A,H
+0380   031E 91          			SUB	C
+0381   031F 47          CONVL:		LD	B,A
+0382   0320 CB 20       			SLA	B
+0383   0322 CB 20       			SLA	B
+0384   0324 CB 20       			SLA	B
+0385   0326 CB 20       			SLA	B
+0386   0328 3E 60       			LD	A,060H
+0387   032A 95          			SUB	L
+0388   032B 0E 57       			LD	C,057H
+0389   032D DA 3A 03    			JP	C,DISCOUNT2
+0390   0330 3E 40       			LD	A,040H
+0391   0332 95          			SUB	L
+0392   0333 0E 37       			LD	C,037H
+0393   0335 DA 3A 03    			JP	C,DISCOUNT2
+0394   0338 0E 30       			LD	C,030H
+0395   033A 7D          DISCOUNT2:	LD	A,L
+0396   033B 91          			SUB	C
+0397   033C B0          			OR	B
+0398   033D C1          			POP	BC
+0399   033E 47          			LD	B,A
+0400   033F C9          			RET
+0401   0340             
+0402   0340             ;================================================================================================
+0403   0340 4D 45 4D 4F CMDTBL:		.DB	"MEMO",RS
+0403   0344 1E 
+0404   0345 58 4D 4F 44 			.DB	"XMODEM",RS
+0404   0349 45 4D 1E 
+0405   034C 48 45 58 32 			.DB	"HEX2COM",RS
+0405   0350 43 4F 4D 1E 
+0406   0354 4C 43 44 1E 			.DB	"LCD",RS
+0407   0358 44 49 53 4B 			.DB	"DISK",RS
+0407   035C 1E 
+0408   035D 52 55 4E 03 			.DB	"RUN",ETX
+0409   0361             
+0410   0361 C3 0E 02    JMPTBL:		JP	MEMO
+0411   0364 C3 32 02    			JP	XMODEM
+0412   0367 C3 45 02    			JP	HEX2COM
+0413   036A C3 59 02    			JP	LCD
+0414   036D C3 7A 02    			JP	DISK
+0415   0370 C3 9C 02    			JP	RUN
+0416   0373             			
+0417   0373 00          CMDNUM		.DB	0
+0418   0374 00 00       LBUFPTR		.DW	0
+0419   0376             
+0420   0376             
+0421   0376             			.END
 tasm: Number of errors = 0
