@@ -1,9 +1,9 @@
 ;==================================================================================
-; LINER.ASM - CONSOLE MANAGER TEST FOR MONITOR 2.0 - USE WITH VT100 TEMINAL
+; LINER.ASM = MONITOR 2.0 - USE WITH VT100 TERMINAL
 ; (Should behave like CCP on CP/M)
 ;
 ; Backspace = delete last character
-;   ^U = ^X = delete all the line
+;        ^X = delete all the line
 ;
 ; After user types <ENTER>, the line is saved in line_buffer and control returns
 ; to Monitor program.
@@ -11,29 +11,31 @@
 TPA			.EQU	0100H		; Transient Programs Area
 MONITOR		.EQU	0D000H		; Monitor entry point
 BIOS		.EQU	0E600H		; BIOS entry point
-DMA			.EQU	0080H		; Buffer user by liner
+DMA			.EQU	0080H		; Buffer used by Monitor
 
 ;================================================================================================
 ; BIOS functions.
 ;================================================================================================
+LEAP		.EQU	3					; 3 bytes for each entry (JP aaaa)
+
 BOOT:		.EQU	BIOS				;  0 Initialize.
-WBOOT:		.EQU	BIOS+(3*1)			;  1 Warm boot.
-CONST:		.EQU	BIOS+(3*2)			;  2 Console status.
-CONIN:		.EQU	BIOS+(3*3)			;  3 Console input.
-CONOUT:		.EQU	BIOS+(3*4)			;  4 Console OUTput.
-LIST:		.EQU	BIOS+(3*5)			;  5 List OUTput.
-PUNCH:		.EQU	BIOS+(3*6)			;  6 Punch OUTput.
-READER:		.EQU	BIOS+(3*7)			;  7 Reader input.
-HOME:		.EQU	BIOS+(3*8)			;  8 Home disk.
-SELDSK:		.EQU	BIOS+(3*9)			;  9 Select disk.
-SETTRK:		.EQU	BIOS+(3*10)			; 10 Select track.
-SETSEC:		.EQU	BIOS+(3*11)			; 11 Select sector.
-SETDMA:		.EQU	BIOS+(3*12)			; 12 Set DMA ADDress.
-READ:		.EQU	BIOS+(3*13)			; 13 Read 128 bytes.
-WRITE:		.EQU	BIOS+(3*14)			; 14 Write 128 bytes.
-LISTST:		.EQU	BIOS+(3*15)			; 15 List status.
-SECTRAN:	.EQU	BIOS+(3*16)			; 16 Sector translate.
-PRINTSEQ:	.EQU	BIOS+(3*17)			; not a BIOS function
+WBOOT:		.EQU	BIOS+(LEAP*1)		;  1 Warm boot.
+CONST:		.EQU	BIOS+(LEAP*2)		;  2 Console status.
+CONIN:		.EQU	BIOS+(LEAP*3)		;  3 Console input.
+CONOUT:		.EQU	BIOS+(LEAP*4)		;  4 Console OUTput.
+LIST:		.EQU	BIOS+(LEAP*5)		;  5 List OUTput.
+PUNCH:		.EQU	BIOS+(LEAP*6)		;  6 Punch OUTput.
+READER:		.EQU	BIOS+(LEAP*7)		;  7 Reader input.
+HOME:		.EQU	BIOS+(LEAP*8)		;  8 Home disk.
+SELDSK:		.EQU	BIOS+(LEAP*9)		;  9 Select disk.
+SETTRK:		.EQU	BIOS+(LEAP*10)		; 10 Select track.
+SETSEC:		.EQU	BIOS+(LEAP*11)		; 11 Select sector.
+SETDMA:		.EQU	BIOS+(LEAP*12)		; 12 Set DMA ADDress.
+READ:		.EQU	BIOS+(LEAP*13)		; 13 Read 128 bytes.
+WRITE:		.EQU	BIOS+(LEAP*14)		; 14 Write 128 bytes.
+LISTST:		.EQU	BIOS+(LEAP*15)		; 15 List status.
+SECTRAN:	.EQU	BIOS+(LEAP*16)		; 16 Sector translate.
+PRINTSEQ:	.EQU	BIOS+(LEAP*17)		; not a BIOS function
 
 ;================================================================================================
 ; ASCII characters.
@@ -81,15 +83,143 @@ MAXLBUF		.EQU	DMA+80
 ;================================================================================================
 			.ORG TPA
 
-			LD	HL,DMA
-			LD	(LBUFPTR),HL
-			LD	C,CR
+			CALL PRINTSEQ
+			.DB	"Z80 Modular Computer BIOS 1.0 by Kaltchuk - 2020",CR,LF
+			.DB	"Monitor 2.0 - 2021",CR,LF,0
+CYCLE:		LD	C,'>'
 			CALL CONOUT
-			LD	C,LF
+			CALL LINER					; Call the line manager
+			INC	A
+			JP	Z,WBOOT					; User typed Crl-C... Abort, abort!
+			LD	A,(DMA)
+			CP	0
+			JR	Z,CYCLE					; User ENTERed an empty line. No need to parse.
+			LD	HL,CMDTBL
+			LD	DE,DMA
+			CALL PARSER					; Find command comparing buffer with Command Table.
+			INC	A
+			JR	Z,UNK					; No match found in command table.
+			JP	(HL)					; Jump to Command Routine
+UNK:		CALL UNKNOWN
+			JR	CYCLE
+			
+;================================================================================================
+; Memory Operations
+;
+; Options:	R aaaa					Read 1 page starting at aaaa. <ENTER>=next page, <ESC>=quit.
+;			W aaaa,c1 c2 ... cN		Write at aaaa the sequence of characters.
+;			C aaaa-bbbb,cccc		Copy [aaaa ~ bbbb] to cccc.
+;			F aaaa-bbbb,cc			Fill [aaaa ~ bbbb] with cc.
+;			V aaaa-bbbb				Verify area [aaaa ~ bbbb].
+;			Ctrl-C					Return to Monitor.
+;================================================================================================
+MEMO:		LD	A,'M'
+			LD	(ENVIR),A				; Set environment variable.
+			LD	C,A
 			CALL CONOUT
 			LD	C,'>'
 			CALL CONOUT
-WAITCHAR:	CALL CONIN					; Wait for user's charater.
+			CALL LINER					; Call the line manager.
+			INC	A
+			JP	Z,CYCLE					; User typed Crl-C, return to Monitor.
+			LD	A,(DMA)
+			CP	0
+			JR	Z,MEMO					; User ENTERed an empty line. No need to parse.
+			LD	HL,MEMOCT				; Set Memory command table.
+			LD	DE,DMA
+			CALL PARSER					; Find command comparing buffer with Command Table.
+			INC	A
+			JR	Z,MUNKNOWN				; No match found in command table.
+			JP	(HL)					; Jump to Command Routine
+MUNKNOWN:	CALL UNKNOWN
+			JR	MEMO
+			
+;================================================================================================
+; Read memory operations
+;================================================================================================
+MREAD:		
+
+;================================================================================================
+; Write memory operations
+;================================================================================================
+MWRITE:		
+
+;================================================================================================
+; Copy memory operations
+;================================================================================================
+MCOPY:		
+
+;================================================================================================
+; Fill memory operations
+;================================================================================================
+MFILL:		
+
+;================================================================================================
+; Verify memory operations
+;================================================================================================
+MVERIFY:	
+
+
+
+;================================================================================================
+; Xmodem Command
+;================================================================================================
+XMODEM:		CALL PRINTSEQ
+			.DB	">XMODEM aaaa",CR,LF,0
+			JP	CYCLE
+
+;================================================================================================
+; Hexadecimal to Executable conversion command.
+;================================================================================================
+HEX2COM:	CALL PRINTSEQ
+			.DB	">HEX2COM aaaa",CR,LF,0
+			JP	CYCLE
+
+;================================================================================================
+; LCD Operations
+;================================================================================================
+LCD:		CALL PRINTSEQ
+			.DB	"L>Ready for LCD Operations",CR,LF,0
+			JP	CYCLE
+
+;================================================================================================
+; Disk Operations
+;================================================================================================
+DISK:		CALL PRINTSEQ
+			.DB	"D>Ready for Disk Operations",CR,LF,0
+			JP	CYCLE
+
+;================================================================================================
+; Execute Command
+;================================================================================================
+RUN:		LD	DE,DMA+3
+			CALL GETWORD		
+			CP	1				; Is the argument OK?
+			JP	NZ,CYCLE
+			JP	(HL)			; Continue execution where user requested. His responsability!
+
+;================================================================================================
+; Unknown Command message. HL has the address of the line buffer.
+;================================================================================================
+UNKNOWN:	LD	C,(HL)
+			CALL CONOUT
+			INC	HL
+			LD	A,C
+			CP	0
+			JR	NZ,UNKNOWN
+			LD	C,'?'
+			CALL CONOUT
+			CALL CRLF
+			RET
+
+;================================================================================================
+; Routine to manage line input from console. Returns A=0FFh if user typed Ctrl-C (ETX).
+;================================================================================================
+LINER:		LD	HL,DMA
+			LD	(LBUFPTR),HL			; Init line buffer pointer.
+WAITCHAR:	CALL CONIN					; Wait till user types something.
+			CP	ETX						; It it Ctrl-C
+			JR	Z,GOTETX
 			CP	CAN
 			JR	Z,GOTCAN				; Is it <CAN>? (= delete line).
 			CP	CR
@@ -118,23 +248,24 @@ AFTGOTBS:	CALL BSPROC
 			JR	WAITCHAR
 
 GOTCR:		LD	HL,(LBUFPTR)			; We got an ENTER, which means the the user
-			LD	A,0						; has funished typing the command line.
+			LD	A,0						; has finished typing the command line.
 			LD	(HL),A
-			LD	C,CR
+			CALL CRLF
+			CALL UPPER					; Convert line to uppercase before parsing.
+			RET
+
+GOTETX:		LD	A,FF					; User abort request (Ctrl-C).
+			CALL CRLF
+			RET
+			
+GOTCAN:		LD	D,0						; We got a line delete.
+			JR	AFTGOTBS
+			
+CRLF:		LD	C,CR
 			CALL CONOUT
 			LD	C,LF
 			CALL CONOUT					; Output <CR><LF>.
-			CALL UPPER					; Convert line to uppercase before parsing.
-			LD	HL,CMDTBL
-			LD	DE,DMA
-			CALL PARSER					; Find command comparing buffer with Command Table.
-			INC	A
-			JP	Z,UNKNOWN				; No match found in command table.
-			JP	(HL)					; Jump to Command Routine
-			
-
-GOTCAN:		LD	D,0						; We got a line delete.
-			JR	AFTGOTBS
+			RET
 
 ;================================================================================================
 ; Routine to do the backspace and line delete. D=1, backspace; D=0, delete line.
@@ -180,7 +311,7 @@ NEXT2UP:	INC	HL
 			JR	NEXT2UP
 			
 ;================================================================================================
-; Parse command. HL=cmd_table_pointer, DE=line_buffer_pointer.
+; Routine to parse command. HL=cmd_table_pointer, DE=line_buffer_pointer.
 ; Returns jump address on HL. regA=cmd_num or FFh if no match.
 ;================================================================================================
 PARSER:		PUSH BC
@@ -242,61 +373,7 @@ NOMATCH:	LD	HL,0
 			RET
 
 ;================================================================================================
-; Memory Operations
-;================================================================================================
-MEMO:		CALL PRINTSEQ
-			.DB	"M>Ready for Memory Operations",0
-			JP	WBOOT
-
-;================================================================================================
-; Xmodem Command
-;================================================================================================
-XMODEM:		CALL PRINTSEQ
-			.DB	">XMODEM aaaa",0
-			JP	WBOOT
-
-;================================================================================================
-; Hexadecimal to Executable conversion
-;================================================================================================
-HEX2COM:	CALL PRINTSEQ
-			.DB	">HEX2COM aaaa",0
-			JP	WBOOT
-
-;================================================================================================
-; LCD Operations
-;================================================================================================
-LCD:		CALL PRINTSEQ
-			.DB	"L>Ready for LCD Operations",0
-			JP	WBOOT
-
-;================================================================================================
-; Disk Operations
-;================================================================================================
-DISK:		CALL PRINTSEQ
-			.DB	"D>Ready for Disk Operations",0
-			JP	WBOOT
-
-;================================================================================================
-; Execute Command
-;================================================================================================
-RUN:		CALL GETBYTE		
-			HALT
-
-;================================================================================================
-; Unknown Command message. HL has the address of the line buffer.
-;================================================================================================
-UNKNOWN:	LD	C,(HL)
-			CALL CONOUT
-			INC	HL
-			LD	A,C
-			CP	0
-			JR	NZ,UNKNOWN
-			LD	C,'?'
-			CALL CONOUT
-			JP	WBOOT
-
-;================================================================================================
-; Get word from command line. DE=line_buffer_pointer(should point to where byte starts).
+; Routine to get word from command line. DE=line_buf_ptr(should point to where word starts).
 ; If successfull, return word in BC. A=0 if missing arg, A=1 if OK, A=2 if invalid arg. 
 ;================================================================================================
 GETWORD:	CALL GETBYTE
@@ -314,8 +391,8 @@ GETWORD:	CALL GETBYTE
 			RET
 			
 ;================================================================================================
-; Get byte from command line. DE=line_buffer_pointer(should point to where byte starts).
-; If successfull, return byte in regC. A=0 if missing arg, A=1 if OK, A=2 if invalid arg. 
+; Routine to get byte from command line. DE=line_buf_ptr(should point to where byte starts).
+; If successfull, return byte in regB. A=0 if missing arg, A=1 if OK, A=2 if invalid arg. 
 ;================================================================================================
 GETBYTE:	LD	A,(DE)
 			CP	0
@@ -335,11 +412,22 @@ GETBYTE:	LD	A,(DE)
 			CALL HL2B				; Convert ASCII pair to byte
 			LD	A,1
 			RET
-GBNA:		LD	A,0
+GBNA:		CALL PRINTENV
+			CALL PRINTSEQ
+			.DB	">Missing argument.",0
+			LD	A,0
 			RET
 GBSPC:		INC	DE
 			JR	GETBYTE
-GBIA:		LD	A,2
+GBIA:		CALL PRINTENV
+			CALL PRINTSEQ
+			.DB	">Invalid argument.",0
+			LD	A,2
+			RET
+
+PRINTENV:	LD	A,(ENVIR)			; Print environment letter (M, L, D or none) before message.
+			LD	C,A
+			CALL CONOUT
 			RET
 
 ISITHEX:	CP	'G'
@@ -392,6 +480,15 @@ DISCOUNT2:	LD	A,L
 			RET
 
 ;================================================================================================
+; Entry point for RUN command test.
+;================================================================================================
+RUNCMDTST:	CALL PRINTSEQ
+			.DB	CR,LF
+			.DB	" *** RUN COMMAND TEST EXIT POINT ***"
+			.DB	CR,LF,0
+			JP	WBOOT
+
+;================================================================================================
 CMDTBL:		.DB	"MEMO",RS
 			.DB	"XMODEM",RS
 			.DB	"HEX2COM",RS
@@ -406,8 +503,21 @@ JMPTBL:		JP	MEMO
 			JP	DISK
 			JP	RUN
 			
+MEMOCT:		.DB	"R",RS
+			.DB	"W",RS
+			.DB	"C",RS
+			.DB	"F",RS
+			.DB	"V",ETX
+
+MEMOJT:		JP	MREAD
+			JP	MWRITE
+			JP	MCOPY
+			JP	MFILL
+			JP	MVERIFY
+			
 CMDNUM		.DB	0
 LBUFPTR		.DW	0
+ENVIR		.DB	0			; 0=MONITOR, M=MEMO, L=LCD, D=DISK
 
 
 			.END
