@@ -86,11 +86,11 @@ MAXLBUF		.EQU	DMA+80
 			CALL PRINTSEQ
 			.DB	"Z80 Modular Computer BIOS 1.0 by Kaltchuk - 2020",CR,LF
 			.DB	"Monitor 2.0 - 2021",CR,LF,0
-CYCLE:		LD	C,'>'
+CYCLE:		LD	C,']'
 			CALL CONOUT
 			CALL LINER					; Call the line manager
-			INC	A
-			JP	Z,WBOOT					; User typed Crl-C... Abort, abort!
+			CP	0FFH
+			JP	Z,WBOOT					; User typed Crl-Z... Abort, abort!
 			LD	A,(DMA)
 			CP	0
 			JR	Z,CYCLE					; User ENTERed an empty line. No need to parse.
@@ -117,11 +117,11 @@ MEMO:		LD	A,'M'
 			LD	(ENVIR),A				; Set environment variable.
 			LD	C,A
 			CALL CONOUT
-			LD	C,'>'
+			LD	C,']'
 			CALL CONOUT
 			CALL LINER					; Call the line manager.
-			INC	A
-			JP	Z,CYCLE					; User typed Crl-C, return to Monitor.
+			CP	0FFH
+			JP	Z,CYCLE					; User typed Crl-Z, return to Monitor.
 			LD	A,(DMA)
 			CP	0
 			JR	Z,MEMO					; User ENTERed an empty line. No need to parse.
@@ -165,28 +165,28 @@ MVERIFY:
 ; Xmodem Command
 ;================================================================================================
 XMODEM:		CALL PRINTSEQ
-			.DB	">XMODEM aaaa",CR,LF,0
+			.DB	"]XMODEM aaaa",CR,LF,0
 			JP	CYCLE
 
 ;================================================================================================
 ; Hexadecimal to Executable conversion command.
 ;================================================================================================
 HEX2COM:	CALL PRINTSEQ
-			.DB	">HEX2COM aaaa",CR,LF,0
+			.DB	"]HEX2COM aaaa",CR,LF,0
 			JP	CYCLE
 
 ;================================================================================================
 ; LCD Operations
 ;================================================================================================
 LCD:		CALL PRINTSEQ
-			.DB	"L>Ready for LCD Operations",CR,LF,0
+			.DB	"L]Ready for LCD Operations",CR,LF,0
 			JP	CYCLE
 
 ;================================================================================================
 ; Disk Operations
 ;================================================================================================
 DISK:		CALL PRINTSEQ
-			.DB	"D>Ready for Disk Operations",CR,LF,0
+			.DB	"D]Ready for Disk Operations",CR,LF,0
 			JP	CYCLE
 
 ;================================================================================================
@@ -201,25 +201,27 @@ RUN:		LD	DE,DMA+3
 ;================================================================================================
 ; Unknown Command message. HL has the address of the line buffer.
 ;================================================================================================
-UNKNOWN:	LD	C,(HL)
+UNKNOWN:	LD	HL,DMA
+UNEXT:		LD	A,(HL)
+			CP	0
+			JR	Z,UEND
+			LD	C,A
 			CALL CONOUT
 			INC	HL
-			LD	A,C
-			CP	0
-			JR	NZ,UNKNOWN
-			LD	C,'?'
+			JR	UNEXT
+UEND:		LD	C,'?'
 			CALL CONOUT
 			CALL CRLF
 			RET
 
 ;================================================================================================
-; Routine to manage line input from console. Returns A=0FFh if user typed Ctrl-C (ETX).
+; Routine to manage line input from console. Returns A=0FFh if user typed Ctrl-Z (ETX).
 ;================================================================================================
 LINER:		LD	HL,DMA
 			LD	(LBUFPTR),HL			; Init line buffer pointer.
 WAITCHAR:	CALL CONIN					; Wait till user types something.
-			CP	ETX						; It it Ctrl-C
-			JR	Z,GOTETX
+			CP	SUB						; It it Ctrl-C
+			JR	Z,GOTSUB
 			CP	CAN
 			JR	Z,GOTCAN				; Is it <CAN>? (= delete line).
 			CP	CR
@@ -254,8 +256,8 @@ GOTCR:		LD	HL,(LBUFPTR)			; We got an ENTER, which means the the user
 			CALL UPPER					; Convert line to uppercase before parsing.
 			RET
 
-GOTETX:		LD	A,FF					; User abort request (Ctrl-C).
-			CALL CRLF
+GOTSUB:		CALL CRLF					; User abort request (Ctrl-C).
+			LD	A,FF
 			RET
 			
 GOTCAN:		LD	D,0						; We got a line delete.
@@ -414,14 +416,14 @@ GETBYTE:	LD	A,(DE)
 			RET
 GBNA:		CALL PRINTENV
 			CALL PRINTSEQ
-			.DB	">Missing argument.",0
+			.DB	"]Missing argument.",CR,LF,0
 			LD	A,0
 			RET
 GBSPC:		INC	DE
 			JR	GETBYTE
 GBIA:		CALL PRINTENV
 			CALL PRINTSEQ
-			.DB	">Invalid argument.",0
+			.DB	"]Invalid argument.",CR,LF,0
 			LD	A,2
 			RET
 
