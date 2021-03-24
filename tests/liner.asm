@@ -137,7 +137,7 @@ MREAD:		LD	DE,DMA+1
 			CP	1				; Is the argument OK?
 			JP	NZ,MEMO
 			PUSH BC
-			POP	DE				; DE will be the addr holder
+			POP	DE				; DE will be the address holder
 			LD	A,E
 			AND	0F0H
 			LD	E,A				; trim addr (xxx0)
@@ -145,8 +145,8 @@ NEWHDR:		CALL CRLF
 			CALL PRINTHDR		; Print the header
 			LD	A,0
 			LD	(LINNUM),A
-			CALL PRINTENV
-			LD	B,D
+NEWLINE:	CALL PRINTENV
+			LD	B,D				; Print the address
 			CALL B2HL
 			LD	C,H
 			CALL CONOUT
@@ -162,8 +162,31 @@ NEWHDR:		CALL CRLF
 			CALL CONOUT
 			LD	C,' '
 			CALL CONOUT
-
-
+			LD	B,16
+NEWCOL:		PUSH BC
+			LD	A,(DE)			; Start printing the memory content
+			INC	DE
+			LD	B,A
+			CALL B2HL
+			LD	C,H
+			CALL CONOUT
+			LD	C,L
+			CALL CONOUT
+			LD	C,' '
+			CALL CONOUT
+			POP	BC
+			DJNZ NEWCOL
+			LD	HL,0FFF0H		; This is -10h
+			ADD	HL,DE			; Go back to beginning of line
+			PUSH HL
+			POP	DE
+			LD	B,16
+			PUSH BC
+			LD	A,(DE)
+			CP	20H
+			JP	M,DONTPRT
+			LD	C,A
+			CALL CONOUT
 
 
 PRINTHDR:	CALL PRINTENV
