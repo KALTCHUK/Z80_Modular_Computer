@@ -141,11 +141,11 @@ MREAD:		LD	DE,DMA+1
 			LD	A,E
 			AND	0F0H
 			LD	E,A				; trim addr (xxx0)
-NEWHDR:		CALL CRLF
-			CALL PRINTHDR		; Print the header
-			LD	A,0
+NEWHDR:		CALL PRINTHDR		; Print the header
+			LD	A,16
 			LD	(LINNUM),A
-NEWLINE:	CALL PRINTENV
+NEWLINE:	CALL CRLF
+			CALL PRINTENV
 			LD	B,D				; Print the address
 			CALL B2HL
 			LD	C,H
@@ -176,27 +176,52 @@ NEWCOL:		PUSH BC
 			CALL CONOUT
 			POP	BC
 			DJNZ NEWCOL
+			LD	C,' '
+			CALL CONOUT
 			LD	HL,0FFF0H		; This is -10h
 			ADD	HL,DE			; Go back to beginning of line
 			PUSH HL
 			POP	DE
 			LD	B,16
-			PUSH BC
+NEWCOL2:	PUSH BC				; Start printing the printables
+			LD	C,'.'
 			LD	A,(DE)
 			CP	20H
-			JP	M,DONTPRT
+			JP	M,NOTPRTBL
+			CP	7FH
+			JP	P,NOTPRTBL
 			LD	C,A
-			CALL CONOUT
-
+NOTPRTBL:	CALL CONOUT
+			INC	DE
+			POP	BC
+			DJNZ NEWCOL2
+			LD	A,(LINNUM)
+			DEC	A
+			LD	(LINNUM),A
+			JR	NZ,NEWLINE
+			CALL PRINTFTR		; Print footer message
+			CALL CONIN			; Wait for user's decision
+			CP	CR
+TRYAGAIN:	JR	Z,NEWHDR
+			CP	ESC
+			JP	Z,MEMO
+			JR	TRYAGAIN
 
 PRINTHDR:	CALL PRINTENV
 			CALL PRINTSEQ
 			.DB "ADDR: 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F  0123456789ABCDEF",CR,LF,0
 			CALL PRINTENV
 			CALL PRINTSEQ
-			.DB "----- -----------------------------------------------  ----------------",CR,LF,0
+			.DB "----- -----------------------------------------------  ----------------",0
 			RET
 
+PRINTFTR:	CALL CRLF
+			CALL PRINTENV
+			CALL CRLF
+			CALL PRINTENV
+			CALL PRINTSEQ
+			.DB "                   <ENTER> = next page, <ESC> = quit.",CR,LF,0
+			RET
 ;================================================================================================
 ; Write memory operations
 ;================================================================================================
@@ -291,9 +316,9 @@ UEND:		LD	C,'?'
 LINER:		LD	HL,DMA
 			LD	(LBUFPTR),HL			; Init line buffer pointer.
 WAITCHAR:	CALL CONIN					; Wait till user types something.
-			CP	ETX						; It it Ctrl-C
+			CP	ETX						; Is it Ctrl-C?
 			JR	Z,GOTETX
-			CP	SUB						; It it Ctrl-Z
+			CP	SUB						; Is is Ctrl-Z?
 			JR	Z,GOTSUB
 			CP	CAN
 			JR	Z,GOTCAN				; Is it <CAN>? (= delete line).

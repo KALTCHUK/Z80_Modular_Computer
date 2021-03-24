@@ -5,614 +5,778 @@
 0005   0000             ; Backspace = delete last character
 0006   0000             ;        ^X = delete all the line
 0007   0000             ;
-0008   0000             ; After user types <ENTER>, the line is saved in line_buffer and control returns
-0009   0000             ; to Monitor program.
-0010   0000             ;==================================================================================
-0011   0000             TPA			.EQU	0100H		; Transient Programs Area
-0012   0000             MONITOR		.EQU	0D000H		; Monitor entry point
-0013   0000             BIOS		.EQU	0E600H		; BIOS entry point
-0014   0000             DMA			.EQU	0080H		; Buffer used by Monitor
-0015   0000             
+0008   0000             ;==================================================================================
+0009   0000             TPA			.EQU	0100H		; Transient Programs Area
+0010   0000             MONITOR		.EQU	0D000H		; Monitor entry point
+0011   0000             BIOS		.EQU	0E600H		; BIOS entry point
+0012   0000             DMA			.EQU	0080H		; Buffer used by Monitor
+0013   0000             
+0014   0000             ;================================================================================================
+0015   0000             ; BIOS functions.
 0016   0000             ;================================================================================================
-0017   0000             ; BIOS functions.
-0018   0000             ;================================================================================================
-0019   0000             LEAP		.EQU	3					; 3 bytes for each entry (JP aaaa)
-0020   0000             
-0021   0000             BOOT:		.EQU	BIOS				;  0 Initialize.
-0022   0000             WBOOT:		.EQU	BIOS+(LEAP*1)		;  1 Warm boot.
-0023   0000             CONST:		.EQU	BIOS+(LEAP*2)		;  2 Console status.
-0024   0000             CONIN:		.EQU	BIOS+(LEAP*3)		;  3 Console input.
-0025   0000             CONOUT:		.EQU	BIOS+(LEAP*4)		;  4 Console OUTput.
-0026   0000             LIST:		.EQU	BIOS+(LEAP*5)		;  5 List OUTput.
-0027   0000             PUNCH:		.EQU	BIOS+(LEAP*6)		;  6 Punch OUTput.
-0028   0000             READER:		.EQU	BIOS+(LEAP*7)		;  7 Reader input.
-0029   0000             HOME:		.EQU	BIOS+(LEAP*8)		;  8 Home disk.
-0030   0000             SELDSK:		.EQU	BIOS+(LEAP*9)		;  9 Select disk.
-0031   0000             SETTRK:		.EQU	BIOS+(LEAP*10)		; 10 Select track.
-0032   0000             SETSEC:		.EQU	BIOS+(LEAP*11)		; 11 Select sector.
-0033   0000             SETDMA:		.EQU	BIOS+(LEAP*12)		; 12 Set DMA ADDress.
-0034   0000             READ:		.EQU	BIOS+(LEAP*13)		; 13 Read 128 bytes.
-0035   0000             WRITE:		.EQU	BIOS+(LEAP*14)		; 14 Write 128 bytes.
-0036   0000             LISTST:		.EQU	BIOS+(LEAP*15)		; 15 List status.
-0037   0000             SECTRAN:	.EQU	BIOS+(LEAP*16)		; 16 Sector translate.
-0038   0000             PRINTSEQ:	.EQU	BIOS+(LEAP*17)		; not a BIOS function
-0039   0000             
+0017   0000             LEAP		.EQU	3					; 3 bytes for each entry (JP aaaa)
+0018   0000             
+0019   0000             BOOT:		.EQU	BIOS				;  0 Initialize.
+0020   0000             WBOOT:		.EQU	BIOS+(LEAP*1)		;  1 Warm boot.
+0021   0000             CONST:		.EQU	BIOS+(LEAP*2)		;  2 Console status.
+0022   0000             CONIN:		.EQU	BIOS+(LEAP*3)		;  3 Console input.
+0023   0000             CONOUT:		.EQU	BIOS+(LEAP*4)		;  4 Console OUTput.
+0024   0000             LIST:		.EQU	BIOS+(LEAP*5)		;  5 List OUTput.
+0025   0000             PUNCH:		.EQU	BIOS+(LEAP*6)		;  6 Punch OUTput.
+0026   0000             READER:		.EQU	BIOS+(LEAP*7)		;  7 Reader input.
+0027   0000             HOME:		.EQU	BIOS+(LEAP*8)		;  8 Home disk.
+0028   0000             SELDSK:		.EQU	BIOS+(LEAP*9)		;  9 Select disk.
+0029   0000             SETTRK:		.EQU	BIOS+(LEAP*10)		; 10 Select track.
+0030   0000             SETSEC:		.EQU	BIOS+(LEAP*11)		; 11 Select sector.
+0031   0000             SETDMA:		.EQU	BIOS+(LEAP*12)		; 12 Set DMA ADDress.
+0032   0000             READ:		.EQU	BIOS+(LEAP*13)		; 13 Read 128 bytes.
+0033   0000             WRITE:		.EQU	BIOS+(LEAP*14)		; 14 Write 128 bytes.
+0034   0000             LISTST:		.EQU	BIOS+(LEAP*15)		; 15 List status.
+0035   0000             SECTRAN:	.EQU	BIOS+(LEAP*16)		; 16 Sector translate.
+0036   0000             PRINTSEQ:	.EQU	BIOS+(LEAP*17)		; not a BIOS function
+0037   0000             
+0038   0000             ;================================================================================================
+0039   0000             ; ASCII characters.
 0040   0000             ;================================================================================================
-0041   0000             ; ASCII characters.
-0042   0000             ;================================================================================================
-0043   0000             NUL			.EQU	00H
-0044   0000             SOH			.EQU	01H
-0045   0000             STX			.EQU	02H
-0046   0000             ETX			.EQU	03H
-0047   0000             EOT			.EQU	04H
-0048   0000             ENQ			.EQU	05H
-0049   0000             QCK			.EQU	06H
-0050   0000             BEL			.EQU	07H
-0051   0000             BS			.EQU	08H			; ^H
-0052   0000             HT			.EQU	09H
-0053   0000             LF			.EQU	0AH
-0054   0000             VT			.EQU	0BH
-0055   0000             FF			.EQU	0CH
-0056   0000             CR			.EQU	0DH
-0057   0000             SO			.EQU	0EH
-0058   0000             SI			.EQU	0FH
-0059   0000             DLE			.EQU	10H
-0060   0000             DC1			.EQU	11H
-0061   0000             DC2			.EQU	12H
-0062   0000             DC3			.EQU	13H
-0063   0000             DC4			.EQU	14H
-0064   0000             NAK			.EQU	15H			; ^U
-0065   0000             SYN			.EQU	16H
-0066   0000             ETB			.EQU	17H
-0067   0000             CAN			.EQU	18H			; ^X
-0068   0000             EM			.EQU	19H
-0069   0000             SUB			.EQU	1AH
-0070   0000             ESC			.EQU	1BH
-0071   0000             FS			.EQU	1CH
-0072   0000             GS			.EQU	1DH
-0073   0000             RS			.EQU	1EH
-0074   0000             US			.EQU	1FH
-0075   0000             
+0041   0000             NUL			.EQU	00H
+0042   0000             SOH			.EQU	01H
+0043   0000             STX			.EQU	02H
+0044   0000             ETX			.EQU	03H
+0045   0000             EOT			.EQU	04H
+0046   0000             ENQ			.EQU	05H
+0047   0000             QCK			.EQU	06H
+0048   0000             BEL			.EQU	07H
+0049   0000             BS			.EQU	08H			; ^H
+0050   0000             HT			.EQU	09H
+0051   0000             LF			.EQU	0AH
+0052   0000             VT			.EQU	0BH
+0053   0000             FF			.EQU	0CH
+0054   0000             CR			.EQU	0DH
+0055   0000             SO			.EQU	0EH
+0056   0000             SI			.EQU	0FH
+0057   0000             DLE			.EQU	10H
+0058   0000             DC1			.EQU	11H
+0059   0000             DC2			.EQU	12H
+0060   0000             DC3			.EQU	13H
+0061   0000             DC4			.EQU	14H
+0062   0000             NAK			.EQU	15H			; ^U
+0063   0000             SYN			.EQU	16H
+0064   0000             ETB			.EQU	17H
+0065   0000             CAN			.EQU	18H			; ^X
+0066   0000             EM			.EQU	19H
+0067   0000             SUB			.EQU	1AH
+0068   0000             ESC			.EQU	1BH
+0069   0000             FS			.EQU	1CH
+0070   0000             GS			.EQU	1DH
+0071   0000             RS			.EQU	1EH
+0072   0000             US			.EQU	1FH
+0073   0000             
+0074   0000             ;================================================================================================
+0075   0000             ; Some constants
 0076   0000             ;================================================================================================
-0077   0000             ; Some constants
-0078   0000             ;================================================================================================
-0079   0000             MAXLBUF		.EQU	DMA+80
-0080   0000             PROMPT		.EQU	'}'
-0081   0000             ;================================================================================================
-0082   0000             ; MAIN PROGRAM STARTS HERE
-0083   0000             ;================================================================================================
-0084   0100             			.ORG TPA
-0085   0100             
-0086   0100 CD 33 E6    			CALL PRINTSEQ
-0087   0103 5A 38 30 20 			.DB	"Z80 Modular Computer BIOS 1.0 by Kaltchuk - 2020",CR,LF
-0087   0107 4D 6F 64 75 
-0087   010B 6C 61 72 20 
-0087   010F 43 6F 6D 70 
-0087   0113 75 74 65 72 
-0087   0117 20 42 49 4F 
-0087   011B 53 20 31 2E 
-0087   011F 30 20 62 79 
-0087   0123 20 4B 61 6C 
-0087   0127 74 63 68 75 
-0087   012B 6B 20 2D 20 
-0087   012F 32 30 32 30 
-0087   0133 0D 0A 
-0088   0135 4D 6F 6E 69 			.DB	"Monitor 2.0 - 2021",CR,LF,0
-0088   0139 74 6F 72 20 
-0088   013D 32 2E 30 20 
-0088   0141 2D 20 32 30 
-0088   0145 32 31 0D 0A 
-0088   0149 00 
-0089   014A 3E 00       CYCLE:		LD	A,0
-0090   014C 32 01 05    			LD	(ENVIR),A
-0091   014F CD 24 04    			CALL PRINTENV
-0092   0152 CD AE 02    			CALL LINER					; Call the line manager
-0093   0155 FE FF       			CP	0FFH
-0094   0157 CA 03 E6    			JP	Z,WBOOT					; User typed Ctrl-C or Ctrl-Z... Abort, abort!
-0095   015A 3A 80 00    			LD	A,(DMA)
-0096   015D FE 00       			CP	0
-0097   015F 28 E9       			JR	Z,CYCLE					; User ENTERed an empty line. No need to parse.
-0098   0161 21 B2 04    			LD	HL,CMDTBL
-0099   0164 11 80 00    			LD	DE,DMA
-0100   0167 CD 57 03    			CALL PARSER					; Find command comparing buffer with Command Table.
-0101   016A 3C          			INC	A
-0102   016B 28 01       			JR	Z,UNK					; No match found in command table.
-0103   016D E9          			JP	(HL)					; Jump to Command Routine
-0104   016E CD 93 02    UNK:		CALL UNKNOWN
-0105   0171 18 D7       			JR	CYCLE
-0106   0173             			
-0107   0173             ;================================================================================================
-0108   0173             ; Memory Operations
-0109   0173             ;
-0110   0173             ; Options:	R aaaa					Read 1 page starting at aaaa. <ENTER>=next page, <ESC>=quit.
-0111   0173             ;			W aaaa,c1 c2 ... cN		Write at aaaa the sequence of characters.
-0112   0173             ;			C aaaa-bbbb,cccc		Copy [aaaa ~ bbbb] to cccc.
-0113   0173             ;			F aaaa-bbbb,cc			Fill [aaaa ~ bbbb] with cc.
-0114   0173             ;			V aaaa-bbbb				Verify area [aaaa ~ bbbb].
-0115   0173             ;			Ctrl-C					Return to Monitor.
-0116   0173             ;================================================================================================
-0117   0173 3E 4D       MEMO:		LD	A,'M'
-0118   0175 32 01 05    			LD	(ENVIR),A				; Set environment variable.
-0119   0178 CD 24 04    			CALL PRINTENV
-0120   017B CD AE 02    			CALL LINER					; Call the line manager.
-0121   017E FE FF       			CP	0FFH
-0122   0180 CA 4A 01    			JP	Z,CYCLE					; User typed Crl-Z, return to Monitor.
-0123   0183 3A 80 00    			LD	A,(DMA)
-0124   0186 FE 00       			CP	0
-0125   0188 28 E9       			JR	Z,MEMO					; User ENTERed an empty line. No need to parse.
-0126   018A 21 E5 04    			LD	HL,MEMOCT				; Set Memory command table.
-0127   018D 11 80 00    			LD	DE,DMA
-0128   0190 CD 57 03    			CALL PARSER					; Find command comparing buffer with Command Table.
-0129   0193 3C          			INC	A
-0130   0194 28 01       			JR	Z,MUNKNOWN				; No match found in command table.
-0131   0196 E9          			JP	(HL)					; Jump to Command Routine
-0132   0197 CD 93 02    MUNKNOWN:	CALL UNKNOWN
-0133   019A 18 D7       			JR	MEMO
-0134   019C             			
-0135   019C             ;================================================================================================
-0136   019C             ; Read memory operations
-0137   019C             ;================================================================================================
-0138   019C CD 24 04    MREAD:		CALL PRINTENV
-0139   019F CD 33 E6    			CALL PRINTSEQ
-0140   01A2 52 20 61 61 			.DB	"R aaaa",CR,LF,0
-0140   01A6 61 61 0D 0A 
-0140   01AA 00 
-0141   01AB C3 73 01    			JP	MEMO
-0142   01AE             
-0143   01AE             ;================================================================================================
-0144   01AE             ; Write memory operations
-0145   01AE             ;================================================================================================
-0146   01AE CD 24 04    MWRITE:		CALL PRINTENV
-0147   01B1 CD 33 E6    			CALL PRINTSEQ
-0148   01B4 57 20 61 61 			.DB	"W aaaa,c1...cN",CR,LF,0
-0148   01B8 61 61 2C 63 
-0148   01BC 31 2E 2E 2E 
-0148   01C0 63 4E 0D 0A 
-0148   01C4 00 
-0149   01C5 C3 73 01    			JP	MEMO
-0150   01C8             
-0151   01C8             ;================================================================================================
-0152   01C8             ; Copy memory operations
-0153   01C8             ;================================================================================================
-0154   01C8 CD 24 04    MCOPY:		CALL PRINTENV
-0155   01CB CD 33 E6    			CALL PRINTSEQ
-0156   01CE 43 20 61 61 			.DB	"C aaaa-bbbb,cccc",CR,LF,0
-0156   01D2 61 61 2D 62 
-0156   01D6 62 62 62 2C 
-0156   01DA 63 63 63 63 
-0156   01DE 0D 0A 00 
-0157   01E1 C3 73 01    			JP	MEMO
-0158   01E4             
-0159   01E4             ;================================================================================================
-0160   01E4             ; Fill memory operations
-0161   01E4             ;================================================================================================
-0162   01E4 CD 24 04    MFILL:		CALL PRINTENV
-0163   01E7 CD 33 E6    			CALL PRINTSEQ
-0164   01EA 46 20 61 61 			.DB	"F aaaa-bbbb,cc",CR,LF,0
-0164   01EE 61 61 2D 62 
-0164   01F2 62 62 62 2C 
-0164   01F6 63 63 0D 0A 
-0164   01FA 00 
-0165   01FB C3 73 01    			JP	MEMO
-0166   01FE             
-0167   01FE             ;================================================================================================
-0168   01FE             ; Verify memory operations
-0169   01FE             ;================================================================================================
-0170   01FE CD 24 04    MVERIFY:	CALL PRINTENV
-0171   0201 CD 33 E6    			CALL PRINTSEQ
-0172   0204 56 20 61 61 			.DB	"V aaaa-bbbb",CR,LF,0
-0172   0208 61 61 2D 62 
-0172   020C 62 62 62 0D 
-0172   0210 0A 00 
-0173   0212 C3 73 01    			JP	MEMO
-0174   0215             
-0175   0215             ;================================================================================================
-0176   0215             ; Xmodem Command
-0177   0215             ;================================================================================================
-0178   0215 CD 33 E6    XMODEM:		CALL PRINTSEQ
-0179   0218 5D 58 4D 4F 			.DB	"]XMODEM aaaa",CR,LF,0
-0179   021C 44 45 4D 20 
-0179   0220 61 61 61 61 
-0179   0224 0D 0A 00 
-0180   0227 C3 4A 01    			JP	CYCLE
-0181   022A             
-0182   022A             ;================================================================================================
-0183   022A             ; Hexadecimal to Executable conversion command.
-0184   022A             ;================================================================================================
-0185   022A CD 33 E6    HEX2COM:	CALL PRINTSEQ
-0186   022D 5D 48 45 58 			.DB	"]HEX2COM aaaa",CR,LF,0
-0186   0231 32 43 4F 4D 
-0186   0235 20 61 61 61 
-0186   0239 61 0D 0A 00 
-0187   023D C3 4A 01    			JP	CYCLE
-0188   0240             
-0189   0240             ;================================================================================================
-0190   0240             ; LCD Operations
-0191   0240             ;================================================================================================
-0192   0240 CD 33 E6    LCD:		CALL PRINTSEQ
-0193   0243 4C 5D 52 65 			.DB	"L]Ready for LCD Operations",CR,LF,0
-0193   0247 61 64 79 20 
-0193   024B 66 6F 72 20 
-0193   024F 4C 43 44 20 
-0193   0253 4F 70 65 72 
-0193   0257 61 74 69 6F 
-0193   025B 6E 73 0D 0A 
-0193   025F 00 
-0194   0260 C3 4A 01    			JP	CYCLE
-0195   0263             
-0196   0263             ;================================================================================================
-0197   0263             ; Disk Operations
-0198   0263             ;================================================================================================
-0199   0263 CD 33 E6    DISK:		CALL PRINTSEQ
-0200   0266 44 5D 52 65 			.DB	"D]Ready for Disk Operations",CR,LF,0
-0200   026A 61 64 79 20 
-0200   026E 66 6F 72 20 
-0200   0272 44 69 73 6B 
-0200   0276 20 4F 70 65 
-0200   027A 72 61 74 69 
-0200   027E 6F 6E 73 0D 
-0200   0282 0A 00 
-0201   0284 C3 4A 01    			JP	CYCLE
-0202   0287             
-0203   0287             ;================================================================================================
-0204   0287             ; Execute Command
-0205   0287             ;================================================================================================
-0206   0287 11 83 00    RUN:		LD	DE,DMA+3
-0207   028A CD B2 03    			CALL GETWORD		
-0208   028D FE 01       			CP	1				; Is the argument OK?
-0209   028F C2 4A 01    			JP	NZ,CYCLE
-0210   0292 E9          			JP	(HL)			; Continue execution where user requested. His responsability!
-0211   0293             
-0212   0293             ;================================================================================================
-0213   0293             ; Unknown Command message. HL has the address of the line buffer.
-0214   0293             ;================================================================================================
-0215   0293 CD 24 04    UNKNOWN:	CALL PRINTENV
-0216   0296 21 80 00    			LD	HL,DMA
-0217   0299 7E          UNEXT:		LD	A,(HL)
-0218   029A FE 00       			CP	0
-0219   029C 28 07       			JR	Z,UEND
-0220   029E 4F          			LD	C,A
-0221   029F CD 0C E6    			CALL CONOUT
-0222   02A2 23          			INC	HL
-0223   02A3 18 F4       			JR	UNEXT
-0224   02A5 0E 3F       UEND:		LD	C,'?'
-0225   02A7 CD 0C E6    			CALL CONOUT
-0226   02AA CD 07 03    			CALL CRLF
-0227   02AD C9          			RET
-0228   02AE             
-0229   02AE             ;================================================================================================
-0230   02AE             ; Routine to manage line input from console. Returns A=0FFh if user typed Ctrl-Z (ETX).
-0231   02AE             ;================================================================================================
-0232   02AE 21 80 00    LINER:		LD	HL,DMA
-0233   02B1 22 FF 04    			LD	(LBUFPTR),HL			; Init line buffer pointer.
-0234   02B4 CD 09 E6    WAITCHAR:	CALL CONIN					; Wait till user types something.
-0235   02B7 FE 03       			CP	ETX						; It it Ctrl-C
-0236   02B9 28 42       			JR	Z,GOTETX
-0237   02BB FE 1A       			CP	SUB						; It it Ctrl-Z
-0238   02BD 28 3E       			JR	Z,GOTSUB
-0239   02BF FE 18       			CP	CAN
-0240   02C1 28 40       			JR	Z,GOTCAN				; Is it <CAN>? (= delete line).
-0241   02C3 FE 0D       			CP	CR
-0242   02C5 28 29       			JR	Z,GOTCR					; Is it <ENTER>?
-0243   02C7 FE 08       			CP	BS
-0244   02C9 28 1E       			JR	Z,GOTBS					; Is it <BS>? (= backspace).
-0245   02CB 2A FF 04    			LD	HL,(LBUFPTR)			; None of the above options, so let's put it in the buffer.
-0246   02CE 01 D0 00    			LD	BC,MAXLBUF				; But 1st, we have to check if we still have space.
-0247   02D1 37          			SCF
-0248   02D2 3F          			CCF
-0249   02D3 ED 42       			SBC	HL,BC
-0250   02D5 28 0E       			JR	Z,LBUFFULL				; Is buffer full?
-0251   02D7 2A FF 04    			LD	HL,(LBUFPTR)
-0252   02DA 77          			LD	(HL),A
-0253   02DB 23          			INC	HL
-0254   02DC 22 FF 04    			LD	(LBUFPTR),HL
-0255   02DF 4F          			LD	C,A
-0256   02E0 CD 0C E6    OUTWAIT:	CALL CONOUT
-0257   02E3 18 CF       			JR	WAITCHAR
-0258   02E5             
-0259   02E5 0E 07       LBUFFULL:	LD	C,BEL					; Buffer is full. Just ring the bell.
-0260   02E7 18 F7       			JR	OUTWAIT
-0261   02E9             
-0262   02E9 16 01       GOTBS:		LD	D,1						; We got a backspace.
-0263   02EB CD 12 03    AFTGOTBS:	CALL BSPROC
-0264   02EE 18 C4       			JR	WAITCHAR
-0265   02F0             
-0266   02F0 2A FF 04    GOTCR:		LD	HL,(LBUFPTR)			; We got an ENTER, which means the the user
-0267   02F3 3E 00       			LD	A,0						; has finished typing the command line.
-0268   02F5 77          			LD	(HL),A
-0269   02F6 CD 07 03    			CALL CRLF
-0270   02F9 CD 40 03    			CALL UPPER					; Convert line to uppercase before parsing.
-0271   02FC C9          			RET
-0272   02FD             GOTETX:
-0273   02FD CD 07 03    GOTSUB:		CALL CRLF					; User abort request (Ctrl-C or Ctrl-Z).
-0274   0300 3E 0C       			LD	A,FF
-0275   0302 C9          			RET
-0276   0303             			
-0277   0303 16 00       GOTCAN:		LD	D,0						; We got a line delete.
-0278   0305 18 E4       			JR	AFTGOTBS
-0279   0307             			
-0280   0307 0E 0D       CRLF:		LD	C,CR
-0281   0309 CD 0C E6    			CALL CONOUT
-0282   030C 0E 0A       			LD	C,LF
-0283   030E CD 0C E6    			CALL CONOUT					; Output <CR><LF>.
-0284   0311 C9          			RET
-0285   0312             
-0286   0312             ;================================================================================================
-0287   0312             ; Routine to do the backspace and line delete. D=1, backspace; D=0, delete line.
-0288   0312             ;================================================================================================
-0289   0312 2A FF 04    BSPROC:		LD	HL,(LBUFPTR)
-0290   0315 01 80 00    			LD	BC,DMA
-0291   0318 37          			SCF
-0292   0319 3F          			CCF
-0293   031A ED 42       			SBC	HL,BC
-0294   031C 28 1C       			JR	Z,LBUFEMPTY
-0295   031E 2A FF 04    			LD	HL,(LBUFPTR)
-0296   0321 2B          			DEC	HL
-0297   0322 22 FF 04    			LD	(LBUFPTR),HL
-0298   0325 0E 08       			LD	C,BS
-0299   0327 CD 0C E6    			CALL CONOUT
-0300   032A 0E 20       			LD	C,' '
-0301   032C CD 0C E6    			CALL CONOUT
-0302   032F 0E 08       			LD	C,BS
-0303   0331 CD 0C E6    			CALL CONOUT
-0304   0334 7A          			LD	A,D
-0305   0335 FE 01       			CP	1
-0306   0337 C8          			RET	Z
-0307   0338 18 D8       			JR	BSPROC
-0308   033A             
-0309   033A 0E 07       LBUFEMPTY:	LD	C,BEL
-0310   033C CD 0C E6    			CALL CONOUT
-0311   033F C9          			RET
-0312   0340             			
-0313   0340             ;================================================================================================
-0314   0340             ; Routine to convert line buffer content to upper case
-0315   0340             ;================================================================================================
-0316   0340 21 7F 00    UPPER:		LD	HL,DMA-1
-0317   0343 23          NEXT2UP:	INC	HL
-0318   0344 7E          			LD	A,(HL)
-0319   0345 FE 00       			CP	0
-0320   0347 C8          			RET	Z
-0321   0348 FE 61       			CP	'a'
-0322   034A FA 43 03    			JP	M,NEXT2UP
-0323   034D FE 7B       			CP	'{'
-0324   034F F2 43 03    			JP	P,NEXT2UP
-0325   0352 D6 20       			SUB	20H
-0326   0354 77          			LD	(HL),A
-0327   0355 18 EC       			JR	NEXT2UP
-0328   0357             			
-0329   0357             ;================================================================================================
-0330   0357             ; Routine to parse command. HL=cmd_table_pointer, DE=line_buffer_pointer.
-0331   0357             ; Returns jump address on HL. regA=cmd_num or FFh if no match.
-0332   0357             ;================================================================================================
-0333   0357 C5          PARSER:		PUSH BC
-0334   0358 3E 00       			LD	A,0
-0335   035A 32 FE 04    			LD	(CMDNUM),A		; Init command number.
-0336   035D D5          			PUSH DE
-0337   035E DD E1       			POP	IX				; Backup line buffer pointer.
-0338   0360 1A          NEXT2PARS:	LD	A,(DE)
-0339   0361 BE          			CP	(HL)
-0340   0362 20 04       			JR	NZ,NOTEQU
-0341   0364 23          			INC	HL
-0342   0365 13          			INC	DE
-0343   0366 18 F8       			JR	NEXT2PARS
-0344   0368 7E          NOTEQU:		LD	A,(HL)
-0345   0369 FE 1E       			CP	RS
-0346   036B 28 04       			JR	Z,ISRS
-0347   036D FE 03       			CP	ETX
-0348   036F 20 21       			JR	NZ,NEXTCMD
-0349   0371 1A          ISRS:		LD	A,(DE)
-0350   0372 FE 00       			CP	0
-0351   0374 28 04       			JR	Z,ISZERO
-0352   0376 FE 20       			CP	' '
-0353   0378 20 18       			JR	NZ,NEXTCMD
-0354   037A 7E          ISZERO:		LD	A,(HL)
-0355   037B FE 03       			CP	ETX
-0356   037D 28 03       			JR	Z,CMDMATCH
-0357   037F 23          			INC	HL
-0358   0380 18 F8       			JR	ISZERO
-0359   0382 23          CMDMATCH:	INC	HL
-0360   0383 E5          			PUSH HL
-0361   0384 D1          			POP	DE
-0362   0385 26 00       			LD	H,0
-0363   0387 3A FE 04    			LD	A,(CMDNUM)
-0364   038A 6F          			LD	L,A
-0365   038B E5          			PUSH HL
-0366   038C C1          			POP	BC
-0367   038D 09          			ADD	HL,BC			; command_number * 2
-0368   038E 09          			ADD	HL,BC			; command_number * 3
-0369   038F 19          			ADD HL,DE
-0370   0390 C1          			POP	BC
-0371   0391 C9          			RET
-0372   0392 7E          NEXTCMD:	LD	A,(HL)
-0373   0393 FE 1E       			CP	RS
-0374   0395 28 07       			JR	Z,ISRS2
-0375   0397 FE 03       			CP	ETX
-0376   0399 28 10       			JR	Z,NOMATCH
-0377   039B 23          			INC	HL
-0378   039C 18 F4       			JR	NEXTCMD
-0379   039E 23          ISRS2:		INC	HL
-0380   039F 3A FE 04    			LD	A,(CMDNUM)
-0381   03A2 3C          			INC	A
-0382   03A3 32 FE 04    			LD	(CMDNUM),A
-0383   03A6 DD E5       			PUSH IX
-0384   03A8 D1          			POP	DE
-0385   03A9 18 B5       			JR	NEXT2PARS
-0386   03AB 21 00 00    NOMATCH:	LD	HL,0
-0387   03AE 3E FF       			LD	A,0FFH
-0388   03B0 C1          			POP	BC
-0389   03B1 C9          			RET
-0390   03B2             
-0391   03B2             ;================================================================================================
-0392   03B2             ; Routine to get word from command line. DE=line_buf_ptr(should point to where word starts).
-0393   03B2             ; If successfull, return word in BC. A=0 if missing arg, A=1 if OK, A=2 if invalid arg. 
-0394   03B2             ;================================================================================================
-0395   03B2 CD C6 03    GETWORD:	CALL GETBYTE
-0396   03B5 FE 01       			CP	1
-0397   03B7 C0          			RET	NZ
-0398   03B8 48          			LD	C,B
-0399   03B9 13          			INC	DE
-0400   03BA CD C6 03    			CALL GETBYTE
-0401   03BD FE 01       			CP	1
-0402   03BF C0          			RET NZ
-0403   03C0 78          			LD	A,B
-0404   03C1 41          			LD	B,C
-0405   03C2 4F          			LD	C,A
-0406   03C3 3E 01       			LD	A,1
-0407   03C5 C9          			RET
-0408   03C6             			
-0409   03C6             ;================================================================================================
-0410   03C6             ; Routine to get byte from command line. DE=line_buf_ptr(should point to where byte starts).
-0411   03C6             ; If successfull, return byte in regB. A=0 if missing arg, A=1 if OK, A=2 if invalid arg. 
-0412   03C6             ;================================================================================================
-0413   03C6 1A          GETBYTE:	LD	A,(DE)
-0414   03C7 FE 00       			CP	0
-0415   03C9 28 1C       			JR	Z,GBNA				; End of buffer and no arg found.
-0416   03CB FE 20       			CP	' '
-0417   03CD 28 35       			JR	Z,GBSPC				; Trim the space.
-0418   03CF 67          			LD	H,A
-0419   03D0 CD 35 04    			CALL ISITHEX
-0420   03D3 FE 01       			CP	1
-0421   03D5 20 30       			JR	NZ,GBIA				; Invalid arg.
-0422   03D7 13          			INC	DE
-0423   03D8 1A          			LD	A,(DE)
-0424   03D9 6F          			LD	L,A
-0425   03DA CD 35 04    			CALL ISITHEX
-0426   03DD FE 01       			CP	1
-0427   03DF 20 26       			JR	NZ,GBIA				; Invalid arg.
-0428   03E1 CD 4F 04    			CALL HL2B				; Convert ASCII pair to byte
-0429   03E4 3E 01       			LD	A,1
-0430   03E6 C9          			RET
-0431   03E7 CD 24 04    GBNA:		CALL PRINTENV
-0432   03EA CD 33 E6    			CALL PRINTSEQ
-0433   03ED 4D 69 73 73 			.DB	"Missing argument.",CR,LF,0
-0433   03F1 69 6E 67 20 
-0433   03F5 61 72 67 75 
-0433   03F9 6D 65 6E 74 
-0433   03FD 2E 0D 0A 00 
-0434   0401 3E 00       			LD	A,0
-0435   0403 C9          			RET
-0436   0404 13          GBSPC:		INC	DE
-0437   0405 18 BF       			JR	GETBYTE
-0438   0407 CD 24 04    GBIA:		CALL PRINTENV
-0439   040A CD 33 E6    			CALL PRINTSEQ
-0440   040D 49 6E 76 61 			.DB	"Invalid argument.",CR,LF,0
-0440   0411 6C 69 64 20 
-0440   0415 61 72 67 75 
-0440   0419 6D 65 6E 74 
-0440   041D 2E 0D 0A 00 
-0441   0421 3E 02       			LD	A,2
-0442   0423 C9          			RET
-0443   0424             
-0444   0424 3A 01 05    PRINTENV:	LD	A,(ENVIR)			; Print environment letter (M, L, D or none) before message.
-0445   0427 FE 00       			CP	0
-0446   0429 28 04       			JR	Z,NOLETTER
-0447   042B 4F          			LD	C,A
-0448   042C CD 0C E6    			CALL CONOUT
-0449   042F 0E 7D       NOLETTER:	LD	C,PROMPT
-0450   0431 CD 0C E6    			CALL CONOUT
-0451   0434 C9          			RET
-0452   0435             
-0453   0435 FE 47       ISITHEX:	CP	'G'
-0454   0437 F2 49 04    			JP	P,NOTHEX
-0455   043A FE 41       			CP	'A'
-0456   043C F2 4C 04    			JP	P,ISHEX
-0457   043F FE 40       			CP	040H
-0458   0441 F2 49 04    			JP	P,NOTHEX
-0459   0444 FE 30       			CP	'0'
-0460   0446 F2 4C 04    			JP	P,ISHEX
-0461   0449 3E 00       NOTHEX:		LD	A,0
-0462   044B C9          			RET
-0463   044C 3E 01       ISHEX:		LD	A,1
-0464   044E C9          			RET
-0465   044F             
-0466   044F             ;================================================================================================
-0467   044F             ; Convert ASCII to HEX (HL --> B)
-0468   044F             ;================================================================================================
-0469   044F C5          HL2B:		PUSH BC
-0470   0450 3E 60       			LD	A,060H
-0471   0452 94          			SUB	H
-0472   0453 0E 57       			LD	C,057H
-0473   0455 DA 62 04    			JP	C,DISCOUNT
-0474   0458 3E 40       			LD	A,040H
-0475   045A 94          			SUB	H
-0476   045B 0E 37       			LD	C,037H
-0477   045D DA 62 04    			JP	C,DISCOUNT
-0478   0460 0E 30       			LD	C,030H
-0479   0462 7C          DISCOUNT:	LD	A,H
-0480   0463 91          			SUB	C
-0481   0464 47          CONVL:		LD	B,A
-0482   0465 CB 20       			SLA	B
-0483   0467 CB 20       			SLA	B
-0484   0469 CB 20       			SLA	B
-0485   046B CB 20       			SLA	B
-0486   046D 3E 60       			LD	A,060H
-0487   046F 95          			SUB	L
-0488   0470 0E 57       			LD	C,057H
-0489   0472 DA 7F 04    			JP	C,DISCOUNT2
-0490   0475 3E 40       			LD	A,040H
-0491   0477 95          			SUB	L
-0492   0478 0E 37       			LD	C,037H
-0493   047A DA 7F 04    			JP	C,DISCOUNT2
-0494   047D 0E 30       			LD	C,030H
-0495   047F 7D          DISCOUNT2:	LD	A,L
-0496   0480 91          			SUB	C
-0497   0481 B0          			OR	B
-0498   0482 C1          			POP	BC
-0499   0483 47          			LD	B,A
-0500   0484 C9          			RET
-0501   0485             
-0502   0485             ;================================================================================================
-0503   0485             ; Entry point for RUN command test.
-0504   0485             ;================================================================================================
-0505   0485 CD 33 E6    RUNCMDTST:	CALL PRINTSEQ
-0506   0488 0D 0A       			.DB	CR,LF
-0507   048A 20 2A 2A 2A 			.DB	" *** RUN COMMAND TEST EXIT POINT ***"
-0507   048E 20 52 55 4E 
-0507   0492 20 43 4F 4D 
-0507   0496 4D 41 4E 44 
-0507   049A 20 54 45 53 
-0507   049E 54 20 45 58 
-0507   04A2 49 54 20 50 
-0507   04A6 4F 49 4E 54 
-0507   04AA 20 2A 2A 2A 
-0508   04AE 0D 0A 00    			.DB	CR,LF,0
-0509   04B1 76          			HALT
-0510   04B2             
-0511   04B2             ;================================================================================================
-0512   04B2 4D 45 4D 4F CMDTBL:		.DB	"MEMO",RS
-0512   04B6 1E 
-0513   04B7 58 4D 4F 44 			.DB	"XMODEM",RS
-0513   04BB 45 4D 1E 
-0514   04BE 48 45 58 32 			.DB	"HEX2COM",RS
-0514   04C2 43 4F 4D 1E 
-0515   04C6 4C 43 44 1E 			.DB	"LCD",RS
-0516   04CA 44 49 53 4B 			.DB	"DISK",RS
-0516   04CE 1E 
-0517   04CF 52 55 4E 03 			.DB	"RUN",ETX
-0518   04D3             
-0519   04D3 C3 73 01    JMPTBL:		JP	MEMO
-0520   04D6 C3 15 02    			JP	XMODEM
-0521   04D9 C3 2A 02    			JP	HEX2COM
-0522   04DC C3 40 02    			JP	LCD
-0523   04DF C3 63 02    			JP	DISK
-0524   04E2 C3 87 02    			JP	RUN
-0525   04E5             			
-0526   04E5 52 1E       MEMOCT:		.DB	"R",RS
-0527   04E7 57 1E       			.DB	"W",RS
-0528   04E9 43 1E       			.DB	"C",RS
-0529   04EB 46 1E       			.DB	"F",RS
-0530   04ED 56 03       			.DB	"V",ETX
-0531   04EF             
-0532   04EF C3 9C 01    MEMOJT:		JP	MREAD
-0533   04F2 C3 AE 01    			JP	MWRITE
-0534   04F5 C3 C8 01    			JP	MCOPY
-0535   04F8 C3 E4 01    			JP	MFILL
-0536   04FB C3 FE 01    			JP	MVERIFY
-0537   04FE             			
-0538   04FE 00          CMDNUM		.DB	0
-0539   04FF 00 00       LBUFPTR		.DW	0
-0540   0501 00          ENVIR		.DB	0			; 0=MONITOR, M=MEMO, L=LCD, D=DISK
-0541   0502             
-0542   0502             
-0543   0502             			.END
+0077   0000             MAXLBUF		.EQU	DMA+80
+0078   0000             PROMPT		.EQU	'}'
+0079   0000             
+0080   0000             ;================================================================================================
+0081   0000             ; MAIN PROGRAM STARTS HERE
+0082   0000             ;================================================================================================
+0083   0100             			.ORG TPA
+0084   0100             
+0085   0100 CD 33 E6    			CALL PRINTSEQ
+0086   0103 5A 38 30 20 			.DB	"Z80 Modular Computer BIOS 1.0 by Kaltchuk - 2020",CR,LF
+0086   0107 4D 6F 64 75 
+0086   010B 6C 61 72 20 
+0086   010F 43 6F 6D 70 
+0086   0113 75 74 65 72 
+0086   0117 20 42 49 4F 
+0086   011B 53 20 31 2E 
+0086   011F 30 20 62 79 
+0086   0123 20 4B 61 6C 
+0086   0127 74 63 68 75 
+0086   012B 6B 20 2D 20 
+0086   012F 32 30 32 30 
+0086   0133 0D 0A 
+0087   0135 4D 6F 6E 69 			.DB	"Monitor 2.0 - 2021",CR,LF,0
+0087   0139 74 6F 72 20 
+0087   013D 32 2E 30 20 
+0087   0141 2D 20 32 30 
+0087   0145 32 31 0D 0A 
+0087   0149 00 
+0088   014A 3E 00       CYCLE:		LD	A,0
+0089   014C 32 97 06    			LD	(ENVIR),A
+0090   014F CD 8F 05    			CALL PRINTENV
+0091   0152 CD 16 04    			CALL LINER					; Call the line manager
+0092   0155 FE FF       			CP	0FFH
+0093   0157 CA 03 E6    			JP	Z,WBOOT					; User typed Ctrl-C or Ctrl-Z... Abort, abort!
+0094   015A 3A 80 00    			LD	A,(DMA)
+0095   015D FE 00       			CP	0
+0096   015F 28 E9       			JR	Z,CYCLE					; User ENTERed an empty line. No need to parse.
+0097   0161 21 48 06    			LD	HL,CMDTBL
+0098   0164 CD BF 04    			CALL PARSER					; Find command comparing buffer with Command Table.
+0099   0167 3C          			INC	A
+0100   0168 28 01       			JR	Z,UNK					; No match found in command table.
+0101   016A E9          			JP	(HL)					; Jump to Command Routine
+0102   016B CD FB 03    UNK:		CALL UNKNOWN
+0103   016E 18 DA       			JR	CYCLE
+0104   0170             			
+0105   0170             ;================================================================================================
+0106   0170             ; Memory Operations
+0107   0170             ;
+0108   0170             ; Options:	R aaaa					Read 1 page starting at aaaa. <ENTER>=next page, <ESC>=quit.
+0109   0170             ;			W aaaa,c1 c2 ... cN		Write at aaaa the sequence of characters.
+0110   0170             ;			C aaaa-bbbb,cccc		Copy [aaaa ~ bbbb] to cccc.
+0111   0170             ;			F aaaa-bbbb,cc			Fill [aaaa ~ bbbb] with cc.
+0112   0170             ;			V aaaa-bbbb				Verify area [aaaa ~ bbbb].
+0113   0170             ;			Ctrl-C					Return to Monitor.
+0114   0170             ;================================================================================================
+0115   0170 3E 4D       MEMO:		LD	A,'M'
+0116   0172 32 97 06    			LD	(ENVIR),A				; Set environment variable.
+0117   0175 CD 8F 05    			CALL PRINTENV
+0118   0178 CD 16 04    			CALL LINER					; Call the line manager.
+0119   017B FE FF       			CP	0FFH
+0120   017D CA 4A 01    			JP	Z,CYCLE					; User typed Ctrl-C or Ctrl-Z, return to Monitor.
+0121   0180 3A 80 00    			LD	A,(DMA)
+0122   0183 FE 00       			CP	0
+0123   0185 28 E9       			JR	Z,MEMO					; User ENTERed an empty line. No need to parse.
+0124   0187 21 7B 06    			LD	HL,MEMOCT				; Set Memory command table.
+0125   018A CD BF 04    			CALL PARSER					; Find command comparing buffer with Command Table.
+0126   018D 3C          			INC	A
+0127   018E 28 01       			JR	Z,MUNKNOWN				; No match found in command table.
+0128   0190 E9          			JP	(HL)					; Jump to Command Routine
+0129   0191 CD FB 03    MUNKNOWN:	CALL UNKNOWN
+0130   0194 18 DA       			JR	MEMO
+0131   0196             			
+0132   0196             ;================================================================================================
+0133   0196             ; Read memory operations
+0134   0196             ;================================================================================================
+0135   0196 11 81 00    MREAD:		LD	DE,DMA+1
+0136   0199 CD 1D 05    			CALL GETWORD		
+0137   019C FE 01       			CP	1				; Is the argument OK?
+0138   019E C2 70 01    			JP	NZ,MEMO
+0139   01A1 C5          			PUSH BC
+0140   01A2 D1          			POP	DE				; DE will be the address holder
+0141   01A3 7B          			LD	A,E
+0142   01A4 E6 F0       			AND	0F0H
+0143   01A6 5F          			LD	E,A				; trim addr (xxx0)
+0144   01A7 CD 2D 02    NEWHDR:		CALL PRINTHDR		; Print the header
+0145   01AA 3E 10       			LD	A,16
+0146   01AC 32 98 06    			LD	(LINNUM),A
+0147   01AF CD 6F 04    NEWLINE:	CALL CRLF
+0148   01B2 CD 8F 05    			CALL PRINTENV
+0149   01B5 42          			LD	B,D				; Print the address
+0150   01B6 CD F0 05    			CALL B2HL
+0151   01B9 4C          			LD	C,H
+0152   01BA CD 0C E6    			CALL CONOUT
+0153   01BD 4D          			LD	C,L
+0154   01BE CD 0C E6    			CALL CONOUT
+0155   01C1 43          			LD	B,E
+0156   01C2 CD F0 05    			CALL B2HL
+0157   01C5 4C          			LD	C,H
+0158   01C6 CD 0C E6    			CALL CONOUT
+0159   01C9 4D          			LD	C,L
+0160   01CA CD 0C E6    			CALL CONOUT
+0161   01CD 0E 3A       			LD	C,':'
+0162   01CF CD 0C E6    			CALL CONOUT
+0163   01D2 0E 20       			LD	C,' '
+0164   01D4 CD 0C E6    			CALL CONOUT
+0165   01D7 06 10       			LD	B,16
+0166   01D9 C5          NEWCOL:		PUSH BC
+0167   01DA 1A          			LD	A,(DE)			; Start printing the memory content
+0168   01DB 13          			INC	DE
+0169   01DC 47          			LD	B,A
+0170   01DD CD F0 05    			CALL B2HL
+0171   01E0 4C          			LD	C,H
+0172   01E1 CD 0C E6    			CALL CONOUT
+0173   01E4 4D          			LD	C,L
+0174   01E5 CD 0C E6    			CALL CONOUT
+0175   01E8 0E 20       			LD	C,' '
+0176   01EA CD 0C E6    			CALL CONOUT
+0177   01ED C1          			POP	BC
+0178   01EE 10 E9       			DJNZ NEWCOL
+0179   01F0 0E 20       			LD	C,' '
+0180   01F2 CD 0C E6    			CALL CONOUT
+0181   01F5 21 F0 FF    			LD	HL,0FFF0H		; This is -10h
+0182   01F8 19          			ADD	HL,DE			; Go back to beginning of line
+0183   01F9 E5          			PUSH HL
+0184   01FA D1          			POP	DE
+0185   01FB 06 10       			LD	B,16
+0186   01FD C5          NEWCOL2:	PUSH BC				; Start printing the printables
+0187   01FE 0E 2E       			LD	C,'.'
+0188   0200 1A          			LD	A,(DE)
+0189   0201 FE 20       			CP	20H
+0190   0203 FA 0C 02    			JP	M,NOTPRTBL
+0191   0206 FE 7F       			CP	7FH
+0192   0208 F2 0C 02    			JP	P,NOTPRTBL
+0193   020B 4F          			LD	C,A
+0194   020C CD 0C E6    NOTPRTBL:	CALL CONOUT
+0195   020F 13          			INC	DE
+0196   0210 C1          			POP	BC
+0197   0211 10 EA       			DJNZ NEWCOL2
+0198   0213 3A 98 06    			LD	A,(LINNUM)
+0199   0216 3D          			DEC	A
+0200   0217 32 98 06    			LD	(LINNUM),A
+0201   021A 20 93       			JR	NZ,NEWLINE
+0202   021C CD CC 02    			CALL PRINTFTR		; Print footer message
+0203   021F CD 09 E6    			CALL CONIN			; Wait for user's decision
+0204   0222 FE 0D       			CP	CR
+0205   0224 28 81       TRYAGAIN:	JR	Z,NEWHDR
+0206   0226 FE 1B       			CP	ESC
+0207   0228 CA 70 01    			JP	Z,MEMO
+0208   022B 18 F7       			JR	TRYAGAIN
+0209   022D             
+0210   022D CD 8F 05    PRINTHDR:	CALL PRINTENV
+0211   0230 CD 33 E6    			CALL PRINTSEQ
+0212   0233 41 44 44 52 			.DB "ADDR: 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F  0123456789ABCDEF",CR,LF,0
+0212   0237 3A 20 30 30 
+0212   023B 20 30 31 20 
+0212   023F 30 32 20 30 
+0212   0243 33 20 30 34 
+0212   0247 20 30 35 20 
+0212   024B 30 36 20 30 
+0212   024F 37 20 30 38 
+0212   0253 20 30 39 20 
+0212   0257 30 41 20 30 
+0212   025B 42 20 30 43 
+0212   025F 20 30 44 20 
+0212   0263 30 45 20 30 
+0212   0267 46 20 20 30 
+0212   026B 31 32 33 34 
+0212   026F 35 36 37 38 
+0212   0273 39 41 42 43 
+0212   0277 44 45 46 0D 
+0212   027B 0A 00 
+0213   027D CD 8F 05    			CALL PRINTENV
+0214   0280 CD 33 E6    			CALL PRINTSEQ
+0215   0283 2D 2D 2D 2D 			.DB "----- -----------------------------------------------  ----------------",0
+0215   0287 2D 20 2D 2D 
+0215   028B 2D 2D 2D 2D 
+0215   028F 2D 2D 2D 2D 
+0215   0293 2D 2D 2D 2D 
+0215   0297 2D 2D 2D 2D 
+0215   029B 2D 2D 2D 2D 
+0215   029F 2D 2D 2D 2D 
+0215   02A3 2D 2D 2D 2D 
+0215   02A7 2D 2D 2D 2D 
+0215   02AB 2D 2D 2D 2D 
+0215   02AF 2D 2D 2D 2D 
+0215   02B3 2D 2D 2D 2D 
+0215   02B7 2D 20 20 2D 
+0215   02BB 2D 2D 2D 2D 
+0215   02BF 2D 2D 2D 2D 
+0215   02C3 2D 2D 2D 2D 
+0215   02C7 2D 2D 2D 00 
+0216   02CB C9          			RET
+0217   02CC             
+0218   02CC CD 6F 04    PRINTFTR:	CALL CRLF
+0219   02CF CD 8F 05    			CALL PRINTENV
+0220   02D2 CD 6F 04    			CALL CRLF
+0221   02D5 CD 8F 05    			CALL PRINTENV
+0222   02D8 CD 33 E6    			CALL PRINTSEQ
+0223   02DB 20 20 20 20 			.DB "                   <ENTER> = next page, <ESC> = quit.",CR,LF,0
+0223   02DF 20 20 20 20 
+0223   02E3 20 20 20 20 
+0223   02E7 20 20 20 20 
+0223   02EB 20 20 20 3C 
+0223   02EF 45 4E 54 45 
+0223   02F3 52 3E 20 3D 
+0223   02F7 20 6E 65 78 
+0223   02FB 74 20 70 61 
+0223   02FF 67 65 2C 20 
+0223   0303 3C 45 53 43 
+0223   0307 3E 20 3D 20 
+0223   030B 71 75 69 74 
+0223   030F 2E 0D 0A 00 
+0224   0313 C9          			RET
+0225   0314             ;================================================================================================
+0226   0314             ; Write memory operations
+0227   0314             ;================================================================================================
+0228   0314 CD 8F 05    MWRITE:		CALL PRINTENV
+0229   0317 CD 33 E6    			CALL PRINTSEQ
+0230   031A 57 20 61 61 			.DB	"W aaaa,c1...cN",CR,LF,0
+0230   031E 61 61 2C 63 
+0230   0322 31 2E 2E 2E 
+0230   0326 63 4E 0D 0A 
+0230   032A 00 
+0231   032B C3 70 01    			JP	MEMO
+0232   032E             
+0233   032E             ;================================================================================================
+0234   032E             ; Copy memory operations
+0235   032E             ;================================================================================================
+0236   032E CD 8F 05    MCOPY:		CALL PRINTENV
+0237   0331 CD 33 E6    			CALL PRINTSEQ
+0238   0334 43 20 61 61 			.DB	"C aaaa-bbbb,cccc",CR,LF,0
+0238   0338 61 61 2D 62 
+0238   033C 62 62 62 2C 
+0238   0340 63 63 63 63 
+0238   0344 0D 0A 00 
+0239   0347 C3 70 01    			JP	MEMO
+0240   034A             
+0241   034A             ;================================================================================================
+0242   034A             ; Fill memory operations
+0243   034A             ;================================================================================================
+0244   034A CD 8F 05    MFILL:		CALL PRINTENV
+0245   034D CD 33 E6    			CALL PRINTSEQ
+0246   0350 46 20 61 61 			.DB	"F aaaa-bbbb,cc",CR,LF,0
+0246   0354 61 61 2D 62 
+0246   0358 62 62 62 2C 
+0246   035C 63 63 0D 0A 
+0246   0360 00 
+0247   0361 C3 70 01    			JP	MEMO
+0248   0364             
+0249   0364             ;================================================================================================
+0250   0364             ; Verify memory operations
+0251   0364             ;================================================================================================
+0252   0364 CD 8F 05    MVERIFY:	CALL PRINTENV
+0253   0367 CD 33 E6    			CALL PRINTSEQ
+0254   036A 56 20 61 61 			.DB	"V aaaa-bbbb",CR,LF,0
+0254   036E 61 61 2D 62 
+0254   0372 62 62 62 0D 
+0254   0376 0A 00 
+0255   0378 C3 70 01    			JP	MEMO
+0256   037B             
+0257   037B             ;================================================================================================
+0258   037B             ; Xmodem Command
+0259   037B             ;================================================================================================
+0260   037B CD 33 E6    XMODEM:		CALL PRINTSEQ
+0261   037E 5D 58 4D 4F 			.DB	"]XMODEM aaaa",CR,LF,0
+0261   0382 44 45 4D 20 
+0261   0386 61 61 61 61 
+0261   038A 0D 0A 00 
+0262   038D C3 4A 01    			JP	CYCLE
+0263   0390             
+0264   0390             ;================================================================================================
+0265   0390             ; Hexadecimal to Executable conversion command.
+0266   0390             ;================================================================================================
+0267   0390 CD 33 E6    HEX2COM:	CALL PRINTSEQ
+0268   0393 5D 48 45 58 			.DB	"]HEX2COM aaaa",CR,LF,0
+0268   0397 32 43 4F 4D 
+0268   039B 20 61 61 61 
+0268   039F 61 0D 0A 00 
+0269   03A3 C3 4A 01    			JP	CYCLE
+0270   03A6             
+0271   03A6             ;================================================================================================
+0272   03A6             ; LCD Operations
+0273   03A6             ;================================================================================================
+0274   03A6 CD 33 E6    LCD:		CALL PRINTSEQ
+0275   03A9 4C 5D 52 65 			.DB	"L]Ready for LCD Operations",CR,LF,0
+0275   03AD 61 64 79 20 
+0275   03B1 66 6F 72 20 
+0275   03B5 4C 43 44 20 
+0275   03B9 4F 70 65 72 
+0275   03BD 61 74 69 6F 
+0275   03C1 6E 73 0D 0A 
+0275   03C5 00 
+0276   03C6 C3 4A 01    			JP	CYCLE
+0277   03C9             
+0278   03C9             ;================================================================================================
+0279   03C9             ; Disk Operations
+0280   03C9             ;================================================================================================
+0281   03C9 CD 33 E6    DISK:		CALL PRINTSEQ
+0282   03CC 44 5D 52 65 			.DB	"D]Ready for Disk Operations",CR,LF,0
+0282   03D0 61 64 79 20 
+0282   03D4 66 6F 72 20 
+0282   03D8 44 69 73 6B 
+0282   03DC 20 4F 70 65 
+0282   03E0 72 61 74 69 
+0282   03E4 6F 6E 73 0D 
+0282   03E8 0A 00 
+0283   03EA C3 4A 01    			JP	CYCLE
+0284   03ED             
+0285   03ED             ;================================================================================================
+0286   03ED             ; Execute Command
+0287   03ED             ;================================================================================================
+0288   03ED 11 83 00    RUN:		LD	DE,DMA+3
+0289   03F0 CD 1D 05    			CALL GETWORD		
+0290   03F3 FE 01       			CP	1				; Is the argument OK?
+0291   03F5 C2 4A 01    			JP	NZ,CYCLE
+0292   03F8 C5          			PUSH BC
+0293   03F9 E1          			POP	HL
+0294   03FA E9          			JP	(HL)			; Continue execution where user requested. His responsability!
+0295   03FB             
+0296   03FB             ;================================================================================================
+0297   03FB             ; Unknown Command message. HL has the address of the line buffer.
+0298   03FB             ;================================================================================================
+0299   03FB CD 8F 05    UNKNOWN:	CALL PRINTENV
+0300   03FE 21 80 00    			LD	HL,DMA
+0301   0401 7E          UNEXT:		LD	A,(HL)
+0302   0402 FE 00       			CP	0
+0303   0404 28 07       			JR	Z,UEND
+0304   0406 4F          			LD	C,A
+0305   0407 CD 0C E6    			CALL CONOUT
+0306   040A 23          			INC	HL
+0307   040B 18 F4       			JR	UNEXT
+0308   040D 0E 3F       UEND:		LD	C,'?'
+0309   040F CD 0C E6    			CALL CONOUT
+0310   0412 CD 6F 04    			CALL CRLF
+0311   0415 C9          			RET
+0312   0416             
+0313   0416             ;================================================================================================
+0314   0416             ; Routine to manage line input from console. Returns A=0FFh if user typed Ctrl-Z (ETX).
+0315   0416             ;================================================================================================
+0316   0416 21 80 00    LINER:		LD	HL,DMA
+0317   0419 22 95 06    			LD	(LBUFPTR),HL			; Init line buffer pointer.
+0318   041C CD 09 E6    WAITCHAR:	CALL CONIN					; Wait till user types something.
+0319   041F FE 03       			CP	ETX						; Is it Ctrl-C?
+0320   0421 28 42       			JR	Z,GOTETX
+0321   0423 FE 1A       			CP	SUB						; Is is Ctrl-Z?
+0322   0425 28 3E       			JR	Z,GOTSUB
+0323   0427 FE 18       			CP	CAN
+0324   0429 28 40       			JR	Z,GOTCAN				; Is it <CAN>? (= delete line).
+0325   042B FE 0D       			CP	CR
+0326   042D 28 29       			JR	Z,GOTCR					; Is it <ENTER>?
+0327   042F FE 08       			CP	BS
+0328   0431 28 1E       			JR	Z,GOTBS					; Is it <BS>? (= backspace).
+0329   0433 2A 95 06    			LD	HL,(LBUFPTR)			; None of the above options, so let's put it in the buffer.
+0330   0436 01 D0 00    			LD	BC,MAXLBUF				; But 1st, we have to check if we still have space.
+0331   0439 37          			SCF
+0332   043A 3F          			CCF
+0333   043B ED 42       			SBC	HL,BC
+0334   043D 28 0E       			JR	Z,LBUFFULL				; Is buffer full?
+0335   043F 2A 95 06    			LD	HL,(LBUFPTR)
+0336   0442 77          			LD	(HL),A
+0337   0443 23          			INC	HL
+0338   0444 22 95 06    			LD	(LBUFPTR),HL
+0339   0447 4F          			LD	C,A
+0340   0448 CD 0C E6    OUTWAIT:	CALL CONOUT
+0341   044B 18 CF       			JR	WAITCHAR
+0342   044D             
+0343   044D 0E 07       LBUFFULL:	LD	C,BEL					; Buffer is full. Just ring the bell.
+0344   044F 18 F7       			JR	OUTWAIT
+0345   0451             
+0346   0451 16 01       GOTBS:		LD	D,1						; We got a backspace.
+0347   0453 CD 7A 04    AFTGOTBS:	CALL BSPROC
+0348   0456 18 C4       			JR	WAITCHAR
+0349   0458             
+0350   0458 2A 95 06    GOTCR:		LD	HL,(LBUFPTR)			; We got an ENTER, which means the the user
+0351   045B 3E 00       			LD	A,0						; has finished typing the command line.
+0352   045D 77          			LD	(HL),A
+0353   045E CD 6F 04    			CALL CRLF
+0354   0461 CD A8 04    			CALL UPPER					; Convert line to uppercase before parsing.
+0355   0464 C9          			RET
+0356   0465             GOTETX:
+0357   0465 CD 6F 04    GOTSUB:		CALL CRLF					; User abort request (Ctrl-C or Ctrl-Z).
+0358   0468 3E 0C       			LD	A,FF
+0359   046A C9          			RET
+0360   046B             			
+0361   046B 16 00       GOTCAN:		LD	D,0						; We got a line delete.
+0362   046D 18 E4       			JR	AFTGOTBS
+0363   046F             			
+0364   046F 0E 0D       CRLF:		LD	C,CR
+0365   0471 CD 0C E6    			CALL CONOUT
+0366   0474 0E 0A       			LD	C,LF
+0367   0476 CD 0C E6    			CALL CONOUT					; Output <CR><LF>.
+0368   0479 C9          			RET
+0369   047A             
+0370   047A             ;================================================================================================
+0371   047A             ; Routine to do the backspace and line delete. D=1, backspace; D=0, delete line.
+0372   047A             ;================================================================================================
+0373   047A 2A 95 06    BSPROC:		LD	HL,(LBUFPTR)
+0374   047D 01 80 00    			LD	BC,DMA
+0375   0480 37          			SCF
+0376   0481 3F          			CCF
+0377   0482 ED 42       			SBC	HL,BC
+0378   0484 28 1C       			JR	Z,LBUFEMPTY
+0379   0486 2A 95 06    			LD	HL,(LBUFPTR)
+0380   0489 2B          			DEC	HL
+0381   048A 22 95 06    			LD	(LBUFPTR),HL
+0382   048D 0E 08       			LD	C,BS
+0383   048F CD 0C E6    			CALL CONOUT
+0384   0492 0E 20       			LD	C,' '
+0385   0494 CD 0C E6    			CALL CONOUT
+0386   0497 0E 08       			LD	C,BS
+0387   0499 CD 0C E6    			CALL CONOUT
+0388   049C 7A          			LD	A,D
+0389   049D FE 01       			CP	1
+0390   049F C8          			RET	Z
+0391   04A0 18 D8       			JR	BSPROC
+0392   04A2             
+0393   04A2 0E 07       LBUFEMPTY:	LD	C,BEL
+0394   04A4 CD 0C E6    			CALL CONOUT
+0395   04A7 C9          			RET
+0396   04A8             			
+0397   04A8             ;================================================================================================
+0398   04A8             ; Routine to convert line buffer content to upper case
+0399   04A8             ;================================================================================================
+0400   04A8 21 7F 00    UPPER:		LD	HL,DMA-1
+0401   04AB 23          NEXT2UP:	INC	HL
+0402   04AC 7E          			LD	A,(HL)
+0403   04AD FE 00       			CP	0
+0404   04AF C8          			RET	Z
+0405   04B0 FE 61       			CP	'a'
+0406   04B2 FA AB 04    			JP	M,NEXT2UP
+0407   04B5 FE 7B       			CP	'{'
+0408   04B7 F2 AB 04    			JP	P,NEXT2UP
+0409   04BA D6 20       			SUB	20H
+0410   04BC 77          			LD	(HL),A
+0411   04BD 18 EC       			JR	NEXT2UP
+0412   04BF             			
+0413   04BF             ;================================================================================================
+0414   04BF             ; Routine to parse command. HL=cmd_table_pointer.
+0415   04BF             ; regA=cmd_num or FFh if no match. HL=jump_address or 0000 if no match.
+0416   04BF             ;================================================================================================
+0417   04BF C5          PARSER:		PUSH BC
+0418   04C0 D5          			PUSH DE
+0419   04C1 11 80 00    			LD	DE,DMA
+0420   04C4 3E 00       			LD	A,0
+0421   04C6 32 94 06    			LD	(CMDNUM),A		; Init command number.
+0422   04C9 1A          NEXT2PARS:	LD	A,(DE)
+0423   04CA BE          			CP	(HL)
+0424   04CB 20 04       			JR	NZ,NOTEQU
+0425   04CD 23          			INC	HL
+0426   04CE 13          			INC	DE
+0427   04CF 18 F8       			JR	NEXT2PARS
+0428   04D1 7E          NOTEQU:		LD	A,(HL)
+0429   04D2 FE 1E       			CP	RS
+0430   04D4 28 04       			JR	Z,ISRS
+0431   04D6 FE 03       			CP	ETX
+0432   04D8 20 22       			JR	NZ,NEXTCMD
+0433   04DA 1A          ISRS:		LD	A,(DE)
+0434   04DB FE 00       			CP	0
+0435   04DD 28 04       			JR	Z,ISZERO
+0436   04DF FE 20       			CP	' '
+0437   04E1 20 19       			JR	NZ,NEXTCMD
+0438   04E3 7E          ISZERO:		LD	A,(HL)
+0439   04E4 FE 03       			CP	ETX
+0440   04E6 28 03       			JR	Z,CMDMATCH
+0441   04E8 23          			INC	HL
+0442   04E9 18 F8       			JR	ISZERO
+0443   04EB 23          CMDMATCH:	INC	HL
+0444   04EC E5          			PUSH HL
+0445   04ED D1          			POP	DE				; DE=addr of jump table
+0446   04EE 26 00       			LD	H,0
+0447   04F0 3A 94 06    			LD	A,(CMDNUM)
+0448   04F3 6F          			LD	L,A
+0449   04F4 E5          			PUSH HL
+0450   04F5 C1          			POP	BC
+0451   04F6 09          			ADD	HL,BC			; command_number * 2
+0452   04F7 09          			ADD	HL,BC			; command_number * 3
+0453   04F8 19          			ADD HL,DE
+0454   04F9 D1          			POP	DE
+0455   04FA C1          			POP	BC
+0456   04FB C9          			RET					; A=command_number, HL=jump_address
+0457   04FC 7E          NEXTCMD:	LD	A,(HL)
+0458   04FD FE 1E       			CP	RS
+0459   04FF 28 07       			JR	Z,ISRS2
+0460   0501 FE 03       			CP	ETX
+0461   0503 28 10       			JR	Z,NOMATCH
+0462   0505 23          			INC	HL
+0463   0506 18 F4       			JR	NEXTCMD
+0464   0508 23          ISRS2:		INC	HL
+0465   0509 3A 94 06    			LD	A,(CMDNUM)
+0466   050C 3C          			INC	A
+0467   050D 32 94 06    			LD	(CMDNUM),A
+0468   0510 11 80 00    			LD	DE,DMA
+0469   0513 18 B4       			JR	NEXT2PARS
+0470   0515 21 00 00    NOMATCH:	LD	HL,0
+0471   0518 3E FF       			LD	A,0FFH
+0472   051A D1          			POP	DE
+0473   051B C1          			POP	BC
+0474   051C C9          			RET
+0475   051D             
+0476   051D             ;================================================================================================
+0477   051D             ; Routine to get word from command line. DE=line_buf_ptr(should point to where word starts).
+0478   051D             ; If successfull, return word in BC. A=0 if missing arg, A=1 if OK, A=2 if invalid arg. 
+0479   051D             ;================================================================================================
+0480   051D CD 31 05    GETWORD:	CALL GETBYTE
+0481   0520 FE 01       			CP	1
+0482   0522 C0          			RET	NZ
+0483   0523 48          			LD	C,B
+0484   0524 13          			INC	DE
+0485   0525 CD 31 05    			CALL GETBYTE
+0486   0528 FE 01       			CP	1
+0487   052A C0          			RET NZ
+0488   052B 78          			LD	A,B
+0489   052C 41          			LD	B,C
+0490   052D 4F          			LD	C,A
+0491   052E 3E 01       			LD	A,1
+0492   0530 C9          			RET
+0493   0531             			
+0494   0531             ;================================================================================================
+0495   0531             ; Routine to get byte from command line. DE=line_buf_ptr(should point to where byte starts).
+0496   0531             ; If successfull, return byte in regB. A=0 if missing arg, A=1 if OK, A=2 if invalid arg. 
+0497   0531             ;================================================================================================
+0498   0531 1A          GETBYTE:	LD	A,(DE)
+0499   0532 FE 00       			CP	0
+0500   0534 28 1C       			JR	Z,GBNA				; End of buffer and no arg found.
+0501   0536 FE 20       			CP	' '
+0502   0538 28 35       			JR	Z,GBSPC				; Trim the space.
+0503   053A 67          			LD	H,A
+0504   053B CD A0 05    			CALL ISITHEX
+0505   053E FE 01       			CP	1
+0506   0540 20 30       			JR	NZ,GBIA				; Invalid arg.
+0507   0542 13          			INC	DE
+0508   0543 1A          			LD	A,(DE)
+0509   0544 6F          			LD	L,A
+0510   0545 CD A0 05    			CALL ISITHEX
+0511   0548 FE 01       			CP	1
+0512   054A 20 26       			JR	NZ,GBIA				; Invalid arg.
+0513   054C CD BA 05    			CALL HL2B				; Convert ASCII pair to byte
+0514   054F 3E 01       			LD	A,1
+0515   0551 C9          			RET
+0516   0552 CD 8F 05    GBNA:		CALL PRINTENV
+0517   0555 CD 33 E6    			CALL PRINTSEQ
+0518   0558 4D 69 73 73 			.DB	"Missing argument.",CR,LF,0
+0518   055C 69 6E 67 20 
+0518   0560 61 72 67 75 
+0518   0564 6D 65 6E 74 
+0518   0568 2E 0D 0A 00 
+0519   056C 3E 00       			LD	A,0
+0520   056E C9          			RET
+0521   056F 13          GBSPC:		INC	DE
+0522   0570 18 BF       			JR	GETBYTE
+0523   0572 CD 8F 05    GBIA:		CALL PRINTENV
+0524   0575 CD 33 E6    			CALL PRINTSEQ
+0525   0578 49 6E 76 61 			.DB	"Invalid argument.",CR,LF,0
+0525   057C 6C 69 64 20 
+0525   0580 61 72 67 75 
+0525   0584 6D 65 6E 74 
+0525   0588 2E 0D 0A 00 
+0526   058C 3E 02       			LD	A,2
+0527   058E C9          			RET
+0528   058F             
+0529   058F 3A 97 06    PRINTENV:	LD	A,(ENVIR)			; Print environment letter (M, L, D or none) before message.
+0530   0592 FE 00       			CP	0
+0531   0594 28 04       			JR	Z,NOLETTER
+0532   0596 4F          			LD	C,A
+0533   0597 CD 0C E6    			CALL CONOUT
+0534   059A 0E 7D       NOLETTER:	LD	C,PROMPT
+0535   059C CD 0C E6    			CALL CONOUT
+0536   059F C9          			RET
+0537   05A0             
+0538   05A0 FE 47       ISITHEX:	CP	'G'
+0539   05A2 F2 B4 05    			JP	P,NOTHEX
+0540   05A5 FE 41       			CP	'A'
+0541   05A7 F2 B7 05    			JP	P,ISHEX
+0542   05AA FE 40       			CP	040H
+0543   05AC F2 B4 05    			JP	P,NOTHEX
+0544   05AF FE 30       			CP	'0'
+0545   05B1 F2 B7 05    			JP	P,ISHEX
+0546   05B4 3E 00       NOTHEX:		LD	A,0
+0547   05B6 C9          			RET
+0548   05B7 3E 01       ISHEX:		LD	A,1
+0549   05B9 C9          			RET
+0550   05BA             
+0551   05BA             ;================================================================================================
+0552   05BA             ; Convert ASCII to HEX (HL --> B)
+0553   05BA             ;================================================================================================
+0554   05BA C5          HL2B:		PUSH BC
+0555   05BB 3E 60       			LD	A,060H
+0556   05BD 94          			SUB	H
+0557   05BE 0E 57       			LD	C,057H
+0558   05C0 DA CD 05    			JP	C,DISCOUNT
+0559   05C3 3E 40       			LD	A,040H
+0560   05C5 94          			SUB	H
+0561   05C6 0E 37       			LD	C,037H
+0562   05C8 DA CD 05    			JP	C,DISCOUNT
+0563   05CB 0E 30       			LD	C,030H
+0564   05CD 7C          DISCOUNT:	LD	A,H
+0565   05CE 91          			SUB	C
+0566   05CF 47          CONVL:		LD	B,A
+0567   05D0 CB 20       			SLA	B
+0568   05D2 CB 20       			SLA	B
+0569   05D4 CB 20       			SLA	B
+0570   05D6 CB 20       			SLA	B
+0571   05D8 3E 60       			LD	A,060H
+0572   05DA 95          			SUB	L
+0573   05DB 0E 57       			LD	C,057H
+0574   05DD DA EA 05    			JP	C,DISCOUNT2
+0575   05E0 3E 40       			LD	A,040H
+0576   05E2 95          			SUB	L
+0577   05E3 0E 37       			LD	C,037H
+0578   05E5 DA EA 05    			JP	C,DISCOUNT2
+0579   05E8 0E 30       			LD	C,030H
+0580   05EA 7D          DISCOUNT2:	LD	A,L
+0581   05EB 91          			SUB	C
+0582   05EC B0          			OR	B
+0583   05ED C1          			POP	BC
+0584   05EE 47          			LD	B,A
+0585   05EF C9          			RET
+0586   05F0             
+0587   05F0             ;================================================================================================
+0588   05F0             ; Convert HEX to ASCII (B --> HL)
+0589   05F0             ;================================================================================================
+0590   05F0 C5          B2HL:		PUSH	BC
+0591   05F1 78          			LD	A,B
+0592   05F2 E6 0F       			AND	0FH
+0593   05F4 6F          			LD	L,A
+0594   05F5 D6 0A       			SUB	0AH
+0595   05F7 0E 30       			LD	C,030H
+0596   05F9 DA FE 05    			JP	C,COMPENSE
+0597   05FC 0E 37       			LD	C,037H
+0598   05FE 7D          COMPENSE:	LD	A,L
+0599   05FF 81          			ADD	A,C
+0600   0600 6F          			LD	L,A
+0601   0601 78          			LD	A,B
+0602   0602 E6 F0       			AND	0F0H
+0603   0604 CB 3F       			SRL	A
+0604   0606 CB 3F       			SRL	A
+0605   0608 CB 3F       			SRL	A
+0606   060A CB 3F       			SRL	A
+0607   060C 67          			LD	H,A
+0608   060D D6 0A       			SUB	0AH
+0609   060F 0E 30       			LD	C,030H
+0610   0611 DA 16 06    			JP	C,COMPENSE2
+0611   0614 0E 37       			LD	C,037H
+0612   0616 7C          COMPENSE2:	LD	A,H
+0613   0617 81          			ADD	A,C
+0614   0618 67          			LD	H,A
+0615   0619 C1          			POP	BC
+0616   061A C9          			RET
+0617   061B             
+0618   061B             ;*****************************************************
+0619   061B             ;********* Entry point for RUN command test **********
+0620   061B             ;*****************************************************
+0621   061B CD 33 E6    RUNCMDTST:	CALL PRINTSEQ
+0622   061E 0D 0A       			.DB	CR,LF
+0623   0620 20 2A 2A 2A 			.DB	" *** RUN COMMAND TEST EXIT POINT ***"
+0623   0624 20 52 55 4E 
+0623   0628 20 43 4F 4D 
+0623   062C 4D 41 4E 44 
+0623   0630 20 54 45 53 
+0623   0634 54 20 45 58 
+0623   0638 49 54 20 50 
+0623   063C 4F 49 4E 54 
+0623   0640 20 2A 2A 2A 
+0624   0644 0D 0A 00    			.DB	CR,LF,0
+0625   0647 76          			HALT
+0626   0648             
+0627   0648             ;================================================================================================
+0628   0648 4D 45 4D 4F CMDTBL:		.DB	"MEMO",RS
+0628   064C 1E 
+0629   064D 58 4D 4F 44 			.DB	"XMODEM",RS
+0629   0651 45 4D 1E 
+0630   0654 48 45 58 32 			.DB	"HEX2COM",RS
+0630   0658 43 4F 4D 1E 
+0631   065C 4C 43 44 1E 			.DB	"LCD",RS
+0632   0660 44 49 53 4B 			.DB	"DISK",RS
+0632   0664 1E 
+0633   0665 52 55 4E 03 			.DB	"RUN",ETX
+0634   0669             
+0635   0669 C3 70 01    JMPTBL:		JP	MEMO
+0636   066C C3 7B 03    			JP	XMODEM
+0637   066F C3 90 03    			JP	HEX2COM
+0638   0672 C3 A6 03    			JP	LCD
+0639   0675 C3 C9 03    			JP	DISK
+0640   0678 C3 ED 03    			JP	RUN
+0641   067B             			
+0642   067B 52 1E       MEMOCT:		.DB	"R",RS
+0643   067D 57 1E       			.DB	"W",RS
+0644   067F 43 1E       			.DB	"C",RS
+0645   0681 46 1E       			.DB	"F",RS
+0646   0683 56 03       			.DB	"V",ETX
+0647   0685             
+0648   0685 C3 96 01    MEMOJT:		JP	MREAD
+0649   0688 C3 14 03    			JP	MWRITE
+0650   068B C3 2E 03    			JP	MCOPY
+0651   068E C3 4A 03    			JP	MFILL
+0652   0691 C3 64 03    			JP	MVERIFY
+0653   0694             			
+0654   0694 00          CMDNUM		.DB	0
+0655   0695 00 00       LBUFPTR		.DW	0
+0656   0697 00          ENVIR		.DB	0			; 0=MONITOR, M=MEMO, L=LCD, D=DISK
+0657   0698 00          LINNUM		.DB	0
+0658   0699 00          COLNUM		.DB	0
+0659   069A             
+0660   069A             
+0661   069A             			.END
 tasm: Number of errors = 0
