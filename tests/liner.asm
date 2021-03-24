@@ -5,8 +5,6 @@
 ; Backspace = delete last character
 ;        ^X = delete all the line
 ;
-; After user types <ENTER>, the line is saved in line_buffer and control returns
-; to Monitor program.
 ;==================================================================================
 TPA			.EQU	0100H		; Transient Programs Area
 MONITOR		.EQU	0D000H		; Monitor entry point
@@ -77,6 +75,7 @@ US			.EQU	1FH
 ; Some constants
 ;================================================================================================
 MAXLBUF		.EQU	DMA+80
+PROMPT		.EQU	'}'
 
 ;================================================================================================
 ; MAIN PROGRAM STARTS HERE
@@ -86,16 +85,16 @@ MAXLBUF		.EQU	DMA+80
 			CALL PRINTSEQ
 			.DB	"Z80 Modular Computer BIOS 1.0 by Kaltchuk - 2020",CR,LF
 			.DB	"Monitor 2.0 - 2021",CR,LF,0
-CYCLE:		LD	C,']'
-			CALL CONOUT
+CYCLE:		LD	A,0
+			LD	(ENVIR),A
+			CALL PRINTENV
 			CALL LINER					; Call the line manager
 			CP	0FFH
-			JP	Z,WBOOT					; User typed Crl-Z... Abort, abort!
+			JP	Z,WBOOT					; User typed Ctrl-C or Ctrl-Z... Abort, abort!
 			LD	A,(DMA)
 			CP	0
 			JR	Z,CYCLE					; User ENTERed an empty line. No need to parse.
 			LD	HL,CMDTBL
-			LD	DE,DMA
 			CALL PARSER					; Find command comparing buffer with Command Table.
 			INC	A
 			JR	Z,UNK					; No match found in command table.
@@ -115,18 +114,14 @@ UNK:		CALL UNKNOWN
 ;================================================================================================
 MEMO:		LD	A,'M'
 			LD	(ENVIR),A				; Set environment variable.
-			LD	C,A
-			CALL CONOUT
-			LD	C,']'
-			CALL CONOUT
+			CALL PRINTENV
 			CALL LINER					; Call the line manager.
 			CP	0FFH
-			JP	Z,CYCLE					; User typed Crl-Z, return to Monitor.
+			JP	Z,CYCLE					; User typed Ctrl-C or Ctrl-Z, return to Monitor.
 			LD	A,(DMA)
 			CP	0
 			JR	Z,MEMO					; User ENTERed an empty line. No need to parse.
 			LD	HL,MEMOCT				; Set Memory command table.
-			LD	DE,DMA
 			CALL PARSER					; Find command comparing buffer with Command Table.
 			INC	A
 			JR	Z,MUNKNOWN				; No match found in command table.
@@ -137,29 +132,79 @@ MUNKNOWN:	CALL UNKNOWN
 ;================================================================================================
 ; Read memory operations
 ;================================================================================================
-MREAD:		
+MREAD:		LD	DE,DMA+1
+			CALL GETWORD		
+			CP	1				; Is the argument OK?
+			JP	NZ,MEMO
+			PUSH BC
+			POP	DE				; DE will be the addr holder
+			LD	A,E
+			AND	0F0H
+			LD	E,A				; trim addr (xxx0)
+NEWHDR:		CALL CRLF
+			CALL PRINTHDR		; Print the header
+			LD	A,0
+			LD	(LINNUM),A
+			CALL PRINTENV
+			LD	B,D
+			CALL B2HL
+			LD	C,H
+			CALL CONOUT
+			LD	C,L
+			CALL CONOUT
+			LD	B,E
+			CALL B2HL
+			LD	C,H
+			CALL CONOUT
+			LD	C,L
+			CALL CONOUT
+			LD	C,':'
+			CALL CONOUT
+			LD	C,' '
+			CALL CONOUT
+
+
+
+
+PRINTHDR:	CALL PRINTENV
+			CALL PRINTSEQ
+			.DB "ADDR: 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F  0123456789ABCDEF",CR,LF,0
+			CALL PRINTENV
+			CALL PRINTSEQ
+			.DB "----- -----------------------------------------------  ----------------",CR,LF,0
+			RET
 
 ;================================================================================================
 ; Write memory operations
 ;================================================================================================
-MWRITE:		
+MWRITE:		CALL PRINTENV
+			CALL PRINTSEQ
+			.DB	"W aaaa,c1...cN",CR,LF,0
+			JP	MEMO
 
 ;================================================================================================
 ; Copy memory operations
 ;================================================================================================
-MCOPY:		
+MCOPY:		CALL PRINTENV
+			CALL PRINTSEQ
+			.DB	"C aaaa-bbbb,cccc",CR,LF,0
+			JP	MEMO
 
 ;================================================================================================
 ; Fill memory operations
 ;================================================================================================
-MFILL:		
+MFILL:		CALL PRINTENV
+			CALL PRINTSEQ
+			.DB	"F aaaa-bbbb,cc",CR,LF,0
+			JP	MEMO
 
 ;================================================================================================
 ; Verify memory operations
 ;================================================================================================
-MVERIFY:	
-
-
+MVERIFY:	CALL PRINTENV
+			CALL PRINTSEQ
+			.DB	"V aaaa-bbbb",CR,LF,0
+			JP	MEMO
 
 ;================================================================================================
 ; Xmodem Command
@@ -196,12 +241,15 @@ RUN:		LD	DE,DMA+3
 			CALL GETWORD		
 			CP	1				; Is the argument OK?
 			JP	NZ,CYCLE
+			PUSH BC
+			POP	HL
 			JP	(HL)			; Continue execution where user requested. His responsability!
 
 ;================================================================================================
 ; Unknown Command message. HL has the address of the line buffer.
 ;================================================================================================
-UNKNOWN:	LD	HL,DMA
+UNKNOWN:	CALL PRINTENV
+			LD	HL,DMA
 UNEXT:		LD	A,(HL)
 			CP	0
 			JR	Z,UEND
@@ -220,7 +268,9 @@ UEND:		LD	C,'?'
 LINER:		LD	HL,DMA
 			LD	(LBUFPTR),HL			; Init line buffer pointer.
 WAITCHAR:	CALL CONIN					; Wait till user types something.
-			CP	SUB						; It it Ctrl-C
+			CP	ETX						; It it Ctrl-C
+			JR	Z,GOTETX
+			CP	SUB						; It it Ctrl-Z
 			JR	Z,GOTSUB
 			CP	CAN
 			JR	Z,GOTCAN				; Is it <CAN>? (= delete line).
@@ -255,8 +305,8 @@ GOTCR:		LD	HL,(LBUFPTR)			; We got an ENTER, which means the the user
 			CALL CRLF
 			CALL UPPER					; Convert line to uppercase before parsing.
 			RET
-
-GOTSUB:		CALL CRLF					; User abort request (Ctrl-C).
+GOTETX:
+GOTSUB:		CALL CRLF					; User abort request (Ctrl-C or Ctrl-Z).
 			LD	A,FF
 			RET
 			
@@ -313,14 +363,14 @@ NEXT2UP:	INC	HL
 			JR	NEXT2UP
 			
 ;================================================================================================
-; Routine to parse command. HL=cmd_table_pointer, DE=line_buffer_pointer.
-; Returns jump address on HL. regA=cmd_num or FFh if no match.
+; Routine to parse command. HL=cmd_table_pointer.
+; regA=cmd_num or FFh if no match. HL=jump_address or 0000 if no match.
 ;================================================================================================
 PARSER:		PUSH BC
+			PUSH DE
+			LD	DE,DMA
 			LD	A,0
 			LD	(CMDNUM),A		; Init command number.
-			PUSH DE
-			POP	IX				; Backup line buffer pointer.
 NEXT2PARS:	LD	A,(DE)
 			CP	(HL)
 			JR	NZ,NOTEQU
@@ -344,7 +394,7 @@ ISZERO:		LD	A,(HL)
 			JR	ISZERO
 CMDMATCH:	INC	HL
 			PUSH HL
-			POP	DE
+			POP	DE				; DE=addr of jump table
 			LD	H,0
 			LD	A,(CMDNUM)
 			LD	L,A
@@ -353,8 +403,9 @@ CMDMATCH:	INC	HL
 			ADD	HL,BC			; command_number * 2
 			ADD	HL,BC			; command_number * 3
 			ADD HL,DE
+			POP	DE
 			POP	BC
-			RET
+			RET					; A=command_number, HL=jump_address
 NEXTCMD:	LD	A,(HL)
 			CP	RS
 			JR	Z,ISRS2
@@ -366,11 +417,11 @@ ISRS2:		INC	HL
 			LD	A,(CMDNUM)
 			INC	A
 			LD	(CMDNUM),A
-			PUSH IX
-			POP	DE
+			LD	DE,DMA
 			JR	NEXT2PARS
 NOMATCH:	LD	HL,0
 			LD	A,0FFH
+			POP	DE
 			POP	BC
 			RET
 
@@ -416,19 +467,23 @@ GETBYTE:	LD	A,(DE)
 			RET
 GBNA:		CALL PRINTENV
 			CALL PRINTSEQ
-			.DB	"]Missing argument.",CR,LF,0
+			.DB	"Missing argument.",CR,LF,0
 			LD	A,0
 			RET
 GBSPC:		INC	DE
 			JR	GETBYTE
 GBIA:		CALL PRINTENV
 			CALL PRINTSEQ
-			.DB	"]Invalid argument.",CR,LF,0
+			.DB	"Invalid argument.",CR,LF,0
 			LD	A,2
 			RET
 
 PRINTENV:	LD	A,(ENVIR)			; Print environment letter (M, L, D or none) before message.
+			CP	0
+			JR	Z,NOLETTER
 			LD	C,A
+			CALL CONOUT
+NOLETTER:	LD	C,PROMPT
 			CALL CONOUT
 			RET
 
@@ -482,13 +537,44 @@ DISCOUNT2:	LD	A,L
 			RET
 
 ;================================================================================================
-; Entry point for RUN command test.
+; Convert HEX to ASCII (B --> HL)
 ;================================================================================================
+B2HL:		PUSH	BC
+			LD	A,B
+			AND	0FH
+			LD	L,A
+			SUB	0AH
+			LD	C,030H
+			JP	C,COMPENSE
+			LD	C,037H
+COMPENSE:	LD	A,L
+			ADD	A,C
+			LD	L,A
+			LD	A,B
+			AND	0F0H
+			SRL	A
+			SRL	A
+			SRL	A
+			SRL	A
+			LD	H,A
+			SUB	0AH
+			LD	C,030H
+			JP	C,COMPENSE2
+			LD	C,037H
+COMPENSE2:	LD	A,H
+			ADD	A,C
+			LD	H,A
+			POP	BC
+			RET
+
+;*****************************************************
+;********* Entry point for RUN command test **********
+;*****************************************************
 RUNCMDTST:	CALL PRINTSEQ
 			.DB	CR,LF
 			.DB	" *** RUN COMMAND TEST EXIT POINT ***"
 			.DB	CR,LF,0
-			JP	WBOOT
+			HALT
 
 ;================================================================================================
 CMDTBL:		.DB	"MEMO",RS
@@ -520,6 +606,8 @@ MEMOJT:		JP	MREAD
 CMDNUM		.DB	0
 LBUFPTR		.DW	0
 ENVIR		.DB	0			; 0=MONITOR, M=MEMO, L=LCD, D=DISK
+LINNUM		.DB	0
+COLNUM		.DB	0
 
 
 			.END
