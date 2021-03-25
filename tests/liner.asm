@@ -89,8 +89,6 @@ CYCLE:		LD	A,0
 			LD	(ENVIR),A
 			CALL PRINTENV
 			CALL LINER					; Call the line manager
-			CP	0FFH
-			JP	Z,WBOOT					; User typed Ctrl-C or Ctrl-Z... Abort, abort!
 			LD	A,(DMA)
 			CP	0
 			JR	Z,CYCLE					; User ENTERed an empty line. No need to parse.
@@ -105,19 +103,16 @@ UNK:		CALL UNKNOWN
 ;================================================================================================
 ; Memory Operations
 ;
-; Options:	R aaaa					Read 1 page starting at aaaa. <ENTER>=next page, <ESC>=quit.
+; Options:	R aaaa					Read 1 page starting at aaaa. <ENTER>=next_page, <ESC>=quit.
 ;			W aaaa,c1 c2 ... cN		Write at aaaa the sequence of characters.
 ;			C aaaa-bbbb,cccc		Copy [aaaa ~ bbbb] to cccc.
 ;			F aaaa-bbbb,cc			Fill [aaaa ~ bbbb] with cc.
-;			V aaaa-bbbb				Verify area [aaaa ~ bbbb].
-;			Ctrl-C					Return to Monitor.
+;			Q						Quit memory ops, return to Monitor.
 ;================================================================================================
 MEMO:		LD	A,'M'
 			LD	(ENVIR),A				; Set environment variable.
 			CALL PRINTENV
 			CALL LINER					; Call the line manager.
-			CP	0FFH
-			JP	Z,CYCLE					; User typed Ctrl-C or Ctrl-Z, return to Monitor.
 			LD	A,(DMA)
 			CP	0
 			JR	Z,MEMO					; User ENTERed an empty line. No need to parse.
@@ -138,7 +133,7 @@ MQUIT:		JP	CYCLE					; Quit memory ops, return to monitor.
 ; Read memory operations
 ;================================================================================================
 MREAD:		LD	DE,DMA+1
-			CALL GETWORD		
+			CALL GETWORD		; Get aaaa
 			CP	1				; Is the argument OK?
 			JP	NZ,MEMO
 			PUSH BC
@@ -231,33 +226,84 @@ PRINTFTR:	CALL CRLF
 ;================================================================================================
 ; Write memory operations
 ;================================================================================================
-MWRITE:		CALL PRINTENV
-			CALL PRINTSEQ
-			.DB	"W aaaa,c1...cN",CR,LF,0
-			JP	MEMO
+MWRITE:		LD	DE,DMA+1
+			CALL GETWORD		; Get aaaa
+			CP	1				; Is the argument OK?
+			JP	NZ,MEMO
+			LD	(AAAA),BC		; Save aaaa
+MWNEXT:		INC	DE
+			LD	A,(DE)
+			CP	0
+			JP	Z,MEMO			; End of char string?
+			CALL GETBYTE		; Get cc
+			CP	1				; Is the argument OK?
+			JP	NZ,MEMO
+			LD	HL,(AAAA)
+			LD	(HL),B			; Put the byte in memory
+			INC	HL
+			LD	(AAAA),HL
+			JR	MWNEXT
 
 ;================================================================================================
 ; Copy memory operations
 ;================================================================================================
-MCOPY:		CALL PRINTENV
-			CALL PRINTSEQ
-			.DB	"C aaaa-bbbb,cccc",CR,LF,0
+MCOPY:		LD	DE,DMA+1
+			CALL GETWORD		; Get aaaa
+			CP	1				; Is the argument OK?
+			JP	NZ,MEMO
+			LD	(AAAA),BC		; Save aaaa
+			LD	DE,DMA+7
+			CALL GETWORD		; Get bbbb
+			CP	1				; Is the argument OK?
+			JP	NZ,MEMO
+			LD	(BBBB),BC		; Save bbbb
+			LD	DE,DMA+12
+			CALL GETWORD		; Get cccc
+			CP	1				; Is the argument OK?
+			JP	NZ,MEMO
+			LD	(CCCC),BC		; Save cccc
+			LD	HL,(BBBB)
+			LD	DE,(AAAA)
+			XOR	A				; Reset carry flag
+			SBC	HL,DE
+			INC	HL
+			EX	DE,HL			; HL=source
+			PUSH DE
+			POP BC				; BC=counter
+			LD	DE,(CCCC)		; DE=target
+			LDIR
 			JP	MEMO
 
 ;================================================================================================
 ; Fill memory operations
 ;================================================================================================
-MFILL:		CALL PRINTENV
-			CALL PRINTSEQ
-			.DB	"F aaaa-bbbb,cc",CR,LF,0
-			JP	MEMO
-
-;================================================================================================
-; Verify memory operations
-;================================================================================================
-MVERIFY:	CALL PRINTENV
-			CALL PRINTSEQ
-			.DB	"V aaaa-bbbb",CR,LF,0
+MFILL:		LD	DE,DMA+1
+			CALL GETWORD		; Get aaaa
+			CP	1				; Is the argument OK?
+			JP	NZ,MEMO
+			LD	(AAAA),BC		; Save aaaa
+			LD	DE,DMA+7
+			CALL GETWORD		; Get bbbb
+			CP	1				; Is the argument OK?
+			JP	NZ,MEMO
+			LD	(BBBB),BC		; Save bbbb
+			LD	DE,DMA+12
+			CALL GETBYTE		; Get cc
+			CP	1				; Is the argument OK?
+			JP	NZ,MEMO
+			LD	HL,(AAAA)
+			LD	(HL),B			; Put cc in the 1st position of the area to be filled.
+			LD	HL,(BBBB)
+			LD	DE,(AAAA)
+			XOR	A				; Reset carry flag
+			SBC	HL,DE
+			EX	DE,HL			; HL=source
+			PUSH DE
+			POP BC				; BC=counter
+			PUSH HL
+			POP	DE
+			INC DE
+			LDIR
 			JP	MEMO
 
 ;================================================================================================
@@ -651,21 +697,21 @@ MEMOCT:		.DB	"Q",RS
 			.DB	"R",RS
 			.DB	"W",RS
 			.DB	"C",RS
-			.DB	"F",RS
-			.DB	"V",ETX
+			.DB	"F",ETX
 
 MEMOJT:		JP	MQUIT
 			JP	MREAD
 			JP	MWRITE
 			JP	MCOPY
 			JP	MFILL
-			JP	MVERIFY
 			
 CMDNUM		.DB	0
 LBUFPTR		.DW	0
 ENVIR		.DB	0			; 0=MONITOR, M=MEMO, L=LCD, D=DISK
 LINNUM		.DB	0
 COLNUM		.DB	0
-
+AAAA		.DW	0
+BBBB		.DW	0
+CCCC		.DW	0
 
 			.END
