@@ -130,6 +130,11 @@ MUNKNOWN:	CALL UNKNOWN
 			JR	MEMO
 			
 ;================================================================================================
+; Quit memory operations
+;================================================================================================
+MQUIT:		JP	CYCLE					; Quit memory ops, return to monitor.
+
+;================================================================================================
 ; Read memory operations
 ;================================================================================================
 MREAD:		LD	DE,DMA+1
@@ -222,6 +227,7 @@ PRINTFTR:	CALL CRLF
 			CALL PRINTSEQ
 			.DB "                   <ENTER> = next page, <ESC> = quit.",CR,LF,0
 			RET
+
 ;================================================================================================
 ; Write memory operations
 ;================================================================================================
@@ -625,27 +631,31 @@ RUNCMDTST:	CALL PRINTSEQ
 			HALT
 
 ;================================================================================================
-CMDTBL:		.DB	"MEMO",RS
+CMDTBL:		.DB	"BOOT",RS
+			.DB	"MEMO",RS
 			.DB	"XMODEM",RS
 			.DB	"HEX2COM",RS
 			.DB	"LCD",RS
 			.DB	"DISK",RS
 			.DB	"RUN",ETX
 
-JMPTBL:		JP	MEMO
+JMPTBL:		JP	WBOOT
+			JP	MEMO
 			JP	XMODEM
 			JP	HEX2COM
 			JP	LCD
 			JP	DISK
 			JP	RUN
 			
-MEMOCT:		.DB	"R",RS
+MEMOCT:		.DB	"Q",RS
+			.DB	"R",RS
 			.DB	"W",RS
 			.DB	"C",RS
 			.DB	"F",RS
 			.DB	"V",ETX
 
-MEMOJT:		JP	MREAD
+MEMOJT:		JP	MQUIT
+			JP	MREAD
 			JP	MWRITE
 			JP	MCOPY
 			JP	MFILL
