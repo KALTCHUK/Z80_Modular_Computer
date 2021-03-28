@@ -44,7 +44,7 @@ STX			.EQU	02H
 ETX			.EQU	03H
 EOT			.EQU	04H
 ENQ			.EQU	05H
-QCK			.EQU	06H
+ACK			.EQU	06H
 BEL			.EQU	07H
 BS			.EQU	08H			; ^H
 HT			.EQU	09H
@@ -75,7 +75,8 @@ US			.EQU	1FH
 ; Some constants
 ;================================================================================================
 MAXLBUF		.EQU	DMA+80
-PROMPT		.EQU	'}'
+PROMPT		.EQU	'>'
+MAXTRY		.EQU	10
 
 ;================================================================================================
 ; MAIN PROGRAM STARTS HERE
@@ -101,6 +102,20 @@ UNK:		CALL UNKNOWN
 			JR	CYCLE
 			
 ;================================================================================================
+; Help for main program
+;================================================================================================
+HELP:		CALL CRLF
+			CALL PRINTSEQ
+			.DB	" Options:   MEMORY",CR,LF
+			.DB "            XMODEM aaaa",CR,LF
+			.DB "            HEX2COM aaaa",CR,LF
+			.DB "            LCD",CR,LF
+			.DB "            DISK",CR,LF
+			.DB "            RUN aaaa",CR,LF
+			.DB "            BOOT",CR,LF,0
+			JP	CYCLE
+			
+;================================================================================================
 ; Memory Operations
 ;
 ; Options:	R aaaa					Read 1 page starting at aaaa. <ENTER>=next_page, <ESC>=quit.
@@ -123,6 +138,18 @@ MEMO:		LD	A,'M'
 			JP	(HL)					; Jump to Command Routine
 MUNKNOWN:	CALL UNKNOWN
 			JR	MEMO
+			
+;================================================================================================
+; Help for memory operations
+;================================================================================================
+MHELP:		CALL CRLF
+			CALL PRINTSEQ
+			.DB	" Options:   R aaaa",CR,LF
+			.DB "            W aaaa,c1 c2 cN",CR,LF
+			.DB "            C aaaa-bbbb,cccc",CR,LF
+			.DB "            F aaaa-bbbb,cc",CR,LF
+			.DB "            Q",CR,LF,0
+			JP	MEMO
 			
 ;================================================================================================
 ; Quit memory operations
@@ -217,10 +244,8 @@ PRINTHDR:	CALL PRINTENV
 
 PRINTFTR:	CALL CRLF
 			CALL PRINTENV
-			CALL CRLF
-			CALL PRINTENV
 			CALL PRINTSEQ
-			.DB "                   <ENTER> = next page, <ESC> = quit.",CR,LF,0
+			.DB "================== <ENTER> = next page, <ESC> = quit ==================",CR,LF,0
 			RET
 
 ;================================================================================================
@@ -231,6 +256,7 @@ MWRITE:		LD	DE,DMA+1
 			CP	1				; Is the argument OK?
 			JP	NZ,MEMO
 			LD	(AAAA),BC		; Save aaaa
+			LD	DE,DMA+6
 MWNEXT:		INC	DE
 			LD	A,(DE)
 			CP	0
@@ -309,16 +335,247 @@ MFILL:		LD	DE,DMA+1
 ;================================================================================================
 ; Xmodem Command
 ;================================================================================================
-XMODEM:		CALL PRINTSEQ
-			.DB	"]XMODEM aaaa",CR,LF,0
+XMODEM:		LD	DE,DMA+6
+			CALL GETWORD		
+			CP	1					; Is the argument OK?
+			JP	NZ,CYCLE
+			LD	(AAAA),BC			; Save address
+			LD	A,0
+			LD	(RETRY),A			; Init retry counter
+			INC	A
+			LD	(BLOCK),A			; Init block counter
+
+ALIVE:		CALL SENDNAK
+GET1ST:		LD	B,5
+			CALL TOCONIN			; 5s timeout
+			JR	C,REPEAT			; Timed out?
+			CP	EOT
+			JR	Z,GOTEOT			; EOT?
+			CP	CAN
+			JP	Z,CYCLE				; CAN?
+			CP	SOH
+			JR	Z,GOTSOH			; SOH?
+REPEAT:		LD	A,(RETRY)
+			INC	A
+			LD	(RETRY),A
+			CP	MAXTRY
+			JR	NZ,ALIVE			; Try again?
+OUT3:		
+			CALL SENDCAN
 			JP	CYCLE
+			
+GOTEOT:		CALL SENDNAK
+			LD	B,1
+			CALL TOCONIN
+			CALL SENDACK
+			JP	CYCLE
+			
+GOTSOH:		LD	A,0
+			LD	(CHKSUM),A			; Reset checksum
+			LD	(BYTECNT),A			; Reset byte counter
+			LD	B,1
+			CALL TOCONIN			; Get incoming block number
+			JR	C,OUT2				; Timed out?
+			LD	C,A					; Save incoming block number
+			LD	B,1
+			CALL TOCONIN			; Get complement of incoming block number
+			JR	C,OUT2				; Timed out?
+			CPL
+			CP	C
+			JR	NZ,OUT2				; block = //block?
+			LD	A,(BLOCK)
+			CP	C					; Is block number what we expected?
+			JR	Z,RECPACK
+			DEC	A
+			CP	C					; block number is the anterior? Probably sender missed our ACK.
+			JR	NZ,OUT2
+ANTBLK:		CALL PURGE				; Purge input buffer before sending ACK
+			CALL SENDACK
+			JP	GET1ST
+OUT2:		CALL PURGE
+			CALL SENDCAN
+			JP	CYCLE
+RECPACK:	LD	B,1					; Start receiving data packet (128 bytes)
+			CALL TOCONIN
+			JR	C,OUT2				; Timed out?
+			LD	HL,(AAAA)
+			LD	(HL),A				; Put byte in buffer
+			INC	HL					; Inc buffer pointer
+			LD	(AAAA),HL
+			LD	C,A
+			LD	A,(CHKSUM)
+			ADD	A,C
+			LD	(CHKSUM),A			; Update checksum
+			LD	A,(BYTECNT)			; Inc byte counter
+			INC	A
+			LD	(BYTECNT),A
+			CP	128					; Check if we received a full data packet
+			JR	NZ,RECPACK
+			LD	B,1
+			CALL TOCONIN			; Get checksum
+			JR	C,OUT2				; Timed out?
+			LD	C,A
+			LD	A,(CHKSUM)
+			CP	C
+			JP	NZ,REPEAT			; Checksum OK?
+			LD	A,0
+			LD	(RETRY),A			; Reset retry counter
+			LD	A,(BLOCK)
+			INC	A
+			LD	(BLOCK),A			; Increment block counter
+
+			CALL SENDACK
+			JP	GET1ST
+			
+;==================================================================================
+; Send ACK
+;==================================================================================
+SENDACK:	LD C,ACK
+			CALL CONOUT
+			RET
+
+;==================================================================================
+; Send NAK
+;==================================================================================
+SENDNAK:	LD C,NAK
+			CALL CONOUT
+			RET
+
+;==================================================================================
+; Send CAN
+;==================================================================================
+SENDCAN:	LD C,CAN
+			CALL CONOUT
+			RET
+
+;==================================================================================
+; Timed Out Console Input - X seconds, with X passed on reg B
+; Incoming byte, if any, returns in A
+; Carry flag set if timed out.
+;==================================================================================
+TOCONIN:	PUSH	BC
+			PUSH	HL
+LOOP0:		LD	HL,685				;2.5					\
+LOOP1:		LD	C,35				;1.75	\				|
+LOOP2:		CALL CONST				;36.5	|t=41.5C+0.5	| 
+			INC	A					;1		|				|
+			JR	Z,BWAITING			;3/1.75	|				| t=HL(41.5C+6.5)+1.25
+			LD	A,C					;1		|				|
+			DEC	C					;1		|				|
+			JR	NZ,LOOP2			;3/1.75	/				| with HL=685 and c=35,
+			DEC	HL					;1						|  t=0.9994sec (WOW!!!)
+			LD	A,H					;1						|
+			OR	L					;1						|
+			JR	NZ,LOOP1			;3/1.75					/
+			DJNZ	LOOP0			;3.25/2
+			SCF
+			JR	TOUT
+BWAITING:	CALL CONIN
+			SCF						; Reset carry flag
+			CCF
+TOUT:		POP	HL
+			POP	BC
+			RET
+
+;==================================================================================
+; Purge console input.
+;==================================================================================
+PURGE:		LD	B,3
+			CALL TOCONIN
+			JR	NC,PURGE
+			RET
 
 ;================================================================================================
 ; Hexadecimal to Executable conversion command.
+; Record structure:
+;	<start_code> <byte_count> <address> <record_type> <data>...<data> <checksum>
+;		':'	        1 byte     2 bytes    00h or 01h       n bytes	    1 byte
+;
+; Register usage:
+;	IX = source address 
+;	IY = target address
 ;================================================================================================
-HEX2COM:	CALL PRINTSEQ
-			.DB	"]HEX2COM aaaa",CR,LF,0
-			JP	CYCLE
+HEX2COM:	LD	DE,DMA+8
+			CALL GETWORD		
+			CP	1					; Is the argument OK?
+			JP	NZ,CYCLE
+			PUSH BC					; IX holds the source address
+			POP	IX
+			
+FINDSC:		LD	A,(IX+0)
+			INC IX
+			CP	':'					; Do we have a start code?
+			JR	NZ,FINDSC
+			LD	A,0					; Reset checksum
+			LD	(CHKSUM),A
+			CALL HGB				; Get byte count
+			LD	A,B
+			CP	0
+			JP	Z,CYCLE				; If byte count=0, we're done.
+			LD	(BYTECNT),A			; Save byte count
+			CALL UPCHKSUM			; Update checksum
+			INC	IX
+			CALL HGW				; Get target address
+			PUSH BC
+			POP IY					; IY holds the target address
+			CALL UPCHKSUM			; Update checksum
+			LD	B,C
+			CALL UPCHKSUM			; Update checksum
+			CALL PRTADDR			; Print target address
+			CALL HGB				; Get record type (just for checksum update)
+			CALL UPCHKSUM			; Update checksum
+			INC	IX
+			LD	A,(BYTECNT)
+			LD	B,A
+GETDATA:	PUSH BC
+			CALL HGB				; Get data byte
+			LD	(IY+0),B
+			CALL UPCHKSUM			; Update checksum
+			INC	IY
+			INC IX
+			POP BC
+			DJNZ GETDATA
+			CALL HGB				; Get checksum
+			LD	A,(CHKSUM)
+			NEG
+			CP	B
+			JR	NZ,CHKSUMER
+			CALL PRINTSEQ
+			.DB	": OK.",CR,LF,0
+			JR	FINDSC
+CHKSUMER:	CALL PRINTSEQ
+			.DB	": Checksum Error.",CR,LF,0
+			JR	FINDSC
+
+UPCHKSUM:	LD	A,(CHKSUM)
+			ADD	A,B
+			LD	(CHKSUM),A
+			RET
+
+PRTADDR:	CALL PRINTENV
+			DEC IX
+			DEC IX
+			DEC IX
+			LD	B,4
+NXTA:		LD	C,(IX+0)
+			CALL CONOUT
+			INC	IX
+			DJNZ NXTA
+			RET
+			
+HGB:		PUSH IX
+			POP	DE
+			CALL GETBYTE
+			PUSH DE
+			POP IX
+			RET
+
+HGW:		PUSH IX
+			POP	DE
+			CALL GETWORD
+			PUSH DE
+			POP IX
+			RET
 
 ;================================================================================================
 ; LCD Operations
@@ -335,7 +592,7 @@ DISK:		CALL PRINTSEQ
 			JP	CYCLE
 
 ;================================================================================================
-; Execute Command
+; Run (Execute) Command
 ;================================================================================================
 RUN:		LD	DE,DMA+3
 			CALL GETWORD		
@@ -677,15 +934,17 @@ RUNCMDTST:	CALL PRINTSEQ
 			HALT
 
 ;================================================================================================
-CMDTBL:		.DB	"BOOT",RS
-			.DB	"MEMO",RS
+CMDTBL:		.DB	"?",RS
+			.DB	"BOOT",RS
+			.DB	"MEMORY",RS
 			.DB	"XMODEM",RS
 			.DB	"HEX2COM",RS
 			.DB	"LCD",RS
 			.DB	"DISK",RS
 			.DB	"RUN",ETX
 
-JMPTBL:		JP	WBOOT
+JMPTBL:		JP	HELP
+			JP	WBOOT
 			JP	MEMO
 			JP	XMODEM
 			JP	HEX2COM
@@ -693,13 +952,15 @@ JMPTBL:		JP	WBOOT
 			JP	DISK
 			JP	RUN
 			
-MEMOCT:		.DB	"Q",RS
+MEMOCT:		.DB	"?",RS
+			.DB	"Q",RS
 			.DB	"R",RS
 			.DB	"W",RS
 			.DB	"C",RS
 			.DB	"F",ETX
 
-MEMOJT:		JP	MQUIT
+MEMOJT:		JP	MHELP
+			JP	MQUIT
 			JP	MREAD
 			JP	MWRITE
 			JP	MCOPY
@@ -713,5 +974,12 @@ COLNUM		.DB	0
 AAAA		.DW	0
 BBBB		.DW	0
 CCCC		.DW	0
+CHKSUM	 	.DB	0					; Checksum for xmodem
+BYTECNT		.DB	0					; Byte counter for xmodem and hex2com
+RETRY		.DB 0					; Retry counter for xmodem
+BLOCK		.DB	0					; Block counter for xmodem
+
+			.DS 20
+MSTACK		.EQU $
 
 			.END
