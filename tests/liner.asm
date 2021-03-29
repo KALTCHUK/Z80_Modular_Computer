@@ -117,12 +117,6 @@ HELP:		CALL CRLF
 			
 ;================================================================================================
 ; Memory Operations
-;
-; Options:	R aaaa					Read 1 page starting at aaaa. <ENTER>=next_page, <ESC>=quit.
-;			W aaaa,c1 c2 ... cN		Write at aaaa the sequence of characters.
-;			C aaaa-bbbb,cccc		Copy [aaaa ~ bbbb] to cccc.
-;			F aaaa-bbbb,cc			Fill [aaaa ~ bbbb] with cc.
-;			Q						Quit memory ops, return to Monitor.
 ;================================================================================================
 MEMO:		LD	A,'M'
 			LD	(ENVIR),A				; Set environment variable.
@@ -144,11 +138,11 @@ MUNKNOWN:	CALL UNKNOWN
 ;================================================================================================
 MHELP:		CALL CRLF
 			CALL PRINTSEQ
-			.DB	" Options:   R aaaa",CR,LF
-			.DB "            W aaaa,c1 c2 cN",CR,LF
-			.DB "            C aaaa-bbbb,cccc",CR,LF
-			.DB "            F aaaa-bbbb,cc",CR,LF
-			.DB "            Q",CR,LF,0
+			.DB	" Options:   READ aaaa",CR,LF
+			.DB "            WRITE aaaa,c1 c2 cN",CR,LF
+			.DB "            COPY aaaa-bbbb,cccc",CR,LF
+			.DB "            FILL aaaa-bbbb,cc",CR,LF
+			.DB "            QUIT",CR,LF,0
 			JP	MEMO
 			
 ;================================================================================================
@@ -159,7 +153,7 @@ MQUIT:		JP	CYCLE					; Quit memory ops, return to monitor.
 ;================================================================================================
 ; Read memory operations
 ;================================================================================================
-MREAD:		LD	DE,DMA+1
+MREAD:		LD	DE,DMA+4
 			CALL GETWORD		; Get aaaa
 			CP	1				; Is the argument OK?
 			JP	NZ,MEMO
@@ -251,12 +245,12 @@ PRINTFTR:	CALL CRLF
 ;================================================================================================
 ; Write memory operations
 ;================================================================================================
-MWRITE:		LD	DE,DMA+1
+MWRITE:		LD	DE,DMA+5
 			CALL GETWORD		; Get aaaa
 			CP	1				; Is the argument OK?
 			JP	NZ,MEMO
 			LD	(AAAA),BC		; Save aaaa
-			LD	DE,DMA+6
+			LD	DE,DMA+10
 MWNEXT:		INC	DE
 			LD	A,(DE)
 			CP	0
@@ -273,17 +267,17 @@ MWNEXT:		INC	DE
 ;================================================================================================
 ; Copy memory operations
 ;================================================================================================
-MCOPY:		LD	DE,DMA+1
+MCOPY:		LD	DE,DMA+4
 			CALL GETWORD		; Get aaaa
 			CP	1				; Is the argument OK?
 			JP	NZ,MEMO
 			LD	(AAAA),BC		; Save aaaa
-			LD	DE,DMA+7
+			LD	DE,DMA+10
 			CALL GETWORD		; Get bbbb
 			CP	1				; Is the argument OK?
 			JP	NZ,MEMO
 			LD	(BBBB),BC		; Save bbbb
-			LD	DE,DMA+12
+			LD	DE,DMA+15
 			CALL GETWORD		; Get cccc
 			CP	1				; Is the argument OK?
 			JP	NZ,MEMO
@@ -303,17 +297,17 @@ MCOPY:		LD	DE,DMA+1
 ;================================================================================================
 ; Fill memory operations
 ;================================================================================================
-MFILL:		LD	DE,DMA+1
+MFILL:		LD	DE,DMA+4
 			CALL GETWORD		; Get aaaa
 			CP	1				; Is the argument OK?
 			JP	NZ,MEMO
 			LD	(AAAA),BC		; Save aaaa
-			LD	DE,DMA+7
+			LD	DE,DMA+10
 			CALL GETWORD		; Get bbbb
 			CP	1				; Is the argument OK?
 			JP	NZ,MEMO
 			LD	(BBBB),BC		; Save bbbb
-			LD	DE,DMA+12
+			LD	DE,DMA+15
 			CALL GETBYTE		; Get cc
 			CP	1				; Is the argument OK?
 			JP	NZ,MEMO
@@ -953,11 +947,11 @@ JMPTBL:		JP	HELP
 			JP	RUN
 			
 MEMOCT:		.DB	"?",RS
-			.DB	"Q",RS
-			.DB	"R",RS
-			.DB	"W",RS
-			.DB	"C",RS
-			.DB	"F",ETX
+			.DB	"QUIT",RS
+			.DB	"READ",RS
+			.DB	"WRITE",RS
+			.DB	"COPY",RS
+			.DB	"FILL",ETX
 
 MEMOJT:		JP	MHELP
 			JP	MQUIT
