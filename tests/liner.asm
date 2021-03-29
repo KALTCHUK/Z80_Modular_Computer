@@ -2,9 +2,6 @@
 ; LINER.ASM = MONITOR 2.0 - USE WITH VT100 TERMINAL
 ; (Should behave like CCP on CP/M)
 ;
-; Backspace = delete last character
-;        ^X = delete all the line
-;
 ;==================================================================================
 TPA			.EQU	0100H		; Transient Programs Area
 MONITOR		.EQU	0D000H		; Monitor entry point
@@ -109,7 +106,6 @@ HELP:		CALL CRLF
 			.DB	" Options:   MEMORY",CR,LF
 			.DB "            XMODEM aaaa",CR,LF
 			.DB "            HEX2COM aaaa",CR,LF
-			.DB "            LCD",CR,LF
 			.DB "            DISK",CR,LF
 			.DB "            RUN aaaa",CR,LF
 			.DB "            BOOT",CR,LF,0
@@ -572,13 +568,6 @@ HGW:		PUSH IX
 			RET
 
 ;================================================================================================
-; LCD Operations
-;================================================================================================
-LCD:		CALL PRINTSEQ
-			.DB	"L]Ready for LCD Operations",CR,LF,0
-			JP	CYCLE
-
-;================================================================================================
 ; Disk Operations
 ;================================================================================================
 DISK:		CALL PRINTSEQ
@@ -918,22 +907,12 @@ COMPENSE2:	LD	A,H
 			POP	BC
 			RET
 
-;*****************************************************
-;********* Entry point for RUN command test **********
-;*****************************************************
-RUNCMDTST:	CALL PRINTSEQ
-			.DB	CR,LF
-			.DB	" *** RUN COMMAND TEST EXIT POINT ***"
-			.DB	CR,LF,0
-			HALT
-
 ;================================================================================================
 CMDTBL:		.DB	"?",RS
 			.DB	"BOOT",RS
 			.DB	"MEMORY",RS
 			.DB	"XMODEM",RS
 			.DB	"HEX2COM",RS
-			.DB	"LCD",RS
 			.DB	"DISK",RS
 			.DB	"RUN",ETX
 
@@ -942,7 +921,6 @@ JMPTBL:		JP	HELP
 			JP	MEMO
 			JP	XMODEM
 			JP	HEX2COM
-			JP	LCD
 			JP	DISK
 			JP	RUN
 			
@@ -972,8 +950,5 @@ CHKSUM	 	.DB	0					; Checksum for xmodem
 BYTECNT		.DB	0					; Byte counter for xmodem and hex2com
 RETRY		.DB 0					; Retry counter for xmodem
 BLOCK		.DB	0					; Block counter for xmodem
-
-			.DS 20
-MSTACK		.EQU $
 
 			.END
