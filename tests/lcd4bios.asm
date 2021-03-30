@@ -13,7 +13,7 @@ LCDST:		LD	A,(LCD_ADDR)
 ;================================================================================================
 ; LCD OUTPUT. Send C to LCD, if C>1FH. Accepts also LF, CR and FF (=clear LCD).
 ; If C=DC1, init LCD card with address in B.
-; If C=DC2, position cursor at line and column in DE.
+; If C=DC2, position cursor at line and column in DE. D=line, E=column.
 ;================================================================================================
 LCD:		LD	A,C
 			CP	20
@@ -24,6 +24,8 @@ ASCIILO:	CP	LF
 			JR	Z,LCDLF
 			CP	CR
 			JR	Z,LCDCR
+			CP	FF
+			JR	Z,LCDCLEAR
 			CP	DC1
 			JR	Z,LCDINIT
 			CP	DC2
@@ -153,17 +155,13 @@ LCDPUT:		CALL BWAIT
 ;================================================================================================
 ; Position LCD cursor at line regD, column regE.
 ;================================================================================================
-LCDPOS:		DEC	D
-			SLA	D
-			SLA	D
-			SLA	D
-			SLA	D
-			SLA	D
-			SLA	D
-			LD	A,D
-			DEC	E
+LCDPOS:		LD	A,80H
+			DEC	D
+			JR	Z,LINE1
+			LD	A,0C0H
+LINE1:		DEC	E
 			OR	E
-			OR	080H
+.
 			LD	D,A
 			CALL BWAIT
 			LD	A,D
