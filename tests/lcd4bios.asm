@@ -88,11 +88,7 @@ BWAIT:		CALL LCDRDCMD
 			RLCA
 			JR	C,BWAIT
 			RET
-DAT_WR	.EQU	0E1H			;
-DAT_RD	.EQU	0E3H			;
-CMD_WR	.EQU	0E0H			;
-CMD_RD	.EQU	0E2H			;
-
+			
 ;================================================================================================
 ; Initialize LCD
 ;================================================================================================
@@ -169,15 +165,14 @@ LINE1:		DEC	E
 			RET
 
 ;================================================================================================
-; LF + CR for LCD. Copies line #2 to line #1, Cleans line #2 and puts the cursor at the
-; beginning of line #2.
+; 
+; 
 ;================================================================================================
-LCDLFCR:	PUSH BC
-			CALL BWAIT
-			CALL LCDRDCMD
-			RLCA
-			RLCA
-			JR	NC,LINEONE
+LCDRDPOS:	CALL BWAIT
+			AND	3FH
+			
+
+
 
 			LD	B,0				; initialize position counter
 NEWSRC:		CALL BWAIT

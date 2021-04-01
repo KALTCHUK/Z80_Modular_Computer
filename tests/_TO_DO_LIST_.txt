@@ -1,11 +1,8 @@
-- test xmodem R
-- develop & test xmodem S
-- backup stars.bas
-- erase flash
-- format flash
-- copy xmodem
-- copy all transient progs
-- upload and test WordStar
-- upload and test BDSC
-- upload and test BASCOM
-- implement flash-boot CP/M
+- fix EPROG power supply power cord
+- program EEPROM with Monitor 2.0
+- test EEPROM
+- finish LCD routines
+- test LCD routines
+- incorporate LCD routines to BIOS, with IOBYTE
+- reprogram EEPROM with new BIOS version
+- work on DISK functions
