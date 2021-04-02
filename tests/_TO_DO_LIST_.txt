@@ -1,6 +1,3 @@
-- fix EPROG power supply power cord
-- program EEPROM with Monitor 2.0
-- test EEPROM
 - finish LCD routines
 - test LCD routines
 - incorporate LCD routines to BIOS, with IOBYTE
