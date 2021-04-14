@@ -1,0 +1,122 @@
+0001   0000             BOOT		.EQU	0
+0002   0000             BIOS		.EQU	0E600H				; BIOS entry point
+0003   0000             LEAP		.EQU	3					; 3 bytes for each entry (JP aaaa)
+0004   0000             
+0005   0000             CONST:		.EQU	BIOS+(LEAP*2)		;  2 Console status.
+0006   0000             CONIN:		.EQU	BIOS+(LEAP*3)		;  3 Console input.
+0007   0000             CONOUT:		.EQU	BIOS+(LEAP*4)		;  4 Console OUTput.
+0008   0000             LIST:		.EQU	BIOS+(LEAP*5)		;  3 Console input.
+0009   0000             LISTST:		.EQU	BIOS+(LEAP*15)		;  2 Console status.
+0010   0000             PRINTSEQ:	.EQU	BIOS+(LEAP*17)		;  4 Console OUTput.
+0011   0000             
+0012   0000             LF			.EQU	0AH
+0013   0000             CR			.EQU	0DH
+0014   0000             ;================================================================================================
+0015   0100             			.ORG	0100H
+0016   0100             
+0017   0100 CD 49 01    REPEAT:		CALL CRLF
+0018   0103 CD 09 E6    			CALL CONIN
+0019   0106 47          			LD	B,A
+0020   0107 C5          			PUSH BC
+0021   0108 CD 54 01    			CALL B2HL
+0022   010B 4C          			LD	C,H
+0023   010C CD 0C E6    			CALL CONOUT
+0024   010F 4D          			LD	C,L
+0025   0110 CD 0C E6    			CALL CONOUT
+0026   0113             			
+0027   0113 0E 20       			LD	C,' '
+0028   0115 CD 0C E6    			CALL CONOUT
+0029   0118 0E 3D       			LD	C,'='
+0030   011A CD 0C E6    			CALL CONOUT
+0031   011D 0E 20       			LD	C,' '
+0032   011F CD 0C E6    			CALL CONOUT
+0033   0122             			
+0034   0122 C1          			POP	BC
+0035   0123 78          			LD	A,B
+0036   0124 FE 20       			CP	20H
+0037   0126 FA 2F 01    			JP	M,SPEC
+0038   0129 4F          			LD	C,A
+0039   012A CD 0C E6    			CALL CONOUT
+0040   012D 18 D1       			JR	REPEAT
+0041   012F 80          SPEC:		ADD	A,B
+0042   0130 80          			ADD	A,B
+0043   0131 4F          			LD	C,A
+0044   0132 06 00       			LD	B,0
+0045   0134 21 7F 01    			LD	HL,ASCII
+0046   0137 09          			ADD	HL,BC
+0047   0138 4E          			LD	C,(HL)
+0048   0139 CD 0C E6    			CALL CONOUT
+0049   013C 23          			INC	HL
+0050   013D 4E          			LD	C,(HL)
+0051   013E CD 0C E6    			CALL CONOUT
+0052   0141 23          			INC	HL
+0053   0142 4E          			LD	C,(HL)
+0054   0143 CD 0C E6    			CALL CONOUT
+0055   0146 C3 00 01    			JP	REPEAT
+0056   0149             			
+0057   0149 0E 0D       CRLF:		LD	C,CR
+0058   014B CD 0C E6    			CALL CONOUT
+0059   014E 0E 0A       			LD	C,LF
+0060   0150 CD 0C E6    			CALL CONOUT					; Output <CR><LF>.
+0061   0153 C9          			RET
+0062   0154             
+0063   0154             
+0064   0154             ;================================================================================================
+0065   0154             ; Convert HEX to ASCII (B --> HL)
+0066   0154             ;================================================================================================
+0067   0154 C5          B2HL:		PUSH	BC
+0068   0155 78          			LD	A,B
+0069   0156 E6 0F       			AND	0FH
+0070   0158 6F          			LD	L,A
+0071   0159 D6 0A       			SUB	0AH
+0072   015B 0E 30       			LD	C,030H
+0073   015D DA 62 01    			JP	C,COMPENSE
+0074   0160 0E 37       			LD	C,037H
+0075   0162 7D          COMPENSE:	LD	A,L
+0076   0163 81          			ADD	A,C
+0077   0164 6F          			LD	L,A
+0078   0165 78          			LD	A,B
+0079   0166 E6 F0       			AND	0F0H
+0080   0168 CB 3F       			SRL	A
+0081   016A CB 3F       			SRL	A
+0082   016C CB 3F       			SRL	A
+0083   016E CB 3F       			SRL	A
+0084   0170 67          			LD	H,A
+0085   0171 D6 0A       			SUB	0AH
+0086   0173 0E 30       			LD	C,030H
+0087   0175 DA 7A 01    			JP	C,COMPENSE2
+0088   0178 0E 37       			LD	C,037H
+0089   017A 7C          COMPENSE2:	LD	A,H
+0090   017B 81          			ADD	A,C
+0091   017C 67          			LD	H,A
+0092   017D C1          			POP	BC
+0093   017E C9          			RET
+0094   017F             
+0095   017F             ;================================================================================================
+0096   017F 4E 55 4C 53 ASCII:		.DB	"NUL","SOH","STX","ETX","EOT","ENQ","ACK","BEL"
+0096   0183 4F 48 53 54 
+0096   0187 58 45 54 58 
+0096   018B 45 4F 54 45 
+0096   018F 4E 51 41 43 
+0096   0193 4B 42 45 4C 
+0097   0197 42 53 20 48 			.DB	"BS ","HT ","LF ","VT ","FF ","CR ","SO ","SI "
+0097   019B 54 20 4C 46 
+0097   019F 20 56 54 20 
+0097   01A3 46 46 20 43 
+0097   01A7 52 20 53 4F 
+0097   01AB 20 53 49 20 
+0098   01AF 44 4C 45 44 			.DB	"DLE","DC1","DC2","DC3","DC4","NAK","SYN","ETB"
+0098   01B3 43 31 44 43 
+0098   01B7 32 44 43 33 
+0098   01BB 44 43 34 4E 
+0098   01BF 41 4B 53 59 
+0098   01C3 4E 45 54 42 
+0099   01C7 43 41 4E 45 			.DB	"CAN","EM ","SUB","ESC","FS ","GS ","RS ","US "
+0099   01CB 4D 20 53 55 
+0099   01CF 42 45 53 43 
+0099   01D3 46 53 20 47 
+0099   01D7 53 20 52 53 
+0099   01DB 20 55 53 20 
+0100   01DF             
+0101   01DF             			.END
+tasm: Number of errors = 0

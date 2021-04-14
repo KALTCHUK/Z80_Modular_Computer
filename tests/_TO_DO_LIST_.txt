@@ -1,5 +1,1 @@
-- finish LCD routines
-- test LCD routines
-- incorporate LCD routines to BIOS, with IOBYTE
-- reprogram EEPROM with new BIOS version
 - work on DISK functions

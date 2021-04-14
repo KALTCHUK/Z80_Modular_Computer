@@ -1,12 +1,14 @@
-;==================================================================================
-; LINER.ASM = MONITOR 2.0 - USE WITH VT100 TERMINAL
-; (Should behave like CCP on CP/M)
+;================================================================================================
+; MONITOR 2.1C - working on dread.
 ;
-;==================================================================================
+;================================================================================================
+IOBYTE		.EQU	3
 TPA			.EQU	0100H		; Transient Programs Area
 MONITOR		.EQU	0D000H		; Monitor entry point
 BIOS		.EQU	0E600H		; BIOS entry point
 DMA			.EQU	0080H		; Buffer used by Monitor
+DISKPAD		.EQU	0E000H		; Draft area used by disk R/W ops
+								; (512 bytes between Monitor and BIOS)
 
 ;================================================================================================
 ; BIOS functions.
@@ -76,16 +78,41 @@ PROMPT		.EQU	'>'
 MAXTRY		.EQU	10
 
 ;================================================================================================
+; FLASH card stuff
+;================================================================================================
+FLASH_ADDR		.EQU	0B0H			; Base I/O address for compact flash card
+CF_DATA			.EQU	(FLASH_ADDR+0)	; R/W
+CF_FEATURES		.EQU	(FLASH_ADDR+1)	; W
+CF_ERROR		.EQU	(FLASH_ADDR+1)	; R
+CF_SECCOUNT		.EQU	(FLASH_ADDR+2)	; W
+
+CF_SECTOR		.EQU	(FLASH_ADDR+3)	; W
+CF_CYL_LOW		.EQU	(FLASH_ADDR+4)	; W
+CF_CYL_HI		.EQU	(FLASH_ADDR+5)	; W
+CF_HEAD			.EQU	(FLASH_ADDR+6)	; W
+
+CF_LBA0			.EQU	(FLASH_ADDR+3)	; W
+CF_LBA1			.EQU	(FLASH_ADDR+4)	; W
+CF_LBA2			.EQU	(FLASH_ADDR+5)	; W
+CF_LBA3			.EQU	(FLASH_ADDR+6)	; W
+
+CF_STATUS		.EQU	(FLASH_ADDR+7)	; R
+CF_COMMAND		.EQU	(FLASH_ADDR+7)	; W
+
+;CF Features
+CF_8BIT			.EQU	1
+CF_NOCACHE		.EQU	082H
+
+;CF Commands
+CF_READ_SEC		.EQU	020H
+CF_WRITE_SEC	.EQU	030H
+CF_SET_FEAT		.EQU 	0EFH
+;================================================================================================
 ; MAIN PROGRAM STARTS HERE
 ;================================================================================================
-			.ORG TPA
+			.ORG MONITOR
 
-			CALL PRINTSEQ
-			.DB	"Z80 Modular Computer BIOS 1.0 by Kaltchuk - 2020",CR,LF
-			.DB	"Monitor 2.0 - 2021",CR,LF,0
-CYCLE:		LD	A,0
-			LD	(ENVIR),A
-			CALL PRINTENV
+CYCLE:		CALL PRINTENV
 			CALL LINER					; Call the line manager
 			LD	A,(DMA)
 			CP	0
@@ -103,56 +130,28 @@ UNK:		CALL UNKNOWN
 ;================================================================================================
 HELP:		CALL CRLF
 			CALL PRINTSEQ
-			.DB	" Options:   MEMORY",CR,LF
-			.DB "            XMODEM aaaa",CR,LF
-			.DB "            HEX2COM aaaa",CR,LF
-			.DB "            DISK",CR,LF
-			.DB "            RUN aaaa",CR,LF
+			.DB	" Options:   READ aaaa             read from memory.",CR,LF
+			.DB "            WRITE aaaa,c1 c2 cN   write to memory.",CR,LF
+			.DB "            COPY aaaa-bbbb,cccc   copy memory block.",CR,LF
+			.DB "            FILL aaaa-bbbb,cc     fill memory block.",CR,LF
+			.DB	"            DREAD aaaa            read from disk.",CR,LF
+			.DB "            DOWN d,ttt,ss         download one sector from disk.",CR,LF
+			.DB "            UP d,ttt,ss           upload one sector to disk.",CR,LF
+			.DB "            VERIFY d              verify disk.",CR,LF
+			.DB "            FORMAT d              format disk.",CR,LF
+			.DB "            XMODEM aaaa           receive file using xmodem protocol.",CR,LF
+			.DB "            HEX2COM aaaa          convert intel hex to executable.",CR,LF
+			.DB "            RUN aaaa              run program.",CR,LF
 			.DB "            BOOT",CR,LF,0
 			JP	CYCLE
 			
-;================================================================================================
-; Memory Operations
-;================================================================================================
-MEMO:		LD	A,'M'
-			LD	(ENVIR),A				; Set environment variable.
-			CALL PRINTENV
-			CALL LINER					; Call the line manager.
-			LD	A,(DMA)
-			CP	0
-			JR	Z,MEMO					; User ENTERed an empty line. No need to parse.
-			LD	HL,MEMOCT				; Set Memory command table.
-			CALL PARSER					; Find command comparing buffer with Command Table.
-			INC	A
-			JR	Z,MUNKNOWN				; No match found in command table.
-			JP	(HL)					; Jump to Command Routine
-MUNKNOWN:	CALL UNKNOWN
-			JR	MEMO
-			
-;================================================================================================
-; Help for memory operations
-;================================================================================================
-MHELP:		CALL CRLF
-			CALL PRINTSEQ
-			.DB	" Options:   READ aaaa",CR,LF
-			.DB "            WRITE aaaa,c1 c2 cN",CR,LF
-			.DB "            COPY aaaa-bbbb,cccc",CR,LF
-			.DB "            FILL aaaa-bbbb,cc",CR,LF
-			.DB "            QUIT",CR,LF,0
-			JP	MEMO
-			
-;================================================================================================
-; Quit memory operations
-;================================================================================================
-MQUIT:		JP	CYCLE					; Quit memory ops, return to monitor.
-
 ;================================================================================================
 ; Read memory operations
 ;================================================================================================
 MREAD:		LD	DE,DMA+4
 			CALL GETWORD		; Get aaaa
 			CP	1				; Is the argument OK?
-			JP	NZ,MEMO
+			JP	NZ,CYCLE
 			PUSH BC
 			POP	DE				; DE will be the address holder
 			LD	A,E
@@ -161,6 +160,27 @@ MREAD:		LD	DE,DMA+4
 NEWHDR:		CALL PRINTHDR		; Print the header
 			LD	A,16
 			LD	(LINNUM),A
+
+			CALL SUBMPRN
+			
+TRYAGAIN:	CALL CONIN			; Wait for user's decision
+			CP	CR
+			JR	Z,NEWHDR
+			CP	ESC
+			JP	Z,CYCLE
+			JR	TRYAGAIN
+
+PRINTHDR:	CALL PRINTSEQ
+			.DB ">ADDR: 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F  0123456789ABCDEF",CR,LF,
+			.DB ">----- -----------------------------------------------  ----------------",0
+			RET
+
+PRINTFTR:	CALL CRLF
+			CALL PRINTSEQ
+			.DB ">#================= <ENTER> = next page, <ESC> = quit =================#",CR,LF,0
+			RET
+
+SUBMPRN:
 NEWLINE:	CALL CRLF
 			CALL PRINTENV
 			LD	B,D				; Print the address
@@ -217,43 +237,24 @@ NOTPRTBL:	CALL CONOUT
 			LD	(LINNUM),A
 			JR	NZ,NEWLINE
 			CALL PRINTFTR		; Print footer message
-			CALL CONIN			; Wait for user's decision
-			CP	CR
-TRYAGAIN:	JR	Z,NEWHDR
-			CP	ESC
-			JP	Z,MEMO
-			JR	TRYAGAIN
-
-PRINTHDR:	CALL PRINTENV
-			CALL PRINTSEQ
-			.DB "ADDR: 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F  0123456789ABCDEF",CR,LF,0
-			CALL PRINTENV
-			CALL PRINTSEQ
-			.DB "----- -----------------------------------------------  ----------------",0
 			RET
-
-PRINTFTR:	CALL CRLF
-			CALL PRINTENV
-			CALL PRINTSEQ
-			.DB "================== <ENTER> = next page, <ESC> = quit ==================",CR,LF,0
-			RET
-
+			
 ;================================================================================================
 ; Write memory operations
 ;================================================================================================
 MWRITE:		LD	DE,DMA+5
 			CALL GETWORD		; Get aaaa
 			CP	1				; Is the argument OK?
-			JP	NZ,MEMO
+			JP	NZ,CYCLE
 			LD	(AAAA),BC		; Save aaaa
 			LD	DE,DMA+10
 MWNEXT:		INC	DE
 			LD	A,(DE)
 			CP	0
-			JP	Z,MEMO			; End of char string?
+			JP	Z,CYCLE			; End of char string?
 			CALL GETBYTE		; Get cc
 			CP	1				; Is the argument OK?
-			JP	NZ,MEMO
+			JP	NZ,CYCLE
 			LD	HL,(AAAA)
 			LD	(HL),B			; Put the byte in memory
 			INC	HL
@@ -266,17 +267,17 @@ MWNEXT:		INC	DE
 MCOPY:		LD	DE,DMA+4
 			CALL GETWORD		; Get aaaa
 			CP	1				; Is the argument OK?
-			JP	NZ,MEMO
+			JP	NZ,CYCLE
 			LD	(AAAA),BC		; Save aaaa
 			LD	DE,DMA+10
 			CALL GETWORD		; Get bbbb
 			CP	1				; Is the argument OK?
-			JP	NZ,MEMO
+			JP	NZ,CYCLE
 			LD	(BBBB),BC		; Save bbbb
 			LD	DE,DMA+15
 			CALL GETWORD		; Get cccc
 			CP	1				; Is the argument OK?
-			JP	NZ,MEMO
+			JP	NZ,CYCLE
 			LD	(CCCC),BC		; Save cccc
 			LD	HL,(BBBB)
 			LD	DE,(AAAA)
@@ -288,7 +289,7 @@ MCOPY:		LD	DE,DMA+4
 			POP BC				; BC=counter
 			LD	DE,(CCCC)		; DE=target
 			LDIR
-			JP	MEMO
+			JP	CYCLE
 
 ;================================================================================================
 ; Fill memory operations
@@ -296,17 +297,17 @@ MCOPY:		LD	DE,DMA+4
 MFILL:		LD	DE,DMA+4
 			CALL GETWORD		; Get aaaa
 			CP	1				; Is the argument OK?
-			JP	NZ,MEMO
+			JP	NZ,CYCLE
 			LD	(AAAA),BC		; Save aaaa
 			LD	DE,DMA+10
 			CALL GETWORD		; Get bbbb
 			CP	1				; Is the argument OK?
-			JP	NZ,MEMO
+			JP	NZ,CYCLE
 			LD	(BBBB),BC		; Save bbbb
 			LD	DE,DMA+15
 			CALL GETBYTE		; Get cc
 			CP	1				; Is the argument OK?
-			JP	NZ,MEMO
+			JP	NZ,CYCLE
 			LD	HL,(AAAA)
 			LD	(HL),B			; Put cc in the 1st position of the area to be filled.
 			LD	HL,(BBBB)
@@ -320,12 +321,18 @@ MFILL:		LD	DE,DMA+4
 			POP	DE
 			INC DE
 			LDIR
-			JP	MEMO
+			JP	CYCLE
 
 ;================================================================================================
 ; Xmodem Command
 ;================================================================================================
-XMODEM:		LD	DE,DMA+6
+XMODEM:		LD	A,0C0H
+			LD	(IOBYTE),A
+			LD	C,DC1
+			CALL LIST
+			
+			
+			LD	DE,DMA+6
 			CALL GETWORD		
 			CP	1					; Is the argument OK?
 			JP	NZ,CYCLE
@@ -336,6 +343,10 @@ XMODEM:		LD	DE,DMA+6
 			LD	(BLOCK),A			; Init block counter
 
 ALIVE:		CALL SENDNAK
+;***********************************
+			LD	C,'A'
+			CALL LIST
+;***********************************			
 GET1ST:		LD	B,5
 			CALL TOCONIN			; 5s timeout
 			JR	C,REPEAT			; Timed out?
@@ -417,23 +428,14 @@ RECPACK:	LD	B,1					; Start receiving data packet (128 bytes)
 			CALL SENDACK
 			JP	GET1ST
 			
-;==================================================================================
-; Send ACK
-;==================================================================================
 SENDACK:	LD C,ACK
 			CALL CONOUT
 			RET
 
-;==================================================================================
-; Send NAK
-;==================================================================================
 SENDNAK:	LD C,NAK
 			CALL CONOUT
 			RET
 
-;==================================================================================
-; Send CAN
-;==================================================================================
 SENDCAN:	LD C,CAN
 			CALL CONOUT
 			RET
@@ -445,6 +447,13 @@ SENDCAN:	LD C,CAN
 ;==================================================================================
 TOCONIN:	PUSH	BC
 			PUSH	HL
+			
+;***********************************
+			LD	C,'T'
+			CALL LIST
+			LD	B,5
+;***********************************
+			
 LOOP0:		LD	HL,685				;2.5					\
 LOOP1:		LD	C,35				;1.75	\				|
 LOOP2:		CALL CONST				;36.5	|t=41.5C+0.5	| 
@@ -568,11 +577,332 @@ HGW:		PUSH IX
 			RET
 
 ;================================================================================================
-; Disk Operations
+; Read disk operation (READ D,TTT,SS)
 ;================================================================================================
-DISK:		CALL PRINTSEQ
-			.DB	"D]Ready for Disk Operations",CR,LF,0
+DREAD:		LD	DE,DMA+6
+			CALL GETDTS
+			CP	1				; Is the argument OK?
+			JP	NZ,CYCLE
+NEXTSEC:	CALL DTS2LBA
+			CALL PRINTDTS
+			CALL PRINTHDR
+			CALL PRINTDSEC
+TAGAIN:		CALL CONIN			; Wait for user's decision
+			CP	CR
+			JR	NZ,NOTCR
+			CALL INCDTS
+			JP	NEXTSEC
+NOTCR:		CP	ESC
+			JP	Z,CYCLE
+			JR	TAGAIN
+
+
+PRINTDTS:	CALL PRINTSEQ
+			.DB	"> DTS: ",0
+			LD	A,(DSK)
+			ADD	A,41H
+			LD	C,A
+			CALL CONOUT
+			LD	C,'-'
+			CALL CONOUT
+			LD	A,(TRK+1)
+			CALL PRINTBYTE
+			LD	A,(TRK)
+			CALL PRINTBYTE
+			LD	C,'-'
+			CALL CONOUT
+			LD	A,(SEC)
+			CALL PRINTBYTE
+			CALL PRINTSEQ
+			.DB	" ,LBA: ",0
+			LD	A,(LBA3)
+			CALL PRINTBYTE
+			LD	A,(LBA2)
+			CALL PRINTBYTE
+			LD	A,(LBA1)
+			CALL PRINTBYTE
+			LD	A,(LBA0)
+			CALL PRINTBYTE
+			CALL PRINTSEQ
+			.DB	" (DISKPAD = E000)",CR,LF,0
+
+			RET
+
+PRINTBYTE:	LD	B,A
+			CALL B2HL
+			LD	C,H
+			CALL CONOUT
+			LD	C,L
+			CALL CONOUT
+			RET
+
+PRINTDSEC:	CALL DISKREAD
+			LD	DE,DISKPAD
+			LD	A,32
+			LD	(LINNUM),A
+			CALL SUBMPRN
+			RET
+
+INCDTS:		LD	A,(SEC)
+			CP	1FH
+			JR	Z,ZSEC
+			INC	A
+			LD	(SEC),A
+			RET
+ZSEC:		XOR	A
+			LD	(SEC),A
+			LD	HL,(TRK)
+			LD	BC,1FFH
+			SCF
+			CCF
+			SBC	HL,BC
+			JR	Z,ZTRK
+			LD	HL,(TRK)
+			INC	HL
+			LD	(TRK),HL
+			RET
+ZTRK:		LD	HL,0
+			LD	(TRK),HL
+			LD	A,(DSK)
+			CP	0FH
+			JR	Z,ZDSK
+			INC	A
+			LD	(DSK),A
+			RET
+ZDSK:		XOR	A
+			LD	(DSK),A
+			RET
+			
+;================================================================================================
+; Download 1 sector from disk to memory (@ DMIRROR)
+;================================================================================================
+DDOWN:		LD	DE,DMA+5
+			CALL GETDTS
+			CP	1				; Is the argument OK?
+			JP	NZ,CYCLE
+			CALL DTS2LBA
+			CALL DISKREAD
 			JP	CYCLE
+
+;================================================================================================
+; Routine to get DTS from command line. DE=line_buf_ptr(should point to where DTS starts).
+; Returns A=0 if missing arg, A=1 if OK, A=2 if invalid arg. 
+;================================================================================================
+GETDTS:		CALL GETDISK
+			CP	1				; Is the argument OK?
+			JP	NZ,CYCLE
+			INC DE
+			CALL GETTRACK
+			CP	1				; Is the argument OK?
+			JP	NZ,CYCLE
+			INC	DE
+			INC DE
+			CALL GETSECTOR
+			CP	1				; Is the argument OK?
+			JP	NZ,CYCLE
+			RET
+
+GETDISK:	LD	A,(DE)
+			CP	0
+			JP	NZ,GD1
+			CALL GBNA
+			RET
+GD1:		SUB	'A'
+			LD	(DSK),A
+			CP	10H
+			JP	M,GD2
+			CALL GBIA
+			RET
+GD2:		LD	A,1
+			RET
+
+GETTRACK:	LD	A,'0'
+			LD	(DE),A
+			CALL GETWORD
+			CP	1
+			RET	NZ
+			LD	(TRK),BC
+			LD	HL,1FFH
+			SCF
+			CCF
+			SBC	HL,BC
+			LD	A,1
+			RET	P
+			CALL GBIA
+			RET
+
+GETSECTOR:	CALL GETBYTE
+			CP	1
+			RET	NZ
+			LD	A,B
+			LD	(SEC),A
+			CP	20H
+			LD	A,1
+			RET	M
+			CALL GBIA
+			RET
+			
+;================================================================================================
+; Convert disk/track/sector to LBA0,1,2,3.
+;================================================================================================
+DTS2LBA:	LD	HL,(TRK)
+			RLC	L
+			RLC	L
+			RLC	L
+			RLC	L
+			RLC	L
+			LD	A,L
+			AND	0E0H
+			LD	L,A
+			LD	A,(SEC)
+			ADD	A,L
+			LD	(LBA0),A
+			LD	HL,(TRK)
+			RRC	L
+			RRC	L
+			RRC	L
+			LD	A,L
+			AND	01FH
+			LD	L,A
+			RLC	H
+			RLC	H
+			RLC	H
+			RLC	H
+			RLC	H
+			LD	A,H
+			AND	020H
+			LD	H,A
+			LD	A,(DSK)
+			RLC	A
+			RLC	A
+			RLC	A
+			RLC	A
+			RLC	A
+			RLC	A
+			AND	0C0H
+			ADD	A,H
+			ADD	A,L
+			LD	(LBA1),A
+			LD	A,(DSK)
+			RRC	A
+			RRC	A
+			AND	03H
+			LD	(LBA2),A
+			LD	A,0E0H
+			LD	(LBA3),A
+			RET
+			
+;================================================================================================
+; Wait for disk to be ready (busy=0,ready=1)
+;================================================================================================
+DWAIT:		PUSH AF
+DWAIT1:		IN 	A,(CF_STATUS)
+			AND	080H
+			CP 	080H
+			JR	Z,DWAIT1
+			POP	AF
+			RET
+
+;================================================================================================
+; Set LBA on CF
+;================================================================================================
+SETLBA:		LD	A,(LBA0)
+			OUT (CF_LBA0),A
+			LD	A,(LBA1)
+			OUT (CF_LBA1),A
+			LD	A,(LBA2)
+			OUT (CF_LBA2),A
+			LD	A,(LBA3)
+			OUT (CF_LBA3),A
+			LD 	A,1
+			OUT (CF_SECCOUNT),A
+			RET				
+
+;================================================================================================
+; Read physical one sector from disk and write it on DISKPAD
+;================================================================================================
+DISKREAD:	PUSH AF
+			PUSH BC
+			PUSH HL
+
+			CALL DWAIT
+			CALL SETLBA
+			LD 	A,CF_READ_SEC
+			OUT (CF_COMMAND),A
+			CALL DWAIT
+			LD 	C,4
+			LD 	HL,DISKPAD
+rd4secs:	LD 	B,128
+rdByte:		IN 	A,(CF_DATA)
+			LD 	(HL),A
+			INC HL
+			DEC B
+			JR 	NZ, rdByte
+			DEC C
+			JR 	NZ,rd4secs
+
+			POP HL
+			POP BC
+			POP AF
+			RET
+
+;================================================================================================
+; Write physical sector from DISKPAD to host
+;================================================================================================
+DISKWRITE:	PUSH AF
+			PUSH BC
+			PUSH HL
+
+			CALL DWAIT
+			CALL SETLBA
+			LD 	A,CF_WRITE_SEC
+			OUT (CF_COMMAND),A
+			CALL DWAIT
+			LD 	C,4
+			LD 	HL,DISKPAD
+wr4secs:	LD 	B,128
+wrByte:		LD 	A,(HL)
+			OUT (CF_DATA),A
+			INC HL
+			DEC B
+			JR 	NZ,wrByte
+			DEC C
+			JR 	NZ,wr4secs
+
+			POP HL
+			POP BC
+			POP AF
+			RET
+
+;================================================================================================
+; Upload 1 sector from memory (@ DMIRROR) to disk
+;================================================================================================
+DUP:		LD	DE,DMA+3
+			CALL GETDTS
+			CP	1				; Is the argument OK?
+			JP	NZ,CYCLE
+			CALL DTS2LBA
+			CALL DISKWRITE
+			JP	CYCLE
+
+;================================================================================================
+; Verify disk. Do this on on all sectors of the disk:
+;
+;	1. copy sector to DISKPAD
+;	2. fill sector with 00
+;	3. verify if all bytes are 00
+;	4. fill sector with 0FFh
+;	5. verify if all bytes are 0FFh
+;	6. copy DISKPAD back to sector
+;
+; If during the verification a byte doesn't match, print error message and continue.
+;================================================================================================
+DVERIFY:	RET
+
+;================================================================================================
+; Format a disk.
+;================================================================================================
+DFORMAT:	RET
 
 ;================================================================================================
 ; Run (Execute) Command
@@ -805,25 +1135,18 @@ GETBYTE:	LD	A,(DE)
 			CALL HL2B				; Convert ASCII pair to byte
 			LD	A,1
 			RET
-GBNA:		CALL PRINTENV
-			CALL PRINTSEQ
-			.DB	"Missing argument.",CR,LF,0
+GBNA:		CALL PRINTSEQ
+			.DB	">Missing argument.",CR,LF,0
 			LD	A,0
 			RET
 GBSPC:		INC	DE
 			JR	GETBYTE
-GBIA:		CALL PRINTENV
-			CALL PRINTSEQ
-			.DB	"Invalid argument.",CR,LF,0
+GBIA:		CALL PRINTSEQ
+			.DB	">Invalid argument.",CR,LF,0
 			LD	A,2
 			RET
 
-PRINTENV:	LD	A,(ENVIR)			; Print environment letter (M, L, D or none) before message.
-			CP	0
-			JR	Z,NOLETTER
-			LD	C,A
-			CALL CONOUT
-NOLETTER:	LD	C,PROMPT
+PRINTENV:	LD	C,PROMPT
 			CALL CONOUT
 			RET
 
@@ -910,37 +1233,37 @@ COMPENSE2:	LD	A,H
 ;================================================================================================
 CMDTBL:		.DB	"?",RS
 			.DB	"BOOT",RS
-			.DB	"MEMORY",RS
 			.DB	"XMODEM",RS
 			.DB	"HEX2COM",RS
-			.DB	"DISK",RS
-			.DB	"RUN",ETX
+			.DB	"RUN",RS
+			.DB	"READ",RS
+			.DB	"DREAD",RS
+			.DB	"WRITE",RS
+			.DB	"COPY",RS
+			.DB	"FILL",RS
+			.DB	"DOWN",RS
+			.DB	"UP",RS
+			.DB	"FORMAT",RS
+			.DB	"VERIFY",ETX
 
 JMPTBL:		JP	HELP
 			JP	WBOOT
-			JP	MEMO
 			JP	XMODEM
 			JP	HEX2COM
-			JP	DISK
 			JP	RUN
-			
-MEMOCT:		.DB	"?",RS
-			.DB	"QUIT",RS
-			.DB	"READ",RS
-			.DB	"WRITE",RS
-			.DB	"COPY",RS
-			.DB	"FILL",ETX
-
-MEMOJT:		JP	MHELP
-			JP	MQUIT
 			JP	MREAD
+			JP	DREAD
 			JP	MWRITE
 			JP	MCOPY
 			JP	MFILL
+			JP	DDOWN
+			JP	DUP
+			JP	DFORMAT
+			JP	DVERIFY
 			
+;================================================================================================
 CMDNUM		.DB	0
 LBUFPTR		.DW	0
-ENVIR		.DB	0			; 0=MONITOR, M=MEMO, L=LCD, D=DISK
 LINNUM		.DB	0
 COLNUM		.DB	0
 AAAA		.DW	0
@@ -950,5 +1273,12 @@ CHKSUM	 	.DB	0					; Checksum for xmodem
 BYTECNT		.DB	0					; Byte counter for xmodem and hex2com
 RETRY		.DB 0					; Retry counter for xmodem
 BLOCK		.DB	0					; Block counter for xmodem
+DSK			.DB	0					; Disk number [00,0F]
+TRK			.DW	0					; Track number [0,1FF]
+SEC			.DB	0					; Sector number [0,1F]
+LBA3		.DB	0
+LBA2		.DB	0
+LBA1		.DB	0
+LBA0		.DB	0
 
 			.END
