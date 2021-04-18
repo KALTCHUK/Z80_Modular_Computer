@@ -600,7 +600,7 @@ A2CNB:		CALL HGB
 			JR	A2CNB
 			
 A2CEND:		CALL PRINTSEQ
-			.DB	">Source contains ",0
+			.DB	">Target contains ",0
 			LD	BC,0100H
 			PUSH IY
 			POP	HL
