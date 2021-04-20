@@ -134,6 +134,7 @@ HELP:		CALL CRLF
 			.DB "            WRITE aaaa,c1 c2 cN   write to memory.",CR,LF
 			.DB "            COPY aaaa-bbbb,cccc   copy memory block.",CR,LF
 			.DB "            FILL aaaa-bbbb,cc     fill memory block.",CR,LF
+			.DB "            COMPARE aaaa,bbbb     compare memory areas.",CR,LF
 			.DB	"            DREAD aaaa            read from disk.",CR,LF
 			.DB "            DOWN d,ttt,ss         download one sector from disk.",CR,LF
 			.DB "            UP d,ttt,ss           upload one sector to disk.",CR,LF
@@ -147,7 +148,7 @@ HELP:		CALL CRLF
 			JP	CYCLE
 			
 ;================================================================================================
-; Read memory operations
+; Read memory operations - READ AAAA
 ;================================================================================================
 MREAD:		LD	DE,DMA+4
 			CALL GETWORD		; Get aaaa
@@ -241,7 +242,7 @@ NOTPRTBL:	CALL CONOUT
 			RET
 			
 ;================================================================================================
-; Write memory operations
+; Write memory operations - WRITE AAAA,C1 C2 C3...
 ;================================================================================================
 MWRITE:		LD	DE,DMA+5
 			CALL GETWORD		; Get aaaa
@@ -263,7 +264,7 @@ MWNEXT:		INC	DE
 			JR	MWNEXT
 
 ;================================================================================================
-; Copy memory operations
+; Copy memory operations - COPY AAAA-BBBB,CCCC
 ;================================================================================================
 MCOPY:		LD	DE,DMA+4
 			CALL GETWORD		; Get aaaa
@@ -293,7 +294,7 @@ MCOPY:		LD	DE,DMA+4
 			JP	CYCLE
 
 ;================================================================================================
-; Fill memory operations
+; Fill memory operations - FILL AAAA-BBBB,CC
 ;================================================================================================
 MFILL:		LD	DE,DMA+4
 			CALL GETWORD		; Get aaaa
@@ -325,7 +326,23 @@ MFILL:		LD	DE,DMA+4
 			JP	CYCLE
 
 ;================================================================================================
-; Xmodem Command
+; Compare two memory areas - COMPARE AAAA,BBBB
+;================================================================================================
+MCOMP:		LD	DE,DMA+7
+			CALL GETWORD		; Get aaaa
+			CP	1				; Is the argument OK?
+			JP	NZ,CYCLE
+			LD	(AAAA),BC		; Save aaaa
+			LD	DE,DMA+13
+			CALL GETWORD		; Get bbbb
+			CP	1				; Is the argument OK?
+			JP	NZ,CYCLE
+			LD	(BBBB),BC		; Save bbbb
+
+
+
+;================================================================================================
+; Xmodem Command - XMODEM AAAA
 ;================================================================================================
 XMODEM:		LD	A,0C0H
 			LD	(IOBYTE),A
@@ -486,7 +503,7 @@ PURGE:		LD	B,3
 			RET
 
 ;================================================================================================
-; Hexadecimal to Executable conversion command.
+; Hexadecimal to Executable conversion command HEX2COM AAAA
 ; Record structure:
 ;	<start_code> <byte_count> <address> <record_type> <data>...<data> <checksum>
 ;		':'	        1 byte     2 bytes    00h or 01h       n bytes	    1 byte
@@ -578,7 +595,7 @@ HGW:		PUSH IX
 			RET
 
 ;================================================================================================
-; ASCII to Executable conversion command.
+; ASCII to Executable conversion command - ASCII2COM AAAA
 ; Each pair of characters is converted to one byte. The executable is loaded @ 0100h (TPA).
 ;	IX = source address 
 ;	IY = target address
@@ -630,7 +647,7 @@ A2CEND:		CALL PRINTSEQ
 			RET
 			
 ;================================================================================================
-; Read disk operation (READ D,TTT,SS)
+; Read disk operation - READ D,TTT,SS
 ;================================================================================================
 DREAD:		LD	DE,DMA+6
 			CALL GETDTS
@@ -900,7 +917,7 @@ rdByte:		IN 	A,(CF_DATA)
 			RET
 
 ;================================================================================================
-; Write physical sector from DISKPAD to host
+; Write physical sector from DISKPAD to host.
 ;================================================================================================
 DISKWRITE:	PUSH AF
 			PUSH BC
@@ -928,7 +945,7 @@ wrByte:		LD 	A,(HL)
 			RET
 
 ;================================================================================================
-; Upload 1 sector from memory (@ DMIRROR) to disk
+; Upload 1 sector from memory (@ DMIRROR) to disk - UP D,TTT,SS
 ;================================================================================================
 DUP:		LD	DE,DMA+3
 			CALL GETDTS
@@ -939,7 +956,7 @@ DUP:		LD	DE,DMA+3
 			JP	CYCLE
 
 ;================================================================================================
-; Verify disk. Do this on on all sectors of the disk:
+; Verify disk. Do this on on all sectors of the disk - VERIFY D
 ;
 ;	1. copy sector to DISKPAD
 ;	2. fill sector with 00
@@ -953,12 +970,12 @@ DUP:		LD	DE,DMA+3
 DVERIFY:	RET
 
 ;================================================================================================
-; Format a disk.
+; Format a disk - FORMAT D
 ;================================================================================================
 DFORMAT:	RET
 
 ;================================================================================================
-; Run (Execute) Command
+; Run (Execute) Command - RUN AAAA
 ;================================================================================================
 RUN:		LD	DE,DMA+3
 			CALL GETWORD		
@@ -1289,6 +1306,7 @@ CMDTBL:		.DB	"?",RS
 			.DB	"XMODEM",RS
 			.DB	"HEX2COM",RS
 			.DB	"ASCII2COM",RS
+			.DB	"COMPARE",RS
 			.DB	"RUN",RS
 			.DB	"READ",RS
 			.DB	"DREAD",RS
@@ -1305,6 +1323,7 @@ JMPTBL:		JP	HELP
 			JP	XMODEM
 			JP	HEX2COM
 			JP	ASCII2COM
+			JP	MCOMP
 			JP	RUN
 			JP	MREAD
 			JP	DREAD

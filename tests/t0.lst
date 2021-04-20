@@ -1,0 +1,38 @@
+0001   0000             BOOT		.EQU	0
+0002   0000             BIOS		.EQU	0E600H				; BIOS entry point
+0003   0000             LEAP		.EQU	3					; 3 bytes for each entry (JP aaaa)
+0004   0000             
+0005   0000             CONST:		.EQU	BIOS+(LEAP*2)		;  2 Console status.
+0006   0000             CONIN:		.EQU	BIOS+(LEAP*3)		;  3 Console input.
+0007   0000             CONOUT:		.EQU	BIOS+(LEAP*4)		;  4 Console OUTput.
+0008   0000             LIST:		.EQU	BIOS+(LEAP*5)		;  3 Console input.
+0009   0000             LISTST:		.EQU	BIOS+(LEAP*15)		;  2 Console status.
+0010   0000             PRINTSEQ:	.EQU	BIOS+(LEAP*17)		;  4 Console OUTput.
+0011   0000             
+0012   0000             LF			.EQU	0AH
+0013   0000             CR			.EQU	0DH
+0014   0000             ESC			.EQU	1BH
+0015   0000             ;================================================================================================
+0016   0100             			.ORG	0100H
+0017   0100             
+0018   0100 CD 33 E6    START:		CALL PRINTSEQ
+0019   0103 0D 0A 20 7C 			.DB	CR,LF," || TEST 0"
+0019   0107 7C 20 54 45 
+0019   010B 53 54 20 30 
+0020   010F 0D 0A 20 7C 			.DB	CR,LF," || CALL PRINTSEQ"
+0020   0113 7C 20 43 41 
+0020   0117 4C 4C 20 50 
+0020   011B 52 49 4E 54 
+0020   011F 53 45 51 
+0021   0122 0D 0A 20 7C 			.DB	CR,LF," || BOOT",CR,LF,CR,LF,0
+0021   0126 7C 20 42 4F 
+0021   012A 4F 54 0D 0A 
+0021   012E 0D 0A 00 
+0022   0131             			
+0023   0131 CD 09 E6    			CALL CONIN
+0024   0134 FE 1B       			CP	ESC
+0025   0136 CA 00 00    			JP	Z,BOOT
+0026   0139 18 C5       			JR	START
+0027   013B             			
+0028   013B             			.END
+tasm: Number of errors = 0
