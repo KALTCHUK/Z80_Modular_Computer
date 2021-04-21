@@ -1,5 +1,5 @@
 ;================================================================================================
-; MONITOR 2.1D - implement ascii2com function.
+; MONITOR 2.1E - implement memory compare function.
 ;
 ;================================================================================================
 IOBYTE		.EQU	3
@@ -183,24 +183,7 @@ PRINTFTR:	CALL CRLF
 			RET
 
 SUBMPRN:
-NEWLINE:	CALL CRLF
-			CALL PRINTENV
-			LD	B,D				; Print the address
-			CALL B2HL
-			LD	C,H
-			CALL CONOUT
-			LD	C,L
-			CALL CONOUT
-			LD	B,E
-			CALL B2HL
-			LD	C,H
-			CALL CONOUT
-			LD	C,L
-			CALL CONOUT
-			LD	C,':'
-			CALL CONOUT
-			LD	C,' '
-			CALL CONOUT
+NEWLINE:	CALL PRINTADDR
 			LD	B,16
 NEWCOL:		PUSH BC
 			LD	A,(DE)			; Start printing the memory content
@@ -239,6 +222,26 @@ NOTPRTBL:	CALL CONOUT
 			LD	(LINNUM),A
 			JR	NZ,NEWLINE
 			CALL PRINTFTR		; Print footer message
+			RET
+
+PRINTADDR:	CALL CRLF
+			CALL PRINTENV
+			LD	B,D				; Print the address
+			CALL B2HL
+			LD	C,H
+			CALL CONOUT
+			LD	C,L
+			CALL CONOUT
+			LD	B,E
+			CALL B2HL
+			LD	C,H
+			CALL CONOUT
+			LD	C,L
+			CALL CONOUT
+			LD	C,':'
+			CALL CONOUT
+			LD	C,' '
+			CALL CONOUT
 			RET
 			
 ;================================================================================================
@@ -338,6 +341,17 @@ MCOMP:		LD	DE,DMA+7
 			CP	1				; Is the argument OK?
 			JP	NZ,CYCLE
 			LD	(BBBB),BC		; Save bbbb
+
+			LD	DE,(AAAA)
+			CALL PRINTADDR
+			
+			
+			
+			
+			LD DE,(BBBB)
+			CALL PRINTADDR
+
+
 
 
 
