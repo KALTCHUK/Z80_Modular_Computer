@@ -342,18 +342,59 @@ MCOMP:		LD	DE,DMA+7
 			JP	NZ,CYCLE
 			LD	(BBBB),BC		; Save bbbb
 
-			LD	DE,(AAAA)
+MCNEWL:		LD	DE,(AAAA)
 			CALL PRINTADDR
+			LD	B,16
+MCNEWC:		PUSH BC
+			LD	A,(DE)			; Start printing the 1st memory area content
+			INC	DE
+			LD	B,A
+			CALL B2HL
+			LD	C,H
+			CALL CONOUT
+			LD	C,L
+			CALL CONOUT
+			LD	C,' '
+			CALL CONOUT
+			POP	BC
+			DJNZ MCNEWC
 			
-			
-			
-			
-			LD DE,(BBBB)
+			LD	IX,(AAAA)
+			LD	DE,(BBBB)
 			CALL PRINTADDR
-
-
-
-
+			LD	B,16
+MCNEWAC:	PUSH BC
+			LD	A,(DE)			; Start printing the 2nd memory area content
+			LD	B,(IX)
+			INC	IX
+			INC	DE
+			CP	B
+			JR	NZ,DIFFER		; if the content is equal, just print '='
+			LD	C,'='
+			CALL CONOUT
+			CALL CONOUT
+			JR	POSDIF
+DIFFER:		LD	B,A
+			CALL B2HL
+			LD	C,H
+			CALL CONOUT
+			LD	C,L
+			CALL CONOUT
+POSDIF:		LD	C,' '
+			CALL CONOUT
+			POP	BC
+			DJNZ MCNEWAC
+			LD	(AAAA),IX		; save memory positions
+			LD	(BBBB),DE
+			CALL CRLF			; print the footer
+			CALL PRINTSEQ
+			.DB ">      <ENTER> = next line, <ESC> = quit",CR,LF,0
+MCAGAIN:	CALL CONIN			; Wait for user's decision
+			CP	CR
+			JP	Z,MCNEWL
+			CP	ESC
+			JP	Z,CYCLE
+			JR	MCAGAIN
 
 ;================================================================================================
 ; Xmodem Command - XMODEM AAAA

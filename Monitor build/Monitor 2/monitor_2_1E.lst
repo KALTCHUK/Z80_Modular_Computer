@@ -1,0 +1,1712 @@
+0001   0000             ;================================================================================================
+0002   0000             ; MONITOR 2.1E - implement memory compare function.
+0003   0000             ;
+0004   0000             ;================================================================================================
+0005   0000             IOBYTE		.EQU	3
+0006   0000             TPA			.EQU	0100H		; Transient Programs Area
+0007   0000             MONITOR		.EQU	0D000H		; Monitor entry point
+0008   0000             BIOS		.EQU	0E600H		; BIOS entry point
+0009   0000             DMA			.EQU	0080H		; Buffer used by Monitor
+0010   0000             DISKPAD		.EQU	0E000H		; Draft area used by disk R/W ops
+0011   0000             								; (512 bytes between Monitor and BIOS)
+0012   0000             
+0013   0000             ;================================================================================================
+0014   0000             ; BIOS functions.
+0015   0000             ;================================================================================================
+0016   0000             LEAP		.EQU	3					; 3 bytes for each entry (JP aaaa)
+0017   0000             
+0018   0000             BOOT:		.EQU	BIOS				;  0 Initialize.
+0019   0000             WBOOT:		.EQU	BIOS+(LEAP*1)		;  1 Warm boot.
+0020   0000             CONST:		.EQU	BIOS+(LEAP*2)		;  2 Console status.
+0021   0000             CONIN:		.EQU	BIOS+(LEAP*3)		;  3 Console input.
+0022   0000             CONOUT:		.EQU	BIOS+(LEAP*4)		;  4 Console OUTput.
+0023   0000             LIST:		.EQU	BIOS+(LEAP*5)		;  5 List OUTput.
+0024   0000             PUNCH:		.EQU	BIOS+(LEAP*6)		;  6 Punch OUTput.
+0025   0000             READER:		.EQU	BIOS+(LEAP*7)		;  7 Reader input.
+0026   0000             HOME:		.EQU	BIOS+(LEAP*8)		;  8 Home disk.
+0027   0000             SELDSK:		.EQU	BIOS+(LEAP*9)		;  9 Select disk.
+0028   0000             SETTRK:		.EQU	BIOS+(LEAP*10)		; 10 Select track.
+0029   0000             SETSEC:		.EQU	BIOS+(LEAP*11)		; 11 Select sector.
+0030   0000             SETDMA:		.EQU	BIOS+(LEAP*12)		; 12 Set DMA ADDress.
+0031   0000             READ:		.EQU	BIOS+(LEAP*13)		; 13 Read 128 bytes.
+0032   0000             WRITE:		.EQU	BIOS+(LEAP*14)		; 14 Write 128 bytes.
+0033   0000             LISTST:		.EQU	BIOS+(LEAP*15)		; 15 List status.
+0034   0000             SECTRAN:	.EQU	BIOS+(LEAP*16)		; 16 Sector translate.
+0035   0000             PRINTSEQ:	.EQU	BIOS+(LEAP*17)		; not a BIOS function
+0036   0000             
+0037   0000             ;================================================================================================
+0038   0000             ; ASCII characters.
+0039   0000             ;================================================================================================
+0040   0000             NUL			.EQU	00H
+0041   0000             SOH			.EQU	01H
+0042   0000             STX			.EQU	02H
+0043   0000             ETX			.EQU	03H
+0044   0000             EOT			.EQU	04H
+0045   0000             ENQ			.EQU	05H
+0046   0000             ACK			.EQU	06H
+0047   0000             BEL			.EQU	07H
+0048   0000             BS			.EQU	08H			; ^H
+0049   0000             HT			.EQU	09H
+0050   0000             LF			.EQU	0AH
+0051   0000             VT			.EQU	0BH
+0052   0000             FF			.EQU	0CH
+0053   0000             CR			.EQU	0DH
+0054   0000             SO			.EQU	0EH
+0055   0000             SI			.EQU	0FH
+0056   0000             DLE			.EQU	10H
+0057   0000             DC1			.EQU	11H
+0058   0000             DC2			.EQU	12H
+0059   0000             DC3			.EQU	13H
+0060   0000             DC4			.EQU	14H
+0061   0000             NAK			.EQU	15H			; ^U
+0062   0000             SYN			.EQU	16H
+0063   0000             ETB			.EQU	17H
+0064   0000             CAN			.EQU	18H			; ^X
+0065   0000             EM			.EQU	19H
+0066   0000             SUB			.EQU	1AH
+0067   0000             ESC			.EQU	1BH
+0068   0000             FS			.EQU	1CH
+0069   0000             GS			.EQU	1DH
+0070   0000             RS			.EQU	1EH
+0071   0000             US			.EQU	1FH
+0072   0000             
+0073   0000             ;================================================================================================
+0074   0000             ; Some constants
+0075   0000             ;================================================================================================
+0076   0000             MAXLBUF		.EQU	DMA+80
+0077   0000             PROMPT		.EQU	'>'
+0078   0000             MAXTRY		.EQU	10
+0079   0000             
+0080   0000             ;================================================================================================
+0081   0000             ; FLASH card stuff
+0082   0000             ;================================================================================================
+0083   0000             FLASH_ADDR		.EQU	0B0H			; Base I/O address for compact flash card
+0084   0000             CF_DATA			.EQU	(FLASH_ADDR+0)	; R/W
+0085   0000             CF_FEATURES		.EQU	(FLASH_ADDR+1)	; W
+0086   0000             CF_ERROR		.EQU	(FLASH_ADDR+1)	; R
+0087   0000             CF_SECCOUNT		.EQU	(FLASH_ADDR+2)	; W
+0088   0000             
+0089   0000             CF_SECTOR		.EQU	(FLASH_ADDR+3)	; W
+0090   0000             CF_CYL_LOW		.EQU	(FLASH_ADDR+4)	; W
+0091   0000             CF_CYL_HI		.EQU	(FLASH_ADDR+5)	; W
+0092   0000             CF_HEAD			.EQU	(FLASH_ADDR+6)	; W
+0093   0000             
+0094   0000             CF_LBA0			.EQU	(FLASH_ADDR+3)	; W
+0095   0000             CF_LBA1			.EQU	(FLASH_ADDR+4)	; W
+0096   0000             CF_LBA2			.EQU	(FLASH_ADDR+5)	; W
+0097   0000             CF_LBA3			.EQU	(FLASH_ADDR+6)	; W
+0098   0000             
+0099   0000             CF_STATUS		.EQU	(FLASH_ADDR+7)	; R
+0100   0000             CF_COMMAND		.EQU	(FLASH_ADDR+7)	; W
+0101   0000             
+0102   0000             ;CF Features
+0103   0000             CF_8BIT			.EQU	1
+0104   0000             CF_NOCACHE		.EQU	082H
+0105   0000             
+0106   0000             ;CF Commands
+0107   0000             CF_READ_SEC		.EQU	020H
+0108   0000             CF_WRITE_SEC	.EQU	030H
+0109   0000             CF_SET_FEAT		.EQU 	0EFH
+0110   0000             ;================================================================================================
+0111   0000             ; MAIN PROGRAM STARTS HERE
+0112   0000             ;================================================================================================
+0113   D000             			.ORG MONITOR
+0114   D000             
+0115   D000 CD 7C DC    CYCLE:		CALL PRINTENV
+0116   D003 CD 07 DB    			CALL LINER					; Call the line manager
+0117   D006 3A 80 00    			LD	A,(DMA)
+0118   D009 FE 00       			CP	0
+0119   D00B 28 F3       			JR	Z,CYCLE					; User ENTERed an empty line. No need to parse.
+0120   D00D 21 FD DC    			LD	HL,CMDTBL
+0121   D010 CD B0 DB    			CALL PARSER					; Find command comparing buffer with Command Table.
+0122   D013 3C          			INC	A
+0123   D014 28 01       			JR	Z,UNK					; No match found in command table.
+0124   D016 E9          			JP	(HL)					; Jump to Command Routine
+0125   D017 CD EC DA    UNK:		CALL UNKNOWN
+0126   D01A 18 E4       			JR	CYCLE
+0127   D01C             			
+0128   D01C             ;================================================================================================
+0129   D01C             ; Help for main program
+0130   D01C             ;================================================================================================
+0131   D01C CD 60 DB    HELP:		CALL CRLF
+0132   D01F CD 33 E6    			CALL PRINTSEQ
+0133   D022 20 4F 70 74 			.DB	" Options:   READ aaaa             read from memory.",CR,LF
+0133   D026 69 6F 6E 73 
+0133   D02A 3A 20 20 20 
+0133   D02E 52 45 41 44 
+0133   D032 20 61 61 61 
+0133   D036 61 20 20 20 
+0133   D03A 20 20 20 20 
+0133   D03E 20 20 20 20 
+0133   D042 20 20 72 65 
+0133   D046 61 64 20 66 
+0133   D04A 72 6F 6D 20 
+0133   D04E 6D 65 6D 6F 
+0133   D052 72 79 2E 0D 
+0133   D056 0A 
+0134   D057 20 20 20 20 			.DB "            WRITE aaaa,c1 c2 cN   write to memory.",CR,LF
+0134   D05B 20 20 20 20 
+0134   D05F 20 20 20 20 
+0134   D063 57 52 49 54 
+0134   D067 45 20 61 61 
+0134   D06B 61 61 2C 63 
+0134   D06F 31 20 63 32 
+0134   D073 20 63 4E 20 
+0134   D077 20 20 77 72 
+0134   D07B 69 74 65 20 
+0134   D07F 74 6F 20 6D 
+0134   D083 65 6D 6F 72 
+0134   D087 79 2E 0D 0A 
+0135   D08B 20 20 20 20 			.DB "            COPY aaaa-bbbb,cccc   copy memory block.",CR,LF
+0135   D08F 20 20 20 20 
+0135   D093 20 20 20 20 
+0135   D097 43 4F 50 59 
+0135   D09B 20 61 61 61 
+0135   D09F 61 2D 62 62 
+0135   D0A3 62 62 2C 63 
+0135   D0A7 63 63 63 20 
+0135   D0AB 20 20 63 6F 
+0135   D0AF 70 79 20 6D 
+0135   D0B3 65 6D 6F 72 
+0135   D0B7 79 20 62 6C 
+0135   D0BB 6F 63 6B 2E 
+0135   D0BF 0D 0A 
+0136   D0C1 20 20 20 20 			.DB "            FILL aaaa-bbbb,cc     fill memory block.",CR,LF
+0136   D0C5 20 20 20 20 
+0136   D0C9 20 20 20 20 
+0136   D0CD 46 49 4C 4C 
+0136   D0D1 20 61 61 61 
+0136   D0D5 61 2D 62 62 
+0136   D0D9 62 62 2C 63 
+0136   D0DD 63 20 20 20 
+0136   D0E1 20 20 66 69 
+0136   D0E5 6C 6C 20 6D 
+0136   D0E9 65 6D 6F 72 
+0136   D0ED 79 20 62 6C 
+0136   D0F1 6F 63 6B 2E 
+0136   D0F5 0D 0A 
+0137   D0F7 20 20 20 20 			.DB "            COMPARE aaaa,bbbb     compare memory areas.",CR,LF
+0137   D0FB 20 20 20 20 
+0137   D0FF 20 20 20 20 
+0137   D103 43 4F 4D 50 
+0137   D107 41 52 45 20 
+0137   D10B 61 61 61 61 
+0137   D10F 2C 62 62 62 
+0137   D113 62 20 20 20 
+0137   D117 20 20 63 6F 
+0137   D11B 6D 70 61 72 
+0137   D11F 65 20 6D 65 
+0137   D123 6D 6F 72 79 
+0137   D127 20 61 72 65 
+0137   D12B 61 73 2E 0D 
+0137   D12F 0A 
+0138   D130 20 20 20 20 			.DB	"            DREAD aaaa            read from disk.",CR,LF
+0138   D134 20 20 20 20 
+0138   D138 20 20 20 20 
+0138   D13C 44 52 45 41 
+0138   D140 44 20 61 61 
+0138   D144 61 61 20 20 
+0138   D148 20 20 20 20 
+0138   D14C 20 20 20 20 
+0138   D150 20 20 72 65 
+0138   D154 61 64 20 66 
+0138   D158 72 6F 6D 20 
+0138   D15C 64 69 73 6B 
+0138   D160 2E 0D 0A 
+0139   D163 20 20 20 20 			.DB "            DOWN d,ttt,ss         download one sector from disk.",CR,LF
+0139   D167 20 20 20 20 
+0139   D16B 20 20 20 20 
+0139   D16F 44 4F 57 4E 
+0139   D173 20 64 2C 74 
+0139   D177 74 74 2C 73 
+0139   D17B 73 20 20 20 
+0139   D17F 20 20 20 20 
+0139   D183 20 20 64 6F 
+0139   D187 77 6E 6C 6F 
+0139   D18B 61 64 20 6F 
+0139   D18F 6E 65 20 73 
+0139   D193 65 63 74 6F 
+0139   D197 72 20 66 72 
+0139   D19B 6F 6D 20 64 
+0139   D19F 69 73 6B 2E 
+0139   D1A3 0D 0A 
+0140   D1A5 20 20 20 20 			.DB "            UP d,ttt,ss           upload one sector to disk.",CR,LF
+0140   D1A9 20 20 20 20 
+0140   D1AD 20 20 20 20 
+0140   D1B1 55 50 20 64 
+0140   D1B5 2C 74 74 74 
+0140   D1B9 2C 73 73 20 
+0140   D1BD 20 20 20 20 
+0140   D1C1 20 20 20 20 
+0140   D1C5 20 20 75 70 
+0140   D1C9 6C 6F 61 64 
+0140   D1CD 20 6F 6E 65 
+0140   D1D1 20 73 65 63 
+0140   D1D5 74 6F 72 20 
+0140   D1D9 74 6F 20 64 
+0140   D1DD 69 73 6B 2E 
+0140   D1E1 0D 0A 
+0141   D1E3 20 20 20 20 			.DB "            VERIFY d              verify disk.",CR,LF
+0141   D1E7 20 20 20 20 
+0141   D1EB 20 20 20 20 
+0141   D1EF 56 45 52 49 
+0141   D1F3 46 59 20 64 
+0141   D1F7 20 20 20 20 
+0141   D1FB 20 20 20 20 
+0141   D1FF 20 20 20 20 
+0141   D203 20 20 76 65 
+0141   D207 72 69 66 79 
+0141   D20B 20 64 69 73 
+0141   D20F 6B 2E 0D 0A 
+0142   D213 20 20 20 20 			.DB "            FORMAT d              format disk.",CR,LF
+0142   D217 20 20 20 20 
+0142   D21B 20 20 20 20 
+0142   D21F 46 4F 52 4D 
+0142   D223 41 54 20 64 
+0142   D227 20 20 20 20 
+0142   D22B 20 20 20 20 
+0142   D22F 20 20 20 20 
+0142   D233 20 20 66 6F 
+0142   D237 72 6D 61 74 
+0142   D23B 20 64 69 73 
+0142   D23F 6B 2E 0D 0A 
+0143   D243 20 20 20 20 			.DB "            XMODEM aaaa           receive file using xmodem protocol.",CR,LF
+0143   D247 20 20 20 20 
+0143   D24B 20 20 20 20 
+0143   D24F 58 4D 4F 44 
+0143   D253 45 4D 20 61 
+0143   D257 61 61 61 20 
+0143   D25B 20 20 20 20 
+0143   D25F 20 20 20 20 
+0143   D263 20 20 72 65 
+0143   D267 63 65 69 76 
+0143   D26B 65 20 66 69 
+0143   D26F 6C 65 20 75 
+0143   D273 73 69 6E 67 
+0143   D277 20 78 6D 6F 
+0143   D27B 64 65 6D 20 
+0143   D27F 70 72 6F 74 
+0143   D283 6F 63 6F 6C 
+0143   D287 2E 0D 0A 
+0144   D28A 20 20 20 20 			.DB "            HEX2COM aaaa          convert intel hex to executable.",CR,LF
+0144   D28E 20 20 20 20 
+0144   D292 20 20 20 20 
+0144   D296 48 45 58 32 
+0144   D29A 43 4F 4D 20 
+0144   D29E 61 61 61 61 
+0144   D2A2 20 20 20 20 
+0144   D2A6 20 20 20 20 
+0144   D2AA 20 20 63 6F 
+0144   D2AE 6E 76 65 72 
+0144   D2B2 74 20 69 6E 
+0144   D2B6 74 65 6C 20 
+0144   D2BA 68 65 78 20 
+0144   D2BE 74 6F 20 65 
+0144   D2C2 78 65 63 75 
+0144   D2C6 74 61 62 6C 
+0144   D2CA 65 2E 0D 0A 
+0145   D2CE 20 20 20 20 			.DB "            ASCII2COM aaaa        convert ASCII to executable.",CR,LF
+0145   D2D2 20 20 20 20 
+0145   D2D6 20 20 20 20 
+0145   D2DA 41 53 43 49 
+0145   D2DE 49 32 43 4F 
+0145   D2E2 4D 20 61 61 
+0145   D2E6 61 61 20 20 
+0145   D2EA 20 20 20 20 
+0145   D2EE 20 20 63 6F 
+0145   D2F2 6E 76 65 72 
+0145   D2F6 74 20 41 53 
+0145   D2FA 43 49 49 20 
+0145   D2FE 74 6F 20 65 
+0145   D302 78 65 63 75 
+0145   D306 74 61 62 6C 
+0145   D30A 65 2E 0D 0A 
+0146   D30E 20 20 20 20 			.DB "            RUN aaaa              run program.",CR,LF
+0146   D312 20 20 20 20 
+0146   D316 20 20 20 20 
+0146   D31A 52 55 4E 20 
+0146   D31E 61 61 61 61 
+0146   D322 20 20 20 20 
+0146   D326 20 20 20 20 
+0146   D32A 20 20 20 20 
+0146   D32E 20 20 72 75 
+0146   D332 6E 20 70 72 
+0146   D336 6F 67 72 61 
+0146   D33A 6D 2E 0D 0A 
+0147   D33E 20 20 20 20 			.DB "            BOOT",CR,LF,0
+0147   D342 20 20 20 20 
+0147   D346 20 20 20 20 
+0147   D34A 42 4F 4F 54 
+0147   D34E 0D 0A 00 
+0148   D351 C3 00 D0    			JP	CYCLE
+0149   D354             			
+0150   D354             ;================================================================================================
+0151   D354             ; Read memory operations - READ AAAA
+0152   D354             ;================================================================================================
+0153   D354 11 84 00    MREAD:		LD	DE,DMA+4
+0154   D357 CD 0E DC    			CALL GETWORD		; Get aaaa
+0155   D35A FE 01       			CP	1				; Is the argument OK?
+0156   D35C C2 00 D0    			JP	NZ,CYCLE
+0157   D35F C5          			PUSH BC
+0158   D360 D1          			POP	DE				; DE will be the address holder
+0159   D361 7B          			LD	A,E
+0160   D362 E6 F0       			AND	0F0H
+0161   D364 5F          			LD	E,A				; trim addr (xxx0)
+0162   D365 CD 7E D3    NEWHDR:		CALL PRINTHDR		; Print the header
+0163   D368 3E 10       			LD	A,16
+0164   D36A 32 8D DD    			LD	(LINNUM),A
+0165   D36D             
+0166   D36D CD 67 D4    			CALL SUBMPRN
+0167   D370             			
+0168   D370 CD 09 E6    TRYAGAIN:	CALL CONIN			; Wait for user's decision
+0169   D373 FE 0D       			CP	CR
+0170   D375 28 EE       			JR	Z,NEWHDR
+0171   D377 FE 1B       			CP	ESC
+0172   D379 CA 00 D0    			JP	Z,CYCLE
+0173   D37C 18 F2       			JR	TRYAGAIN
+0174   D37E             
+0175   D37E CD 33 E6    PRINTHDR:	CALL PRINTSEQ
+0176   D381 3E 41 44 44 			.DB ">ADDR: 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F  0123456789ABCDEF",CR,LF,
+0176   D385 52 3A 20 30 
+0176   D389 30 20 30 31 
+0176   D38D 20 30 32 20 
+0176   D391 30 33 20 30 
+0176   D395 34 20 30 35 
+0176   D399 20 30 36 20 
+0176   D39D 30 37 20 30 
+0176   D3A1 38 20 30 39 
+0176   D3A5 20 30 41 20 
+0176   D3A9 30 42 20 30 
+0176   D3AD 43 20 30 44 
+0176   D3B1 20 30 45 20 
+0176   D3B5 30 46 20 20 
+0176   D3B9 30 31 32 33 
+0176   D3BD 34 35 36 37 
+0176   D3C1 38 39 41 42 
+0176   D3C5 43 44 45 46 
+0176   D3C9 0D 0A 
+0177   D3CB 3E 2D 2D 2D 			.DB ">----- -----------------------------------------------  ----------------",0
+0177   D3CF 2D 2D 20 2D 
+0177   D3D3 2D 2D 2D 2D 
+0177   D3D7 2D 2D 2D 2D 
+0177   D3DB 2D 2D 2D 2D 
+0177   D3DF 2D 2D 2D 2D 
+0177   D3E3 2D 2D 2D 2D 
+0177   D3E7 2D 2D 2D 2D 
+0177   D3EB 2D 2D 2D 2D 
+0177   D3EF 2D 2D 2D 2D 
+0177   D3F3 2D 2D 2D 2D 
+0177   D3F7 2D 2D 2D 2D 
+0177   D3FB 2D 2D 2D 2D 
+0177   D3FF 2D 2D 20 20 
+0177   D403 2D 2D 2D 2D 
+0177   D407 2D 2D 2D 2D 
+0177   D40B 2D 2D 2D 2D 
+0177   D40F 2D 2D 2D 2D 
+0177   D413 00 
+0178   D414 C9          			RET
+0179   D415             
+0180   D415 CD 60 DB    PRINTFTR:	CALL CRLF
+0181   D418 CD 33 E6    			CALL PRINTSEQ
+0182   D41B 3E 23 3D 3D 			.DB ">#================= <ENTER> = next page, <ESC> = quit =================#",CR,LF,0
+0182   D41F 3D 3D 3D 3D 
+0182   D423 3D 3D 3D 3D 
+0182   D427 3D 3D 3D 3D 
+0182   D42B 3D 3D 3D 20 
+0182   D42F 3C 45 4E 54 
+0182   D433 45 52 3E 20 
+0182   D437 3D 20 6E 65 
+0182   D43B 78 74 20 70 
+0182   D43F 61 67 65 2C 
+0182   D443 20 3C 45 53 
+0182   D447 43 3E 20 3D 
+0182   D44B 20 71 75 69 
+0182   D44F 74 20 3D 3D 
+0182   D453 3D 3D 3D 3D 
+0182   D457 3D 3D 3D 3D 
+0182   D45B 3D 3D 3D 3D 
+0182   D45F 3D 3D 3D 23 
+0182   D463 0D 0A 00 
+0183   D466 C9          			RET
+0184   D467             
+0185   D467             SUBMPRN:
+0186   D467 CD B3 D4    NEWLINE:	CALL PRINTADDR
+0187   D46A 06 10       			LD	B,16
+0188   D46C C5          NEWCOL:		PUSH BC
+0189   D46D 1A          			LD	A,(DE)			; Start printing the memory content
+0190   D46E 13          			INC	DE
+0191   D46F 47          			LD	B,A
+0192   D470 CD D2 DC    			CALL B2HL
+0193   D473 4C          			LD	C,H
+0194   D474 CD 0C E6    			CALL CONOUT
+0195   D477 4D          			LD	C,L
+0196   D478 CD 0C E6    			CALL CONOUT
+0197   D47B 0E 20       			LD	C,' '
+0198   D47D CD 0C E6    			CALL CONOUT
+0199   D480 C1          			POP	BC
+0200   D481 10 E9       			DJNZ NEWCOL
+0201   D483 0E 20       			LD	C,' '
+0202   D485 CD 0C E6    			CALL CONOUT
+0203   D488 21 F0 FF    			LD	HL,0FFF0H		; This is -10h
+0204   D48B 19          			ADD	HL,DE			; Go back to beginning of line
+0205   D48C E5          			PUSH HL
+0206   D48D D1          			POP	DE
+0207   D48E 06 10       			LD	B,16
+0208   D490 C5          NEWCOL2:	PUSH BC				; Start printing the printables
+0209   D491 0E 2E       			LD	C,'.'
+0210   D493 1A          			LD	A,(DE)
+0211   D494 FE 20       			CP	20H
+0212   D496 FA 9F D4    			JP	M,NOTPRTBL
+0213   D499 FE 7F       			CP	7FH
+0214   D49B F2 9F D4    			JP	P,NOTPRTBL
+0215   D49E 4F          			LD	C,A
+0216   D49F CD 0C E6    NOTPRTBL:	CALL CONOUT
+0217   D4A2 13          			INC	DE
+0218   D4A3 C1          			POP	BC
+0219   D4A4 10 EA       			DJNZ NEWCOL2
+0220   D4A6 3A 8D DD    			LD	A,(LINNUM)
+0221   D4A9 3D          			DEC	A
+0222   D4AA 32 8D DD    			LD	(LINNUM),A
+0223   D4AD 20 B8       			JR	NZ,NEWLINE
+0224   D4AF CD 15 D4    			CALL PRINTFTR		; Print footer message
+0225   D4B2 C9          			RET
+0226   D4B3             
+0227   D4B3 CD 60 DB    PRINTADDR:	CALL CRLF
+0228   D4B6 CD 7C DC    			CALL PRINTENV
+0229   D4B9 42          			LD	B,D				; Print the address
+0230   D4BA CD D2 DC    			CALL B2HL
+0231   D4BD 4C          			LD	C,H
+0232   D4BE CD 0C E6    			CALL CONOUT
+0233   D4C1 4D          			LD	C,L
+0234   D4C2 CD 0C E6    			CALL CONOUT
+0235   D4C5 43          			LD	B,E
+0236   D4C6 CD D2 DC    			CALL B2HL
+0237   D4C9 4C          			LD	C,H
+0238   D4CA CD 0C E6    			CALL CONOUT
+0239   D4CD 4D          			LD	C,L
+0240   D4CE CD 0C E6    			CALL CONOUT
+0241   D4D1 0E 3A       			LD	C,':'
+0242   D4D3 CD 0C E6    			CALL CONOUT
+0243   D4D6 0E 20       			LD	C,' '
+0244   D4D8 CD 0C E6    			CALL CONOUT
+0245   D4DB C9          			RET
+0246   D4DC             			
+0247   D4DC             ;================================================================================================
+0248   D4DC             ; Write memory operations - WRITE AAAA,C1 C2 C3...
+0249   D4DC             ;================================================================================================
+0250   D4DC 11 85 00    MWRITE:		LD	DE,DMA+5
+0251   D4DF CD 0E DC    			CALL GETWORD		; Get aaaa
+0252   D4E2 FE 01       			CP	1				; Is the argument OK?
+0253   D4E4 C2 00 D0    			JP	NZ,CYCLE
+0254   D4E7 ED 43 8F DD 			LD	(AAAA),BC		; Save aaaa
+0255   D4EB 11 8A 00    			LD	DE,DMA+10
+0256   D4EE 13          MWNEXT:		INC	DE
+0257   D4EF 1A          			LD	A,(DE)
+0258   D4F0 FE 00       			CP	0
+0259   D4F2 CA 00 D0    			JP	Z,CYCLE			; End of char string?
+0260   D4F5 CD 22 DC    			CALL GETBYTE		; Get cc
+0261   D4F8 FE 01       			CP	1				; Is the argument OK?
+0262   D4FA C2 00 D0    			JP	NZ,CYCLE
+0263   D4FD 2A 8F DD    			LD	HL,(AAAA)
+0264   D500 70          			LD	(HL),B			; Put the byte in memory
+0265   D501 23          			INC	HL
+0266   D502 22 8F DD    			LD	(AAAA),HL
+0267   D505 18 E7       			JR	MWNEXT
+0268   D507             
+0269   D507             ;================================================================================================
+0270   D507             ; Copy memory operations - COPY AAAA-BBBB,CCCC
+0271   D507             ;================================================================================================
+0272   D507 11 84 00    MCOPY:		LD	DE,DMA+4
+0273   D50A CD 0E DC    			CALL GETWORD		; Get aaaa
+0274   D50D FE 01       			CP	1				; Is the argument OK?
+0275   D50F C2 00 D0    			JP	NZ,CYCLE
+0276   D512 ED 43 8F DD 			LD	(AAAA),BC		; Save aaaa
+0277   D516 11 8A 00    			LD	DE,DMA+10
+0278   D519 CD 0E DC    			CALL GETWORD		; Get bbbb
+0279   D51C FE 01       			CP	1				; Is the argument OK?
+0280   D51E C2 00 D0    			JP	NZ,CYCLE
+0281   D521 ED 43 91 DD 			LD	(BBBB),BC		; Save bbbb
+0282   D525 11 8F 00    			LD	DE,DMA+15
+0283   D528 CD 0E DC    			CALL GETWORD		; Get cccc
+0284   D52B FE 01       			CP	1				; Is the argument OK?
+0285   D52D C2 00 D0    			JP	NZ,CYCLE
+0286   D530 ED 43 93 DD 			LD	(CCCC),BC		; Save cccc
+0287   D534 2A 91 DD    			LD	HL,(BBBB)
+0288   D537 ED 5B 8F DD 			LD	DE,(AAAA)
+0289   D53B AF          			XOR	A				; Reset carry flag
+0290   D53C ED 52       			SBC	HL,DE
+0291   D53E 23          			INC	HL
+0292   D53F EB          			EX	DE,HL			; HL=source
+0293   D540 D5          			PUSH DE
+0294   D541 C1          			POP BC				; BC=counter
+0295   D542 ED 5B 93 DD 			LD	DE,(CCCC)		; DE=target
+0296   D546 ED B0       			LDIR
+0297   D548 C3 00 D0    			JP	CYCLE
+0298   D54B             
+0299   D54B             ;================================================================================================
+0300   D54B             ; Fill memory operations - FILL AAAA-BBBB,CC
+0301   D54B             ;================================================================================================
+0302   D54B 11 84 00    MFILL:		LD	DE,DMA+4
+0303   D54E CD 0E DC    			CALL GETWORD		; Get aaaa
+0304   D551 FE 01       			CP	1				; Is the argument OK?
+0305   D553 C2 00 D0    			JP	NZ,CYCLE
+0306   D556 ED 43 8F DD 			LD	(AAAA),BC		; Save aaaa
+0307   D55A 11 8A 00    			LD	DE,DMA+10
+0308   D55D CD 0E DC    			CALL GETWORD		; Get bbbb
+0309   D560 FE 01       			CP	1				; Is the argument OK?
+0310   D562 C2 00 D0    			JP	NZ,CYCLE
+0311   D565 ED 43 91 DD 			LD	(BBBB),BC		; Save bbbb
+0312   D569 11 8F 00    			LD	DE,DMA+15
+0313   D56C CD 22 DC    			CALL GETBYTE		; Get cc
+0314   D56F FE 01       			CP	1				; Is the argument OK?
+0315   D571 C2 00 D0    			JP	NZ,CYCLE
+0316   D574 2A 8F DD    			LD	HL,(AAAA)
+0317   D577 70          			LD	(HL),B			; Put cc in the 1st position of the area to be filled.
+0318   D578 2A 91 DD    			LD	HL,(BBBB)
+0319   D57B ED 5B 8F DD 			LD	DE,(AAAA)
+0320   D57F AF          			XOR	A				; Reset carry flag
+0321   D580 ED 52       			SBC	HL,DE
+0322   D582 EB          			EX	DE,HL			; HL=source
+0323   D583 D5          			PUSH DE
+0324   D584 C1          			POP BC				; BC=counter
+0325   D585 E5          			PUSH HL
+0326   D586 D1          			POP	DE
+0327   D587 13          			INC DE
+0328   D588 ED B0       			LDIR
+0329   D58A C3 00 D0    			JP	CYCLE
+0330   D58D             
+0331   D58D             ;================================================================================================
+0332   D58D             ; Compare two memory areas - COMPARE AAAA,BBBB
+0333   D58D             ;================================================================================================
+0334   D58D 11 87 00    MCOMP:		LD	DE,DMA+7
+0335   D590 CD 0E DC    			CALL GETWORD		; Get aaaa
+0336   D593 FE 01       			CP	1				; Is the argument OK?
+0337   D595 C2 00 D0    			JP	NZ,CYCLE
+0338   D598 ED 43 8F DD 			LD	(AAAA),BC		; Save aaaa
+0339   D59C 11 8D 00    			LD	DE,DMA+13
+0340   D59F CD 0E DC    			CALL GETWORD		; Get bbbb
+0341   D5A2 FE 01       			CP	1				; Is the argument OK?
+0342   D5A4 C2 00 D0    			JP	NZ,CYCLE
+0343   D5A7 ED 43 91 DD 			LD	(BBBB),BC		; Save bbbb
+0344   D5AB             
+0345   D5AB ED 5B 8F DD MCNEWL:		LD	DE,(AAAA)
+0346   D5AF CD B3 D4    			CALL PRINTADDR
+0347   D5B2 06 10       			LD	B,16
+0348   D5B4 C5          MCNEWC:		PUSH BC
+0349   D5B5 1A          			LD	A,(DE)			; Start printing the 1st memory area content
+0350   D5B6 13          			INC	DE
+0351   D5B7 47          			LD	B,A
+0352   D5B8 CD D2 DC    			CALL B2HL
+0353   D5BB 4C          			LD	C,H
+0354   D5BC CD 0C E6    			CALL CONOUT
+0355   D5BF 4D          			LD	C,L
+0356   D5C0 CD 0C E6    			CALL CONOUT
+0357   D5C3 0E 20       			LD	C,' '
+0358   D5C5 CD 0C E6    			CALL CONOUT
+0359   D5C8 C1          			POP	BC
+0360   D5C9 10 E9       			DJNZ MCNEWC
+0361   D5CB             			
+0362   D5CB DD 2A 8F DD 			LD	IX,(AAAA)
+0363   D5CF ED 5B 91 DD 			LD	DE,(BBBB)
+0364   D5D3 CD B3 D4    			CALL PRINTADDR
+0365   D5D6 06 10       			LD	B,16
+0366   D5D8 C5          MCNEWAC:	PUSH BC
+0367   D5D9 1A          			LD	A,(DE)			; Start printing the 2nd memory area content
+0368   D5DA DD 46 00    			LD	B,(IX)
+0369   D5DD DD 23       			INC	IX
+0370   D5DF 13          			INC	DE
+0371   D5E0 B8          			CP	B
+0372   D5E1 20 0A       			JR	NZ,DIFFER		; if the content is equal, just print '='
+0373   D5E3 0E 3D       			LD	C,'='
+0374   D5E5 CD 0C E6    			CALL CONOUT
+0375   D5E8 CD 0C E6    			CALL CONOUT
+0376   D5EB 18 0C       			JR	POSDIF
+0377   D5ED 47          DIFFER:		LD	B,A
+0378   D5EE CD D2 DC    			CALL B2HL
+0379   D5F1 4C          			LD	C,H
+0380   D5F2 CD 0C E6    			CALL CONOUT
+0381   D5F5 4D          			LD	C,L
+0382   D5F6 CD 0C E6    			CALL CONOUT
+0383   D5F9 0E 20       POSDIF:		LD	C,' '
+0384   D5FB CD 0C E6    			CALL CONOUT
+0385   D5FE C1          			POP	BC
+0386   D5FF 10 D7       			DJNZ MCNEWAC
+0387   D601 DD 22 8F DD 			LD	(AAAA),IX		; save memory positions
+0388   D605 ED 53 91 DD 			LD	(BBBB),DE
+0389   D609 CD 60 DB    			CALL CRLF			; print the footer
+0390   D60C CD 33 E6    			CALL PRINTSEQ
+0391   D60F 3E 20 20 20 			.DB ">      <ENTER> = next line, <ESC> = quit",CR,LF,0
+0391   D613 20 20 20 3C 
+0391   D617 45 4E 54 45 
+0391   D61B 52 3E 20 3D 
+0391   D61F 20 6E 65 78 
+0391   D623 74 20 6C 69 
+0391   D627 6E 65 2C 20 
+0391   D62B 3C 45 53 43 
+0391   D62F 3E 20 3D 20 
+0391   D633 71 75 69 74 
+0391   D637 0D 0A 00 
+0392   D63A CD 09 E6    MCAGAIN:	CALL CONIN			; Wait for user's decision
+0393   D63D FE 0D       			CP	CR
+0394   D63F CA AB D5    			JP	Z,MCNEWL
+0395   D642 FE 1B       			CP	ESC
+0396   D644 CA 00 D0    			JP	Z,CYCLE
+0397   D647 18 F1       			JR	MCAGAIN
+0398   D649             
+0399   D649             ;================================================================================================
+0400   D649             ; Xmodem Command - XMODEM AAAA
+0401   D649             ;================================================================================================
+0402   D649 3E C0       XMODEM:		LD	A,0C0H
+0403   D64B 32 03 00    			LD	(IOBYTE),A
+0404   D64E 0E 11       			LD	C,DC1
+0405   D650 CD 0F E6    			CALL LIST
+0406   D653             			
+0407   D653             			
+0408   D653 11 86 00    			LD	DE,DMA+6
+0409   D656 CD 0E DC    			CALL GETWORD		
+0410   D659 FE 01       			CP	1					; Is the argument OK?
+0411   D65B C2 00 D0    			JP	NZ,CYCLE
+0412   D65E ED 43 8F DD 			LD	(AAAA),BC			; Save address
+0413   D662 3E 00       			LD	A,0
+0414   D664 32 97 DD    			LD	(RETRY),A			; Init retry counter
+0415   D667 3C          			INC	A
+0416   D668 32 98 DD    			LD	(BLOCK),A			; Init block counter
+0417   D66B             
+0418   D66B CD 26 D7    ALIVE:		CALL SENDNAK
+0419   D66E             ;***********************************
+0420   D66E 0E 41       			LD	C,'A'
+0421   D670 CD 0F E6    			CALL LIST
+0422   D673             ;***********************************			
+0423   D673 06 05       GET1ST:		LD	B,5
+0424   D675 CD 32 D7    			CALL TOCONIN			; 5s timeout
+0425   D678 38 0D       			JR	C,REPEAT			; Timed out?
+0426   D67A FE 04       			CP	EOT
+0427   D67C 28 1A       			JR	Z,GOTEOT			; EOT?
+0428   D67E FE 18       			CP	CAN
+0429   D680 CA 00 D0    			JP	Z,CYCLE				; CAN?
+0430   D683 FE 01       			CP	SOH
+0431   D685 28 1F       			JR	Z,GOTSOH			; SOH?
+0432   D687 3A 97 DD    REPEAT:		LD	A,(RETRY)
+0433   D68A 3C          			INC	A
+0434   D68B 32 97 DD    			LD	(RETRY),A
+0435   D68E FE 0A       			CP	MAXTRY
+0436   D690 20 D9       			JR	NZ,ALIVE			; Try again?
+0437   D692             OUT3:		
+0438   D692 CD 2C D7    			CALL SENDCAN
+0439   D695 C3 00 D0    			JP	CYCLE
+0440   D698             			
+0441   D698 CD 26 D7    GOTEOT:		CALL SENDNAK
+0442   D69B 06 01       			LD	B,1
+0443   D69D CD 32 D7    			CALL TOCONIN
+0444   D6A0 CD 20 D7    			CALL SENDACK
+0445   D6A3 C3 00 D0    			JP	CYCLE
+0446   D6A6             			
+0447   D6A6 3E 00       GOTSOH:		LD	A,0
+0448   D6A8 32 95 DD    			LD	(CHKSUM),A			; Reset checksum
+0449   D6AB 32 96 DD    			LD	(BYTECNT),A			; Reset byte counter
+0450   D6AE 06 01       			LD	B,1
+0451   D6B0 CD 32 D7    			CALL TOCONIN			; Get incoming block number
+0452   D6B3 38 1F       			JR	C,OUT2				; Timed out?
+0453   D6B5 4F          			LD	C,A					; Save incoming block number
+0454   D6B6 06 01       			LD	B,1
+0455   D6B8 CD 32 D7    			CALL TOCONIN			; Get complement of incoming block number
+0456   D6BB 38 17       			JR	C,OUT2				; Timed out?
+0457   D6BD 2F          			CPL
+0458   D6BE B9          			CP	C
+0459   D6BF 20 13       			JR	NZ,OUT2				; block = //block?
+0460   D6C1 3A 98 DD    			LD	A,(BLOCK)
+0461   D6C4 B9          			CP	C					; Is block number what we expected?
+0462   D6C5 28 16       			JR	Z,RECPACK
+0463   D6C7 3D          			DEC	A
+0464   D6C8 B9          			CP	C					; block number is the anterior? Probably sender missed our ACK.
+0465   D6C9 20 09       			JR	NZ,OUT2
+0466   D6CB CD 5C D7    ANTBLK:		CALL PURGE				; Purge input buffer before sending ACK
+0467   D6CE CD 20 D7    			CALL SENDACK
+0468   D6D1 C3 73 D6    			JP	GET1ST
+0469   D6D4 CD 5C D7    OUT2:		CALL PURGE
+0470   D6D7 CD 2C D7    			CALL SENDCAN
+0471   D6DA C3 00 D0    			JP	CYCLE
+0472   D6DD 06 01       RECPACK:	LD	B,1					; Start receiving data packet (128 bytes)
+0473   D6DF CD 32 D7    			CALL TOCONIN
+0474   D6E2 38 F0       			JR	C,OUT2				; Timed out?
+0475   D6E4 2A 8F DD    			LD	HL,(AAAA)
+0476   D6E7 77          			LD	(HL),A				; Put byte in buffer
+0477   D6E8 23          			INC	HL					; Inc buffer pointer
+0478   D6E9 22 8F DD    			LD	(AAAA),HL
+0479   D6EC 4F          			LD	C,A
+0480   D6ED 3A 95 DD    			LD	A,(CHKSUM)
+0481   D6F0 81          			ADD	A,C
+0482   D6F1 32 95 DD    			LD	(CHKSUM),A			; Update checksum
+0483   D6F4 3A 96 DD    			LD	A,(BYTECNT)			; Inc byte counter
+0484   D6F7 3C          			INC	A
+0485   D6F8 32 96 DD    			LD	(BYTECNT),A
+0486   D6FB FE 80       			CP	128					; Check if we received a full data packet
+0487   D6FD 20 DE       			JR	NZ,RECPACK
+0488   D6FF 06 01       			LD	B,1
+0489   D701 CD 32 D7    			CALL TOCONIN			; Get checksum
+0490   D704 38 CE       			JR	C,OUT2				; Timed out?
+0491   D706 4F          			LD	C,A
+0492   D707 3A 95 DD    			LD	A,(CHKSUM)
+0493   D70A B9          			CP	C
+0494   D70B C2 87 D6    			JP	NZ,REPEAT			; Checksum OK?
+0495   D70E 3E 00       			LD	A,0
+0496   D710 32 97 DD    			LD	(RETRY),A			; Reset retry counter
+0497   D713 3A 98 DD    			LD	A,(BLOCK)
+0498   D716 3C          			INC	A
+0499   D717 32 98 DD    			LD	(BLOCK),A			; Increment block counter
+0500   D71A             
+0501   D71A CD 20 D7    			CALL SENDACK
+0502   D71D C3 73 D6    			JP	GET1ST
+0503   D720             			
+0504   D720 0E 06       SENDACK:	LD C,ACK
+0505   D722 CD 0C E6    			CALL CONOUT
+0506   D725 C9          			RET
+0507   D726             
+0508   D726 0E 15       SENDNAK:	LD C,NAK
+0509   D728 CD 0C E6    			CALL CONOUT
+0510   D72B C9          			RET
+0511   D72C             
+0512   D72C 0E 18       SENDCAN:	LD C,CAN
+0513   D72E CD 0C E6    			CALL CONOUT
+0514   D731 C9          			RET
+0515   D732             
+0516   D732             ;==================================================================================
+0517   D732             ; Timed Out Console Input - X seconds, with X passed on reg B
+0518   D732             ; Incoming byte, if any, returns in A
+0519   D732             ; Carry flag set if timed out.
+0520   D732             ;==================================================================================
+0521   D732 C5          TOCONIN:	PUSH	BC
+0522   D733 E5          			PUSH	HL
+0523   D734             			
+0524   D734             ;***********************************
+0525   D734 0E 54       			LD	C,'T'
+0526   D736 CD 0F E6    			CALL LIST
+0527   D739 06 05       			LD	B,5
+0528   D73B             ;***********************************
+0529   D73B             			
+0530   D73B 21 AD 02    LOOP0:		LD	HL,685				;2.5					\
+0531   D73E 0E 23       LOOP1:		LD	C,35				;1.75	\				|
+0532   D740 CD 06 E6    LOOP2:		CALL CONST				;36.5	|t=41.5C+0.5	| 
+0533   D743 3C          			INC	A					;1		|				|
+0534   D744 28 0E       			JR	Z,BWAITING			;3/1.75	|				| t=HL(41.5C+6.5)+1.25
+0535   D746 79          			LD	A,C					;1		|				|
+0536   D747 0D          			DEC	C					;1		|				|
+0537   D748 20 F6       			JR	NZ,LOOP2			;3/1.75	/				| with HL=685 and c=35,
+0538   D74A 2B          			DEC	HL					;1						|  t=0.9994sec (WOW!!!)
+0539   D74B 7C          			LD	A,H					;1						|
+0540   D74C B5          			OR	L					;1						|
+0541   D74D 20 EF       			JR	NZ,LOOP1			;3/1.75					/
+0542   D74F 10 EA       			DJNZ	LOOP0			;3.25/2
+0543   D751 37          			SCF
+0544   D752 18 05       			JR	TOUT
+0545   D754 CD 09 E6    BWAITING:	CALL CONIN
+0546   D757 37          			SCF						; Reset carry flag
+0547   D758 3F          			CCF
+0548   D759 E1          TOUT:		POP	HL
+0549   D75A C1          			POP	BC
+0550   D75B C9          			RET
+0551   D75C             
+0552   D75C             ;==================================================================================
+0553   D75C             ; Purge console input.
+0554   D75C             ;==================================================================================
+0555   D75C 06 03       PURGE:		LD	B,3
+0556   D75E CD 32 D7    			CALL TOCONIN
+0557   D761 30 F9       			JR	NC,PURGE
+0558   D763 C9          			RET
+0559   D764             
+0560   D764             ;================================================================================================
+0561   D764             ; Hexadecimal to Executable conversion command HEX2COM AAAA
+0562   D764             ; Record structure:
+0563   D764             ;	<start_code> <byte_count> <address> <record_type> <data>...<data> <checksum>
+0564   D764             ;		':'	        1 byte     2 bytes    00h or 01h       n bytes	    1 byte
+0565   D764             ;
+0566   D764             ; Register usage:
+0567   D764             ;	IX = source address 
+0568   D764             ;	IY = target address
+0569   D764             ;================================================================================================
+0570   D764 11 88 00    HEX2COM:	LD	DE,DMA+8
+0571   D767 CD 0E DC    			CALL GETWORD		
+0572   D76A FE 01       			CP	1					; Is the argument OK?
+0573   D76C C2 00 D0    			JP	NZ,CYCLE
+0574   D76F C5          			PUSH BC					; IX holds the source address
+0575   D770 DD E1       			POP	IX
+0576   D772             			
+0577   D772 DD 7E 00    FINDSC:		LD	A,(IX+0)
+0578   D775 DD 23       			INC IX
+0579   D777 FE 3A       			CP	':'					; Do we have a start code?
+0580   D779 20 F7       			JR	NZ,FINDSC
+0581   D77B 3E 00       			LD	A,0					; Reset checksum
+0582   D77D 32 95 DD    			LD	(CHKSUM),A
+0583   D780 CD 0D D8    			CALL HGB				; Get byte count
+0584   D783 78          			LD	A,B
+0585   D784 FE 00       			CP	0
+0586   D786 CA 00 D0    			JP	Z,CYCLE				; If byte count=0, we're done.
+0587   D789 32 96 DD    			LD	(BYTECNT),A			; Save byte count
+0588   D78C CD EF D7    			CALL UPCHKSUM			; Update checksum
+0589   D78F DD 23       			INC	IX
+0590   D791 CD 17 D8    			CALL HGW				; Get target address
+0591   D794 C5          			PUSH BC
+0592   D795 FD E1       			POP IY					; IY holds the target address
+0593   D797 CD EF D7    			CALL UPCHKSUM			; Update checksum
+0594   D79A 41          			LD	B,C
+0595   D79B CD EF D7    			CALL UPCHKSUM			; Update checksum
+0596   D79E CD F7 D7    			CALL PRTADDR			; Print target address
+0597   D7A1 CD 0D D8    			CALL HGB				; Get record type (just for checksum update)
+0598   D7A4 CD EF D7    			CALL UPCHKSUM			; Update checksum
+0599   D7A7 DD 23       			INC	IX
+0600   D7A9 3A 96 DD    			LD	A,(BYTECNT)
+0601   D7AC 47          			LD	B,A
+0602   D7AD C5          GETDATA:	PUSH BC
+0603   D7AE CD 0D D8    			CALL HGB				; Get data byte
+0604   D7B1 FD 70 00    			LD	(IY+0),B
+0605   D7B4 CD EF D7    			CALL UPCHKSUM			; Update checksum
+0606   D7B7 FD 23       			INC	IY
+0607   D7B9 DD 23       			INC IX
+0608   D7BB C1          			POP BC
+0609   D7BC 10 EF       			DJNZ GETDATA
+0610   D7BE CD 0D D8    			CALL HGB				; Get checksum
+0611   D7C1 3A 95 DD    			LD	A,(CHKSUM)
+0612   D7C4 ED 44       			NEG
+0613   D7C6 B8          			CP	B
+0614   D7C7 20 0D       			JR	NZ,CHKSUMER
+0615   D7C9 CD 33 E6    			CALL PRINTSEQ
+0616   D7CC 3A 20 4F 4B 			.DB	": OK.",CR,LF,0
+0616   D7D0 2E 0D 0A 00 
+0617   D7D4 18 9C       			JR	FINDSC
+0618   D7D6 CD 33 E6    CHKSUMER:	CALL PRINTSEQ
+0619   D7D9 3A 20 43 68 			.DB	": Checksum Error.",CR,LF,0
+0619   D7DD 65 63 6B 73 
+0619   D7E1 75 6D 20 45 
+0619   D7E5 72 72 6F 72 
+0619   D7E9 2E 0D 0A 00 
+0620   D7ED 18 83       			JR	FINDSC
+0621   D7EF             
+0622   D7EF 3A 95 DD    UPCHKSUM:	LD	A,(CHKSUM)
+0623   D7F2 80          			ADD	A,B
+0624   D7F3 32 95 DD    			LD	(CHKSUM),A
+0625   D7F6 C9          			RET
+0626   D7F7             
+0627   D7F7 CD 7C DC    PRTADDR:	CALL PRINTENV
+0628   D7FA DD 2B       			DEC IX
+0629   D7FC DD 2B       			DEC IX
+0630   D7FE DD 2B       			DEC IX
+0631   D800 06 04       			LD	B,4
+0632   D802 DD 4E 00    NXTA:		LD	C,(IX+0)
+0633   D805 CD 0C E6    			CALL CONOUT
+0634   D808 DD 23       			INC	IX
+0635   D80A 10 F6       			DJNZ NXTA
+0636   D80C C9          			RET
+0637   D80D             			
+0638   D80D DD E5       HGB:		PUSH IX
+0639   D80F D1          			POP	DE
+0640   D810 CD 22 DC    			CALL GETBYTE
+0641   D813 D5          			PUSH DE
+0642   D814 DD E1       			POP IX
+0643   D816 C9          			RET
+0644   D817             
+0645   D817 DD E5       HGW:		PUSH IX
+0646   D819 D1          			POP	DE
+0647   D81A CD 0E DC    			CALL GETWORD
+0648   D81D D5          			PUSH DE
+0649   D81E DD E1       			POP IX
+0650   D820 C9          			RET
+0651   D821             
+0652   D821             ;================================================================================================
+0653   D821             ; ASCII to Executable conversion command - ASCII2COM AAAA
+0654   D821             ; Each pair of characters is converted to one byte. The executable is loaded @ 0100h (TPA).
+0655   D821             ;	IX = source address 
+0656   D821             ;	IY = target address
+0657   D821             ;================================================================================================
+0658   D821 11 8A 00    ASCII2COM:	LD	DE,DMA+10
+0659   D824 CD 0E DC    			CALL GETWORD		
+0660   D827 FE 01       			CP	1					; Is the argument OK?
+0661   D829 C2 00 D0    			JP	NZ,CYCLE
+0662   D82C C5          			PUSH BC					; IX holds the source address
+0663   D82D DD E1       			POP	IX
+0664   D82F FD 21 00 01 			LD	IY,0100H
+0665   D833             
+0666   D833 DD 7E 00    A2CNB:		LD	A,(IX+0)
+0667   D836 CD 82 DC    			CALL ISITHEX
+0668   D839 FE 01       			CP	1
+0669   D83B 20 10       			JR	NZ,A2CEND
+0670   D83D CD 0D D8    			CALL HGB
+0671   D840 FE 01       			CP	1
+0672   D842 20 09       			JR	NZ,A2CEND
+0673   D844 FD 70 00    			LD	(IY+0),B
+0674   D847 FD 23       			INC	IY
+0675   D849 DD 23       			INC IX
+0676   D84B 18 E6       			JR	A2CNB
+0677   D84D             			
+0678   D84D CD 33 E6    A2CEND:		CALL PRINTSEQ
+0679   D850 3E 54 61 72 			.DB	">Target contains ",0
+0679   D854 67 65 74 20 
+0679   D858 63 6F 6E 74 
+0679   D85C 61 69 6E 73 
+0679   D860 20 00 
+0680   D862 01 00 01    			LD	BC,0100H
+0681   D865 FD E5       			PUSH IY
+0682   D867 E1          			POP	HL
+0683   D868 37          			SCF
+0684   D869 3F          			CCF
+0685   D86A ED 42       			SBC	HL,BC
+0686   D86C 22 8F DD    			LD	(AAAA),HL			; AAAA contains total bytes written.
+0687   D86F 44          			LD	B,H
+0688   D870 CD D2 DC    			CALL B2HL				; Convert MSByte to ASCII
+0689   D873 4C          			LD	C,H
+0690   D874 CD 0C E6    			CALL CONOUT
+0691   D877 4D          			LD	C,L
+0692   D878 CD 0C E6    			CALL CONOUT
+0693   D87B 2A 8F DD    			LD	HL,(AAAA)
+0694   D87E 45          			LD	B,L
+0695   D87F CD D2 DC    			CALL B2HL				; Convert LSByte to ASCII
+0696   D882 4C          			LD	C,H
+0697   D883 CD 0C E6    			CALL CONOUT
+0698   D886 4D          			LD	C,L
+0699   D887 CD 0C E6    			CALL CONOUT
+0700   D88A CD 33 E6    			CALL PRINTSEQ
+0701   D88D 68 20 62 79 			.DB	"h bytes.",CR,LF,0
+0701   D891 74 65 73 2E 
+0701   D895 0D 0A 00 
+0702   D898 C9          			RET
+0703   D899             			
+0704   D899             ;================================================================================================
+0705   D899             ; Read disk operation - READ D,TTT,SS
+0706   D899             ;================================================================================================
+0707   D899 11 86 00    DREAD:		LD	DE,DMA+6
+0708   D89C CD 9A D9    			CALL GETDTS
+0709   D89F FE 01       			CP	1				; Is the argument OK?
+0710   D8A1 C2 00 D0    			JP	NZ,CYCLE
+0711   D8A4 CD FF D9    NEXTSEC:	CALL DTS2LBA
+0712   D8A7 CD C4 D8    			CALL PRINTDTS
+0713   D8AA CD 7E D3    			CALL PRINTHDR
+0714   D8AD CD 3C D9    			CALL PRINTDSEC
+0715   D8B0 CD 09 E6    TAGAIN:		CALL CONIN			; Wait for user's decision
+0716   D8B3 FE 0D       			CP	CR
+0717   D8B5 20 06       			JR	NZ,NOTCR
+0718   D8B7 CD 4B D9    			CALL INCDTS
+0719   D8BA C3 A4 D8    			JP	NEXTSEC
+0720   D8BD FE 1B       NOTCR:		CP	ESC
+0721   D8BF CA 00 D0    			JP	Z,CYCLE
+0722   D8C2 18 EC       			JR	TAGAIN
+0723   D8C4             
+0724   D8C4             
+0725   D8C4 CD 33 E6    PRINTDTS:	CALL PRINTSEQ
+0726   D8C7 3E 20 44 54 			.DB	"> DTS: ",0
+0726   D8CB 53 3A 20 00 
+0727   D8CF 3A 99 DD    			LD	A,(DSK)
+0728   D8D2 C6 41       			ADD	A,41H
+0729   D8D4 4F          			LD	C,A
+0730   D8D5 CD 0C E6    			CALL CONOUT
+0731   D8D8 0E 2D       			LD	C,'-'
+0732   D8DA CD 0C E6    			CALL CONOUT
+0733   D8DD 3A 9B DD    			LD	A,(TRK+1)
+0734   D8E0 CD 2F D9    			CALL PRINTBYTE
+0735   D8E3 3A 9A DD    			LD	A,(TRK)
+0736   D8E6 CD 2F D9    			CALL PRINTBYTE
+0737   D8E9 0E 2D       			LD	C,'-'
+0738   D8EB CD 0C E6    			CALL CONOUT
+0739   D8EE 3A 9C DD    			LD	A,(SEC)
+0740   D8F1 CD 2F D9    			CALL PRINTBYTE
+0741   D8F4 CD 33 E6    			CALL PRINTSEQ
+0742   D8F7 20 2C 4C 42 			.DB	" ,LBA: ",0
+0742   D8FB 41 3A 20 00 
+0743   D8FF 3A 9D DD    			LD	A,(LBA3)
+0744   D902 CD 2F D9    			CALL PRINTBYTE
+0745   D905 3A 9E DD    			LD	A,(LBA2)
+0746   D908 CD 2F D9    			CALL PRINTBYTE
+0747   D90B 3A 9F DD    			LD	A,(LBA1)
+0748   D90E CD 2F D9    			CALL PRINTBYTE
+0749   D911 3A A0 DD    			LD	A,(LBA0)
+0750   D914 CD 2F D9    			CALL PRINTBYTE
+0751   D917 CD 33 E6    			CALL PRINTSEQ
+0752   D91A 20 28 44 49 			.DB	" (DISKPAD = E000)",CR,LF,0
+0752   D91E 53 4B 50 41 
+0752   D922 44 20 3D 20 
+0752   D926 45 30 30 30 
+0752   D92A 29 0D 0A 00 
+0753   D92E             
+0754   D92E C9          			RET
+0755   D92F             
+0756   D92F 47          PRINTBYTE:	LD	B,A
+0757   D930 CD D2 DC    			CALL B2HL
+0758   D933 4C          			LD	C,H
+0759   D934 CD 0C E6    			CALL CONOUT
+0760   D937 4D          			LD	C,L
+0761   D938 CD 0C E6    			CALL CONOUT
+0762   D93B C9          			RET
+0763   D93C             
+0764   D93C CD 7E DA    PRINTDSEC:	CALL DISKREAD
+0765   D93F 11 00 E0    			LD	DE,DISKPAD
+0766   D942 3E 20       			LD	A,32
+0767   D944 32 8D DD    			LD	(LINNUM),A
+0768   D947 CD 67 D4    			CALL SUBMPRN
+0769   D94A C9          			RET
+0770   D94B             
+0771   D94B 3A 9C DD    INCDTS:		LD	A,(SEC)
+0772   D94E FE 1F       			CP	1FH
+0773   D950 28 05       			JR	Z,ZSEC
+0774   D952 3C          			INC	A
+0775   D953 32 9C DD    			LD	(SEC),A
+0776   D956 C9          			RET
+0777   D957 AF          ZSEC:		XOR	A
+0778   D958 32 9C DD    			LD	(SEC),A
+0779   D95B 2A 9A DD    			LD	HL,(TRK)
+0780   D95E 01 FF 01    			LD	BC,1FFH
+0781   D961 37          			SCF
+0782   D962 3F          			CCF
+0783   D963 ED 42       			SBC	HL,BC
+0784   D965 28 08       			JR	Z,ZTRK
+0785   D967 2A 9A DD    			LD	HL,(TRK)
+0786   D96A 23          			INC	HL
+0787   D96B 22 9A DD    			LD	(TRK),HL
+0788   D96E C9          			RET
+0789   D96F 21 00 00    ZTRK:		LD	HL,0
+0790   D972 22 9A DD    			LD	(TRK),HL
+0791   D975 3A 99 DD    			LD	A,(DSK)
+0792   D978 FE 0F       			CP	0FH
+0793   D97A 28 05       			JR	Z,ZDSK
+0794   D97C 3C          			INC	A
+0795   D97D 32 99 DD    			LD	(DSK),A
+0796   D980 C9          			RET
+0797   D981 AF          ZDSK:		XOR	A
+0798   D982 32 99 DD    			LD	(DSK),A
+0799   D985 C9          			RET
+0800   D986             			
+0801   D986             ;================================================================================================
+0802   D986             ; Download 1 sector from disk to memory (@ DMIRROR)
+0803   D986             ;================================================================================================
+0804   D986 11 85 00    DDOWN:		LD	DE,DMA+5
+0805   D989 CD 9A D9    			CALL GETDTS
+0806   D98C FE 01       			CP	1				; Is the argument OK?
+0807   D98E C2 00 D0    			JP	NZ,CYCLE
+0808   D991 CD FF D9    			CALL DTS2LBA
+0809   D994 CD 7E DA    			CALL DISKREAD
+0810   D997 C3 00 D0    			JP	CYCLE
+0811   D99A             
+0812   D99A             ;================================================================================================
+0813   D99A             ; Routine to get DTS from command line. DE=line_buf_ptr(should point to where DTS starts).
+0814   D99A             ; Returns A=0 if missing arg, A=1 if OK, A=2 if invalid arg. 
+0815   D99A             ;================================================================================================
+0816   D99A CD B6 D9    GETDTS:		CALL GETDISK
+0817   D99D FE 01       			CP	1				; Is the argument OK?
+0818   D99F C2 00 D0    			JP	NZ,CYCLE
+0819   D9A2 13          			INC DE
+0820   D9A3 CD D1 D9    			CALL GETTRACK
+0821   D9A6 FE 01       			CP	1				; Is the argument OK?
+0822   D9A8 C2 00 D0    			JP	NZ,CYCLE
+0823   D9AB 13          			INC	DE
+0824   D9AC 13          			INC DE
+0825   D9AD CD EC D9    			CALL GETSECTOR
+0826   D9B0 FE 01       			CP	1				; Is the argument OK?
+0827   D9B2 C2 00 D0    			JP	NZ,CYCLE
+0828   D9B5 C9          			RET
+0829   D9B6             
+0830   D9B6 1A          GETDISK:	LD	A,(DE)
+0831   D9B7 FE 00       			CP	0
+0832   D9B9 C2 C0 D9    			JP	NZ,GD1
+0833   D9BC CD 43 DC    			CALL GBNA
+0834   D9BF C9          			RET
+0835   D9C0 D6 41       GD1:		SUB	'A'
+0836   D9C2 32 99 DD    			LD	(DSK),A
+0837   D9C5 FE 10       			CP	10H
+0838   D9C7 FA CE D9    			JP	M,GD2
+0839   D9CA CD 61 DC    			CALL GBIA
+0840   D9CD C9          			RET
+0841   D9CE 3E 01       GD2:		LD	A,1
+0842   D9D0 C9          			RET
+0843   D9D1             
+0844   D9D1 3E 30       GETTRACK:	LD	A,'0'
+0845   D9D3 12          			LD	(DE),A
+0846   D9D4 CD 0E DC    			CALL GETWORD
+0847   D9D7 FE 01       			CP	1
+0848   D9D9 C0          			RET	NZ
+0849   D9DA ED 43 9A DD 			LD	(TRK),BC
+0850   D9DE 21 FF 01    			LD	HL,1FFH
+0851   D9E1 37          			SCF
+0852   D9E2 3F          			CCF
+0853   D9E3 ED 42       			SBC	HL,BC
+0854   D9E5 3E 01       			LD	A,1
+0855   D9E7 F0          			RET	P
+0856   D9E8 CD 61 DC    			CALL GBIA
+0857   D9EB C9          			RET
+0858   D9EC             
+0859   D9EC CD 22 DC    GETSECTOR:	CALL GETBYTE
+0860   D9EF FE 01       			CP	1
+0861   D9F1 C0          			RET	NZ
+0862   D9F2 78          			LD	A,B
+0863   D9F3 32 9C DD    			LD	(SEC),A
+0864   D9F6 FE 20       			CP	20H
+0865   D9F8 3E 01       			LD	A,1
+0866   D9FA F8          			RET	M
+0867   D9FB CD 61 DC    			CALL GBIA
+0868   D9FE C9          			RET
+0869   D9FF             			
+0870   D9FF             ;================================================================================================
+0871   D9FF             ; Convert disk/track/sector to LBA0,1,2,3.
+0872   D9FF             ;================================================================================================
+0873   D9FF 2A 9A DD    DTS2LBA:	LD	HL,(TRK)
+0874   DA02 CB 05       			RLC	L
+0875   DA04 CB 05       			RLC	L
+0876   DA06 CB 05       			RLC	L
+0877   DA08 CB 05       			RLC	L
+0878   DA0A CB 05       			RLC	L
+0879   DA0C 7D          			LD	A,L
+0880   DA0D E6 E0       			AND	0E0H
+0881   DA0F 6F          			LD	L,A
+0882   DA10 3A 9C DD    			LD	A,(SEC)
+0883   DA13 85          			ADD	A,L
+0884   DA14 32 A0 DD    			LD	(LBA0),A
+0885   DA17 2A 9A DD    			LD	HL,(TRK)
+0886   DA1A CB 0D       			RRC	L
+0887   DA1C CB 0D       			RRC	L
+0888   DA1E CB 0D       			RRC	L
+0889   DA20 7D          			LD	A,L
+0890   DA21 E6 1F       			AND	01FH
+0891   DA23 6F          			LD	L,A
+0892   DA24 CB 04       			RLC	H
+0893   DA26 CB 04       			RLC	H
+0894   DA28 CB 04       			RLC	H
+0895   DA2A CB 04       			RLC	H
+0896   DA2C CB 04       			RLC	H
+0897   DA2E 7C          			LD	A,H
+0898   DA2F E6 20       			AND	020H
+0899   DA31 67          			LD	H,A
+0900   DA32 3A 99 DD    			LD	A,(DSK)
+0901   DA35 CB 07       			RLC	A
+0902   DA37 CB 07       			RLC	A
+0903   DA39 CB 07       			RLC	A
+0904   DA3B CB 07       			RLC	A
+0905   DA3D CB 07       			RLC	A
+0906   DA3F CB 07       			RLC	A
+0907   DA41 E6 C0       			AND	0C0H
+0908   DA43 84          			ADD	A,H
+0909   DA44 85          			ADD	A,L
+0910   DA45 32 9F DD    			LD	(LBA1),A
+0911   DA48 3A 99 DD    			LD	A,(DSK)
+0912   DA4B CB 0F       			RRC	A
+0913   DA4D CB 0F       			RRC	A
+0914   DA4F E6 03       			AND	03H
+0915   DA51 32 9E DD    			LD	(LBA2),A
+0916   DA54 3E E0       			LD	A,0E0H
+0917   DA56 32 9D DD    			LD	(LBA3),A
+0918   DA59 C9          			RET
+0919   DA5A             			
+0920   DA5A             ;================================================================================================
+0921   DA5A             ; Wait for disk to be ready (busy=0,ready=1)
+0922   DA5A             ;================================================================================================
+0923   DA5A F5          DWAIT:		PUSH AF
+0924   DA5B DB B7       DWAIT1:		IN 	A,(CF_STATUS)
+0925   DA5D E6 80       			AND	080H
+0926   DA5F FE 80       			CP 	080H
+0927   DA61 28 F8       			JR	Z,DWAIT1
+0928   DA63 F1          			POP	AF
+0929   DA64 C9          			RET
+0930   DA65             
+0931   DA65             ;================================================================================================
+0932   DA65             ; Set LBA on CF
+0933   DA65             ;================================================================================================
+0934   DA65 3A A0 DD    SETLBA:		LD	A,(LBA0)
+0935   DA68 D3 B3       			OUT (CF_LBA0),A
+0936   DA6A 3A 9F DD    			LD	A,(LBA1)
+0937   DA6D D3 B4       			OUT (CF_LBA1),A
+0938   DA6F 3A 9E DD    			LD	A,(LBA2)
+0939   DA72 D3 B5       			OUT (CF_LBA2),A
+0940   DA74 3A 9D DD    			LD	A,(LBA3)
+0941   DA77 D3 B6       			OUT (CF_LBA3),A
+0942   DA79 3E 01       			LD 	A,1
+0943   DA7B D3 B2       			OUT (CF_SECCOUNT),A
+0944   DA7D C9          			RET				
+0945   DA7E             
+0946   DA7E             ;================================================================================================
+0947   DA7E             ; Read physical one sector from disk and write it on DISKPAD
+0948   DA7E             ;================================================================================================
+0949   DA7E F5          DISKREAD:	PUSH AF
+0950   DA7F C5          			PUSH BC
+0951   DA80 E5          			PUSH HL
+0952   DA81             
+0953   DA81 CD 5A DA    			CALL DWAIT
+0954   DA84 CD 65 DA    			CALL SETLBA
+0955   DA87 3E 20       			LD 	A,CF_READ_SEC
+0956   DA89 D3 B7       			OUT (CF_COMMAND),A
+0957   DA8B CD 5A DA    			CALL DWAIT
+0958   DA8E 0E 04       			LD 	C,4
+0959   DA90 21 00 E0    			LD 	HL,DISKPAD
+0960   DA93 06 80       rd4secs:	LD 	B,128
+0961   DA95 DB B0       rdByte:		IN 	A,(CF_DATA)
+0962   DA97 77          			LD 	(HL),A
+0963   DA98 23          			INC HL
+0964   DA99 05          			DEC B
+0965   DA9A 20 F9       			JR 	NZ, rdByte
+0966   DA9C 0D          			DEC C
+0967   DA9D 20 F4       			JR 	NZ,rd4secs
+0968   DA9F             
+0969   DA9F E1          			POP HL
+0970   DAA0 C1          			POP BC
+0971   DAA1 F1          			POP AF
+0972   DAA2 C9          			RET
+0973   DAA3             
+0974   DAA3             ;================================================================================================
+0975   DAA3             ; Write physical sector from DISKPAD to host.
+0976   DAA3             ;================================================================================================
+0977   DAA3 F5          DISKWRITE:	PUSH AF
+0978   DAA4 C5          			PUSH BC
+0979   DAA5 E5          			PUSH HL
+0980   DAA6             
+0981   DAA6 CD 5A DA    			CALL DWAIT
+0982   DAA9 CD 65 DA    			CALL SETLBA
+0983   DAAC 3E 30       			LD 	A,CF_WRITE_SEC
+0984   DAAE D3 B7       			OUT (CF_COMMAND),A
+0985   DAB0 CD 5A DA    			CALL DWAIT
+0986   DAB3 0E 04       			LD 	C,4
+0987   DAB5 21 00 E0    			LD 	HL,DISKPAD
+0988   DAB8 06 80       wr4secs:	LD 	B,128
+0989   DABA 7E          wrByte:		LD 	A,(HL)
+0990   DABB D3 B0       			OUT (CF_DATA),A
+0991   DABD 23          			INC HL
+0992   DABE 05          			DEC B
+0993   DABF 20 F9       			JR 	NZ,wrByte
+0994   DAC1 0D          			DEC C
+0995   DAC2 20 F4       			JR 	NZ,wr4secs
+0996   DAC4             
+0997   DAC4 E1          			POP HL
+0998   DAC5 C1          			POP BC
+0999   DAC6 F1          			POP AF
+1000   DAC7 C9          			RET
+1001   DAC8             
+1002   DAC8             ;================================================================================================
+1003   DAC8             ; Upload 1 sector from memory (@ DMIRROR) to disk - UP D,TTT,SS
+1004   DAC8             ;================================================================================================
+1005   DAC8 11 83 00    DUP:		LD	DE,DMA+3
+1006   DACB CD 9A D9    			CALL GETDTS
+1007   DACE FE 01       			CP	1				; Is the argument OK?
+1008   DAD0 C2 00 D0    			JP	NZ,CYCLE
+1009   DAD3 CD FF D9    			CALL DTS2LBA
+1010   DAD6 CD A3 DA    			CALL DISKWRITE
+1011   DAD9 C3 00 D0    			JP	CYCLE
+1012   DADC             
+1013   DADC             ;================================================================================================
+1014   DADC             ; Verify disk. Do this on on all sectors of the disk - VERIFY D
+1015   DADC             ;
+1016   DADC             ;	1. copy sector to DISKPAD
+1017   DADC             ;	2. fill sector with 00
+1018   DADC             ;	3. verify if all bytes are 00
+1019   DADC             ;	4. fill sector with 0FFh
+1020   DADC             ;	5. verify if all bytes are 0FFh
+1021   DADC             ;	6. copy DISKPAD back to sector
+1022   DADC             ;
+1023   DADC             ; If during the verification a byte doesn't match, print error message and continue.
+1024   DADC             ;================================================================================================
+1025   DADC C9          DVERIFY:	RET
+1026   DADD             
+1027   DADD             ;================================================================================================
+1028   DADD             ; Format a disk - FORMAT D
+1029   DADD             ;================================================================================================
+1030   DADD C9          DFORMAT:	RET
+1031   DADE             
+1032   DADE             ;================================================================================================
+1033   DADE             ; Run (Execute) Command - RUN AAAA
+1034   DADE             ;================================================================================================
+1035   DADE 11 83 00    RUN:		LD	DE,DMA+3
+1036   DAE1 CD 0E DC    			CALL GETWORD		
+1037   DAE4 FE 01       			CP	1				; Is the argument OK?
+1038   DAE6 C2 00 D0    			JP	NZ,CYCLE
+1039   DAE9 C5          			PUSH BC
+1040   DAEA E1          			POP	HL
+1041   DAEB E9          			JP	(HL)			; Continue execution where user requested. His responsability!
+1042   DAEC             
+1043   DAEC             ;================================================================================================
+1044   DAEC             ; Unknown Command message. HL has the address of the line buffer.
+1045   DAEC             ;================================================================================================
+1046   DAEC CD 7C DC    UNKNOWN:	CALL PRINTENV
+1047   DAEF 21 80 00    			LD	HL,DMA
+1048   DAF2 7E          UNEXT:		LD	A,(HL)
+1049   DAF3 FE 00       			CP	0
+1050   DAF5 28 07       			JR	Z,UEND
+1051   DAF7 4F          			LD	C,A
+1052   DAF8 CD 0C E6    			CALL CONOUT
+1053   DAFB 23          			INC	HL
+1054   DAFC 18 F4       			JR	UNEXT
+1055   DAFE 0E 3F       UEND:		LD	C,'?'
+1056   DB00 CD 0C E6    			CALL CONOUT
+1057   DB03 CD 60 DB    			CALL CRLF
+1058   DB06 C9          			RET
+1059   DB07             
+1060   DB07             ;================================================================================================
+1061   DB07             ; Routine to manage line input from console. Returns A=0FFh if user typed Ctrl-Z (ETX).
+1062   DB07             ;================================================================================================
+1063   DB07 21 80 00    LINER:		LD	HL,DMA
+1064   DB0A 22 8B DD    			LD	(LBUFPTR),HL			; Init line buffer pointer.
+1065   DB0D CD 09 E6    WAITCHAR:	CALL CONIN					; Wait till user types something.
+1066   DB10 FE 03       			CP	ETX						; Is it Ctrl-C?
+1067   DB12 28 42       			JR	Z,GOTETX
+1068   DB14 FE 1A       			CP	SUB						; Is is Ctrl-Z?
+1069   DB16 28 3E       			JR	Z,GOTSUB
+1070   DB18 FE 18       			CP	CAN
+1071   DB1A 28 40       			JR	Z,GOTCAN				; Is it <CAN>? (= delete line).
+1072   DB1C FE 0D       			CP	CR
+1073   DB1E 28 29       			JR	Z,GOTCR					; Is it <ENTER>?
+1074   DB20 FE 08       			CP	BS
+1075   DB22 28 1E       			JR	Z,GOTBS					; Is it <BS>? (= backspace).
+1076   DB24 2A 8B DD    			LD	HL,(LBUFPTR)			; None of the above options, so let's put it in the buffer.
+1077   DB27 01 D0 00    			LD	BC,MAXLBUF				; But 1st, we have to check if we still have space.
+1078   DB2A 37          			SCF
+1079   DB2B 3F          			CCF
+1080   DB2C ED 42       			SBC	HL,BC
+1081   DB2E 28 0E       			JR	Z,LBUFFULL				; Is buffer full?
+1082   DB30 2A 8B DD    			LD	HL,(LBUFPTR)
+1083   DB33 77          			LD	(HL),A
+1084   DB34 23          			INC	HL
+1085   DB35 22 8B DD    			LD	(LBUFPTR),HL
+1086   DB38 4F          			LD	C,A
+1087   DB39 CD 0C E6    OUTWAIT:	CALL CONOUT
+1088   DB3C 18 CF       			JR	WAITCHAR
+1089   DB3E             
+1090   DB3E 0E 07       LBUFFULL:	LD	C,BEL					; Buffer is full. Just ring the bell.
+1091   DB40 18 F7       			JR	OUTWAIT
+1092   DB42             
+1093   DB42 16 01       GOTBS:		LD	D,1						; We got a backspace.
+1094   DB44 CD 6B DB    AFTGOTBS:	CALL BSPROC
+1095   DB47 18 C4       			JR	WAITCHAR
+1096   DB49             
+1097   DB49 2A 8B DD    GOTCR:		LD	HL,(LBUFPTR)			; We got an ENTER, which means the the user
+1098   DB4C 3E 00       			LD	A,0						; has finished typing the command line.
+1099   DB4E 77          			LD	(HL),A
+1100   DB4F CD 60 DB    			CALL CRLF
+1101   DB52 CD 99 DB    			CALL UPPER					; Convert line to uppercase before parsing.
+1102   DB55 C9          			RET
+1103   DB56             GOTETX:
+1104   DB56 CD 60 DB    GOTSUB:		CALL CRLF					; User abort request (Ctrl-C or Ctrl-Z).
+1105   DB59 3E 0C       			LD	A,FF
+1106   DB5B C9          			RET
+1107   DB5C             			
+1108   DB5C 16 00       GOTCAN:		LD	D,0						; We got a line delete.
+1109   DB5E 18 E4       			JR	AFTGOTBS
+1110   DB60             			
+1111   DB60 0E 0D       CRLF:		LD	C,CR
+1112   DB62 CD 0C E6    			CALL CONOUT
+1113   DB65 0E 0A       			LD	C,LF
+1114   DB67 CD 0C E6    			CALL CONOUT					; Output <CR><LF>.
+1115   DB6A C9          			RET
+1116   DB6B             
+1117   DB6B             ;================================================================================================
+1118   DB6B             ; Routine to do the backspace and line delete. D=1, backspace; D=0, delete line.
+1119   DB6B             ;================================================================================================
+1120   DB6B 2A 8B DD    BSPROC:		LD	HL,(LBUFPTR)
+1121   DB6E 01 80 00    			LD	BC,DMA
+1122   DB71 37          			SCF
+1123   DB72 3F          			CCF
+1124   DB73 ED 42       			SBC	HL,BC
+1125   DB75 28 1C       			JR	Z,LBUFEMPTY
+1126   DB77 2A 8B DD    			LD	HL,(LBUFPTR)
+1127   DB7A 2B          			DEC	HL
+1128   DB7B 22 8B DD    			LD	(LBUFPTR),HL
+1129   DB7E 0E 08       			LD	C,BS
+1130   DB80 CD 0C E6    			CALL CONOUT
+1131   DB83 0E 20       			LD	C,' '
+1132   DB85 CD 0C E6    			CALL CONOUT
+1133   DB88 0E 08       			LD	C,BS
+1134   DB8A CD 0C E6    			CALL CONOUT
+1135   DB8D 7A          			LD	A,D
+1136   DB8E FE 01       			CP	1
+1137   DB90 C8          			RET	Z
+1138   DB91 18 D8       			JR	BSPROC
+1139   DB93             
+1140   DB93 0E 07       LBUFEMPTY:	LD	C,BEL
+1141   DB95 CD 0C E6    			CALL CONOUT
+1142   DB98 C9          			RET
+1143   DB99             			
+1144   DB99             ;================================================================================================
+1145   DB99             ; Routine to convert line buffer content to upper case
+1146   DB99             ;================================================================================================
+1147   DB99 21 7F 00    UPPER:		LD	HL,DMA-1
+1148   DB9C 23          NEXT2UP:	INC	HL
+1149   DB9D 7E          			LD	A,(HL)
+1150   DB9E FE 00       			CP	0
+1151   DBA0 C8          			RET	Z
+1152   DBA1 FE 61       			CP	'a'
+1153   DBA3 FA 9C DB    			JP	M,NEXT2UP
+1154   DBA6 FE 7B       			CP	'{'
+1155   DBA8 F2 9C DB    			JP	P,NEXT2UP
+1156   DBAB D6 20       			SUB	20H
+1157   DBAD 77          			LD	(HL),A
+1158   DBAE 18 EC       			JR	NEXT2UP
+1159   DBB0             			
+1160   DBB0             ;================================================================================================
+1161   DBB0             ; Routine to parse command. HL=cmd_table_pointer.
+1162   DBB0             ; regA=cmd_num or FFh if no match. HL=jump_address or 0000 if no match.
+1163   DBB0             ;================================================================================================
+1164   DBB0 C5          PARSER:		PUSH BC
+1165   DBB1 D5          			PUSH DE
+1166   DBB2 11 80 00    			LD	DE,DMA
+1167   DBB5 3E 00       			LD	A,0
+1168   DBB7 32 8A DD    			LD	(CMDNUM),A		; Init command number.
+1169   DBBA 1A          NEXT2PARS:	LD	A,(DE)
+1170   DBBB BE          			CP	(HL)
+1171   DBBC 20 04       			JR	NZ,NOTEQU
+1172   DBBE 23          			INC	HL
+1173   DBBF 13          			INC	DE
+1174   DBC0 18 F8       			JR	NEXT2PARS
+1175   DBC2 7E          NOTEQU:		LD	A,(HL)
+1176   DBC3 FE 1E       			CP	RS
+1177   DBC5 28 04       			JR	Z,ISRS
+1178   DBC7 FE 03       			CP	ETX
+1179   DBC9 20 22       			JR	NZ,NEXTCMD
+1180   DBCB 1A          ISRS:		LD	A,(DE)
+1181   DBCC FE 00       			CP	0
+1182   DBCE 28 04       			JR	Z,ISZERO
+1183   DBD0 FE 20       			CP	' '
+1184   DBD2 20 19       			JR	NZ,NEXTCMD
+1185   DBD4 7E          ISZERO:		LD	A,(HL)
+1186   DBD5 FE 03       			CP	ETX
+1187   DBD7 28 03       			JR	Z,CMDMATCH
+1188   DBD9 23          			INC	HL
+1189   DBDA 18 F8       			JR	ISZERO
+1190   DBDC 23          CMDMATCH:	INC	HL
+1191   DBDD E5          			PUSH HL
+1192   DBDE D1          			POP	DE				; DE=addr of jump table
+1193   DBDF 26 00       			LD	H,0
+1194   DBE1 3A 8A DD    			LD	A,(CMDNUM)
+1195   DBE4 6F          			LD	L,A
+1196   DBE5 E5          			PUSH HL
+1197   DBE6 C1          			POP	BC
+1198   DBE7 09          			ADD	HL,BC			; command_number * 2
+1199   DBE8 09          			ADD	HL,BC			; command_number * 3
+1200   DBE9 19          			ADD HL,DE
+1201   DBEA D1          			POP	DE
+1202   DBEB C1          			POP	BC
+1203   DBEC C9          			RET					; A=command_number, HL=jump_address
+1204   DBED 7E          NEXTCMD:	LD	A,(HL)
+1205   DBEE FE 1E       			CP	RS
+1206   DBF0 28 07       			JR	Z,ISRS2
+1207   DBF2 FE 03       			CP	ETX
+1208   DBF4 28 10       			JR	Z,NOMATCH
+1209   DBF6 23          			INC	HL
+1210   DBF7 18 F4       			JR	NEXTCMD
+1211   DBF9 23          ISRS2:		INC	HL
+1212   DBFA 3A 8A DD    			LD	A,(CMDNUM)
+1213   DBFD 3C          			INC	A
+1214   DBFE 32 8A DD    			LD	(CMDNUM),A
+1215   DC01 11 80 00    			LD	DE,DMA
+1216   DC04 18 B4       			JR	NEXT2PARS
+1217   DC06 21 00 00    NOMATCH:	LD	HL,0
+1218   DC09 3E FF       			LD	A,0FFH
+1219   DC0B D1          			POP	DE
+1220   DC0C C1          			POP	BC
+1221   DC0D C9          			RET
+1222   DC0E             
+1223   DC0E             ;================================================================================================
+1224   DC0E             ; Routine to get word from command line. DE=line_buf_ptr(should point to where word starts).
+1225   DC0E             ; If successfull, return word in BC. A=0 if missing arg, A=1 if OK, A=2 if invalid arg. 
+1226   DC0E             ;================================================================================================
+1227   DC0E CD 22 DC    GETWORD:	CALL GETBYTE
+1228   DC11 FE 01       			CP	1
+1229   DC13 C0          			RET	NZ
+1230   DC14 48          			LD	C,B
+1231   DC15 13          			INC	DE
+1232   DC16 CD 22 DC    			CALL GETBYTE
+1233   DC19 FE 01       			CP	1
+1234   DC1B C0          			RET NZ
+1235   DC1C 78          			LD	A,B
+1236   DC1D 41          			LD	B,C
+1237   DC1E 4F          			LD	C,A
+1238   DC1F 3E 01       			LD	A,1
+1239   DC21 C9          			RET
+1240   DC22             			
+1241   DC22             ;================================================================================================
+1242   DC22             ; Routine to get byte from command line. DE=line_buf_ptr(should point to where byte starts).
+1243   DC22             ; If successfull, return byte in regB. A=0 if missing arg, A=1 if OK, A=2 if invalid arg. 
+1244   DC22             ;================================================================================================
+1245   DC22 1A          GETBYTE:	LD	A,(DE)
+1246   DC23 FE 00       			CP	0
+1247   DC25 28 1C       			JR	Z,GBNA				; End of buffer and no arg found.
+1248   DC27 FE 20       			CP	' '
+1249   DC29 28 33       			JR	Z,GBSPC				; Trim the space.
+1250   DC2B 67          			LD	H,A
+1251   DC2C CD 82 DC    			CALL ISITHEX
+1252   DC2F FE 01       			CP	1
+1253   DC31 20 2E       			JR	NZ,GBIA				; Invalid arg.
+1254   DC33 13          			INC	DE
+1255   DC34 1A          			LD	A,(DE)
+1256   DC35 6F          			LD	L,A
+1257   DC36 CD 82 DC    			CALL ISITHEX
+1258   DC39 FE 01       			CP	1
+1259   DC3B 20 24       			JR	NZ,GBIA				; Invalid arg.
+1260   DC3D CD 9C DC    			CALL HL2B				; Convert ASCII pair to byte
+1261   DC40 3E 01       			LD	A,1
+1262   DC42 C9          			RET
+1263   DC43 CD 33 E6    GBNA:		CALL PRINTSEQ
+1264   DC46 3E 4D 69 73 			.DB	">Missing argument.",CR,LF,0
+1264   DC4A 73 69 6E 67 
+1264   DC4E 20 61 72 67 
+1264   DC52 75 6D 65 6E 
+1264   DC56 74 2E 0D 0A 
+1264   DC5A 00 
+1265   DC5B 3E 00       			LD	A,0
+1266   DC5D C9          			RET
+1267   DC5E 13          GBSPC:		INC	DE
+1268   DC5F 18 C1       			JR	GETBYTE
+1269   DC61 CD 33 E6    GBIA:		CALL PRINTSEQ
+1270   DC64 3E 49 6E 76 			.DB	">Invalid argument.",CR,LF,0
+1270   DC68 61 6C 69 64 
+1270   DC6C 20 61 72 67 
+1270   DC70 75 6D 65 6E 
+1270   DC74 74 2E 0D 0A 
+1270   DC78 00 
+1271   DC79 3E 02       			LD	A,2
+1272   DC7B C9          			RET
+1273   DC7C             
+1274   DC7C 0E 3E       PRINTENV:	LD	C,PROMPT
+1275   DC7E CD 0C E6    			CALL CONOUT
+1276   DC81 C9          			RET
+1277   DC82             
+1278   DC82 FE 47       ISITHEX:	CP	'G'
+1279   DC84 F2 96 DC    			JP	P,NOTHEX
+1280   DC87 FE 41       			CP	'A'
+1281   DC89 F2 99 DC    			JP	P,ISHEX
+1282   DC8C FE 40       			CP	040H
+1283   DC8E F2 96 DC    			JP	P,NOTHEX
+1284   DC91 FE 30       			CP	'0'
+1285   DC93 F2 99 DC    			JP	P,ISHEX
+1286   DC96 3E 00       NOTHEX:		LD	A,0
+1287   DC98 C9          			RET
+1288   DC99 3E 01       ISHEX:		LD	A,1
+1289   DC9B C9          			RET
+1290   DC9C             
+1291   DC9C             ;================================================================================================
+1292   DC9C             ; Convert ASCII to HEX (HL --> B)
+1293   DC9C             ;================================================================================================
+1294   DC9C C5          HL2B:		PUSH BC
+1295   DC9D 3E 60       			LD	A,060H
+1296   DC9F 94          			SUB	H
+1297   DCA0 0E 57       			LD	C,057H
+1298   DCA2 DA AF DC    			JP	C,DISCOUNT
+1299   DCA5 3E 40       			LD	A,040H
+1300   DCA7 94          			SUB	H
+1301   DCA8 0E 37       			LD	C,037H
+1302   DCAA DA AF DC    			JP	C,DISCOUNT
+1303   DCAD 0E 30       			LD	C,030H
+1304   DCAF 7C          DISCOUNT:	LD	A,H
+1305   DCB0 91          			SUB	C
+1306   DCB1 47          CONVL:		LD	B,A
+1307   DCB2 CB 20       			SLA	B
+1308   DCB4 CB 20       			SLA	B
+1309   DCB6 CB 20       			SLA	B
+1310   DCB8 CB 20       			SLA	B
+1311   DCBA 3E 60       			LD	A,060H
+1312   DCBC 95          			SUB	L
+1313   DCBD 0E 57       			LD	C,057H
+1314   DCBF DA CC DC    			JP	C,DISCOUNT2
+1315   DCC2 3E 40       			LD	A,040H
+1316   DCC4 95          			SUB	L
+1317   DCC5 0E 37       			LD	C,037H
+1318   DCC7 DA CC DC    			JP	C,DISCOUNT2
+1319   DCCA 0E 30       			LD	C,030H
+1320   DCCC 7D          DISCOUNT2:	LD	A,L
+1321   DCCD 91          			SUB	C
+1322   DCCE B0          			OR	B
+1323   DCCF C1          			POP	BC
+1324   DCD0 47          			LD	B,A
+1325   DCD1 C9          			RET
+1326   DCD2             
+1327   DCD2             ;================================================================================================
+1328   DCD2             ; Convert HEX to ASCII (B --> HL)
+1329   DCD2             ;================================================================================================
+1330   DCD2 C5          B2HL:		PUSH	BC
+1331   DCD3 78          			LD	A,B
+1332   DCD4 E6 0F       			AND	0FH
+1333   DCD6 6F          			LD	L,A
+1334   DCD7 D6 0A       			SUB	0AH
+1335   DCD9 0E 30       			LD	C,030H
+1336   DCDB DA E0 DC    			JP	C,COMPENSE
+1337   DCDE 0E 37       			LD	C,037H
+1338   DCE0 7D          COMPENSE:	LD	A,L
+1339   DCE1 81          			ADD	A,C
+1340   DCE2 6F          			LD	L,A
+1341   DCE3 78          			LD	A,B
+1342   DCE4 E6 F0       			AND	0F0H
+1343   DCE6 CB 3F       			SRL	A
+1344   DCE8 CB 3F       			SRL	A
+1345   DCEA CB 3F       			SRL	A
+1346   DCEC CB 3F       			SRL	A
+1347   DCEE 67          			LD	H,A
+1348   DCEF D6 0A       			SUB	0AH
+1349   DCF1 0E 30       			LD	C,030H
+1350   DCF3 DA F8 DC    			JP	C,COMPENSE2
+1351   DCF6 0E 37       			LD	C,037H
+1352   DCF8 7C          COMPENSE2:	LD	A,H
+1353   DCF9 81          			ADD	A,C
+1354   DCFA 67          			LD	H,A
+1355   DCFB C1          			POP	BC
+1356   DCFC C9          			RET
+1357   DCFD             
+1358   DCFD             ;================================================================================================
+1359   DCFD 3F 1E       CMDTBL:		.DB	"?",RS
+1360   DCFF 42 4F 4F 54 			.DB	"BOOT",RS
+1360   DD03 1E 
+1361   DD04 58 4D 4F 44 			.DB	"XMODEM",RS
+1361   DD08 45 4D 1E 
+1362   DD0B 48 45 58 32 			.DB	"HEX2COM",RS
+1362   DD0F 43 4F 4D 1E 
+1363   DD13 41 53 43 49 			.DB	"ASCII2COM",RS
+1363   DD17 49 32 43 4F 
+1363   DD1B 4D 1E 
+1364   DD1D 43 4F 4D 50 			.DB	"COMPARE",RS
+1364   DD21 41 52 45 1E 
+1365   DD25 52 55 4E 1E 			.DB	"RUN",RS
+1366   DD29 52 45 41 44 			.DB	"READ",RS
+1366   DD2D 1E 
+1367   DD2E 44 52 45 41 			.DB	"DREAD",RS
+1367   DD32 44 1E 
+1368   DD34 57 52 49 54 			.DB	"WRITE",RS
+1368   DD38 45 1E 
+1369   DD3A 43 4F 50 59 			.DB	"COPY",RS
+1369   DD3E 1E 
+1370   DD3F 46 49 4C 4C 			.DB	"FILL",RS
+1370   DD43 1E 
+1371   DD44 44 4F 57 4E 			.DB	"DOWN",RS
+1371   DD48 1E 
+1372   DD49 55 50 1E    			.DB	"UP",RS
+1373   DD4C 46 4F 52 4D 			.DB	"FORMAT",RS
+1373   DD50 41 54 1E 
+1374   DD53 56 45 52 49 			.DB	"VERIFY",ETX
+1374   DD57 46 59 03 
+1375   DD5A             
+1376   DD5A C3 1C D0    JMPTBL:		JP	HELP
+1377   DD5D C3 03 E6    			JP	WBOOT
+1378   DD60 C3 49 D6    			JP	XMODEM
+1379   DD63 C3 64 D7    			JP	HEX2COM
+1380   DD66 C3 21 D8    			JP	ASCII2COM
+1381   DD69 C3 8D D5    			JP	MCOMP
+1382   DD6C C3 DE DA    			JP	RUN
+1383   DD6F C3 54 D3    			JP	MREAD
+1384   DD72 C3 99 D8    			JP	DREAD
+1385   DD75 C3 DC D4    			JP	MWRITE
+1386   DD78 C3 07 D5    			JP	MCOPY
+1387   DD7B C3 4B D5    			JP	MFILL
+1388   DD7E C3 86 D9    			JP	DDOWN
+1389   DD81 C3 C8 DA    			JP	DUP
+1390   DD84 C3 DD DA    			JP	DFORMAT
+1391   DD87 C3 DC DA    			JP	DVERIFY
+1392   DD8A             			
+1393   DD8A             ;================================================================================================
+1394   DD8A 00          CMDNUM		.DB	0
+1395   DD8B 00 00       LBUFPTR		.DW	0
+1396   DD8D 00          LINNUM		.DB	0
+1397   DD8E 00          COLNUM		.DB	0
+1398   DD8F 00 00       AAAA		.DW	0
+1399   DD91 00 00       BBBB		.DW	0
+1400   DD93 00 00       CCCC		.DW	0
+1401   DD95 00          CHKSUM	 	.DB	0					; Checksum for xmodem
+1402   DD96 00          BYTECNT		.DB	0					; Byte counter for xmodem and hex2com
+1403   DD97 00          RETRY		.DB 0					; Retry counter for xmodem
+1404   DD98 00          BLOCK		.DB	0					; Block counter for xmodem
+1405   DD99 00          DSK			.DB	0					; Disk number [00,0F]
+1406   DD9A 00 00       TRK			.DW	0					; Track number [0,1FF]
+1407   DD9C 00          SEC			.DB	0					; Sector number [0,1F]
+1408   DD9D 00          LBA3		.DB	0
+1409   DD9E 00          LBA2		.DB	0
+1410   DD9F 00          LBA1		.DB	0
+1411   DDA0 00          LBA0		.DB	0
+1412   DDA1             
+1413   DDA1             			.END
+tasm: Number of errors = 0
