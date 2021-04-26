@@ -422,7 +422,7 @@ MCAGAIN:	CALL CONIN			; Wait for user's decision
 ; Xmodem Command - XMODEM AAAA
 ;================================================================================================
 XMODEM:		LD	A,0C0H
-			LD	(IOBYTE),A
+			LD	(IOBYTE),A			; Set LCD as LIST device.
 			LD	C,DC1
 			CALL LIST
 			
