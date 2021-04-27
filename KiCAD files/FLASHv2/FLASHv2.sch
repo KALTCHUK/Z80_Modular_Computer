@@ -719,12 +719,6 @@ Text Label 5850 4250 2    50   ~ 0
 rd
 Text Label 5850 4150 2    50   ~ 0
 wr
-NoConn ~ 5850 3850
-NoConn ~ 5850 3950
-NoConn ~ 5850 4050
-NoConn ~ 6850 3850
-NoConn ~ 6850 3950
-NoConn ~ 6850 4050
 Wire Wire Line
 	7100 2450 5550 2450
 Wire Wire Line
@@ -881,4 +875,36 @@ Text Label 9450 2850 2    50   ~ 0
 fd06
 Text Label 9450 2750 2    50   ~ 0
 fd07
+Wire Wire Line
+	5850 3850 5850 3950
+Wire Wire Line
+	5850 4050 5850 3950
+Connection ~ 5850 3950
+Wire Wire Line
+	6850 3850 6850 3950
+Wire Wire Line
+	6850 3950 6850 4050
+Connection ~ 6850 3950
+$Comp
+L power:GND #PWR?
+U 1 1 6088510C
+P 6850 3950
+F 0 "#PWR?" H 6850 3700 50  0001 C CNN
+F 1 "GND" V 6950 3850 50  0000 C CNN
+F 2 "" H 6850 3950 50  0001 C CNN
+F 3 "" H 6850 3950 50  0001 C CNN
+	1    6850 3950
+	0    -1   1    0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 6088AC73
+P 5850 3950
+F 0 "#PWR?" H 5850 3700 50  0001 C CNN
+F 1 "GND" V 5900 3750 50  0000 C CNN
+F 2 "" H 5850 3950 50  0001 C CNN
+F 3 "" H 5850 3950 50  0001 C CNN
+	1    5850 3950
+	0    1    1    0   
+$EndComp
 $EndSCHEMATC
