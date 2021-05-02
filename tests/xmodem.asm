@@ -1,7 +1,19 @@
+;================================================================================================
+; XMODEM [drive:]filename r/s - Receive or send file using xmodem protocol.
+;================================================================================================
+
 BOOT		.EQU	0
 BIOS		.EQU	0E600H				; BIOS entry point
 LEAP		.EQU	3					; 3 bytes for each entry (JP aaaa)
+BDOS		.EQU	5
 
+FCB			.EQU	05CH
+DMA			.EQU	080H
+TPA			.EQU	100H
+
+;================================================================================================
+; BIOS FUNCTIONS
+;================================================================================================
 CONST:		.EQU	BIOS+(LEAP*2)		; 2 Console status (regA).
 CONIN:		.EQU	BIOS+(LEAP*3)		; 3 Console input (regA).
 CONOUT:		.EQU	BIOS+(LEAP*4)		; 4 Console output (regC).
@@ -9,33 +21,42 @@ LIST:		.EQU	BIOS+(LEAP*5)		; 3 List output (regC).
 LISTST:		.EQU	BIOS+(LEAP*15)		; 2 List status (regA).
 PRINTSEQ:	.EQU	BIOS+(LEAP*17)		; 4 Print sequence of chars ending with zero.
 
+;================================================================================================
+; BDOS FUNCTIONS
+;================================================================================================
+F_OPEN		.EQU	15
+F_CLOSE		.EQU	16
+F_DELETE	.EQU	19
+F_READ		.EQU	20
+F_WRITE		.EQU	21
+F_MAKE		.EQU	22
+F_DMA		.EQU	26
+
+;================================================================================================
+; ASCII TABLE
+;================================================================================================
 LF			.EQU	0AH
 CR			.EQU	0DH
 ESC			.EQU	1BH
 
-FCB			.EQU	05CH
-DMA			.EQU	080H
 ;================================================================================================
-			.ORG	0100H
+			.ORG	TPA
 
 
-;================================================================================================
-; XMODEM [drive:]filename - Receive file using xmodem protocol.
-;================================================================================================
-
-XMODEM:		LD	A,(FCB+1)			; Check if we have filename.
+START:		LD	A,(FCB+1)			; Check if we have filename.
 			CP	' '
 			JR	NZ,FNAMEOK
 			CALL PRINTSEQ
 			.DB	CR,LF,">Missing filename.",CR,LF,0
 			JP	BOOT
-FNAMEOK:			
-			
-			LD	A,0C0H
+FNAMEOK:	LD	A,0C0H
 			LD	(IOBYTE),A			; Set LCD as LIST device.
 			LD	C,DC1
 			CALL LIST
-			
+			LD	A,(FCB+11H)			; Check if it's a send or receive operation.		
+			CP	'S'
+			JP	Z,SENDOP
+						
 ALIVE:		CALL SENDNAK
 GET1ST:		LD	B,5
 			CALL TOCONIN			; 5s timeout
@@ -51,8 +72,7 @@ REPEAT:		LD	A,(RETRY)
 			LD	(RETRY),A
 			CP	MAXTRY
 			JR	NZ,ALIVE			; Try again?
-OUT3:		
-			CALL SENDCAN
+OUT3:		CALL SENDCAN
 			JP	CYCLE
 			
 GOTEOT:		CALL SENDNAK
@@ -117,7 +137,11 @@ RECPACK:	LD	B,1					; Start receiving data packet (128 bytes)
 
 			CALL SENDACK
 			JP	GET1ST
-			
+
+SENDOP:		CALL PRINTSEQ
+			.DB	CR,LF,"Send operation not implemented yet.",CR,LF,0
+			JP	BOOT
+
 SENDACK:	LD C,ACK
 			CALL CONOUT
 			RET
