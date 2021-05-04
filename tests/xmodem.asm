@@ -1,7 +1,6 @@
 ;================================================================================================
 ; XMODEM [drive:]filename r/s - Receive or send file using xmodem protocol.
 ;================================================================================================
-
 BOOT		.EQU	0
 BIOS		.EQU	0E600H				; BIOS entry point
 LEAP		.EQU	3					; 3 bytes for each entry (JP aaaa)
@@ -25,6 +24,8 @@ PRINTSEQ:	.EQU	BIOS+(LEAP*17)		; 4 Print sequence of chars ending with zero.
 ;================================================================================================
 ; BDOS FUNCTIONS
 ;================================================================================================
+GET_IOB		.EQU	7
+SET_IOB		.EQU	8
 F_OPEN		.EQU	15
 F_CLOSE		.EQU	16
 F_DELETE	.EQU	19
@@ -41,6 +42,8 @@ CR			.EQU	0DH
 ESC			.EQU	1BH
 
 ;================================================================================================
+; PROGRAM STARTS HERE
+;================================================================================================
 			.ORG	TPA
 
 
@@ -50,17 +53,37 @@ START:		LD	A,(FCB+1)			; Check if we have filename.
 			CALL PRINTSEQ
 			.DB	CR,LF,">Missing filename.",CR,LF,0
 			JP	BOOT
-FNAMEOK:	LD	A,0C0H
-			LD	(IOBYTE),A			; Set LCD as LIST device.
+FNAMEOK:	LD	C,GET_IOB
+			CALL BDOS
+			OR	0C0H
+			LD	E,A					; Set LCD as LIST device.
+			LD	C,SET_IOB
+			CALL BDOS
 			LD	C,DC1
 			CALL LIST
+			LD	A,0
+			LD	(RETRY),A			; Reset retry counter.
 			LD	A,(FCB2)			; Check if it's a send or receive operation.		
 			CP	'S'
 			JP	Z,SENDOP
 			CP	's'
 			JP	Z,SENDOP
 						
-ALIVE:		CALL SENDNAK
+;================================================================================================
+; RECEIVE FILE OPTION
+;================================================================================================
+			LD	C,F_DELETE			; Delete file.
+			LD	DE,FCB
+			CALL BDOS
+			LD	C,F_MAKE			; Create file.
+			LD	DE,FCB
+			CALL BDOS
+			CP	0
+			JR	NZ,RECOP
+			LD	DE,MSGME
+			JR	J001
+			
+RECOP:		CALL SENDNAK
 GET1ST:		LD	B,5
 			CALL TOCONIN			; 5s timeout
 			JR	C,REPEAT			; Timed out?
@@ -74,7 +97,7 @@ REPEAT:		LD	A,(RETRY)
 			INC	A
 			LD	(RETRY),A
 			CP	MAXTRY
-			JR	NZ,ALIVE			; Try again?
+			JR	NZ,RECOP			; Try again?
 OUT3:		CALL SENDCAN
 			JP	CYCLE
 			
@@ -151,32 +174,47 @@ J001:		CALL LISTSEQ
 BVERR:		LD	DE,MSGVE
 			JR	J001
 
+;================================================================================================
+; SEND FILE OPTION
+;================================================================================================
 SENDOP:		CALL PRINTSEQ
 			.DB	CR,LF,"Send operation not implemented yet.",CR,LF,0
 			JP	BOOT
 
+;================================================================================================
+; SEND ACK TO CONSOLE
+;================================================================================================
 SENDACK:	LD C,ACK
 			CALL CONOUT
 			RET
 
+;================================================================================================
+; SEND NAK TO CONSOLE
+;================================================================================================
 SENDNAK:	LD C,NAK
 			CALL CONOUT
 			RET
 
+;================================================================================================
+; SEND CAN TO CONSOLE
+;================================================================================================
 SENDCAN:	LD C,CAN
 			CALL CONOUT
 			RET
 
+;================================================================================================
+; SAVE BLOCK ON DISK (WRITE TO FILE)
+;================================================================================================
 SAVEBLK:	LD	A,(BLOCK)
 			DEC	A
 			LD	B,A
-			CALL B2HL
+			CALL B2HL				; Convert block number to ASCII
 			LD	A,H
 			LD	(MSGBNUM),A
 			LD	A,L
 			LD	(MSGBNUM+1),A
 			LD	DE,MSGBLK
-			CALL LISTSEQ
+			CALL LISTSEQ			; Send block number to LIST (LCD).
 			LD	C,F_DMA
 			LD	DE,DMA
 			CALL BDOS				; Set DMA before file write.
@@ -185,6 +223,9 @@ SAVEBLK:	LD	A,(BLOCK)
 			CALL BDOS				; Write block to file.
 			RET
 			
+;================================================================================================
+; VERIFY BLOCK ON DISK (COMPARE WRITTEN BLOCK TO SOURCE ON RAM)
+;================================================================================================
 VERBLK:		LD	C,F_DMA
 			LD	DE,DMA4VER
 			CALL BDOS				; Set DMA before file read.
@@ -278,11 +319,13 @@ COMPENSE2:	LD	A,H
 			RET
 
 ;==================================================================================
-MSGWE		.DB	"WRITE ERROR",CR,LF,0
+MSGME		.DB	"F_MAKE ERROR",CR,LF,0
+MSGWE		.DB	"F_WRITE ERROR",CR,LF,0
 MSGVE		.DB	"VERIFY ERROR",CR,LF,0
 MSGBLK		.DB "BLOCK "
 MSGBNUM		.DB	0,0,CR,LF,0
 
+RETRY		.DB	0
 DMA4VER		.DS	128
 
 			
