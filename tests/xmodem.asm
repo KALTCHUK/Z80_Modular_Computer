@@ -11,6 +11,8 @@ FCB2		.EQU	06CH
 DMA			.EQU	080H
 TPA			.EQU	100H
 
+MAXTRY		.EQU	10
+
 ;================================================================================================
 ; BIOS FUNCTIONS
 ;================================================================================================
@@ -35,11 +37,40 @@ F_MAKE		.EQU	22
 F_DMA		.EQU	26
 
 ;================================================================================================
-; ASCII TABLE
+; ASCII characters.
 ;================================================================================================
+NUL			.EQU	00H
+SOH			.EQU	01H
+STX			.EQU	02H
+ETX			.EQU	03H
+EOT			.EQU	04H
+ENQ			.EQU	05H
+ACK			.EQU	06H
+BEL			.EQU	07H
+BS			.EQU	08H			; ^H
+HT			.EQU	09H
 LF			.EQU	0AH
+VT			.EQU	0BH
+FF			.EQU	0CH
 CR			.EQU	0DH
+SO			.EQU	0EH
+SI			.EQU	0FH
+DLE			.EQU	10H
+DC1			.EQU	11H
+DC2			.EQU	12H
+DC3			.EQU	13H
+DC4			.EQU	14H
+NAK			.EQU	15H			; ^U
+SYN			.EQU	16H
+ETB			.EQU	17H
+CAN			.EQU	18H			; ^X
+EM			.EQU	19H
+SUB			.EQU	1AH
 ESC			.EQU	1BH
+FS			.EQU	1CH
+GS			.EQU	1DH
+RS			.EQU	1EH
+US			.EQU	1FH
 
 ;================================================================================================
 ; PROGRAM STARTS HERE
@@ -51,8 +82,9 @@ START:		LD	A,(FCB+1)			; Check if we have filename.
 			CP	' '
 			JR	NZ,FNAMEOK
 			CALL PRINTSEQ
-			.DB	CR,LF,">Missing filename.",CR,LF,0
+			.DB	CR,LF,"Missing filename.",CR,LF,0
 			JP	BOOT
+
 FNAMEOK:	LD	C,GET_IOB
 			CALL BDOS
 			OR	0C0H
@@ -60,7 +92,7 @@ FNAMEOK:	LD	C,GET_IOB
 			LD	C,SET_IOB
 			CALL BDOS
 			LD	C,DC1
-			CALL LIST
+			CALL LIST				; Init LCD
 			LD	A,0
 			LD	(RETRY),A			; Reset retry counter.
 			LD	A,(FCB2)			; Check if it's a send or receive operation.		
@@ -70,43 +102,50 @@ FNAMEOK:	LD	C,GET_IOB
 			JP	Z,SENDOP
 						
 ;================================================================================================
-; RECEIVE FILE OPTION
+; RECEIVE FILE OPERATION
 ;================================================================================================
-			LD	C,F_DELETE			; Delete file.
+RECOP:		LD	C,F_DELETE			; Delete file.
 			LD	DE,FCB
 			CALL BDOS
 			LD	C,F_MAKE			; Create file.
 			LD	DE,FCB
 			CALL BDOS
-			CP	0
-			JR	NZ,RECOP
+			CP	0					; Got error?
+			JR	NZ,ALIVE
 			LD	DE,MSGME
-			JR	J001
+			JP	J001
 			
-RECOP:		CALL SENDNAK
+ALIVE:		CALL SENDNAK
 GET1ST:		LD	B,5
 			CALL TOCONIN			; 5s timeout
 			JR	C,REPEAT			; Timed out?
 			CP	EOT
 			JR	Z,GOTEOT			; EOT?
 			CP	CAN
-			JP	Z,CYCLE				; CAN?
+			JP	Z,BOOT				; CAN?
 			CP	SOH
 			JR	Z,GOTSOH			; SOH?
 REPEAT:		LD	A,(RETRY)
 			INC	A
 			LD	(RETRY),A
-			CP	MAXTRY
-			JR	NZ,RECOP			; Try again?
+			CP	(MAXTRY)
+			JR	NZ,ALIVE			; Try again?
 OUT3:		CALL SENDCAN
-			JP	CYCLE
+			JP	BOOT
 			
 GOTEOT:		CALL SENDNAK
 			LD	B,1
 			CALL TOCONIN
 			CALL SENDACK
-			JP	CYCLE
-			
+			LD	C,F_CLOSE			; Create file.
+			LD	DE,FCB
+			CALL BDOS
+			CP	0FFH				; Did we get an error while closing the file?
+			JP	NZ,BOOT
+			LD	DE,MSGCE
+			CALL LISTSEQ
+			JP	BOOT
+
 GOTSOH:		LD	A,0
 			LD	(CHKSUM),A			; Reset checksum
 			LD	HL,DMA				; Reset byte counter
@@ -129,9 +168,11 @@ GOTSOH:		LD	A,0
 ANTBLK:		CALL PURGE				; Purge input buffer before sending ACK
 			CALL SENDACK
 			JP	GET1ST
+
 OUT2:		CALL PURGE
 			CALL SENDCAN
-			JP	CYCLE
+			JP	BOOT
+
 RECPACK:	LD	B,1					; Start receiving data packet (128 bytes)
 			CALL TOCONIN
 			JR	C,OUT2				; Timed out?
@@ -168,14 +209,16 @@ RECPACK:	LD	B,1					; Start receiving data packet (128 bytes)
 			JR	NZ,BVERR			; Oops, we got a block verify error
 			CALL SENDACK
 			JP	GET1ST
+
 BWERR:		LD	DE,MSGWE
 J001:		CALL LISTSEQ
 			JP	OUT3
+
 BVERR:		LD	DE,MSGVE
 			JR	J001
 
 ;================================================================================================
-; SEND FILE OPTION
+; SEND FILE OPERATION
 ;================================================================================================
 SENDOP:		CALL PRINTSEQ
 			.DB	CR,LF,"Send operation not implemented yet.",CR,LF,0
@@ -287,6 +330,14 @@ TOUT:		POP	HL
 			POP	BC
 			RET
 
+;==================================================================================
+; Purge console input.
+;==================================================================================
+PURGE:		LD	B,3
+			CALL TOCONIN
+			JR	NC,PURGE
+			RET
+
 ;================================================================================================
 ; Convert HEX to ASCII (B --> HL)
 ;================================================================================================
@@ -319,13 +370,21 @@ COMPENSE2:	LD	A,H
 			RET
 
 ;==================================================================================
-MSGME		.DB	"F_MAKE ERROR",CR,LF,0
-MSGWE		.DB	"F_WRITE ERROR",CR,LF,0
-MSGVE		.DB	"VERIFY ERROR",CR,LF,0
-MSGBLK		.DB "BLOCK "
-MSGBNUM		.DB	0,0,CR,LF,0
+; MESSAGE STRINGS
+;==================================================================================
+MSGME		.DB	CR,LF,"MAKE ERROR",0
+MSGCE		.DB	CR,LF,"CLOSE ERROR",0
+MSGWE		.DB	CR,LF,"WRITE ERROR",0
+MSGVE		.DB	CR,LF,"VERIFY ERROR",0
+MSGBLK		.DB CR,LF,"BLOCK "
+MSGBNUM		.DB	0,0,0
 
+;==================================================================================
+; VARIABLES AND BUFFERS
+;==================================================================================
 RETRY		.DB	0
+CHKSUM		.DB	0
+BLOCK		.DB	0
 DMA4VER		.DS	128
 
 			
