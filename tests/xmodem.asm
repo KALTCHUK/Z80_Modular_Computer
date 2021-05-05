@@ -47,7 +47,7 @@ EOT			.EQU	04H
 ENQ			.EQU	05H
 ACK			.EQU	06H
 BEL			.EQU	07H
-BS			.EQU	08H			; ^H
+BS			.EQU	08H	
 HT			.EQU	09H
 LF			.EQU	0AH
 VT			.EQU	0BH
@@ -60,10 +60,10 @@ DC1			.EQU	11H
 DC2			.EQU	12H
 DC3			.EQU	13H
 DC4			.EQU	14H
-NAK			.EQU	15H			; ^U
+NAK			.EQU	15H
 SYN			.EQU	16H
 ETB			.EQU	17H
-CAN			.EQU	18H			; ^X
+CAN			.EQU	18H
 EM			.EQU	19H
 SUB			.EQU	1AH
 ESC			.EQU	1BH
@@ -76,7 +76,6 @@ US			.EQU	1FH
 ; PROGRAM STARTS HERE
 ;================================================================================================
 			.ORG	TPA
-
 
 START:		LD	A,(FCB+1)			; Check if we have filename.
 			CP	' '
@@ -113,7 +112,7 @@ RECOP:		LD	C,F_DELETE			; Delete file.
 			CP	0					; Got error?
 			JR	NZ,ALIVE
 			LD	DE,MSGME
-			JP	J001
+			JP	LEXIT
 			
 ALIVE:		CALL SENDNAK
 GET1ST:		LD	B,5
@@ -211,11 +210,11 @@ RECPACK:	LD	B,1					; Start receiving data packet (128 bytes)
 			JP	GET1ST
 
 BWERR:		LD	DE,MSGWE
-J001:		CALL LISTSEQ
+LEXIT:		CALL LISTSEQ
 			JP	OUT3
 
 BVERR:		LD	DE,MSGVE
-			JR	J001
+			JR	LEXIT
 
 ;================================================================================================
 ; SEND FILE OPERATION
