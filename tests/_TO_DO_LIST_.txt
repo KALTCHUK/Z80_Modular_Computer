@@ -1,1 +1,1 @@
-- work on DISK functions
+- work on flash rd/wr error

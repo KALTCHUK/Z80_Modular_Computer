@@ -1,4 +1,7 @@
 ;================================================================================================
+; MONITOR 2.0  - USE WITH VT100 TERMINAL
+; MONITOR 2.1B - Unified command set, no more environment change.
+; MONITOR 2.1C - working on dread.
 ; MONITOR 2.1D - implement ascii2com function.
 ;
 ;================================================================================================
