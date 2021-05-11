@@ -1065,11 +1065,11 @@ NEWTRK:		LD	A,0
 			CALL PRINTSEQ
 			.DB	CR,LF,"Track ",0
 			LD	HL,(TRK)
-			LD	B,H
-			CALL PRTB2HL
+			LD	A,H
+			CALL PRINTBYTE
 			LD	HL,(TRK)
-			LD	B,L
-			CALL PRTB2HL
+			LD	A,L
+			CALL PRINTBYTE
 NEWSEC:		CALL DTS2LBA
 			CALL BKUP			; Backup content of sector before tests
 			LD	A,0				; Test R/W filling sector with 00
@@ -1132,8 +1132,7 @@ VBT2:		CP	(HL)
 VMISMATCH:	CALL PRINTSEQ
 			.DB	CR,LF,"Error on sector ",0
 			LD	A,(SEC)
-			LD	B,A
-			CALL PRTB2HL
+			CALL PRINTBYTE
 			CALL PRINTSEQ
 			.DB	" Continue test? (Y/N)",CR,LF,0
 			CALL CONIN
