@@ -14,7 +14,7 @@ MONITOR		.EQU	0D000H				; Monitor entry point
 BIOS		.EQU	0E600H				; BIOS entry point
 DMA			.EQU	0080H				; Buffer used by Monitor
 DISKPAD		.EQU	0E000H				; Draft area used by disk R/W ops
-DISKBKUP	.EQU	0E200H				; Backup area user by disk verify operation
+DISKBKUP	.EQU	0E200H				; Backup area used by disk verify operation
 
 ;================================================================================================
 ; BIOS functions.
@@ -1056,34 +1056,100 @@ DVERIFY:	LD	DE,DMA+7
 			JP	NZ,CYCLE
 			LD	HL,0
 			LD	(TRK),HL
-NEWSEC:		LD	A,0
+			LD	HL,DISKPAD
+			LD	(AAAA),HL		; AAAA will hold beginning of DISKPAD
+			LD	HL,DISKPAD+1FFH
+			LD	(BBBB),HL		; BBBB will hold end of DISKPAD
+NEWTRK:		LD	A,0
 			LD	(SEC),A
-VLOOP:		CALL DTS2LBA
-			CALL DISKREAD
-			;BACKUP
-			LD	B,0
+			CALL PRINTSEQ
+			.DB	CR,LF,"Track ",0
+			LD	HL,(TRK)
+			LD	B,H
+			CALL PRTB2HL
+			LD	HL,(TRK)
+			LD	B,L
+			CALL PRTB2HL
+NEWSEC:		CALL DTS2LBA
+			CALL BKUP			; Backup content of sector before tests
+			LD	A,0				; Test R/W filling sector with 00
 			CALL BLKTEST
-			LD	B,0FFH
+			LD	A,0FFH			; Test R/W filling sector with FF
 			CALL BLKTEST
-			LD	B,0AAH
+			LD	A,0AAH			; Test R/W filling sector with AA
 			CALL BLKTEST
-			LD	B,55H
+			LD	A,55H			; Test R/W filling sector with 55
 			CALL BLKTEST
-			;RESTORE BACKUP
+			CALL RESBKUP		; restore original content to sector
 			LD	A,(SEC)
 			INC	A
 			LD	(SEC),A
 			CP	20H
-			JR	NZ,VLOOP
+			JR	NZ,NEWSEC
 			LD	HL,(TRK)
 			INC	HL
+			LD (TRK),HL
 			LD	A,H
 			CP	2
-			JR	NZ,NEWSEC
+			JR	NZ,NEWTRK
 			JP	CYCLE
 
-BLKTEST:	RET
+BKUP:		CALL DISKREAD		; Read sector and copy DISKPAD to DISKBKUP
+			LD	HL,DISKPAD
+			LD	DE,DISKBKUP
+			LD	BC,0200H
+			LDIR
+			RET
+			
+RESBKUP:	LD	HL,DISKBKUP		; Copy DISKBKUP to DISKPAD and write sector
+			LD	DE,DISKPAD
+			LD	BC,0200H
+			LDIR
+			CALL DISKWRITE
+			RET
 
+BLKTEST:	LD	B,A
+			LD	(CCCC),A
+			CALL MFPRIM
+			CALL DISKWRITE
+			CALL DISKREAD
+			LD	A,(CCCC)
+			LD	HL,DISKPAD
+			LD	B,0
+VBT1:		CP	(HL)
+			JR	NZ,VMISMATCH
+			INC	HL
+			DJNZ VBT1
+			LD	B,0
+VBT2:		CP	(HL)
+			JR	NZ,VMISMATCH
+			INC	HL
+			DJNZ VBT2
+			LD	C,'.'
+			CALL CONOUT
+			RET
+
+VMISMATCH:	CALL PRINTSEQ
+			.DB	CR,LF,"Error on sector ",0
+			LD	A,(SEC)
+			LD	B,A
+			CALL PRTB2HL
+			CALL PRINTSEQ
+			.DB	" Continue test? (Y/N)",CR,LF,0
+			CALL CONIN
+			CP	'Y'
+			RET	Z
+			CP	'y'
+			RET	Z
+			JP	CYCLE
+
+PRTB2HL:	CALL B2HL
+			LD	C,H
+			CALL CONOUT
+			LD	C,L
+			CALL CONOUT
+			RET
+			
 ;================================================================================================
 ; Format a disk - FORMAT D
 ;================================================================================================
