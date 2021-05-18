@@ -1081,6 +1081,8 @@ NEWSEC:		CALL DTS2LBA
 			LD	A,55H			; Test R/W filling sector with 55
 			CALL BLKTEST
 			CALL RESBKUP		; restore original content to sector
+			LD	C,'.'
+			CALL CONOUT
 			LD	A,(SEC)
 			INC	A
 			LD	(SEC),A
@@ -1092,6 +1094,7 @@ NEWSEC:		CALL DTS2LBA
 			LD	A,H
 			CP	2
 			JR	NZ,NEWTRK
+			CALL CRLF
 			JP	CYCLE
 
 BKUP:		CALL DISKREAD		; Read sector and copy DISKPAD to DISKBKUP
@@ -1125,8 +1128,6 @@ VBT2:		CP	(HL)
 			JR	NZ,VMISMATCH
 			INC	HL
 			DJNZ VBT2
-			LD	C,'.'
-			CALL CONOUT
 			RET
 
 VMISMATCH:	CALL PRINTSEQ
