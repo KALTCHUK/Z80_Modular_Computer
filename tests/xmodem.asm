@@ -70,7 +70,7 @@ FNAMEOK:	LD	C,GET_IOB
 			CALL LIST				; Init LCD
 			LD	A,0
 			LD	(RETRY),A			; Reset retry counter.
-			LD	A,(FCB2)			; Check if it's a send or receive operation.		
+			LD	A,(FCB2+1)			; Check if it's a send or receive operation.		
 			CP	'S'
 			JP	Z,SENDOP
 			CP	's'
