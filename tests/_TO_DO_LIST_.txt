@@ -1,1 +1,2 @@
-- work on flash rd/wr error
+- reformat CF
+- test cpm221 new function (TPA)

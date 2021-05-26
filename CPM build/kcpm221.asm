@@ -40,6 +40,30 @@ CNTRLU	.EQU	15H			;control-u
 CNTRLX	.EQU	18H			;control-x
 CNTRLZ	.EQU	1AH			;control-z (end-of-file mark)
 DEL		.EQU	7FH			;rubout
+;**************************************************************
+;*
+;*        B I O S   FUNCTION ADDRESSES
+;*
+;**************************************************************
+;
+DELTA		.EQU	3
+BOOT		.EQU	BIOS+(0*DELTA)
+WBOOT		.EQU	BIOS+(1*DELTA)
+CONST		.EQU	BIOS+(2*DELTA)
+CONIN		.EQU	BIOS+(3*DELTA)
+CONOUT		.EQU	BIOS+(4*DELTA)
+LIST		.EQU	BIOS+(5*DELTA)
+PUNCH		.EQU	BIOS+(6*DELTA)
+READER		.EQU	BIOS+(7*DELTA)
+HOME		.EQU	BIOS+(8*DELTA)
+SELDSK		.EQU	BIOS+(9*DELTA)
+SETTRK		.EQU	BIOS+(10*DELTA)
+SETSEC		.EQU	BIOS+(11*DELTA)
+SETDMA		.EQU	BIOS+(12*DELTA)
+READ		.EQU	BIOS+(13*DELTA)
+WRITE		.EQU	BIOS+(14*DELTA)
+PRSTAT		.EQU	BIOS+(15*DELTA)
+SECTRN		.EQU	BIOS+(16*DELTA)
 ;
 ;   Set origin for CP/M
 ;
@@ -3723,30 +3747,6 @@ CKSUMTBL: 	.DB	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
 		.ORG	BIOS-2
 		.DW	FBASE			;write here the BDOS entry point so BIOS can copy it to page zero
-;**************************************************************
-;*
-;*        B I O S   J U M P   T A B L E
-;*
-;**************************************************************
-;
-		.ORG	BIOS
-BOOT:		JP	0			;NOTE WE USE FAKE DESTINATIONS
-WBOOT:	JP	0
-CONST:	JP	0
-CONIN:	JP	0
-CONOUT:	JP	0
-LIST:		JP	0
-PUNCH:	JP	0
-READER:	JP	0
-HOME:		JP	0
-SELDSK:	JP	0
-SETTRK:	JP	0
-SETSEC:	JP	0
-SETDMA:	JP	0
-READ:		JP	0
-WRITE:	JP	0
-PRSTAT:	JP	0
-SECTRN:	JP	0
 ;
 ;*
 ;******************   E N D   O F   C P / M   *****************
