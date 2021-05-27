@@ -1,2 +1,4 @@
-- reformat CF
-- test cpm221 new function (TPA)
+- Download kform128 and format CF.
+- Burn eprom with Monitor 2.1G and CP/M 2.21
+- Test cpm221's new function "TPA" with a simple HALT @ 0100h.
+- Download "STAT" and try to execute it. If it runs ok, save it to disk and run from disk.

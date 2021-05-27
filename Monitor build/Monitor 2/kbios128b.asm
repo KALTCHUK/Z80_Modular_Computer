@@ -231,7 +231,7 @@ boot:
 		CALL	PRINTSEQ
 		.DB "Z80 Modular Computer by Kaltchuk 2020.",CR,LF
 		.DB "BIOS 1.0B - 128MB Flash, LCD drive.",CR,LF
-		.DB	"CPM bla, bla, bla",CR,LF,CR,LF,0
+		.DB	"Monitor 2,1",CR,LF,CR,LF,0
 
 		JP	gocpm
 

@@ -136,6 +136,7 @@ UNK:		CALL UNKNOWN
 ;================================================================================================
 HELP:		CALL CRLF
 			CALL PRINTSEQ
+			.DB	" MONITOR 2.1G - May/2021.",CR,LF
 			.DB	" Options:   READ aaaa             read from memory.",CR,LF
 			.DB "            WRITE aaaa,c1 c2 cN   write to memory.",CR,LF
 			.DB "            COPY aaaa-bbbb,cccc   copy memory block.",CR,LF
