@@ -1,0 +1,190 @@
+
+		The Incredible Superpowerful 
+	    Floating Point Package for BDS C v1.3
+	    *************************************
+	    software written by: Bob Mathias
+	    this documentation by: Leor Zolman
+
+	Components of the floating point package:
+
+	    1)	FLOAT.DOC:	This documentation file
+	    2)	FLOAT.C:	File of support functions, written in C
+	    3)	FP:		The workhorse function (in DEFF2.CRL)
+	    4)  FLOATSUM.C	A Sample usage of all this stuff
+
+	This floating point package is as close as BDS C
+version 1.x is ever gonna come to manipulating floating point
+numbers. And it ain't too bad, actually...Bob did a nice neat
+job, and the new formatted printout support in a special version
+of the "sprintf" library function means that output is no longer
+constrained to scientific notation.
+
+	Here's how it works: for every floating point number
+you wish to work with, you must declare a five (5) element
+character array. Then, pass a pointer to the array whenever
+you need to specify it in a function call. Each of Bob's
+functions expects its arguments to be pointers to such 
+character arrays.
+	The four basic arithmetic functions are: fpadd,
+fpsub, fpmul and fpdiv. They each take three arguments: a
+pointer to a five character array where the result will go,
+and the two operands (each a pointer to a five character array
+representing a floating point operand.)
+	To facilitate the initialization of the floating
+point character arrays with the values you desire and printing
+out the values in a human-readable form, the following
+functions are included:
+
+	ftoa: converts a floating point number to an ASCII
+	      string (which you can then print out with "puts")
+	      NOTE: explicit use of this function has been made
+		    obsolete by the new "sprintf." See FLOAT.C.
+
+	atof: converts an ASCII string (null terminated) to
+	      a floating point number
+
+	itof: converts integer to floating point.
+
+Here are Bob's descriptions of the functions:
+
+The following functions allow BDS C compiler users to access
+and manipulate real numbers. Each real number must be allocated
+a five (5) byte character array (char fpno[5]).  The first four
+bytes contain the mantissa with the first byte being the least
+significant byte.  The fifth byte is the exponent.
+
+fpcomp(op1,op2)
+char op1[5],op2[5];
+			Returns:
+			an integer 1 if op1 > op2
+			an integer -1 if op1 < op2
+			a zero if op1 = op2
+		As with most floating point packages, it is not
+		a good practice to compare for equality when
+		dealing with floating point numbers.
+
+char *fpadd(result,op1,op2)
+char result[5], op1[5], op2[5];
+		Stores the result of op1 + op2 in result. op1
+		and op2 must be floating point numbers.
+		Returns a pointer to the beginning of result.
+
+
+char *fpsub(result,op1,op2)
+char result[5],op1[5],op2[5];
+		Stores the result of op1 - op2 in result.  op1
+		and op2 must be floating point numbers.  
+		Returns a pointer to the beginning of result.
+
+char *fpmult(result,op1,op2)
+char result[5],op1[5],op2[5];
+		Stores the result of op1 * op2 in result.  op1
+		and op2 must be floating point numbers. Returns
+		a pointer to the beginning of result.
+
+char *fpdiv(result,op1,op2)
+char result[5],op1[5],op2[5];
+		Stores the result of op1 / op2 in result.  op1
+		and op2 must be floating point numbers.  
+		A divide by zero will return zero as result.
+		Returns a pointer to the beginning of result.
+
+char *atof(op1,s1)
+char op1[5],*s;
+		Converts the ASCII string s1 into a floating
+		point number and stores the result in op1.  
+		The function will ignore leading white space 
+		but NO white space is allowed to be embedded
+		withing the number. The following are legal
+		examples:
+		"2", "22022222222383.333", "2.71828e-9",
+		"334.3333E32".
+		"3443.33 E10" would be ILLEGAL because
+		it contains an embedded space.
+		The value of the exponent must be within the
+		range: -38 <= exponent <= 38.
+		A pointer to the result is returned.
+
+
+char *ftoa(s1,op1)
+char *s1,op1[5];
+		Converts the floating point number op1 to an 
+		ASCII string.  It will be formatted in 
+		scientific notation with seven (7) digits of
+		precision. The string will be terminated by
+		a null.
+		Returns a pointer to the beginning of s1.
+
+char *itof(op1, n)
+char op1[5];
+int n;
+		Sets the floating pt. number op1 to the value
+		of integer n. n is assumed to be a SIGNED
+		integer.
+
+
+General observations:
+
+	Because floating point operations must be thought of
+in terms of FUNCTION CALLS rather than simple in-line
+expressions, special care must be taken not to confuse the
+abilities of the compiler with the abilities of the floating
+point package. To give a floating point number an initail
+value, for instance, you cannot say:
+	char fpno[5];
+	fpno = "2.236";
+To achieve the desired result, you'd have to say:	
+	char fpno[5];
+	atof(fpno,"2.236");
+
+Moreover, let's say you want to set a floating point number
+to the value of an integer variable called "ival". Saying:
+	char fpno[5];
+	int ival;
+	...
+	fpno = ival;
+
+will not work; you have to change that last line to:
+
+	itof(fpno,ival);
+
+	Some more examples:
+
+	The following will add 100.2 & -7.99 and store the
+	result at the five character array location 'a':
+		fpadd(a,atof(b,"100.2"), atof(c,"-7.99"));
+	(note that "b" and "c" must also be five character
+	arrays)
+
+	The following would NOT add 1 to 'a' as both op1 and 
+	op2 must be floating point numbers (actually pointers
+	to characters...):
+		fpadd(a,a,1);  /* bad use of "fpadd" */
+
+	Thus, it can get a bit hairy when all floating
+point numbers are really character arrays; but still, it's
+better than nothing.
+
+	All of the above functions are written in C, but
+most of them call a single workhorse function called "fp"
+to do all the really hairy work. This function has been placed
+into the DEFF2.CRL; it is the only machine-coded part of the
+package. To make it easier to link programs which use the
+floating point package, I suggest you compile FLOAT.C and then
+use CLIB to transfer the "fp" function from DEFF2.CRL into
+the newly-formed FLOAT.CRL. That way, you need only specify
+the "float" CRL file on the command line to ClINK (instead
+of having to specify both FLOAT and DEFF2.)
+
+	I would've liked to precompile all the C stuff for
+you, but there's only so much space on a floppy disk. As I'm
+sure you know all too well!
+
+	Questions on the internals of this package should
+be addressed to:
+
+	Bob Mathias
+	23147 Los Alisos apt. 268
+	Mission Viejo, Ca. 92691
+
+

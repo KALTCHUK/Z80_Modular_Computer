@@ -1,0 +1,238 @@
+  *****************************************************************
+  *                                                               *
+  *     A Procedure for Generating .CRL Files at the Assembly     *
+  *           Source Level Using Microsoft's MACRO-80             *
+  *                                                               *
+  *                        May, 1980                              *
+  *                                                               *
+  *                   William C. Colley, III                      *
+  *                  305 Memorial Dr. -- #518B                    *
+  *                     Cambridge, MA 02139                       *
+  *                                                               *
+  *                      ph. (617)258-1204                        *
+  *                                                               *
+  *****************************************************************
+ 
+ 
+     Because  MACRO-80  has the pseudo-ops .PHASE and .DEPHASE, it can
+create .CRL files directly  from  assembly  source without any tedious
+hand patching.  The procedure will be described  below, and will refer
+to  the  example  file enclosed which is part of a tape-disk  transfer
+routine for talking to a COSMAC elf and contains 2 functions.  
+ 
+     The steps in generating  the  assembly source are easily followed
+as the code itself is written.  They are:  
+ 
+         1)  Set up MACRO-80 for the job.
+
+         2)  Build the directory for the functions in the .CRL file.
+
+         3)  Write functions which consist of:
+
+                 a)  A list of needed functions,
+
+                 b)  the length of the function,
+
+                 c)  dummy jump instructions for the BDS C linker,
+
+                 d)  the code itself with relocation targets marked,
+
+                 e)  and a relocation table for the function.
+
+         4)  Mark the end of the package for the BDS C linker.
+ 
+ 
+Setting up MACRO-80 
+ 
+     The setup for MACRO-80 is simple.    Declare the whole package to
+be an absolute segment (ASEG) and set the origin to 0.  This makes the
+package load at location 0 in memory.  
+ 
+ 
+Building the Directory 
+ 
+     A  directory entry is made up of a DB to  define  the  function's
+name, and  a  DW  to  define  its  address.  The last character of the
+function  name  must  have the upper bit  set.    Function  names  are
+8-CHARACTERS MAXIMUM.  The argument of the DW statement is a label set
+up at the beginning of  the  list  of functions needed by the function
+named in the DB.  For example:  
+ 
+         DB      'FUNCTIO','N' OR 80H         DW      FUN1
+         .
+         .
+         .
+         DB      80H             ;This terminates the directory.
+         DW      NXTADR
+
+FUN1:    <list of needed functions for FUN1>
+ 
+     The  directory  has one entry for  each  function,  31  functions
+maximum.  The directory  is  terminated by a null entry with the label
+on the END statement of the package as its DW argument.  
+ 
+     Following the directory should  be  an  ORG statement to make the
+code start at location 512+5.  Note that this  reserves  the  full 512
+bytes for the directory, and takes care of the 5 reserved bytes at the
+beginning of the code portion of the .CRL file.  
+ 
+ 
+Writing the Function 
+ 
+     The  function  begins with a list of the names of the C functions
+called by the function  being  written.    Note that the first item in
+this list will bear the label referred to the  the DW statement in the
+directory.  For example:  
+ 
+FUN1:    DB      'GOFORI','T' OR 80H     ;Note that the upper order
+         DB      'GNUR','D' OR 80H       ;bit is set on names
+         .                               ;here, too.
+         .
+         .
+         DB      0                       ;A null terminates
+                                         ;this list.
+ 
+     Next, the length of the function must be inserted.  The assembler
+can  calculate this with a couple of cleverly placed  labels,  so  why
+count  it  yourself?    This  also  causes the assembler to adjust the
+length when you modify and reassemble  the  program  during debugging.
+The beginning of body label is placed on the first line of code in the
+routine, and the end of body label is placed JUST AFTER  the last line
+of code.  For example:  
+ 
+         DW      ENDFN1-BEGFN1
+         .
+         .
+         .
+BEGFN1:  <code goes here>
+         RET
+ENDFN1:
+ 
+     Now comes the sneaky part.  In the definition of .CRL  files, all
+of the code must execute from location 0 despite the fact that  it may
+be  loaded  anywhere  in  memory.    In particular, the directory just
+burned locations 0-0204H.  MACRO-80 allows  assembly of code loaded at
+some address to be done as if it were loaded  at  some  other  address
+through the .PHASE directive.  Thus, the code after the length of  the
+function (the ... in the sample above) is the single statement:  
+ 
+         .PHASE  0
+     If  you  have  specified  any  functions  in  the  list of neededfunctions,  you  must  start the code with a list of JMP instructions.
+There needs to be one JMP  per  function in the needed functions list.
+Thus if our FUN1 calls four functions, the beginning of the code would
+look like this:  
+ 
+BEGFN1:  JMP     0
+         JMP     0
+         JMP     0
+         JMP     0
+         <actual code goes here>
+         RET
+ENDFN1:
+ 
+     After the jump table, you just  type  in  your  code.   To aid in
+compiling  the  relocation  table, you should flag lines of code  that
+contain  references to addresses  in  the  function  with  distinctive
+labels.  I use A.1, A.2, A.3,...  for the first function in a package,
+B.1, B.2,  B.3,...  for  the  second function, and so forth.  Look for
+such  references  in  jump  instructions,   call   instructions,   LXI
+instructions  that  load local table base addresses, LHLD instructions
+that reference local  ram  locations,  etc.   Note that calls to BDS C
+functions  should  call  the  JMP  instruction  in  the   jump   table
+corresponding  to  the  particular  function  in  the  list  of needed
+functions.  
+ 
+     One remark is in order:  DO NOT KILL BC.  Your BDS C program will
+die  a  painful  death if you murder the stack frame pointer.  If  you
+need the BC pair,  push  and pop.  HL, A, and the flags may be killed,
+but I have no experience with  DE  as I push it as a matter of course.
+The return value of the subroutine goes back in HL.  
+ 
+     To compile the relocation table for the function, you'll need the
+length of the relocation table (in words)  and a DW statement for each
+of the markers placed in the code as per the  paragraph  before  last.
+For example, 
+ 
+         DW      (ENREL1-$)/2    ;Note that the assembler can
+         DW      A.1+1           ;count these, too.
+         DW      A.2+1
+         DW      A.3+1           ;THE +1 IS IMPORTANT!!!!!
+         .
+         .
+         .
+ENREL1:  DW      A.25+1          ;A pretty big function.
+ 
+     A null relocation table looks like this:  
+ 
+ENREL1:  DW      (ENREL1-$)/2
+ 
+     After  the  end of function label (ENDFN1 in the above examples),
+you need to get the  assembly  program counter back on course, so tack
+on the line:  
+ 
+         .DEPHASE
+ 
+     Additional functions are in the same form as the first.  
+ 
+ 
+Marking the End of the Package 
+     To mark the end of the package  for  the  BDS  C  linker, put thelabel  referred  to  by  the  null directory entry at the end  of  the
+program as follows:  
+ 
+NXTADR:
+         END
+ 
+ 
+Assembling the beast 
+ 
+     Now that you have the source  file,  you hack on it with MACRO-80
+and LINK-80 as follows:  
+ 
+A>M80 =FILENAME
+
+No fatal error(s)
+
+A>L80 /D:0,/P:0,FILENAME,FILENAME.CRL/N/E
+
+Origin below loader memory, move anyway (y/n)?N
+A>ERA FILENAME.REL
+A>
+ 
+     Here,  I  have assumed that MACRO-80, LINK-80,  and  FILENAME.MAC
+live on the currently logged-in disk drive.  It's not required, but it
+makes life simpler.  
+ 
+     You now have  FILENAME.CRL  which you feed to CLINK just like any
+BDS C program.  Go to it.  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
