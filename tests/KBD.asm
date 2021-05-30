@@ -1,5 +1,6 @@
+#INCLUDE	"equates.h"
+
 BOOT		.EQU	0
-BIOS		.EQU	0E600H				; BIOS entry point
 LEAP		.EQU	3					; 3 bytes for each entry (JP aaaa)
 
 CONST:		.EQU	BIOS+(LEAP*2)		;  2 Console status.

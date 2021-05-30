@@ -12,13 +12,10 @@
 ;*
 ;****************************************************************
 ;
-;   Set memory limit here. This is the amount of contigeous
-; ram starting from 0000. CP/M will reside at the end of this space.
-;
+#INCLUDE	"equates.h"
 
-BIOS		.EQU	0E600H		;BIOS start address
-IOBYTE	.EQU	3			;i/o definition byte.
-TDRIVE	.EQU	4			;current drive name and user number.
+IOBYTE		.EQU	3			;i/o definition byte.
+TDRIVE		.EQU	4			;current drive name and user number.
 ENTRY		.EQU	5			;entry point for the cp/m bdos.
 TFCB		.EQU	5CH			;default file control block.
 TBUFF		.EQU	80H			;i/o buffer and command line storage.
@@ -46,24 +43,26 @@ DEL		.EQU	7FH			;rubout
 ;*
 ;**************************************************************
 ;
-DELTA		.EQU	3
-BOOT		.EQU	BIOS+(0*DELTA)
-WBOOT		.EQU	BIOS+(1*DELTA)
-CONST		.EQU	BIOS+(2*DELTA)
-CONIN		.EQU	BIOS+(3*DELTA)
-CONOUT		.EQU	BIOS+(4*DELTA)
-LIST		.EQU	BIOS+(5*DELTA)
-PUNCH		.EQU	BIOS+(6*DELTA)
-READER		.EQU	BIOS+(7*DELTA)
-HOME		.EQU	BIOS+(8*DELTA)
-SELDSK		.EQU	BIOS+(9*DELTA)
-SETTRK		.EQU	BIOS+(10*DELTA)
-SETSEC		.EQU	BIOS+(11*DELTA)
-SETDMA		.EQU	BIOS+(12*DELTA)
-READ		.EQU	BIOS+(13*DELTA)
-WRITE		.EQU	BIOS+(14*DELTA)
-PRSTAT		.EQU	BIOS+(15*DELTA)
-SECTRN		.EQU	BIOS+(16*DELTA)
+LEAP		.EQU	3					; 3 bytes for each entry (JP aaaa)
+
+BOOT:		.EQU	BIOS				;  0 Initialize.
+WBOOT:		.EQU	BIOS+(LEAP*1)		;  1 Warm boot.
+CONST:		.EQU	BIOS+(LEAP*2)		;  2 Console status.
+CONIN:		.EQU	BIOS+(LEAP*3)		;  3 Console input.
+CONOUT:		.EQU	BIOS+(LEAP*4)		;  4 Console OUTput.
+LIST:		.EQU	BIOS+(LEAP*5)		;  5 List OUTput.
+PUNCH:		.EQU	BIOS+(LEAP*6)		;  6 Punch OUTput.
+READER:		.EQU	BIOS+(LEAP*7)		;  7 Reader input.
+HOME:		.EQU	BIOS+(LEAP*8)		;  8 Home disk.
+SELDSK:		.EQU	BIOS+(LEAP*9)		;  9 Select disk.
+SETTRK:		.EQU	BIOS+(LEAP*10)		; 10 Select track.
+SETSEC:		.EQU	BIOS+(LEAP*11)		; 11 Select sector.
+SETDMA:		.EQU	BIOS+(LEAP*12)		; 12 Set DMA ADDress.
+READ:		.EQU	BIOS+(LEAP*13)		; 13 Read 128 bytes.
+WRITE:		.EQU	BIOS+(LEAP*14)		; 14 Write 128 bytes.
+LISTST:		.EQU	BIOS+(LEAP*15)		; 15 List status.
+SECTRAN:	.EQU	BIOS+(LEAP*16)		; 16 Sector translate.
+PRINTSEQ:	.EQU	BIOS+(LEAP*17)		; not a BIOS function
 ;
 ;   Set origin for CP/M
 ;
@@ -1924,7 +1923,7 @@ TRKSEC4:	POP	HL			;get track number (HL).
 	LD	B,A
 	LD	HL,(XLATE)		;translate this sector according to this table.
 	EX	DE,HL
-	CALL	SECTRN		;let the bios translate it.
+	CALL	SECTRAN		;let the bios translate it.
 	LD	C,L
 	LD	B,H
 	JP	SETSEC		;and select it.

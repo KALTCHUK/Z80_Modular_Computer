@@ -1,16 +1,14 @@
 ;==================================================================================
-; ROM Bootloader for CP/M and Monitor
+; ROM Bootloader for CP/M
 ;==================================================================================
-CCP			.EQU	0D000h			; Base of CCP (or Monitor).
-BIOS		.EQU	0E600h			; Base of BIOS.
-ROM_CCP		.EQU	01000h			; Base of CCP in ROM
-ROM_BIOS	.EQU	02600h			; Base of BIOS in ROM
+#INCLUDE	"equates.h"
+
 ;================================================================================================
 			.ORG	0
 
 			LD	BC,03000H			; Copy CP/M and BIOS from ROM (01000h) to RAM (0D000h)
-			LD	DE,CCP
-			LD	HL,ROM_CCP
+			LD	DE,CCP				; DE = target addr
+			LD	HL,ROM_CCP			; HL = source addr
 			LDIR
 
 			JP	BIOS

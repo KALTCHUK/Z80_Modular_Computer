@@ -8,10 +8,11 @@
 ;                Put some NOPs in DISKWRITE and DISKREAD.
 ; MONITOR 2.1G - implement disk verification function.
 ;================================================================================================
+#INCLUDE	"equates.h"
+
 IOBYTE		.EQU	3
 TPA			.EQU	0100H				; Transient Programs Area
-MONITOR		.EQU	0D000H				; Monitor entry point
-BIOS		.EQU	0E600H				; BIOS entry point
+MONITOR		.EQU	CCP				; Monitor entry point
 DMA			.EQU	0080H				; Buffer used by Monitor
 DISKPAD		.EQU	0E000H				; Draft area used by disk R/W ops
 DISKBKUP	.EQU	0E200H				; Backup area used by disk verify operation

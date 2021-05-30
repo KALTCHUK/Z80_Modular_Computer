@@ -4,28 +4,13 @@
 ; (bugfixed, as found on the web)
 ;
 ; You have permission to use this for NON COMMERCIAL USE ONLY
-; If you wish to use it elsewhere, please include an acknowledgement to myself.
-;
-; http://searle.hostei.com/grant/index.html
-;
-; eMail: home.micros01@btinternet.com
-;
-; If the above don't work, please perform an Internet search to see if I have
-; updated the web page hosting service.
 ;
 ; Customized by Kaltchuk for use with Z80 Modular Computer, december/2020.
 ; CP/M is booted from ROM.
 ; 04/02/21 - This version corrects a bug in wboot.
 ;
 ;==================================================================================
-CCP				.EQU	0D000h			; Base of CCP (or Monitor).
-BIOS			.EQU	0E600h			; Base of BIOS.
-ROM_CCP			.EQU	01000h			; Base of CCP in ROM
-ROM_BIOS		.EQU	02600h			; Base of BIOS in ROM
-
-ccp				.EQU	0D000h			; Base of CCP.
-bdos			.EQU	ccp + 0806h		; Base of BDOS.
-bios			.EQU	0E600h			; Base of BIOS.
+#INCLUDE	"equates.h"
 
 ; Set CP/M low memory data, vector and buffer addresses.
 
@@ -270,7 +255,7 @@ gocpm:
 		LD	HL,wboote			; ADDress of jump for a warm boot.
 		LD	(01h),HL
 		LD	(05h),A				; Opcode for 'JP'.
-		LD	HL,bdos				; ADDress of jump for the BDOS.
+		LD	HL,(BIOS-2)			; ADDress of jump for the BDOS.
 		LD	(06h),HL
 		LD	(038H),A			; at 038h write "JP UINT"
 		LD	HL,UINT				; which is the interrupt routine to catch incoming

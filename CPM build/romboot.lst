@@ -1,20 +1,24 @@
 0001   0000             ;==================================================================================
 0002   0000             ; ROM Bootloader for CP/M
 0003   0000             ;==================================================================================
-0004   0000             
-0005   0000             CCP		.EQU	0D000h			; Base of CCP (or Monitor).
-0006   0000             BIOS		.EQU	0E600h			; Base of BIOS.
-0007   0000             ROM_CCP	.EQU	01000h			; Base of CCP in ROM
-0008   0000             ROM_BIOS	.EQU	02600h			; Base of BIOS in ROM
-0009   0000             
-0010   0000             ;================================================================================================
-0011   0000             		.ORG	0
-0012   0000             
-0013   0000 01 00 30    		LD	BC,03000H			; Copy CP/M and BIOS from ROM (01000h) to RAM (0D000h)
-0014   0003 11 00 D0    		LD	DE,CCP
-0015   0006 21 00 10    		LD	HL,ROM_CCP
-0016   0009 ED B0       		LDIR
-0017   000B             
-0018   000B C3 00 E6    		JP	BIOS
-0019   000E             
-0020   000E             		.ENDtasm: Number of errors = 0
+0004   0000             #INCLUDE	"equates.h"
+0001+  0000             
+0002+  0000             CCP				.EQU	0D000h			; Base of CCP (or Monitor).
+0003+  0000             BIOS			.EQU	0E620h			; Base of BIOS.
+0004+  0000             ROM_CCP			.EQU	CCP-0C000h		; Base of CCP in ROM
+0005+  0000             ROM_BIOS		.EQU	BIOS-0C000h		; Base of BIOS in ROM
+0006+  0000             
+0007+  0000             ccp				.EQU	CCP
+0008+  0000             bios			.EQU	BIOS
+0005   0000             
+0006   0000             ;================================================================================================
+0007   0000             			.ORG	0
+0008   0000             
+0009   0000 01 00 30    			LD	BC,03000H			; Copy CP/M and BIOS from ROM (01000h) to RAM (0D000h)
+0010   0003 11 00 D0    			LD	DE,CCP				; DE = target addr
+0011   0006 21 00 10    			LD	HL,ROM_CCP			; HL = source addr
+0012   0009 ED B0       			LDIR
+0013   000B             
+0014   000B C3 20 E6    			JP	BIOS
+0015   000E             
+0016   000E             			.ENDtasm: Number of errors = 0
