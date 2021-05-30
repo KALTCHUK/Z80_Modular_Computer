@@ -1,0 +1,199 @@
+
+WP (word processor) description
+
+
+
+
+
+                             The WP word processor
+                             ---------------------
+              WP is a batch mode word processor. It is invoked as: 
+
+
+        WP <input-file> <output-file> 
+
+
+          This means accept text with embedded commands from file name 
+          <input-file>  and  send the processed text to <output-file>.
+          These files are normally CP/M  disk  files  however  if  the
+          output  file  is  specified to be: LST: or CON: or PUN: then
+          the output is sent to the List device (printer), the Console 
+          device (crt), or the Punch device respectively.  An  example
+          invocation is: 
+
+
+        WP WP.DOC LST: 
+
+
+              The  word processor accepts several commands to justify,
+          center or simply pass thru text. In addition it allows  both
+          a  header  title  at the beginning of each page and a footer
+          title at the bottom of each page. These both default  to  an
+          empty line. 
+              Each WP command consists of 3 characters in the leftmost 
+          column and (in most cases) an optional parameter. Parameters 
+          are  strings  in  the  case  of header and footer titles and
+          numbers in all other cases. 
+              In the header and footer  strings,  leading  spaces  are
+          ignored  and all occurrences of # are replaced in the output
+          text by the current page number. If the first non  space  or
+          tab character in a header or footer string is " or ' it will 
+          be discarded, this is a means to allow leading spaces in the 
+          string since all spaces after the " or ' are significant. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                page    1
+
+
+WP (word processor) description
+
+
+              The  numeric  parameters  can be in one of two forms, an
+          absolute number sets the associated to that number or if out 
+          of legal range, to its limit. A signed (+ or -) number  sets
+          the  parameter  to its current value + or - the value of the
+          number. This allows setting for example a  paragraph  indent
+          margin  to  be  inset  from  the normal indent without being
+          required to remember where the current indent is set. 
+              The default mode is "fill" i.e. fit  as  many  words  as
+          possible  on  a line to fill out the line width, however any
+          input lines of text which start with space or  tab  maintain
+          that  number  of columns of leading space. In any case these
+          lines with leading whitespace  cause  a  "break"  i.e.  they
+          cause  the  following  text  to begin on a new line. Several
+          commands also cause a break (see table below). 
+              In the function categories below the lines  referred  to
+          in  centering  and underlining are input lines, therefore to
+          cause a single word to be  underlined,for  instance,  simply
+          place  it  on  a separate input line. Likewise, to avoid the
+          need to count lines, centering and underlining may  be  made
+          continous  by  setting the number of lines to something huge
+          e.g. 4000 until it is wished to disable them again at  which
+          point specifing 0 will cause an immediate disable. 
+
+
+
+
+
+
+
+
+
+
+                            List of defined commands
+                            ------------------------
+
+
+
+
+        Command    Function                    Default         Break
+        -------    --------                    -------         -----
+        .bp n      begin page numbered n       n = +1          yes
+        .br        cause a break                               yes
+        .ce n      center the next n lines     n = 1           yes
+        .fi        enable filling                              yes
+        .fo s      set footer title to s       empty           no
+        .he s      set header title to s       empty           no
+        .in n      set indent to n             n = 0           no
+        .ls n      set line spacing to n       n = 1           no
+        .nf        disable filling                             yes
+        .pl n      set page length to n        n = 66          no
+        .rm n      set right margin to n       n = 60          no
+        .sp n      space n lines               n = 1           yes
+        .ti n      set temporary indent to n   n = 0           yes
+        .ul n      underline the next n lines  n = 1           yes
+
+
+    note:
+          underlining works only for printers which can back up the print
+
+
+                                                                page    2
+
+
+WP (word processor) description
+
+
+          head one char position at a time
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                page    3
+
+
