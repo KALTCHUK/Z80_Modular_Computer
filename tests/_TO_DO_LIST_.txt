@@ -1,4 +1,5 @@
-- XMODEM
+- XMODEM.C
+- KEYTRANS.Z80
 - Change kbios:
 	-remove IOBYTE set from worm boot and put it in cold boot.
 	
