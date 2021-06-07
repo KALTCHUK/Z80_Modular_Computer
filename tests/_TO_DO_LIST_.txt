@@ -1,3 +1,4 @@
+- XMODEM
 - Change kbios:
 	-remove IOBYTE set from worm boot and put it in cold boot.
 	
