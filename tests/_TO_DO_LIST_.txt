@@ -1,5 +1,6 @@
 - XMODEM.C
-- KEYTRANS.Z80
+- WSKT.Z80
+- Test USART with 38400bps.
 - Change kbios:
 	-remove IOBYTE set from worm boot and put it in cold boot.
 	
