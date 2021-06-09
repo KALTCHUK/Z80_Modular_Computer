@@ -7,7 +7,9 @@
 ;
 ; Customized by Kaltchuk for use with Z80 Modular Computer, december/2020.
 ; CP/M is booted from ROM.
-; 04/02/21 - This version corrects a bug in wboot.
+; 04/02/21 - version B corrects a bug in wboot.
+; 09/06/21 - version C sets serial comm to 38.4kbps 
+;            and puts IOBYTE set in cold boot.
 ;
 ;==================================================================================
 #INCLUDE	"equates.h"
@@ -41,8 +43,8 @@ NOROM_RAM1		.EQU	0F3H			; no ROM + RAM bank 1 (full RAM)
 USART_DAT		.EQU	0D0H			; USART data addr
 USART_CMD		.EQU	0D1H			; USART command addr
 USART_STA		.EQU	0D1H			; USART status addr
-UMODE			.EQU	06FH			; 8N1 , baud=RxC/64 (RxC=614.4kHz =>  9600bps)
-;UMODE			.EQU	06EH			  8N1 , baud=RxC/16 (RxC=614.4kHz => 38400bps)
+;UMODE			.EQU	06FH			 8N1 , baud=RxC/64 (RxC=614.4kHz =>  9600bps)
+UMODE			.EQU	06EH			; 8N1 , baud=RxC/16 (RxC=614.4kHz => 38400bps)
 UCMD0			.EQU	015H			; initial command: Rx enable, Tx enable, reset error flags
 
 ; LCD card address list.
@@ -206,8 +208,9 @@ boot:
 		LD	A,CF_SET_FEAT
 		OUT	(CF_COMMAND),A
 
-		XOR	A					; set drive byte to A:
-		LD	(userdrv),A
+		XOR	A
+		LD	(userdrv),A			; set drive byte to A:
+		LD	(iobyte),A			; Set IOBYTE to 00
 
 		LD	BC,BUFINI			; reset serial input buffer
 		LD	(WRPTR),BC
@@ -215,9 +218,9 @@ boot:
 
 
 		CALL	PRINTSEQ
-		.DB "Z80 Modular Computer by Kaltchuk 2020.",CR,LF
-		.DB "BIOS 1.0B - 128MB Flash, LCD drive.",CR,LF
-		.DB "CP/M 2.2 Copyright 1979 (c) by Digital Research",CR,LF,CR,LF,0
+		.DB CR,LF,"Z80 Modular Computer by Kaltchuk 2020.",CR,LF
+		.DB "BIOS 1.0C - 128MB Compact Flash, LCD drive.",CR,LF
+		.DB "CP/M 2.2+ Copyright 1979 (c) by Digital Research",CR,LF,CR,LF,0
 
 		JP	gocpm
 
@@ -261,8 +264,6 @@ gocpm:
 		LD	(038H),A			; at 038h write "JP UINT"
 		LD	HL,UINT				; which is the interrupt routine to catch incoming
 		LD	(039H),HL			; character on the USART
-		LD	A,0
-		LD	(iobyte),A			; Set IOBYTE to 00
 		LD	A,(userdrv)			; Save new drive number (0).
 		LD	C,A					; Pass drive number in C.
 
