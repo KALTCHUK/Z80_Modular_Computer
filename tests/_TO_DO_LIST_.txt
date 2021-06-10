@@ -1,6 +1,3 @@
-- XMODEM.C
-- WSKT.Z80
-- Test USART with 38400bps.
-- Change kbios:
-	-remove IOBYTE set from worm boot and put it in cold boot.
-	
+- Make XMODEM.C
+- Make WSKT.Z80
+- Replace Reset button on CPU card. Also add a terminal for external Reset.
