@@ -220,7 +220,7 @@ boot:
 		CALL	PRINTSEQ
 		.DB CR,LF,"Z80 Modular Computer by Kaltchuk 2020.",CR,LF
 		.DB "BIOS 1.0D - 128MB Compact Flash, LCD drive.",CR,LF
-		.DB "CP/M 2.2+ Copyright 1979 (c) by Digital Research",CR,LF,CR,LF,0
+		.DB "M0NITOR 2.1G.",CR,LF,CR,LF,0
 
 		JP	gocpm
 
