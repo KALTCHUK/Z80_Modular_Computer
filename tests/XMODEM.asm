@@ -5,23 +5,12 @@
 ;===========================================================
 ; USEFUL ADDRESSES.
 ;===========================================================
+WBOOTADDR		EQU		01
 BDOS            EQU     05
 FCB             EQU     05CH
 FCB2            EQU     06CH
 TPA             EQU     0100H           ; Transient Programs Area
 BIOS            EQU     0E620h          ; Base of BIOS.
-
-;===========================================================
-; BIOS functions.
-;===========================================================
-LEAP            EQU     3               ; 3 bytes for each entry
-
-BOOT            EQU     BIOS            ;  0 Initialize.
-WBOOT           EQU     BIOS+(LEAP*1)   ;  1 Warm boot.
-CONST           EQU     BIOS+(LEAP*2)   ;  2 Console status.
-CONIN           EQU     BIOS+(LEAP*3)   ;  3 Console input.
-CONOUT          EQU     BIOS+(LEAP*4)   ;  4 Console OUTput.
-PRINTSEQ        EQU     BIOS+(LEAP*17)  ; not a BIOS function
 
 ;===========================================================
 ; BDOS functions.
@@ -56,6 +45,15 @@ CAN             EQU     18H
 
 XMODEM:         LD      (OLDSTACK),SP
                 LD      SP,XMSTACK
+				
+				LD		HL,(WBOOTADDR)	; REPLACE FAKE ADDRS
+				LD		BC,03
+				ADD		HL,BC
+				LD		(CONIN+1),HL
+				ADD		HL,BC
+				LD		(CONST+1),HL
+				ADD		HL,BC
+				LD		(CONOUT+1),HL
 
                 LD      A,(FCB+1)       ; CHECK IF ARGUMENTS ARE OK
                 CP      ' '
@@ -189,31 +187,31 @@ SENDOP:         XOR     A
                 LD      A,SOH
                 LD      (BUFFER),A
                 CALL    OPENFILE
-                CP      0FFH
+                CP      0FFH			; FOPEN ERROR
                 JR      Z,FOPENERR
-                CP      1
+                CP      1				; FOPEN EOF
                 JR      Z,FOPENEOF
-                JR      FOPENOK
-FOPENERR:       CALL    PRINTSEQ
-                DB      "FILE OPEN ERROR",CR,LF,0
-                JP      EXIT
-FOPENEOF:       CALL    PRINTSEQ
-                DB      "FILE IS EMPTY",CR,LF,0
-                JP      EXIT
-
 FOPENOK:        LD      B,60            ; WAIT 1MIN FOR NAK
                 CALL    TOCONIN
                 JP      C,EXIT          ; TIMEOUT, SO EXIT
                 CP      NAK
-                JR      Z,CLEAR         ; CLEAR TO CONTINUE
+                JR      Z,CLR2GO         ; CLEAR TO CONTINUE
                 CP      CAN
                 JP      Z,EXIT          ; CANCELED BY RTU
-                JR      FOPENOK
+                JR      FOPENOK			; try again
+				
+FOPENERR:       CALL    PRINTSEQ
+                DB      "FILE OPEN ERROR",CR,LF,0
+                JP      EXIT
 
-CLEAR:          CALL    READFILE
-                CP      1
+FOPENEOF:       CALL    PRINTSEQ
+                DB      "FILE IS EMPTY",CR,LF,0
+                JP      EXIT
+
+CLR2GO:			CALL    READFILE
+                CP      1				; EOF?
                 JR      Z,GOTEOF
-                CP      0
+                CP      0				; GOT NEW BLOCK?
                 JR      Z,GOTNEWBLK
                 CALL    SENDCAN         ; ERROR READING FILE
                 JP      EXIT
@@ -229,6 +227,7 @@ GOTEOF:         CALL    CLOSEFILE
 
 GOTNEWBLK:      LD      A,(BLOCK)
                 INC     A
+				LD		(BLOCK),A
                 LD      (BUFFER+1),A    ; WRITE BLOCK
                 CPL
                 LD      (BUFFER+2),A    ; WRITE /BLOCK
@@ -252,7 +251,7 @@ GETREPLY:       LD      B,5             ; GET RTU'S REPLY
                 CP      NAK
                 JR      Z,SENDBLOCK     ; RESEND BLOCK
                 CP      ACK
-                JR      Z,CLEAR
+                JR      Z,CLR2GO
                 JR      GETREPLY
 
 ;===========================================================
@@ -285,6 +284,28 @@ BWAITING:       CALL CONIN
 TOUT:           POP     HL
                 POP     BC
                 RET
+
+;===========================================================
+; Print on console a sequence of characters ending with zero
+;===========================================================
+PRINTSEQ:
+		EX 	(SP),HL 		; Push HL and put RET address into HL
+		PUSH 	AF
+		PUSH 	BC
+NEXTCHAR:
+		LD 	A,(HL)
+		CP	0
+		JR	Z,ENDOFPRINT
+		LD  	C,A
+		CALL 	CONOUT		; Print to console
+		INC 	HL
+		JR	NEXTCHAR
+ENDOFPRINT:
+		INC 	HL 			; Get past "null" terminator
+		POP 	BC
+		POP 	AF
+		EX 	(SP),HL 		; Push new RET address on stack
+		RET					; and restore HL
 
 ;===========================================================
 ; DELETE FILE. RETURNS 0FFH IF ERROR
@@ -359,13 +380,6 @@ SENDNAK:        LD C,NAK
                 RET
 
 ;===========================================================
-; SEND SOH
-;===========================================================
-SENDSOH:        LD C,SOH
-                CALL CONOUT
-                RET
-
-;===========================================================
 ; SEND EOT
 ;===========================================================
 SENDEOT:        LD C,EOT
@@ -380,6 +394,13 @@ SENDCAN:        LD C,CAN
                 RET
 
 ;===========================================================
+; BIOS FUNCTIONS
+;===========================================================
+CONST:			JP	0	; THESE FAKE ADDRESSES ARE
+CONIN:			JP	0	; REPLACED IN RUNTIME
+CONOUT:			JP	0	; 
+
+;===========================================================
 ;===========================================================
 RETRY           DB      0               ; Retry counter
 BLOCK           DB      0               ; Block counter
@@ -390,4 +411,6 @@ STACK:          DS      256
 XMSTACK         EQU $
 
                 END
+
+
 

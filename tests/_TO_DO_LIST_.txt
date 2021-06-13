@@ -1,2 +1,8 @@
-- Burn Monitor on CP/Ms EEPROM.
-- Make XMODEM.C option 'SEND'
+- Test new version of XMODEM.Z80 (option 'SEND')
+- Implement RST p button on CPU
+- Develop USART v2 - IM 1 (RST 1)
+- Make PCBs:
+	- CPU
+	- MEM
+	- FLASH
+	- USART
