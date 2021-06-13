@@ -1,0 +1,158 @@
++HotFlash notes.
+
+*      General operation.
+
+A      Initial character meanings.
+
+/  -->  To enter a command
+=  -->  To specify a cell to jump to
+!  -->  To force recalculation
+;  -->  To change screen window
+
+Four  arrow keys scroll around the cells   Four  CTRL+key combinations also scroll:
+     CTRL/E    CTRL/X   CTRL/S   CTRL/D
+==>  UP        DOWN     LEFT     RIGHT
+If  your terminal has no UP/DOWN arrows, then the spacebar toggles the meaning of RIGHT/LEFT arrows between RIGHT/LEFT and DOWN/UP.
+CTRL/Z  -->  Clear out current entry line.
+"       -->  Starts Text cells.
+'       -->  Starts Repeating Text cells.
+Any other character starts Formula cells.
+B
+A file name is from 1 to 8 letters and/or optionally preceded by a device (disk) prefix.  This prefix is a single letter followed by a colon (:).
+   Examples:
+               BALANCE
+               1Exempt
+               B:Feb24
+A <return> allows current file list selection.
+C      Range designators.
+A "range" is a row, column, cell or block.
+A "row" is a number from 1 through 254.
+A "column" is a letter (pair) from A through BK.
+A "cell" is a column followed by a row, for example: 'J10'
+A "block" is two cells, separated by a colon (:).
+
+An empty range (entering just "return") means the current cell, row or column.
+"ALL" means the range A1:<Last Col/Row>.
+
+Entering "ESC" allows the arrow keys (or CTRL S/E/D/X keys) to be used to "point" to a desired cell.
+D  slash commands :
+B(lank)-----> Removes contents of cells.
+C(opy)------> Copies contents of cells.
+D(elete)----> Deletes entire row or column.
+E(dit)------> Allows editing the contents of a cell.
+F(ormat)----> Change display format of cells, rows, or entire worksheet.
+G(lobal)----> Change global display or calculation options.
+I(nsert)----> Create new row or column.
+L(oad)------> Read worksheet (or portion) from disk.
+M(ove)------> Swap rows or columns.
+O(utput)----> Display contents or values of cells on printer, console or disk.
+P(rotect)---> Prevent future alteration of cells.
+Q(uit)------> Exit SuperCalc.
+R(eplicate)-> Reproduce partial rows or columns.
+S(ave)------> Write worksheet to disk.
+T(itle)-----> Lock first rows or columns against scrolling.
+U(nprotect)-> Allow alteration of protected cells.
+W(indow)----> Split or unsplit the screen display.
+X(eXecute)--> Accept commands and data from a file.
+Z(ap)-------> Clear worksheet and all settings.
+E Formula adjustment options.
+Determines how cell references in formulas are adjusted for their new positions.
+  N(o adjust)---> Leave all cell references (like J10) unchanged.
+  A(sk)---------> Gives you the options to change or leave each cell reference individually.
+  V(alues)------> Only move cell values, no adjusment is pertinent.
+
+If no option specified (back up and type <return> instead of <,>) all cell references are modified.
+F Title Lock.
+   Tells SuperCalc to "lock" the leftmost columns and/or uppermost rows so that they are never scrolled off the screen (or video window).
+
+Options:
+   H(orizontal)--> Lock current row and all rows above it.
+   V(ertical)----> Lock current column and all those to the left.
+   B(oth)--------> Simultaneously lock H and V.
+   C(lear)-------> Erase any title locks.
+G GLOBAL command options:
+These options affect calculation or display attributes.
+
+   R(ow-wise)  -- Specifies that recalculation be done across the rows, that is, all of Row 1 is calculated, then all of Row 2, etc.
+   C(olumn-wise) -- Calculation is down the columns, that is all of Column A, then all of Column B, etc.
+   A(utomatic Recalculation) -- The entire worksheet is recalculated after numbers or formulas are entered.
+   M(anual Recalculation) -- In this mode, the worksheet is only recalculated when you enter "!".
+
+The following options are "toggles".  If the option is already on, respecifying it turns it off and vice versa.
+  T(ab) -- In Tab mode, advancing between cells skips all empty or protected cells.
+  B(orders) -- Controls whether the row number and column letter borders are displayed.
+  F(ormula Display) -- In Formula Display mode, the textual contents (rather than current values) are displayed.
+  N(ext) -- This toggle controls whether an "auto-advance" is performed (in the "current direction") after data is entered into a cell.
+H Scope of Formats.
+
+   E(ntry)---->Sets display format for a cell or group of cells.
+   R(ow)------>Sets display format for all cells in row without a cell format.
+   C(olumn)--->Sets display format (or width) for column. Affects cells with no entry or row format.
+   G(lobal)--->Sets display format and column width for all cells and rows without local formats.
+I Quit options.
+
+Y(es) exits SuperCalc.
+This discards all worksheet data not /S(aved) on disk.
+J Zap operation.
+
+   Y(es) erases all data from worksheet, including global formats and column widths.  Zap is equivalent to exiting SuperCalc and calling it again.
+K Window (split-screen) options:
+
+   H(orizontal)-->Split into two windows at current row.
+   V(ertical)---->Split at current column.
+   C(lear)------->Erase split (return to single window).
+   S(ynchronize)->Cause both windows to scroll simultaneously when moving parallel to split.
+   U(nsynch.)---->Cause only current window to scroll, regardless of direction.
+L FORMAT command.
+
+Enter one or more of following options:
+ I(nteger)---->Display numbers rounded to a whole number.
+ $------------>Display numbers with two digits after "." .
+ E(xponent)--->Display numbers in scientific notation.
+ G(eneral)---->Display numbers as they "best fit" in cell.
+ *------------>Display numbers as a string of stars.
+ R(ight)------>Format numbers right-justified.
+ L(eft)-------->Format numbers left-justified.
+ T(ext)L(eft)-->Display text strings left-justified. In this case long text will continue to display in unoccupied adjacent cells.
+ T(ext)R(ight)->Display text strings right-justified.
+ D(efault)---->Reset to G(eneral), R(ight), T(ext)L(eft).
+
+In addition, while formatting Global or Column, a column width of 0-127 may be specified.
+M Load workheet.
+
+LOAD worksheet from disk options:
+  A(ll)--->Loads entire worksheet and resets global, column and row formats, column widths, display mode settings, etc. from saved worksheet.
+  P(art)-->Allows loading of any portion of saved worksheet into any portion of current memory worksheet. Global flags and settings are not affected.
+N OUTPUT report options:
+
+   D(isplay)--->Generates report formatted in rows and columns, essentially like the interactive display.
+   C(ontents)-->Lists the exact contents (text or formulas) of occupied cells, one per line.
+O SAVE worksheet on disk options:
+
+   A(ll)---->Text, Formulas and current values for the entire worksheet are saved on disk.
+   V(alues)->Only text and current values of formulas (for the entire worksheet) are saved.
+   P(art)--->Allows one of the above options on a portion of the worksheet.
+P Entry/Edit mode.
+
+The first character determines whether you are entering a formula or a text string (label).  A quote mark (") starts a text string. An apostrophe (') starts a repeating text string. Any other character starts a formula.
+
+While entering data, the arrow keys (which normally scroll around the worksheet) become "editing" keys:
+  Left arrow  (or CTRL/S)  --> Backspace one character
+  Right arrow (or CTRL/D)  --> Move right one character
+  Up arrow    (or CTRL/E)  --> Insert one blank
+  Down arrow  (or CTRL/X)  --> Delete one character
+Q Output destinations.
+
+   P(rinter)--->Allows you to create printed reports from the worksheet, using the setup codes originally configured when SuperCalc was installed.
+   S(etup)----->Print report (as "P"), but allows specifying special printer setup codes, paper width or page length.
+   C(onsole)--->Allows you to preview the report on your terminal display.
+   D(isk)------>Outputs the report to a disk file for later use.
+R Delete Options:
+
+   R(ow)----->to delete an entire row from the worksheet.
+   C(olumn)-->to delete an entire column.
+   F(ile)---->to delete (forever) a file that currently exists on disk.
+!      Notes:
+text string. Any other character starts a formula.
+
+Wh

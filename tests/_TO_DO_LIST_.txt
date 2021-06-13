@@ -1,7 +1,2 @@
 - Burn Monitor on CP/Ms EEPROM.
-- Test the XMODEM.HEX I found at Hackaday.
-- Make XMODEM.C
-	- check if blockCounter starts at 1.
-- Make WSKT.Z80.
-	- gradualy introduce blocks in .PHASE/.DEPHASE cluster.
-- Replace Reset button on CPU card. Also add a 2-pin terminal for external Reset.
+- Make XMODEM.C option 'SEND'
