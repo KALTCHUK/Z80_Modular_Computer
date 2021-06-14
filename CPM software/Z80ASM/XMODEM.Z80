@@ -5,12 +5,23 @@
 ;===========================================================
 ; USEFUL ADDRESSES.
 ;===========================================================
-WBOOTADDR		EQU		01
+WBOOTADDR	EQU	01
 BDOS            EQU     05
 FCB             EQU     05CH
 FCB2            EQU     06CH
 TPA             EQU     0100H           ; Transient Programs Area
 BIOS            EQU     0E620h          ; Base of BIOS.
+
+;===========================================================
+; BIOS functions.
+;===========================================================
+LEAP		EQU	3		; 3 bytes for each entry
+
+WBOOT		EQU	BIOS+(LEAP*1)	;  1 Warm boot.
+CONST		EQU	BIOS+(LEAP*2)	;  2 Console status.
+CONIN		EQU	BIOS+(LEAP*3)	;  3 Console input.
+CONOUT		EQU	BIOS+(LEAP*4)	;  4 Console OUTput.
+
 
 ;===========================================================
 ; BDOS functions.
@@ -46,15 +57,6 @@ CAN             EQU     18H
 XMODEM:         LD      (OLDSTACK),SP
                 LD      SP,XMSTACK
 				
-				LD		HL,(WBOOTADDR)	; REPLACE FAKE ADDRS
-				LD		BC,03
-				ADD		HL,BC
-				LD		(CONIN+1),HL
-				ADD		HL,BC
-				LD		(CONST+1),HL
-				ADD		HL,BC
-				LD		(CONOUT+1),HL
-
                 LD      A,(FCB+1)       ; CHECK IF ARGUMENTS ARE OK
                 CP      ' '
                 JP      Z,NOFILE
@@ -91,13 +93,13 @@ RECOP:          CALL    DELETEFILE
                 DB      "FILE CREATE ERROR",CR,LF,CR,LF,0
                 JR      EXIT
 
-FCREATOK:       LD      A,0
+FCREATOK:       XOR	A
                 LD      (RETRY),A       ; Init retry counter
                 INC     A
                 LD      (BLOCK),A       ; Init block counter
-ALIVE:          CALL SENDNAK
+ALIVE:          CALL	SENDNAK
 GET1ST:         LD      B,5
-                CALL TOCONIN            ; 5s timeout
+                CALL 	TOCONIN         ; 5s timeout
                 JR      C,REPEAT        ; Timed out?
                 CP      EOT
                 JR      Z,GOTEOT        ; EOT? WRAP IT UP
@@ -112,13 +114,13 @@ REPEAT:         LD      A,(RETRY)
                 LD      (RETRY),A
                 CP      MAXTRY
                 JR      NZ,ALIVE        ; Try again?
-                CALL SENDCAN
+                CALL 	SENDCAN
                 JR      EXIT
 
-GOTEOT:         CALL SENDNAK
+GOTEOT:         CALL 	SENDNAK
                 LD      B,1
-                CALL TOCONIN
-                CALL SENDACK
+                CALL 	TOCONIN
+                CALL 	SENDACK
                 CALL    PRINTSEQ
                 DB      "FILE RECEIVED",CR,LF,0
                 CALL    CLOSEFILE       ; CLOSE THE FILE
@@ -134,7 +136,7 @@ GOTSOH:         LD      B,131
                 LD      HL,BUFFER
 GETBYTE:        PUSH    BC
                 LD      B,1
-                CALL TOCONIN            ; Get incoming block number
+                CALL 	TOCONIN         ; Get incoming block number
                 JP      C,EXIT          ; Timed out?
                 LD      (HL),A          ; STORE BYTE IN BUFFER
                 INC     HL
@@ -171,7 +173,7 @@ SUMBYTE:        ADD     A,(HL)
                 LD      A,(BLOCK)
                 INC     A
                 LD      (BLOCK),A       ; Increment block counter
-                CALL SENDACK
+                CALL 	SENDACK
                 JP      GET1ST
 
 FWRERR:         CALL    SENDCAN
@@ -184,21 +186,30 @@ FWRERR:         CALL    SENDCAN
 ;===========================================================
 SENDOP:         XOR     A
                 LD      (BLOCK),A       ; INIT BLOCK COUNTER
+		LD	(RETRY),A	; INIT RETRY COUNTER
                 LD      A,SOH
                 LD      (BUFFER),A
                 CALL    OPENFILE
-                CP      0FFH			; FOPEN ERROR
+                CP      0FFH		; FOPEN ERROR
                 JR      Z,FOPENERR
-                CP      1				; FOPEN EOF
+                CP      1		; FOPEN EOF
                 JR      Z,FOPENEOF
-FOPENOK:        LD      B,60            ; WAIT 1MIN FOR NAK
+FOPENOK:        LD      B,5		; 5SEC TIMEOUT
                 CALL    TOCONIN
-                JP      C,EXIT          ; TIMEOUT, SO EXIT
+                JP      C,REPEATS       ; REPEAT
                 CP      NAK
-                JR      Z,CLR2GO         ; CLEAR TO CONTINUE
+                JR      Z,CLR2GO        ; CLEAR TO CONTINUE
                 CP      CAN
                 JP      Z,EXIT          ; CANCELED BY RTU
-                JR      FOPENOK			; try again
+                JR      FOPENOK		; try again
+
+REPEATS:        LD      A,(RETRY)
+                INC     A
+                LD      (RETRY),A
+                CP      MAXTRY
+                JR      NZ,FOPENOK	; Try again?
+                CALL 	SENDCAN
+                JP      EXIT
 				
 FOPENERR:       CALL    PRINTSEQ
                 DB      "FILE OPEN ERROR",CR,LF,0
@@ -208,10 +219,10 @@ FOPENEOF:       CALL    PRINTSEQ
                 DB      "FILE IS EMPTY",CR,LF,0
                 JP      EXIT
 
-CLR2GO:			CALL    READFILE
-                CP      1				; EOF?
+CLR2GO:		CALL    READFILE
+                CP      1		; EOF?
                 JR      Z,GOTEOF
-                CP      0				; GOT NEW BLOCK?
+                CP      0		; GOT NEW BLOCK?
                 JR      Z,GOTNEWBLK
                 CALL    SENDCAN         ; ERROR READING FILE
                 JP      EXIT
@@ -223,11 +234,13 @@ GOTEOF:         CALL    CLOSEFILE
                 CALL    SENDEOT
                 LD      B,1
                 CALL    TOCONIN
+                CALL    PRINTSEQ
+                DB      "FILE TRANSMITTED",CR,LF,0
                 JP      EXIT
 
 GOTNEWBLK:      LD      A,(BLOCK)
                 INC     A
-				LD		(BLOCK),A
+		LD	(BLOCK),A
                 LD      (BUFFER+1),A    ; WRITE BLOCK
                 CPL
                 LD      (BUFFER+2),A    ; WRITE /BLOCK
@@ -289,23 +302,22 @@ TOUT:           POP     HL
 ; Print on console a sequence of characters ending with zero
 ;===========================================================
 PRINTSEQ:
-		EX 	(SP),HL 		; Push HL and put RET address into HL
+		EX 	(SP),HL 	; Push HL and put RET address into HL
 		PUSH 	AF
 		PUSH 	BC
-NEXTCHAR:
-		LD 	A,(HL)
+NEXTCHAR:	LD 	A,(HL)
 		CP	0
 		JR	Z,ENDOFPRINT
 		LD  	C,A
 		CALL 	CONOUT		; Print to console
 		INC 	HL
 		JR	NEXTCHAR
-ENDOFPRINT:
-		INC 	HL 			; Get past "null" terminator
+
+ENDOFPRINT:	INC 	HL 		; Get past "null" terminator
 		POP 	BC
 		POP 	AF
-		EX 	(SP),HL 		; Push new RET address on stack
-		RET					; and restore HL
+		EX 	(SP),HL 	; Push new RET address on stack
+		RET			; and restore HL
 
 ;===========================================================
 ; DELETE FILE. RETURNS 0FFH IF ERROR
@@ -394,13 +406,6 @@ SENDCAN:        LD C,CAN
                 RET
 
 ;===========================================================
-; BIOS FUNCTIONS
-;===========================================================
-CONST:			JP	0	; THESE FAKE ADDRESSES ARE
-CONIN:			JP	0	; REPLACED IN RUNTIME
-CONOUT:			JP	0	; 
-
-;===========================================================
 ;===========================================================
 RETRY           DB      0               ; Retry counter
 BLOCK           DB      0               ; Block counter
@@ -414,3 +419,4 @@ XMSTACK         EQU $
 
 
 
+

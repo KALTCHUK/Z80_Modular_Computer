@@ -1,5 +1,3 @@
-- Download TeraTerm
-- Test new version of XMODEM.Z80 (option 'SEND')
 - Implement RST p button on CPU
 - Develop USART v2 - IM 1 (RST 1), using ATMEGA328
 - Make PCBs:
