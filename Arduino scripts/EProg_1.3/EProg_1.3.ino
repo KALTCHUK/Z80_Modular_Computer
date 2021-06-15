@@ -166,7 +166,7 @@ void Erase_EPROM(void) {
   char incomingByte = 0;
 
   Serial.println();
-  Serial.println(">Erase EPROM? (Y on N)");
+  Serial.println(">Erase EPROM? (Y or N)");
   do {} while (Serial.available() == 0);
   if (Serial.available() > 0) {
     // read the incoming byte:
