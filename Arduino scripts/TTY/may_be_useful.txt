@@ -1,0 +1,88 @@
+
+
+
+
+/************************************************************************************************/
+/*                                 THIS STUFF MAY BE USEFUL                                     */
+/************************************************************************************************/
+void SetNanoPortsMode(bool Operation) {      //This is equivalent to function pinMode(), say if pins will be input or output
+  if (Operation == OP_RD) {                     // Read operation => Bus is input => PORT B = XXXXXX00, PORT D = 000000XX
+    DDRB = DDRB & B11111100;
+    DDRD = DDRD & B00000011;
+  }
+  if (Operation == OP_WR) {                     // Write operation => Bus is output => PORT B = XXXXXX11, PORT D = 111111XX
+    DDRB = DDRB | B00000011;
+    DDRD = DDRD | B11111100;
+  }
+}
+
+/************************************************************************************************/
+void PPI_write(bool A_1, bool A_0, byte Byte2write) {   
+  SetNanoPortsMode(OP_WR);
+                                                              //   A_1  A_0   PPI port
+  PORTD = PORTD & 0x03;                                       //   --------------------
+  PORTD = PORTD | (Byte2write << 2);                          //    0    0       A
+  PORTB = PORTB & 0xfc;                                       //    0    1       B
+  PORTB = PORTB | (Byte2write >> 6);                          //    1    0       C
+                                                              //    1    1    ctrl word
+  digitalWrite(PPI_A0, A_0);
+  digitalWrite(PPI_A1, A_1);
+  digitalWrite(PPI_CS, LOW);
+  digitalWrite(PPI_WR, LOW);
+  delayMicroseconds(1);
+  digitalWrite(PPI_WR, HIGH);
+  digitalWrite(PPI_CS, HIGH);
+}
+
+/************************************************************************************************/
+byte PPI_read(bool A_1, bool A_0) {
+  byte  Received;
+  
+  SetNanoPortsMode(OP_RD);
+  
+  digitalWrite(PPI_A0, A_0);
+  digitalWrite(PPI_A1, A_1);
+  digitalWrite(PPI_CS, LOW);
+  digitalWrite(PPI_RD, LOW);
+  delayMicroseconds(1);
+  Received = (PIND >> 2) | (PINB << 6);
+  digitalWrite(PPI_RD, HIGH);
+  digitalWrite(PPI_CS, HIGH);
+
+  return Received;
+}
+
+/************************************************************************************************/
+byte Read_byte(long Address) {
+  byte  Aux;
+  byte  Received;
+
+  Aux = Address & 0x00ff;
+  PPI_write(0, 0, Aux);
+  Aux = Address >> 8;
+  PPI_write(1, 0, Aux);             // At this point, addr bus contains the address to be read
+  digitalWrite(ENABLE_12V, LOW);    // ENABLE_12V=low and ENABLE_14V=low means OE/Vpp also is low
+  digitalWrite(ENABLE_14V, LOW);
+  digitalWrite(ROM_CS, LOW);
+  Received = PPI_read(0, 1);
+  digitalWrite(ROM_CS, HIGH);
+
+  return Received;
+}
+
+/************************************************************************************************/
+void Write_byte(long Address, byte Content) {
+  byte  Aux;
+
+  Aux = Address & 0x00ff;
+  PPI_write(0, 0, Aux);
+  Aux = Address >> 8;
+  PPI_write(1, 0, Aux);             // At this point, addr bus contains the address to be written
+
+  PPI_write(0, 1, Content);         // Data bus has the content to be written
+  digitalWrite(ENABLE_12V, HIGH);   // This puts 12V on OE/Vpp
+  digitalWrite(ROM_CS, LOW);        // Pulse CS low for 110us
+  delayMicroseconds(110);
+  digitalWrite(ROM_CS, HIGH);
+  digitalWrite(ENABLE_12V, LOW);
+}
