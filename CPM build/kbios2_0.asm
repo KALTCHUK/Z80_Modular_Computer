@@ -229,7 +229,7 @@ wboot:
 
 		OUT (ROM_RAM0),A		; Turn on ROM. Doesn't matter what we output
 
-		LD	BC,01600H			; Copy CP/M ROM (01000h) to RAM (0D000h)
+		LD	BC,BIOS-CCP			; Copy CP/M ROM (01000h) to RAM (0D000h)
 		LD	DE,CCP				; Don't copy the BIOS!!!
 		LD	HL,ROM_CCP
 		LDIR
@@ -270,7 +270,7 @@ gocpm:
 ; Console Status (Return A=0FFh if character waiting. Otherwise, A=0)
 ;================================================================================================
 CONST:
-		IN	A,(SER0_CMD)
+		IN	A,(SER0_STA)
 		AND	02
 		RET	Z
 		LD	A,0FFH
@@ -290,7 +290,7 @@ CONIN:
 ; Console Output (Send character in reg C)
 ;================================================================================================
 CONOUT:
-		IN	A,(SER0_STA		; read USART status byte
+		IN	A,(SER0_STA)	; read USART status byte
 		AND	01				; get only the TxEMPTY bit
 		JR	NZ,CONOUT
 		LD	A,C

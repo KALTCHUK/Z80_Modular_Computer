@@ -1,34 +1,32 @@
 // **********************************************************************************************************************
-// TTY - ARDUINO USED AS A USART
+// TTY - ARDUINO USED AS A USART BY Z80 MODULAR COMPUTER
 //
 // *** ATTENTION *** 
-// For communication protocol use 38400bps, 8N1, no line ending.
+// For communication protocol use 38400bps, 8N1.
 //
 // Before compiling, check that HardwareSerial.h has been changed so that...
-// #define SERIAL_TX_BUFFER_SIZE 256
-// #define SERIAL_RX_BUFFER_SIZE 256
-
+//    #define SERIAL_TX_BUFFER_SIZE 256
+//    #define SERIAL_RX_BUFFER_SIZE 256
 // *****************
 //
-// ATmega328 ports ------------>   +-----------PORT B----------+   +-----------PORT D----------+
-//                                 7   6   5   4   3   2   1   0   7   6   5   4   3   2   1   0
-// Arduino digital I/O -------->  NA  NA  D13 D12 D11 D10 D9  D8  D7  D6  D5  D4  D3  D2  D1  D0
-//                                 XTAL   ||  ||  ||  ||  ||  ||  ||  ||  ||  ||  ||  ||  TX  RX
-//                                        ||  \/  \/  \/  \/  \/  \/  \/  \/  \/  \/  \/
-// Signals from CPU ----------->          ||  WR  RD  A1  D7  D6  D5  D4  D3  D2  D1  D0
-//                                        \/
-// Signal card select logic --->          CS
+// ATmega328 ports ----------------->   +-----------PORT B----------+   +-----------PORT D----------+
+//                                      7   6   5   4   3   2   1   0   7   6   5   4   3   2   1   0
+// Arduino digital I/O ------------->  NA  NA  D13 D12 D11 D10 D9  D8  D7  D6  D5  D4  D3  D2  D1  D0
+//                                      XTAL   ||  ||  ||  ||  ||  ||  ||  ||  ||  ||  ||  ||  TX  RX
+//                                             ||  \/  \/  \/  \/  \/  \/  \/  \/  \/  \/  \/
+// Signals from CPU ---------------->          ||  WR  RD  A1  D7  D6  D5  D4  D3  D2  D1  D0
+//                                             \/
+// Signal from card select logic --->          CS
 //
-// (WR, RD, IORQ and CS are active low)
+// (WR, RD and CS are active low)
 // **********************************************************************************************************************
 
 // Control and addressing signals
 #define _CS     13
-#define CMD_WR  B00010000
-#define DAT_WR  B00011000
-#define STA_RD  B00100000
-#define DAT_RD  B00101000
-
+#define CMD_WR  B00001000
+#define DAT_WR  B00001100
+#define STA_RD  B00010000
+#define DAT_RD  B00010100
 
 #define IORQed  true
 
@@ -36,12 +34,16 @@
 bool  Status;                   // Tells if we are attending an I/O request from the CPU
 
 // **********************************************************************************************************************
-// setAllPinsInput()
-// **********************************************************************************************************************
 void setAllPinsInput(void) {
   // Set all pins as inputs (except for TX, RX and XTAL which remain "as are")
   DDRB = DDRB & B11000000;
   DDRD = DDRD & B00000011;
+}
+
+// **********************************************************************************************************************
+void setPinsForOutput(void) {
+  DDRB = DDRB | B00000011;
+  DDRD = DDRD | B11111100;
 }
 
 // **********************************************************************************************************************
@@ -79,7 +81,7 @@ void loop() {
   if (digitalRead(_CS) == LOW) {            // CS=0 => CPU is calling us
     if (Status != IORQed) {                 // Yeah, it's a new IORQ
       Status = IORQed;
-      operation = PINB & B00011100;
+      operation = PINB & B00011100;         // keep only, WR, RD and A01
       switch (operation) {
         case CMD_WR:
           writeCommand();
@@ -107,56 +109,40 @@ void loop() {
   }
 }
 
-
-
 // **********************************************************************************************************************
-// writeCommand()
-// **********************************************************************************************************************
-void writeCommand(void) {
-  // DO NOTHING
+void writeCommand(void) {               // CPU wants to write a command
+
 }
 
 // **********************************************************************************************************************
-// writeData()
-// **********************************************************************************************************************
-void writeData(void) {
+void writeData(void) {                 // CPU wants to write data (send to the RTU via RS232)
   byte  data;
 
   if (Serial.availableForWrite() > 0) {
-    data = ((PINB & B00000011) << 6) | ((PIND & B11111100) >> 2);
+    data = (PINB << 6) | (PIND >> 2);
     Serial.write(data);
   }
 }
 
 // **********************************************************************************************************************
-// readStatus()   Status_Word = X X X X X X <in_buf> <out_buf>. 
-//                                             |         |
-//                                             |         +---> 1 => out_buf if full
-//                                             +-------------> 0 => in_buf is empty
-// **********************************************************************************************************************
-void readStatus(void) {
-  
+void readStatus(void) {               // CPU wants to read the status
+  byte  data=0;
+
+  setPinsForOutput();
+  if (Serial.availableForWrite() == 0)  data = B00000001;
+  if (Serial.available() > 0)           data = data & B00000010;
+  PORTB = (PINB & B11111100) | (data >> 6);
+  PORTD = (PIND & B00000011) | (data << 2);
 }
 
 // **********************************************************************************************************************
-// readData()
-// **********************************************************************************************************************
-void readData(void) {
+void readData(void) {               // CPU wants to sear data (sent from RTU via RS232)
   byte  data;
   
   if (Serial.available() > 0){
-    setPinsForWrite();
+    setPinsForOutput();
     data = Serial.read();
     PORTB = (PINB & B11111100) | (data >> 6);
     PORTD = (PIND & B00000011) | (data << 2);
   }
-}
-
-// **********************************************************************************************************************
-// setPinsForWrite()
-// **********************************************************************************************************************
-void setPinsForWrite(void) {
-  DDRB = DDRB | B00000011;
-  DDRD = DDRD | B11111100;
-
 }
