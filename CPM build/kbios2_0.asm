@@ -49,9 +49,6 @@ USART_ADDR		.EQU	0D0H			; USART card address
 SER0_DAT		.EQU	USART_ADDR+2	; Serial 0 data addr
 SER0_CMD		.EQU	USART_ADDR		; Serial 0 command addr
 SER0_STA		.EQU	USART_ADDR		; Serial 0 status addr
-SER1_DAT		.EQU	USART_ADDR+3	; Serial 1 data addr
-SER1_CMD		.EQU	USART_ADDR+1	; Serial 1 command addr
-SER1_STA		.EQU	USART_ADDR+1	; Serial 1 status addr
 
 ; LCD card address list.
 LCD_ADDR		.EQU	0E0H				; LCD card address
@@ -229,7 +226,7 @@ wboot:
 
 		OUT (ROM_RAM0),A		; Turn on ROM. Doesn't matter what we output
 
-		LD	BC,01600H			; Copy CP/M ROM (01000h) to RAM (0D000h)
+		LD	BC,BIOS-CCP			; Copy CP/M ROM (01000h) to RAM (0D000h)
 		LD	DE,CCP				; Don't copy the BIOS!!!
 		LD	HL,ROM_CCP
 		LDIR
@@ -270,8 +267,8 @@ gocpm:
 ; Console Status (Return A=0FFh if character waiting. Otherwise, A=0)
 ;================================================================================================
 CONST:
-		IN	A,(SER0_CMD)
-		AND	02
+		IN	A,(SER0_STA)
+		AND	02				; get only the inBuffer flag
 		RET	Z
 		LD	A,0FFH
 	  	RET
@@ -290,8 +287,8 @@ CONIN:
 ; Console Output (Send character in reg C)
 ;================================================================================================
 CONOUT:
-		IN	A,(SER0_STA		; read USART status byte
-		AND	01				; get only the TxEMPTY bit
+		IN	A,(SER0_STA)	; read USART status byte
+		AND	01				; get only the outBuffer flag
 		JR	NZ,CONOUT
 		LD	A,C
 		OUT	(SER0_DAT),A	; send character
