@@ -49,9 +49,6 @@ USART_ADDR		.EQU	0D0H			; USART card address
 SER0_DAT		.EQU	USART_ADDR+2	; Serial 0 data addr
 SER0_CMD		.EQU	USART_ADDR		; Serial 0 command addr
 SER0_STA		.EQU	USART_ADDR		; Serial 0 status addr
-SER1_DAT		.EQU	USART_ADDR+3	; Serial 1 data addr
-SER1_CMD		.EQU	USART_ADDR+1	; Serial 1 command addr
-SER1_STA		.EQU	USART_ADDR+1	; Serial 1 status addr
 
 ; LCD card address list.
 LCD_ADDR		.EQU	0E0H				; LCD card address

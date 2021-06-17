@@ -22,11 +22,12 @@
 // **********************************************************************************************************************
 
 // Control and addressing signals
-#define _CS     13
-#define CMD_WR  B00001000
-#define DAT_WR  B00001100
-#define STA_RD  B00010000
-#define DAT_RD  B00010100
+#define _CS     13              // chip select
+                                // Operation  _WR  _RD  A01
+#define CMD_WR  B00001000       // CMD_WR      0    1    0
+#define DAT_WR  B00001100       // DAT_WR      0    1    1
+#define STA_RD  B00010000       // STA_RD      1    0    0
+#define DAT_RD  B00010100       // DAT_RD      1    0    1
 
 #define IORQed  true
 
@@ -60,9 +61,9 @@ void setup() {
   while (!Serial) {}  ;           // wait for serial port to connect. Needed for native USB port only
 
   Serial.println(" ");
-  Serial.println("***                           ***");
-  Serial.println("***  TTY running at 38400bps  ***");
-  Serial.println("***                           ***");
+  Serial.println("***                             ***");
+  Serial.println("***  TTY connected at 38400bps  ***");
+  Serial.println("***                             ***");
   Serial.print(" ");
 
 }
@@ -71,17 +72,12 @@ void setup() {
 // main loop()
 // **********************************************************************************************************************
 void loop() {
-  int operation;          // Operation  _WR  _RD  A01
-                          // ---------  -------------
-                          // CMD_WR      0    1    0
-                          // DAT_WR      0    1    1
-                          // STA_RD      1    0    0
-                          // DAT_RD      1    0    1
+  int operation;
   
   if (digitalRead(_CS) == LOW) {            // CS=0 => CPU is calling us
     if (Status != IORQed) {                 // Yeah, it's a new IORQ
       Status = IORQed;
-      operation = PINB & B00011100;         // keep only, WR, RD and A01
+      operation = PINB & B00011100;         // Keep only, WR, RD and A01
       switch (operation) {
         case CMD_WR:
           writeCommand();
@@ -115,7 +111,7 @@ void writeCommand(void) {               // CPU wants to write a command
 }
 
 // **********************************************************************************************************************
-void writeData(void) {                 // CPU wants to write data (send to the RTU via RS232)
+void writeData(void) {                 // CPU wants to write data (send data to the RTU via RS232)
   byte  data;
 
   if (Serial.availableForWrite() > 0) {
@@ -126,17 +122,19 @@ void writeData(void) {                 // CPU wants to write data (send to the R
 
 // **********************************************************************************************************************
 void readStatus(void) {               // CPU wants to read the status
-  byte  data=0;
-
+  byte  data=0;                       // Status_word: X X X X X X IB OB
+                                      //                          |  |
+                                      //                          |  +---> 1 if out buffer is full
+                                      //                          +------> 1 if in buffer has data to be read
   setPinsForOutput();
-  if (Serial.availableForWrite() == 0)  data = B00000001;
-  if (Serial.available() > 0)           data = data & B00000010;
+  if (Serial.availableForWrite() == 0)  data = B00000001;           // out buffer is full
+  if (Serial.available() > 0)           data = data | B00000010;    // in buffer has data
   PORTB = (PINB & B11111100) | (data >> 6);
   PORTD = (PIND & B00000011) | (data << 2);
 }
 
 // **********************************************************************************************************************
-void readData(void) {               // CPU wants to sear data (sent from RTU via RS232)
+void readData(void) {               // CPU wants to read data (receive data sent from RTU via RS232)
   byte  data;
   
   if (Serial.available() > 0){
