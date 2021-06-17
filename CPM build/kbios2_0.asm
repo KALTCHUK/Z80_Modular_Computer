@@ -271,7 +271,7 @@ gocpm:
 ;================================================================================================
 CONST:
 		IN	A,(SER0_STA)
-		AND	02
+		AND	02				; get only the inBuffer flag
 		RET	Z
 		LD	A,0FFH
 	  	RET
@@ -291,7 +291,7 @@ CONIN:
 ;================================================================================================
 CONOUT:
 		IN	A,(SER0_STA)	; read USART status byte
-		AND	01				; get only the TxEMPTY bit
+		AND	01				; get only the outBuffer flag
 		JR	NZ,CONOUT
 		LD	A,C
 		OUT	(SER0_DAT),A	; send character

@@ -401,7 +401,7 @@ L Connector_Generic:Conn_01x02 J3
 U 1 1 5E3A7ED6
 P 5350 1200
 F 0 "J3" H 5268 1417 50  0000 C CNN
-F 1 "Conn_01x02" H 5268 1326 50  0000 C CNN
+F 1 "reset button" H 5268 1326 50  0000 C CNN
 F 2 "" H 5350 1200 50  0001 C CNN
 F 3 "~" H 5350 1200 50  0001 C CNN
 	1    5350 1200
@@ -490,8 +490,6 @@ Wire Wire Line
 Connection ~ 8700 1700
 Wire Wire Line
 	8700 1700 8700 1800
-Text Notes 5050 1350 2    50   ~ 0
-Push button\nfor reset\nconnects here
 $Comp
 L 74xx:74LS74 U4
 U 1 1 5E5A7BF0
