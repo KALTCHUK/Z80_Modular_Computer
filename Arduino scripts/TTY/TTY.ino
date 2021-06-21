@@ -61,9 +61,10 @@ void setup() {
   while (!Serial) {}  ;           // wait for serial port to connect. Needed for native USB port only
 
   Serial.println(" ");
-  Serial.println("***                             ***");
-  Serial.println("***  TTY connected at 38400bps  ***");
-  Serial.println("***                             ***");
+  Serial.println("***                     ***");
+  Serial.println("***  TTY  connected at  ***");
+  Serial.println("***    38400bps, 8N1    ***");
+  Serial.println("***                     ***");
   Serial.print(" ");
 
 }
@@ -77,7 +78,7 @@ void loop() {
   if (digitalRead(_CS) == LOW) {            // CS=0 => CPU is calling us
     if (Status != IORQed) {                 // Yeah, it's a new IORQ
       Status = IORQed;
-      operation = PINB & B00011100;         // Keep only, WR, RD and A01
+      operation = PINB & B00011100;         // Keep only WR, RD and A01
       switch (operation) {
         case CMD_WR:
           writeCommand();
@@ -106,8 +107,40 @@ void loop() {
 }
 
 // **********************************************************************************************************************
-void writeCommand(void) {               // CPU wants to write a command
+void writeCommand(void) {               // CPU wants to change baud rate
+  byte  data;
 
+  data = ((PINB << 6) | (PIND >> 2)) & B00000111;
+  if (data < 8) {
+    Serial.end();
+    switch (data) {
+      case 0:
+        Serial.begin(2400);
+        break;
+      case 1:
+        Serial.begin(4800);
+        break;
+      case 2:
+        Serial.begin(9600);
+        break;
+      case 3:
+        Serial.begin(19200);
+        break;
+      case 4:
+        Serial.begin(38400);
+        break;
+      case 5:
+        Serial.begin(57600);
+        break;
+      case 6:
+        Serial.begin(74880);
+        break;
+      case 7:
+        Serial.begin(115200);
+        break;
+    }
+  Serial.setTimeout(100);
+  }
 }
 
 // **********************************************************************************************************************

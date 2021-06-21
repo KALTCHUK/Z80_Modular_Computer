@@ -7,9 +7,10 @@
 ;
 ; Customized by Kaltchuk for use with Z80 Modular Computer, december/2020.
 ; CP/M is booted from ROM.
+;
 ; 04/02/21 - version B corrects a bug in wboot.
-; 09/06/21 - version C sets serial comm to 38.4kbps 
-;            and puts IOBYTE set in cold boot.
+; 09/06/21 - version C sets serial comm to 38.4kbps and
+;            puts "IOBYTE set" in the cold boot.
 ; 12/06/21 - version D fixes a bug with CONIN.
 ; 16/06/21 - version 2.0 is mainly about the new serial communication card,
 ;            which doesn't use interrupt signal because all the buffering is
