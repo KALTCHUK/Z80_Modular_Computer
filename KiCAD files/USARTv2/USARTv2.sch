@@ -1,4 +1,5 @@
 EESchema Schematic File Version 4
+LIBS:USARTv2-cache
 EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
@@ -787,7 +788,7 @@ $EndComp
 Connection ~ 2250 2350
 Connection ~ 2250 2650
 $Comp
-L MCU_Module:Arduino_Nano_v3.x A1
+L USARTv2-rescue:Arduino_Nano_v3.x-MCU_Module A1
 U 1 1 60CCDAA2
 P 6450 4750
 F 0 "A1" H 5850 3650 50  0000 C CNN
