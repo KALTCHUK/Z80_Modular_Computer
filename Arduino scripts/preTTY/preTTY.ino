@@ -12,13 +12,11 @@
 // ATmega328 ports ----------------->   +-----------PORT B----------+   +-----------PORT D----------+   +-----------PORT C----------+
 //                                      7   6   5   4   3   2   1   0   7   6   5   4   3   2   1   0   7   6   5   4   3   2   1   0
 // Arduino digital I/O ------------->  NA  NA  D13 D12 D11 D10 D9  D8  D7  D6  D5  D4  D3  D2  D1  D0  A7  A6  A5  A4  A3  A2  A1  A0
-//                                      XTAL   ||  ||  ||  ||  ||  ||  ||  ||  ||  ||  ||  ||  TX  RX              ||  ||  ||  ||  ||
-//                                             ||  \/  \/  \/  \/  \/  \/  \/  \/  \/  \/  \/                      \/  \/  \/  \/  \/
-// Signals from CPU ---------------->          ||  WR  RD  A1  D7  D6  D5  D4  D3  D2  D1  D0                     IORQ A7  A6  A5  A4
-//                                             \/
-// Signal from card select logic --->          CS
+//                                      XTAL       ||  ||  ||  ||  ||  ||  ||  ||  ||  ||  ||  TX  RX              ||  ||  ||  ||  ||
+//                                                 \/  \/  \/  \/  \/  \/  \/  \/  \/  \/  \/                      \/  \/  \/  \/  \/
+// Signals from CPU ---------------->              WR  RD  A1  D7  D6  D5  D4  D3  D2  D1  D0                     IORQ A7  A6  A5  A4
 //
-// (WR, RD and CS are active low)
+// (WR, RD and IORQ are active low)
 // **********************************************************************************************************************************
 
 // Control and addressing signals
@@ -32,6 +30,8 @@
 
 // Global variables
 bool  Status;                   // Tells if we are attending an I/O request from the CPU
+byte  Card_addr = 0xd0;
+int   TTY_speed = 38400;
 
 // **********************************************************************************************************************
 void setAllPinsInput(void) {
@@ -54,18 +54,19 @@ void setup() {
   setAllPinsInput();
   
   Status = ~IORQed;              // Not attending an interrupt request
+  Card_addr = Card_addr / 0x10;
 
   //Initialize serial and wait for port to open:
-  Serial.begin(38400);
+  Serial.begin(TTY_speed);
   Serial.setTimeout(100);
   while (!Serial) {}  ;           // wait for serial port to connect. Needed for native USB port only
 
   Serial.println(" ");
-  Serial.println("***                             ***");
-  Serial.println("***  TTY connected at 38400bps  ***");
-  Serial.println("***                             ***");
+  Serial.print("*** Card address = ");
+  Serial.println(Card_addr * 0x10, HEX);
+  Serial.print("*** TTY baudrate = ");
+  Serial.println(TTY_speed, DEC);
   Serial.print(" ");
-
 }
 
 // **********************************************************************************************************************
@@ -74,7 +75,7 @@ void setup() {
 void loop() {
   int operation;
   
-  if ((PINC & 0x1F) == 0x0D) {              // CS = 0 and ADDR_LO = 0DXH => CPU is calling us
+  if ((PINC & 0x1F) == Card_addr) {              // CS = 0 and ADDR_LO = 0DXH => CPU is calling us
     if (Status != IORQed) {                 // Yeah, it's a new IORQ
       Status = IORQed;
       operation = PINB & B00011100;         // Keep only, WR, RD and A01
