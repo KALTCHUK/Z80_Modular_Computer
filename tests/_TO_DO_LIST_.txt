@@ -1,5 +1,6 @@
-- Implement RST p button on CPU
-- Develop USART v2 - IM 1 (RST 1), using ATMEGA328
+- Develop USART v2 without interrupt request, using Arduino Nano
+- Connect ESP8266 to USART v2
+- Modify USART v2 to work with ATMEGA328P
 - Make PCBs:
 	- CPU
 	- MEM
