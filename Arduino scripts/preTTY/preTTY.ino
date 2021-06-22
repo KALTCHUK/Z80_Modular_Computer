@@ -20,6 +20,10 @@
 // **********************************************************************************************************************************
 
 // Control and addressing signals
+<<<<<<< Updated upstream
+=======
+#define TTY_ADDR  0x0D          // Serial port's address
+>>>>>>> Stashed changes
                                 // Operation  _WR  _RD  A01
 #define CMD_WR  B00001000       // CMD_WR      0    1    0
 #define DAT_WR  B00001100       // DAT_WR      0    1    1
@@ -62,11 +66,18 @@ void setup() {
   while (!Serial) {}  ;           // wait for serial port to connect. Needed for native USB port only
 
   Serial.println(" ");
+<<<<<<< Updated upstream
   Serial.print("*** Card address = ");
   Serial.println(Card_addr * 0x10, HEX);
   Serial.print("*** TTY baudrate = ");
   Serial.println(TTY_speed, DEC);
   Serial.print(" ");
+=======
+  Serial.println("***                             ***");
+  Serial.println("***  TTY connected at 38400bps  ***");
+  Serial.println("***     Card address = 0xD0     ***");
+  Serial.println("***                             ***");
+>>>>>>> Stashed changes
 }
 
 // **********************************************************************************************************************
@@ -75,7 +86,11 @@ void setup() {
 void loop() {
   int operation;
   
+<<<<<<< Updated upstream
   if ((PINC & 0x1F) == Card_addr) {              // CS = 0 and ADDR_LO = 0DXH => CPU is calling us
+=======
+  if ((PINC & 0x1F) == TTY_ADDR) {          // CS = 0 and lower nibble = TTY_ADDR => CPU is calling us
+>>>>>>> Stashed changes
     if (Status != IORQed) {                 // Yeah, it's a new IORQ
       Status = IORQed;
       operation = PINB & B00011100;         // Keep only, WR, RD and A01
