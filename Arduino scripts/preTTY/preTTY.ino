@@ -22,7 +22,6 @@
 // **********************************************************************************************************************************
 
 // Control and addressing signals
-#define _CS     13              // chip select
                                 // Operation  _WR  _RD  A01
 #define CMD_WR  B00001000       // CMD_WR      0    1    0
 #define DAT_WR  B00001100       // DAT_WR      0    1    1
