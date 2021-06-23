@@ -12,6 +12,4 @@
 01200	next i
 01300	close 1
 01400	end
-r i=1 to 20
-00900	  get 1,i
-01000	  line input #1, prices
+
