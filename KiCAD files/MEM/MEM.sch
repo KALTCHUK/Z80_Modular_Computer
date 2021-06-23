@@ -1,5 +1,4 @@
 EESchema Schematic File Version 4
-LIBS:MEM-cache
 EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
@@ -537,14 +536,6 @@ F 3 "~" H 1200 4050 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2400 3950 1600 3950
-Wire Wire Line
-	1500 4050 1800 4050
-Wire Wire Line
-	2400 4150 2000 4150
-Wire Wire Line
-	1500 4250 2200 4250
-Wire Wire Line
 	1000 3950 1000 4050
 Wire Wire Line
 	1000 4050 1000 4150
@@ -591,96 +582,16 @@ Wire Wire Line
 	3400 3950 3400 4050
 Connection ~ 3400 3950
 $Comp
-L Device:R R3
-U 1 1 5E8F1A02
-P 1600 3650
-F 0 "R3" V 1700 3750 50  0000 C CNN
-F 1 "10k" V 1700 3600 50  0000 C CNN
-F 2 "" V 1530 3650 50  0001 C CNN
-F 3 "~" H 1600 3650 50  0001 C CNN
-	1    1600 3650
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R R4
-U 1 1 5E8F954C
-P 1800 3650
-F 0 "R4" V 1900 3750 50  0000 C CNN
-F 1 "10k" V 1900 3600 50  0000 C CNN
-F 2 "" V 1730 3650 50  0001 C CNN
-F 3 "~" H 1800 3650 50  0001 C CNN
-	1    1800 3650
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R R5
-U 1 1 5E8FB1E6
-P 2000 3650
-F 0 "R5" V 2100 3750 50  0000 C CNN
-F 1 "10k" V 2100 3600 50  0000 C CNN
-F 2 "" V 1930 3650 50  0001 C CNN
-F 3 "~" H 2000 3650 50  0001 C CNN
-	1    2000 3650
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R R6
-U 1 1 5E8FCDB9
-P 2200 3650
-F 0 "R6" V 2300 3750 50  0000 C CNN
-F 1 "10k" V 2300 3600 50  0000 C CNN
-F 2 "" V 2130 3650 50  0001 C CNN
-F 3 "~" H 2200 3650 50  0001 C CNN
-	1    2200 3650
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	1600 3800 1600 3950
-Connection ~ 1600 3950
-Wire Wire Line
-	1600 3950 1500 3950
-Wire Wire Line
-	1800 3800 1800 4050
-Connection ~ 1800 4050
-Wire Wire Line
-	1800 4050 2400 4050
-Wire Wire Line
-	2000 3800 2000 4150
-Connection ~ 2000 4150
-Wire Wire Line
-	2000 4150 1500 4150
-Wire Wire Line
-	2200 3800 2200 4250
-Connection ~ 2200 4250
-Wire Wire Line
-	2200 4250 2400 4250
-Wire Wire Line
-	1600 3500 1600 3400
-Wire Wire Line
-	1600 3400 1800 3400
-Wire Wire Line
-	2200 3400 2200 3500
-Wire Wire Line
-	2000 3500 2000 3400
-Connection ~ 2000 3400
-Wire Wire Line
-	2000 3400 2200 3400
-Wire Wire Line
-	1800 3500 1800 3400
-Connection ~ 1800 3400
-$Comp
 L power:+5V #PWR019
 U 1 1 5E914060
-P 1800 3250
-F 0 "#PWR019" H 1800 3100 50  0001 C CNN
-F 1 "+5V" H 1815 3423 50  0000 C CNN
-F 2 "" H 1800 3250 50  0001 C CNN
-F 3 "" H 1800 3250 50  0001 C CNN
-	1    1800 3250
+P 1750 3300
+F 0 "#PWR019" H 1750 3150 50  0001 C CNN
+F 1 "+5V" H 1765 3473 50  0000 C CNN
+F 2 "" H 1750 3300 50  0001 C CNN
+F 3 "" H 1750 3300 50  0001 C CNN
+	1    1750 3300
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	1800 3250 1800 3400
 $Comp
 L power:GND #PWR05
 U 1 1 5E917E68
@@ -709,8 +620,6 @@ Text Label 4150 2900 0    50   ~ 0
 reset
 NoConn ~ 3400 4550
 NoConn ~ 3400 4650
-Wire Wire Line
-	1800 3400 2000 3400
 $Comp
 L Connector_Generic:Conn_02x02_Odd_Even J4
 U 1 1 5E9CC17B
@@ -1356,4 +1265,45 @@ Wire Wire Line
 	6250 5300 6250 5750
 Text Notes 7900 5900 0    50   ~ 0
 (ROM enabled)
+$Comp
+L Device:R_Network04 RN1
+U 1 1 60D326E0
+P 1950 3600
+F 0 "RN1" H 2138 3646 50  0000 L CNN
+F 1 "4x10k" H 2138 3555 50  0000 L CNN
+F 2 "Resistor_THT:R_Array_SIP5" V 2225 3600 50  0001 C CNN
+F 3 "http://www.vishay.com/docs/31509/csc.pdf" H 1950 3600 50  0001 C CNN
+	1    1950 3600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1500 3950 1750 3950
+Wire Wire Line
+	1500 4050 1850 4050
+Wire Wire Line
+	1500 4150 1950 4150
+Wire Wire Line
+	1500 4250 2050 4250
+Wire Wire Line
+	1750 3800 1750 3950
+Connection ~ 1750 3950
+Wire Wire Line
+	1750 3950 2400 3950
+Wire Wire Line
+	1850 3800 1850 4050
+Connection ~ 1850 4050
+Wire Wire Line
+	1850 4050 2400 4050
+Wire Wire Line
+	1950 3800 1950 4150
+Connection ~ 1950 4150
+Wire Wire Line
+	1950 4150 2400 4150
+Wire Wire Line
+	2050 3800 2050 4250
+Connection ~ 2050 4250
+Wire Wire Line
+	2050 4250 2400 4250
+Wire Wire Line
+	1750 3300 1750 3400
 $EndSCHEMATC
