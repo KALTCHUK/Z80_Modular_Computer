@@ -1108,10 +1108,10 @@ reset
 Text Label 5350 6650 2    50   ~ 0
 int
 $Comp
-L Connector_Generic:Conn_02x01 J?
+L Connector_Generic:Conn_02x01 J6
 U 1 1 60DA7471
 P 5500 1200
-F 0 "J?" H 5550 1417 50  0000 C CNN
+F 0 "J6" H 5550 1417 50  0000 C CNN
 F 1 "Reset" H 5550 1326 50  0000 C CNN
 F 2 "" H 5500 1200 50  0001 C CNN
 F 3 "~" H 5500 1200 50  0001 C CNN
@@ -1119,10 +1119,10 @@ F 3 "~" H 5500 1200 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector_Generic:Conn_02x01 J?
+L Connector_Generic:Conn_02x01 J5
 U 1 1 60DA8272
 P 4150 5550
-F 0 "J?" H 4200 5767 50  0000 C CNN
+F 0 "J5" H 4200 5767 50  0000 C CNN
 F 1 "RST 7" H 4200 5676 50  0000 C CNN
 F 2 "" H 4150 5550 50  0001 C CNN
 F 3 "~" H 4150 5550 50  0001 C CNN

@@ -1132,4 +1132,8 @@ $EndComp
 Connection ~ 3950 5550
 Wire Wire Line
 	4450 5550 4450 5700
+Text Notes 4400 5400 0    50   ~ 0
+Connects to a\npushbutton on\nthe front panel
+Text Notes 4800 1050 0    50   ~ 0
+Connects to a\npushbutton on\nthe front panel
 $EndSCHEMATC
