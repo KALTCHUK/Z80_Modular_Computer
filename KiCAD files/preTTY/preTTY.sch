@@ -1,5 +1,5 @@
 EESchema Schematic File Version 4
-LIBS:USARTv2-cache
+LIBS:preTTY-cache
 EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
@@ -253,7 +253,7 @@ $EndComp
 Connection ~ 3500 4050
 Connection ~ 3500 4350
 $Comp
-L USARTv2-rescue:Arduino_Nano_v3.x-MCU_Module A1
+L preTTY-rescue:Arduino_Nano_v3.x-MCU_Module-USARTv2-rescue A1
 U 1 1 60CCDAA2
 P 7250 3700
 F 0 "A1" H 6650 2600 50  0000 C CNN
