@@ -1,8 +1,10 @@
-- Review CPU PCB:
-	- J6 is wrong!!!!!
-	- relocate J4.
-	- test all component spacing.
-- Test 74LS07 as LED driver.
+- Copy LU.COM, DELBR.COM, UNZIP.COM and UNCRUCH.COM to backup directory.
+- Make PCBs:
+	- CPU
+		- test all component spacing.
+	- MEM
+		- Test 74LS07 as LED driver.
+	- FLASH
 - Develop USART v2 without interrupt request, using Arduino Nano.
 - Test USART v2:
 	- performance at 38400 and 115200bps.
@@ -10,8 +12,4 @@
 	- running WS and SC.
 - Connect ESP8266 to USART v2.
 - Modify USART v2 to work with ATMEGA328P.
-- Make PCBs:
-	- CPU
-	- MEM
-	- FLASH
-	- USART v2
+- Make PCB for USART v2.
