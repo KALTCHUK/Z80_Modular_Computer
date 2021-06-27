@@ -1,3 +1,7 @@
+- Review CPU PCB:
+	- J6 is wrong!!!!!
+	- relocate J4.
+	- test all component spacing.
 - Test 74LS07 as LED driver.
 - Develop USART v2 without interrupt request, using Arduino Nano.
 - Test USART v2:
