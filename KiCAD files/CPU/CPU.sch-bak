@@ -1,5 +1,4 @@
 EESchema Schematic File Version 4
-LIBS:CPU-cache
 EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
@@ -546,17 +545,6 @@ F 2 "" H 8250 3700 50  0001 C CNN
 F 3 "" H 8250 3700 50  0001 C CNN
 	1    8250 3700
 	0    -1   -1   0   
-$EndComp
-$Comp
-L Connector_Generic:Conn_02x03_Top_Bottom J6
-U 1 1 5E640B5B
-P 7750 2550
-F 0 "J6" H 7800 2867 50  0000 C CNN
-F 1 "clock rate" H 7800 2776 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_2x03_P2.54mm_Vertical" H 7750 2550 50  0001 C CNN
-F 3 "~" H 7750 2550 50  0001 C CNN
-	1    7750 2550
-	1    0    0    -1  
 $EndComp
 Wire Wire Line
 	7150 2550 7150 2900
@@ -1154,7 +1142,7 @@ U 1 1 60E17A37
 P 5800 6500
 F 0 "J4" H 5850 6717 50  0000 C CNN
 F 1 "EXT RESET/INT" H 5850 6626 50  0000 C CNN
-F 2 "" H 5800 6500 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_2x02_P2.54mm_Vertical" H 5800 6500 50  0001 C CNN
 F 3 "~" H 5800 6500 50  0001 C CNN
 	1    5800 6500
 	1    0    0    -1  
@@ -1163,4 +1151,15 @@ Text Label 6100 6500 0    50   ~ 0
 reset
 Text Label 6100 6600 0    50   ~ 0
 int
+$Comp
+L Connector_Generic:Conn_02x03_Odd_Even J6
+U 1 1 60D99554
+P 7750 2550
+F 0 "J6" H 7800 2867 50  0000 C CNN
+F 1 "clock selector" H 7800 2776 50  0000 C CNN
+F 2 "" H 7750 2550 50  0001 C CNN
+F 3 "~" H 7750 2550 50  0001 C CNN
+	1    7750 2550
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
