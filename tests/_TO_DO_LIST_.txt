@@ -1,4 +1,3 @@
-- Copy LU.COM, DELBR.COM, UNZIP.COM and UNCRUCH.COM to backup directory.
 - Make PCBs:
 	- CPU
 		- test all component spacing.
