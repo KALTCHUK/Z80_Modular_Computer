@@ -11,7 +11,7 @@
     (via_costs 50)
     (plane_via_costs 5)
     (start_ripup_costs 100)
-    (start_pass_no 3794)
+    (start_pass_no 4545)
     (layer_rule F.Cu
       (active on)
       (preferred_direction horizontal)
@@ -75,8 +75,8 @@
     /d00 /d03 /d02 /d05 /d04 /d07 /d06 /wr
     /mreq /rd /iorq /busack /busrq /halt /wait /int
     /nmi /s1 /s0 /m1 /rfsh /clk /reset /+12V
-    /v1 "Net-(J5-Pad2)" "Net-(J6-Pad1)" "Net-(J6-Pad2)" "Net-(J6-Pad3)" "Net-(Q1-Pad2)" "Net-(Q1-Pad1)" "Net-(R2-Pad2)"
-    "Net-(U2-Pad12)" "Net-(U2-Pad2)"
+    /v1 "Net-(J5-Pad2)" "Net-(J6-Pad1)" "Net-(J6-Pad3)" "Net-(Q1-Pad2)" "Net-(Q1-Pad1)" "Net-(R2-Pad2)" "Net-(U2-Pad12)"
+    "Net-(U2-Pad2)" "Net-(J6-Pad5)"
     (clearance_class "kicad_default")
     (via_rule kicad_default)
     (rule
