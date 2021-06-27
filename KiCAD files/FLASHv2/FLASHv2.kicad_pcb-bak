@@ -360,7 +360,7 @@
   )
 
   (module Capacitor_THT:CP_Radial_D5.0mm_P2.50mm (layer F.Cu) (tedit 5AE50EF0) (tstamp 60D7B877)
-    (at 114.3 73.66)
+    (at 132.004776 116.135001)
     (descr "CP, Radial series, Radial, pin pitch=2.50mm, , diameter=5mm, Electrolytic Capacitor")
     (tags "CP Radial series Radial pin pitch 2.50mm  diameter 5mm Electrolytic Capacitor")
     (path /5F592784)
