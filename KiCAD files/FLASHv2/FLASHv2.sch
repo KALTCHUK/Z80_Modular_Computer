@@ -440,13 +440,13 @@ NoConn ~ 3850 1650
 $Comp
 L Connector_Generic:Conn_02x22_Odd_Even J4
 U 1 1 5F5B7653
-P 9650 3650
-F 0 "J4" H 9700 4867 50  0000 C CNN
-F 1 "IDE connector" H 9700 4776 50  0000 C CNN
-F 2 "Connector_PinHeader_2.00mm:PinHeader_2x22_P2.00mm_Vertical" H 9650 3650 50  0001 C CNN
-F 3 "~" H 9650 3650 50  0001 C CNN
-	1    9650 3650
-	1    0    0    -1  
+P 9650 3750
+F 0 "J4" H 9700 4967 50  0000 C CNN
+F 1 "IDE connector" H 9700 4876 50  0000 C CNN
+F 2 "Connector_PinHeader_2.00mm:PinHeader_2x22_P2.00mm_Vertical" H 9650 3750 50  0001 C CNN
+F 3 "~" H 9650 3750 50  0001 C CNN
+	1    9650 3750
+	1    0    0    1   
 $EndComp
 $Comp
 L power:+5V #PWR018
