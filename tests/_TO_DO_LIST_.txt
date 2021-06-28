@@ -1,9 +1,6 @@
 - Make PCBs:
-	- CPU
-		- test all component spacing.
 	- MEM
 		- Test 74LS07 as LED driver.
-	- FLASH
 - Develop USART v2 without interrupt request, using Arduino Nano.
 - Test USART v2:
 	- performance at 38400 and 115200bps.
