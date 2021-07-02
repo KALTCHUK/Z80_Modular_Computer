@@ -279,12 +279,6 @@ Text Label 1600 4900 2    50   ~ 0
 d06
 Text Label 1600 5000 2    50   ~ 0
 d07
-Text Label 1600 5100 2    50   ~ 0
-a01
-Text Label 1600 5200 2    50   ~ 0
-rd
-Text Label 1600 5300 2    50   ~ 0
-wr
 Wire Wire Line
 	2200 5700 2100 5700
 Wire Wire Line
@@ -328,10 +322,7 @@ NoConn ~ 3300 3050
 NoConn ~ 2600 5300
 NoConn ~ 2600 5400
 NoConn ~ 2600 4500
-NoConn ~ 2600 5200
 NoConn ~ 1600 5400
-NoConn ~ 1600 4100
-NoConn ~ 1600 4200
 Text Label 2600 4700 0    50   ~ 0
 a04
 Text Label 2600 4800 0    50   ~ 0
@@ -342,7 +333,6 @@ Text Label 2600 5000 0    50   ~ 0
 a07
 Text Label 2600 5100 0    50   ~ 0
 iorq
-NoConn ~ 3800 1150
 $Comp
 L 74xx:74LS07 U?
 U 5 1 60DCCFC5
@@ -926,4 +916,16 @@ F 3 "" H 3400 7050 50  0001 C CNN
 	1    3400 7050
 	1    0    0    -1  
 $EndComp
+Text Label 1600 5300 2    50   ~ 0
+wr
+Text Label 1600 5200 2    50   ~ 0
+rd
+Text Label 1600 5100 2    50   ~ 0
+a01
+Text Label 2600 5200 0    50   ~ 0
+a00
+Text Label 1600 4100 2    50   ~ 0
+RX0
+Text Label 1600 4200 2    50   ~ 0
+TX0
 $EndSCHEMATC
