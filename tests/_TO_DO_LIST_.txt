@@ -1,6 +1,8 @@
-- Make PCBs:
+- Assemble CPU and FLASH v2 PCBs.
+- Test CPU and FLASH v2 PCBs.
+- Design PCBs:
 	- MEM
-		- Test 74LS07 as LED driver.
+	- USART v2
 - Develop USART v2 without interrupt request, using Arduino Nano.
 - Test USART v2:
 	- performance at 38400 and 115200bps.
@@ -8,4 +10,4 @@
 	- running WS and SC.
 - Connect ESP8266 to USART v2.
 - Modify USART v2 to work with ATMEGA328P.
-- Make PCB for USART v2.
+- Design PCB for USART v2.

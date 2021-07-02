@@ -1,4 +1,5 @@
 EESchema Schematic File Version 4
+LIBS:preTTY-cache
 EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
@@ -532,7 +533,7 @@ F 3 "" H 3000 6750 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L MCU_Microchip_ATmega:ATmega328P-PU U?
+L preTTY-rescue:ATmega328P-PU-MCU_Microchip_ATmega U?
 U 1 1 60DFBC7C
 P 4950 4850
 F 0 "U?" H 4306 4896 50  0000 R CNN
