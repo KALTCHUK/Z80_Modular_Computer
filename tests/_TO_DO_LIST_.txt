@@ -1,19 +1,22 @@
 - Test new KEYBOARD.CNF for TeraTerm.
-- Assemble CPU and FLASH v2 PCBs.
-- Test CPU and FLASH v2 PCBs.
-- Design PCBs:
-	- MEM
-- Develop USART v2 without interrupt request, using Arduino Nano.
-- Test USART v2:
-	- performance at 38400 and 115200bps.
-	- running DDT and ZSID.
-	- running WS and SC.
+- Assemble CPU and FLASHv2 PCBs.
+- Test CPU and FLASHv2 PCBs.
+- Design MEM PCB:
 - Get familiar with ESP8266
 	- do the Blink
 	- do WiFiSearch
 	- do the TelnetSerial
-- Connect ESP8266 to USART v2.
+	- do local telnet
+	- configure dynamic DNS
+	- do extranet telnet
+	- implement reset via telnet
+- Develop USARTv2 without interrupt request, using Arduino Nano.
+- Test USARTv2:
+	- performance at 38400 and 115200bps.
+	- run DDT and ZSID.
+	- run WS and SC.
+- Connect ESP8266 to USARTv2.
 - Modify USART v2 to work with ATMEGA328P.
-- Design PCB for USART v2.
+- Design PCB for USARTv2.
 - Design device with ESP8266 and relays.
 
