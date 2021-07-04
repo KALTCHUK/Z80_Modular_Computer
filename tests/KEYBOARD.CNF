@@ -6,25 +6,25 @@
 ;
 [VT editor keypad]
 ;Up arrow key
-Up=328
+Up=off
 ;Down arrow key
-Down=336
+Down=off
 ;Right arrow key
-Right=333
+Right=off
 ;Left arrow key
-Left=331
+Left=off
 ;Insert key
-Insert=338
+Insert=off
 ;Home key
-Find=327
+Find=off
 ;PageUp key
-Prev=329
+Prev=off
 ;Delete key
-Remove=339
+Remove=off
 ;End key
-Select=335
+Select=off
 ;PageDown key
-Next=337
+Next=off
 
 [VT numeric keypad]
 ;Num pad 0 key
@@ -154,17 +154,17 @@ EditCLB=off
 ControlOpenTEK=off
 ControlCloseTEK=off
 ; Ctrl + up-arrow
-LineUp=1352
+LineUp=off
 ; Ctrl + down-arrow
-LineDown=1360
+LineDown=off
 ; Ctrl + PageUp
 PageUp=1353
 ; Ctrl + PageDown
 PageDown=1361
 ; Ctrl + Home
-BuffTop=1351
+BuffTop=off
 ; Ctrl + End
-BuffBottom=1359
+BuffBottom=off
 ; Ctrl + Tab
 NextWin=1039
 NextShownWin=off
