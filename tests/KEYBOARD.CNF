@@ -178,24 +178,25 @@ ScrollLock=70
 ;[User keys]
 ; Conversion for WordStar use
 ;
-; Keys		Keycode	WS	ASCII
-; -----------------------------
-; Up		328		^E	$05
-; Down		336		^X	$18
-; Left		331		^S	$13
-; Right		333		^D	$04
-; Home		327		^QS	$11$53
-; End		335		^QD	$11$44
-; PageUp	329		^R	$12
-; PageDown	337		^C	$03
-; Del		339		^G	$07
-; Ins		338		^V	$16
-; CtrlHome	1351	^QR	$11$52
-; CtrlEnd	1359	^QC	$11$43
-; CtrlUp	1352	^W	$17
-; CtrlDown	1360	^Z	$1A
-; CtrlLeft	1355	^A	$01
-; CtrlRight	1357	^F	$06
+; Keys		Keycode	WS		ASCII
+; ---------------------------------
+; Up		328		^E		$05
+; Down		336		^X		$18
+; Left		331		^S		$13
+; Right		333		^D		$04
+; Home		327		^QS		$11$53
+; End		335		^QD		$11$44
+; PageUp	329		^R		$12
+; PageDown	337		^C		$03
+; Del		339		^G		$07
+; DelBack	14		^S^G	$13$07
+; Ins		338		^V		$16
+; CtrlHome	1351	^QR		$11$52
+; CtrlEnd	1359	^QC		$11$43
+; CtrlUp	1352	^W		$17
+; CtrlDown	1360	^Z		$1A
+; CtrlLeft	1355	^A		$01
+; CtrlRight	1357	^F		$06
 
 User1=328,0,$05
 User2=336,0,$18
@@ -206,13 +207,14 @@ User6=335,0,$11$44
 User7=329,0,$12
 User8=337,0,$03
 User9=339,0,$07
-User10=338,0,$16
-User11=1351,0,$11$52
-User12=1359,0,$11$43
-User13=1352,0,$17
-User14=1360,0,$1A
-User15=1355,0,$01
-User16=1357,0,$06
+User10=14,0,$13$07
+User11=338,0,$16
+User12=1351,0,$11$52
+User13=1359,0,$11$43
+User14=1352,0,$17
+User15=1360,0,$1A
+User16=1355,0,$01
+User17=1357,0,$06
 ;
 ;	Ctrl + F2 key: control characters
 ;User2=1084,0,$0D$0A
