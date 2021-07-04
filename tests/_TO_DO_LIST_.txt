@@ -8,7 +8,7 @@
 	- do the TelnetSerial
 	- do local telnet
 	- configure dynamic DNS
-	- do extranet telnet
+	- do external telnet
 	- implement reset via telnet
 - Develop USARTv2 without interrupt request, using Arduino Nano.
 - Test USARTv2:
