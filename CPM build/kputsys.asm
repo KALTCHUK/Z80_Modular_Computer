@@ -56,7 +56,7 @@ CR				.EQU	0DH		;carriage RETurn
 
 ;================================================================================================
 
-		.ORG	5000H		; Loader origin.
+		.ORG	0100H		; TPA origin.
 
 		CALL	PRINTSEQ
 		.TEXT "CP/M System Transfer by G. Searle 2012"
