@@ -1,7 +1,3 @@
-- Test new KEYBOARD.CNF for TeraTerm.
-- Assemble CPU and FLASHv2 PCBs.
-- Test CPU and FLASHv2 PCBs.
-- Design MEM PCB:
 - Get familiar with ESP8266
 	- do the Blink
 	- do WiFiSearch
@@ -10,6 +6,13 @@
 	- configure dynamic DNS
 	- do external telnet
 	- implement reset via telnet
+- Get familiar with ATMEGA328
+	- do the blink
+	- do the new preTTY
+- Rethink KEYBOARD.CNF for TeraTerm.
+- Assemble CPU and FLASHv2 PCBs.
+- Test CPU and FLASHv2 PCBs.
+- Design MEM PCB.
 - Develop USARTv2 without interrupt request, using Arduino Nano.
 - Test USARTv2:
 	- performance at 38400 and 115200bps.
