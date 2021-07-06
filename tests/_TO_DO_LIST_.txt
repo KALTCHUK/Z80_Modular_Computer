@@ -1,5 +1,3 @@
-- Test new Z80 CPU @ 4, 6 and 8MHz.
-- Install reset pushbutton on CPU card.
 - Get familiar with ESP8266:
 	- do the Blink.
 	- do WiFiSearch.
