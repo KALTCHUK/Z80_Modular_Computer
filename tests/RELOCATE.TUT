@@ -1,0 +1,56 @@
+
+TUTORIAL NOTES ON RELOCATABLE CODE
+
+     To relocate any code, one identifies the source (where the code is
+coming from), the destination (where it's going), and the size (how much
+code to move).	The common program sequence is:
+	LD	HL,SOURCE
+	LD	DE,DEST
+	LD	BC,SIZE
+	LDIR
+The difficulty arises in that the program in low memory being moved to
+high memory will have all its addresses defined by its low memory location.
+Programmers have used several successful techniques to compensate for this.
+The technique I've gotten accustomed to is the use of offsets.	An offset
+is provided for every address that is referenced ABSOLUTE but is not
+provided for any address referenced RELATIVE.  All  JP	and  CALL  commands
+require an absolute address.  All  JR  and  DJNZ  commands require a relative
+address.  A specific address may occasionally require both.  Consider as
+an example the code below:
+
+OU	EQU	DEST-SOURCE	; offset
+CONIN	EQU	$+OU		; conin - relocated address  (absolute)
+CONINL: 			; conin - local address      (relative)
+	CALL	CONST		; call console status check
+	JR	Z,CONINL	; loop until status says we're ready
+	CALL	0F600H		; get the byte using upper bios
+	CP	9BH		; see if it's CMND-F1
+	JR	NZ,CN9C 	;    (continuous pop-up clk display)
+	LD	A,(CLKFLG)	; prepare to toggle the pop-up flag
+	CPL			; complement the accumulator
+	LD	(CLKFLG),A	; store the toggled flag
+	JR	CONINL		; go back for next input
+CN9C:	CP	7FH		; see if it's a "delete"
+	RET	NZ		; if not, return with it the input byte
+	LD	A,08h		; if yes, transform it into ^H
+	RET			; done with CONIN
+CLKFLG	EQU	$+OU
+	DB	0		; flag to see if clock display requested
+
+In this example, CONIN is the absolute address and CONINL is the same
+location but in relative terms.  The relative address is needed to
+support the  JR Z,CONINL  command.  The absolute address is needed to
+support the  JP CONIN  in the bios jump table.	 Similarly,  CLKFLG
+is an absolute address because it's the object of a  LD  A,(CLKFLG)
+instruction, while CN9C is a relative address because it's the object
+of a  JR NZ,CN9C  instruction.
+
+   The offset is always the difference between the final location
+(destination) and the local location (source).	Since the  $  operand
+is by definition the local location,  $+OU  expands to:
+$+OU   =   ($) + (OU)
+       =   (LOCAL_LOC) + (FINAL_LOC - LOCAL_LOC)
+       =   FINAL_LOC
+
+   Hope this helps.    R.Gaspari.
+
