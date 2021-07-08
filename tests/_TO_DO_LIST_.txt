@@ -7,7 +7,7 @@
 	- do external telnet.
 	- implement reset via telnet.
 - Get familiar with ATMEGA328:
-	- burn bootloader.
+	- burn bareboard 8MHz bootloader.
 	- do the blink.
 	- do the new preTTY.
 - Rethink KEYBOARD.CNF for TeraTerm.
