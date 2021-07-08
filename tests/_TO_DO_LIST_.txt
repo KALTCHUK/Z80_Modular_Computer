@@ -1,3 +1,7 @@
+- Get familiar with ATMEGA328:
+	- burn bareboard 8MHz bootloader.
+	- do the blink.
+	- do the new preTTY.
 - Get familiar with ESP8266:
 	- do the Blink.
 	- do WiFiSearch.
@@ -6,10 +10,6 @@
 	- configure dynamic DNS.
 	- do external telnet.
 	- implement reset via telnet.
-- Get familiar with ATMEGA328:
-	- burn bootloader.
-	- do the blink.
-	- do the new preTTY.
 - Rethink KEYBOARD.CNF for TeraTerm.
 - Assemble CPU and FLASHv2 PCBs.
 - Test CPU and FLASHv2 PCBs.
