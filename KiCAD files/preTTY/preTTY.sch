@@ -1,4 +1,5 @@
 EESchema Schematic File Version 4
+LIBS:preTTY-cache
 EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
@@ -977,7 +978,6 @@ Text Label 3900 4900 2    50   ~ 0
 a07
 Text Label 3900 5000 2    50   ~ 0
 iorq
-NoConn ~ 3900 5100
 NoConn ~ 5100 3700
 $Comp
 L power:GND #PWR020
@@ -1131,4 +1131,6 @@ Wire Wire Line
 	9000 5550 9750 5550
 Wire Wire Line
 	8850 5650 9750 5650
+Text Label 3900 5100 2    50   ~ 0
+a00
 $EndSCHEMATC

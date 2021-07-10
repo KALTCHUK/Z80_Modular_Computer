@@ -1,0 +1,30 @@
+ATmega328 pin use for USART v2
+
+----------------------------
+Arduino ATmega328	USART 2
+Nano    28 pin DIP	function
+----------------------------
+D0 (RX)	PD0			RX
+D1 (TX)	PD1			TX
+D2		PD2			d00
+D3		PD3			d01
+D4		PD4			d02
+D5		PD5			d03
+D6		PD6			d04
+D7		PD7			d05
+D8		PB0			d06
+D9		PB1			d07
+D10		PB2			a01
+D11		PB3			rd
+D12		PB4			wr
+D13		PB5			--
+XTAL1	PB6			--
+XTAL2	PB7			--
+A0		PC0			a04
+A1		PC1			a05
+A2		PC2			a06
+A3		PC3			a07
+A4		PC4			iorq
+A6		PC5			a00
+RESET	PC6			reset
+----------------------------
