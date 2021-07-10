@@ -1,3 +1,8 @@
+- Develop USARTv2 without interrupt request, using Arduino Nano.
+- Test USARTv2:
+	- performance at 38400 and 115200bps.
+	- run DDT and ZSID.
+	- run WS and SC.
 - Get familiar with ATMEGA328:
 	- burn bareboard 8MHz bootloader.
 	- do the blink.
@@ -14,11 +19,6 @@
 - Assemble CPU and FLASHv2 PCBs.
 - Test CPU and FLASHv2 PCBs.
 - Design MEM PCB.
-- Develop USARTv2 without interrupt request, using Arduino Nano.
-- Test USARTv2:
-	- performance at 38400 and 115200bps.
-	- run DDT and ZSID.
-	- run WS and SC.
 - Connect ESP8266 to USARTv2.
 - Modify USART v2 to work with ATMEGA328P.
 - Design PCB for USARTv2.
