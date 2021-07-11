@@ -18,13 +18,12 @@
 //                                                                                             \/  \/
 // Signals from/to MAX232 ---------->                                                          tx  rx
 // (wr, rd and iorq are active low)
+//
+// The content of PORT_C defines if this TTY is being demmanded by the CPU.
+// The content of PORT_B defines the operation demmanded.
 // ************************************************************************************************************************************
 
-// Control and addressing signals
-<<<<<<< Updated upstream
-=======
-#define TTY_ADDR  0x0D          // Serial port's address
->>>>>>> Stashed changes
+// Control signals
                                 // Operation  _WR  _RD  A01
 #define CMD_WR  B00001000       // CMD_WR      0    1    0
 #define DAT_WR  B00001100       // DAT_WR      0    1    1
@@ -35,19 +34,20 @@
 
 // Global variables
 bool  Status;                   // Tells if we are attending an I/O request from the CPU
-byte  Card_addr = 0xd0;
+byte  TTY_addr = 0xd0;          // The other port only changes one bit from address word (a00)
+byte  pw;
 int   TTY_speed = 38400;
 
 // **********************************************************************************************************************
 void setAllPinsInput(void) {
-  // Set all pins as inputs (except for TX, RX and XTAL which remain "as are")
+  // Set all pins as inputs (except for TX, RX, RESET and XTAL which remain "as are")
   DDRB = DDRB & B11000000;
   DDRD = DDRD & B00000011;
-  DDRC = B00000000;
+  DDRC = DDRC & B11000000;
 }
 
 // **********************************************************************************************************************
-void setPinsForOutput(void) {
+void setDataPinsOutput(void) {
   DDRB = DDRB | B00000011;
   DDRD = DDRD | B11111100;
 }
@@ -57,28 +57,20 @@ void setPinsForOutput(void) {
 // **********************************************************************************************************************
 void setup() {
   setAllPinsInput();
-  
+  pw = (TTY_addr >> 4) | (TTY_addr <<5) | B00010000; 
   Status = ~IORQed;              // Not attending an interrupt request
-  Card_addr = Card_addr / 0x10;
-
+  
   //Initialize serial and wait for port to open:
   Serial.begin(TTY_speed);
   Serial.setTimeout(100);
   while (!Serial) {}  ;           // wait for serial port to connect. Needed for native USB port only
 
   Serial.println(" ");
-<<<<<<< Updated upstream
-  Serial.print("*** Card address = ");
-  Serial.println(Card_addr * 0x10, HEX);
-  Serial.print("*** TTY baudrate = ");
+  Serial.print("*** TTY address = ");
+  Serial.println(TTY_addr, HEX);
+  Serial.print("*** TTY speed   = ");
   Serial.println(TTY_speed, DEC);
   Serial.print(" ");
-=======
-  Serial.println("***                             ***");
-  Serial.println("***  TTY connected at 38400bps  ***");
-  Serial.println("***     Card address = 0xD0     ***");
-  Serial.println("***                             ***");
->>>>>>> Stashed changes
 }
 
 // **********************************************************************************************************************
@@ -87,11 +79,7 @@ void setup() {
 void loop() {
   int operation;
   
-<<<<<<< Updated upstream
-  if ((PINC & 0x1F) == Card_addr) {              // CS = 0 and ADDR_LO = 0DXH => CPU is calling us
-=======
-  if ((PINC & 0x1F) == TTY_ADDR) {          // CS = 0 and lower nibble = TTY_ADDR => CPU is calling us
->>>>>>> Stashed changes
+  if ((PINC & 0x3F) == pw) {                // Is CPU is calling us?
     if (Status != IORQed) {                 // Yeah, it's a new IORQ
       Status = IORQed;
       operation = PINB & B00011100;         // Keep only, WR, RD and A01
