@@ -1,10 +1,10 @@
-- Develop USARTv2 without interrupt request, using Arduino Nano.
+- Wire-up USARTv2 with Aduino Nano on TTY0 and ATmega 328 on TTY1.
 - Test USARTv2:
 	- performance at 38400 and 115200bps.
 	- run DDT and ZSID.
 	- run WS and SC.
 - Get familiar with ATMEGA328:
-	- burn bareboard 8MHz bootloader.
+	- check if IC already has bootloader.
 	- do the blink.
 	- do the new preTTY.
 - Get familiar with ESP8266:
