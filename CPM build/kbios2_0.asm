@@ -14,8 +14,8 @@
 ; 12/06/21 - version D fixes a bug with CONIN.
 ; 16/06/21 - version 2.0 is mainly about the new serial communication card,
 ;            which doesn't use interrupt signal because all the buffering is
-;            done by the card instead of the CPU. So check CONST, CONIN and
-;            CONOUT. There are also some "cosmetic" changes on the boot msg.
+;            done by the card instead of the CPU. IOBYTE is also fully
+;            implemented.
 ;==================================================================================
 #INCLUDE	"equates.h"
 
@@ -45,19 +45,15 @@ NOROM_RAM0		.EQU	MEM_ADDR+1		; no ROM + RAM bank 0 (full RAM)
 ROM_RAM1		.EQU	MEM_ADDR+2		; ROM + RAM bank 1
 NOROM_RAM1		.EQU	MEM_ADDR+3		; no ROM + RAM bank 1 (full RAM)
 
-; USART card stuff (addr00=serial 0 or 1, addr01=cmd/status or data)
-USART_ADDR		.EQU	0D0H			; USART card address
-SER0_DAT		.EQU	USART_ADDR+2	; Serial 0 data addr
-SER0_CMD		.EQU	USART_ADDR		; Serial 0 command addr
-SER0_STA		.EQU	USART_ADDR		; Serial 0 status addr
-
-; LCD card address list.
-LCD_ADDR		.EQU	0E0H				; LCD card address
-DAT_WR			.EQU	LCD_ADDR+1
-DAT_RD			.EQU	LCD_ADDR+3
-CMD_WR			.EQU	LCD_ADDR
-CMD_RD			.EQU	LCD_ADDR+2
-
+; USART card stuff
+PORT0			.EQU	0D0H		; PORT 0 address
+PORT0_DAT		.EQU	PORT0+2		; PORT 0 data addr
+PORT0_CMD		.EQU	PORT0		; PORT 0 command addr
+PORT0_STA		.EQU	PORT0		; PORT 0 status addr
+PORT1			.EQU	0D1H		; PORT 1 address
+PORT1_DAT		.EQU	PORT1+2		; PORT 1 data addr
+PORT1_CMD		.EQU	PORT1		; PORT 1 command addr
+PORT1_STA		.EQU	PORT1		; PORT 1 status addr
 
 ; FLASH card stuff
 FLASH_ADDR		.EQU	0B0H			; FLASH card address
@@ -261,262 +257,186 @@ gocpm:
 		EI
 	
 		JP	ccp					; Start CP/M by jumping to the CCP.
+
+;================================================================================================
+; PHYSICAL DEVICE JUMP TABLE.
+; Used by CONST, CONIN, CONOUT, LIST, PUNCH, READER and LISTST according to IOBYTE setting.
+;================================================================================================
+TTYST:	JP	PORT0ST
+CRTST:	JP	PORT1ST
+BATST:	JP	LISTST
+UC1ST:	JP	PORT0ST		; No physical device present
+LPTST:	JP	PORT0ST		; No physical device present
+UL1ST:	JP	PORT0ST		; No physical device present
+
+TTYIN:	JP	PORT0IN
+CRTIN:	JP	PORT1IN
+BATIN:	JP	READER
+UC1IN:	JP	PORT0IN		; No physical device present
+PTRIN:	JP	PORT0IN		; No physical device present
+UR1IN:	JP	PORT0IN		; No physical device present
+UR2IN:	JP	PORT0IN		; No physical device present
+
+TTYOUT:	JP	PORT0OUT
+CRTOUT:	JP	PORT1OUT
+BATOUT:	JP	LIST
+UC1OUT:	JP	PORT0OUT	; No physical device present
+LPTOUT:	JP	PORT0OUT	; No physical device present
+UL1OUT:	JP	PORT0OUT	; No physical device present
+PTPOUT:	JP	PORT0OUT	; No physical device present
+UP1OUT:	JP	PORT0OUT	; No physical device present
+UP2OUT:	JP	PORT0OUT	; No physical device present
+
 ;================================================================================================
 ; Console I/O routines
 ;================================================================================================
 ;================================================================================================
 ; Console Status (Return A=0FFh if character waiting. Otherwise, A=0)
 ;================================================================================================
-CONST:
-		IN	A,(SER0_STA)
-		AND	02				; get only the inBuffer flag
-		RET	Z
-		LD	A,0FFH
-	  	RET
+CONST:	LD	A,(iobyte)
+		AND	3
+		CP	0
+		JP	Z,TTYST
+		CP	1
+		JP	Z,CRTST
+		CP	2
+		JP	Z,BATST
+		JP	UC1ST
 
 ;================================================================================================
 ; Console Input (Wait for input and return character in A)
 ;================================================================================================
-CONIN:
-		CALL CONST
+CONIN:	LD	A,(iobyte)
+		AND	3
 		CP	0
-		JR	Z,CONIN
-		IN	A,(SER0_DAT)
-		RET					; Char read returns in A
+		JP	Z,TTYIN
+		CP	1
+		JP	Z,CRTIN
+		CP	2
+		JP	Z,BATIN
+		JP	UC1IN
 
 ;================================================================================================
 ; Console Output (Send character in reg C)
 ;================================================================================================
-CONOUT:
-		IN	A,(SER0_STA)	; read USART status byte
-		AND	01				; get only the outBuffer flag
-		JR	NZ,CONOUT
-		LD	A,C
-		OUT	(SER0_DAT),A	; send character
-		RET
+CONOUT:	LD	A,(iobyte)
+		AND	3
+		CP	0
+		JP	Z,TTYOUT
+		CP	1
+		JP	Z,CRTOUT
+		CP	2
+		JP	Z,BATOUT
+		JP	UC1OUT
 
 ;================================================================================================
 ; Reader Input
 ;================================================================================================
-READER:	JP CONIN	
+READER:	LD	A,(iobyte)
+		AND	0CH
+		CP	0
+		JP	Z,TTYIN
+		CP	4
+		JP	Z,PTRIN
+		CP	8
+		JP	Z,UR1IN
+		JP	UR2IN
 
 ;================================================================================================
 ; List Output
 ;================================================================================================
-LIST:		LD	A,(iobyte)
-			AND	0C0H			; Get LIST portion of IOBYTE
-			CP	0C0H
-			JP	Z,LCD
-			JP CONOUT
+LIST:	LD	A,(iobyte)
+		AND	0C0H
+		CP	0
+		JP	Z,TTYOUT
+		CP	40H
+		JP	Z,CRTOUT
+		CP	80H
+		JP	Z,LPTOUT
+		JP	UL1OUT
 
 ;================================================================================================
 ; Punch Output
 ;================================================================================================
-PUNCH:	JP CONOUT	
+PUNCH:	LD	A,(iobyte)
+		AND	030H
+		CP	0
+		JP	Z,TTYOUT
+		CP	40H
+		JP	Z,PTPOUT
+		CP	80H
+		JP	Z,UP1OUT
+		JP	UP2OUT
 
 ;================================================================================================
 ; List Status (List = Console)
 ;================================================================================================
-LISTST:		LD	A,(iobyte)
-			AND	0C0H			; Get LIST portion of IOBYTE
-			CP	0C0H
-			JP	Z,LCDST
-			JP CONST
+LISTST:	LD	A,(iobyte)
+		AND	0C0H
+		CP	0
+		JP	Z,TTYST
+		CP	40H
+		JP	Z,CRTST
+		CP	80H
+		JP	Z,LPTST
+		JP	UL1ST
 
 ;================================================================================================
-; LCD STATUS. Return A=LCD_card_addr. A=0 if no card initialized.
+; PORT 0 (on USART v2) input.
 ;================================================================================================
-LCDST:		CALL BWAIT
-			RET
-
+PORT0IN:
+		IN	A,(PORT0_STA)
+		AND 1
+		JR	Z,PORT0IN
+		IN	A,(PORT0_DAT)
+		RET
+		
 ;================================================================================================
-; LCD OUTPUT. Send C to LCD, if C>1FH (printable range). 
-; Accepts also LF, CR and FF (Form Feed = clear LCD).
-; If C=DC1, initialize LCD card.
-; If C=DC2, position cursor as indicated in regB.
+; PORT 0 (on USART v2) output.
 ;================================================================================================
-LCD:		PUSH HL
-			LD	A,C
-			CP	20
-			JP	M,ASCIILO
-			CALL LCDPUT
-			JR	GETOUT
-ASCIILO:	CP	LF
-			CALL Z,LCDLF			; Line Feed
-			CP	CR
-			CALL Z,LCDCR			; Carriage Return
-			CP	FF
-			CALL Z,LCDCLEAR			; Form Feed, which is a 'clear LCD'
-			CP	DC1
-			CALL Z,LCDINIT			; Initialize LCD card.
-			CP	DC2
-			CALL Z,LCDPOS			; Cursor reposition request. New position in regB
-GETOUT:		POP	HL
-			RET
-
+PORT0OUT:
+		LD	A,C
+		LD	(PORT0_DAT),A
+		RET
+		
 ;================================================================================================
-; Initialize LCD
+; PORT 0 (on USART v2) status.
 ;================================================================================================
-LCDINIT:	LD	B,15			; wait 15ms
-			CALL DELAYMS
-			LD	A,030H			; write command 030h
-			OUT	(CMD_WR),A
-			LD	B,5				; wait 5ms
-			CALL DELAYMS
-			LD	A,030H			; write command 030h
-			OUT	(CMD_WR),A
-			LD	C,20			; wait (5X20) 100us
-			CALL DELAY5US
-			LD	A,030H			; write command 030h
-			OUT	(CMD_WR),A
-			LD	C,20			; wait (5X20) 100us
-			CALL DELAY5US
-			LD	A,038H			; write command 038h = function set (8-bits, 2-lines, 5x7dots)
-			OUT	(CMD_WR),A
-			CALL BWAIT
-			LD	A,08H			; write command 08h = display (off)
-			OUT	(CMD_WR),A
-			CALL BWAIT
-			LD	A,01H			; write command 01h = clear display
-			OUT	(CMD_WR),A
-			CALL BWAIT
-			LD	A,06H			; write command 06h = entry mode (increment)
-			OUT	(CMD_WR),A
-			CALL BWAIT
-			LD	A,0CH			; write command 0Ch = display (on)
-			OUT	(CMD_WR),A
-			LD	A,LCD_ADDR
-			LD	(LCDSTATUS),A
-			LD	A,0
-			RET
-
+PORT0ST:
+		IN	A,(PORT1_STA)
+		AND 1
+		RET	Z
+		LD	A,0FFH
+		RET
+		
 ;================================================================================================
-; Wait until Busy flag = 0
+; PORT 1 (on USART v2) input.
 ;================================================================================================
-BWAIT:		IN	A,(CMD_RD)
-			RLCA
-			JR	C,BWAIT
-			SRL	A
-			RET
-			
+PORT1IN:
+		IN	A,(PORT1_STA)
+		AND 1
+		JR	Z,PORT1IN
+		IN	A,(PORT1_DAT)
+		RET
+		
 ;================================================================================================
-; Clear LCD and goto line 1, column 1.
+; PORT 1 (on USART v2) output.
 ;================================================================================================
-LCDCLEAR:	CALL BWAIT
-			LD	A,01H
-			OUT	(CMD_WR),A
-			LD	A,0
-			RET
-
+PORT1OUT:
+		LD	A,C
+		LD	(PORT1_DAT),A
+		RET
+		
 ;================================================================================================
-; Send to LCD char in regC. Print at current position (what ever it is)
+; PORT 1 (on USART v2) status.
 ;================================================================================================
-LCDPUT:		CALL BWAIT
-			LD	A,C	
-			OUT	(DAT_WR),A
-			LD	A,0
-			RET
-
-;================================================================================================
-; Position LCD cursor at regB.
-;================================================================================================
-LCDPOS:		CALL BWAIT
-			LD	A,B
-			OR	80H
-			OUT	(CMD_WR),A
-			LD	A,0
-			RET
-
-;================================================================================================
-; Do CR (Carriage Return)
-;================================================================================================
-LCDCR:		CALL BWAIT
-			AND	0F0H			; Keep line info, set column to 1.
-			OR	080H
-			OUT	(CMD_WR),A
-			LD	A,0
-			RET
-			
-;================================================================================================
-; Do LF (Line Feed)
-;================================================================================================
-LCDLF:		CALL BWAIT			; regA holds LCD address counter
-			LD	D,A
-			AND	40H				; get only the 7th bit to see on which line the cursor is.
-			JR	Z,LN11
-			CALL BWAIT
-			LD	A,0C0H
-			OUT	(CMD_WR),A		; set addr counter to source position (2,1)
-			LD	HL,BUF
-			LD	B,10H
-NEWSRC:		CALL BWAIT
-			IN	A,(DAT_RD)		; get data from source position
-			LD	(HL),A			; Store char in buffer
-			INC	HL
-			DJNZ NEWSRC
-			CALL LCDCLEAR
-			LD	HL,BUF
-			LD	B,10H
-NEWTGT:		CALL BWAIT
-			LD	A,(HL)
-			INC	HL
-			OUT	(DAT_WR),A
-			DJNZ NEWTGT
-
-LN11:		CALL BWAIT
-			LD	A,D
-			AND	0FH
-			OR	0C0H
-			OUT	(CMD_WR),A
-			LD	A,0
-			RET
-
-;================================================================================================
-; Delay X seconds, with X passed on reg B
-;================================================================================================
-DELAYS:		PUSH BC
-			PUSH HL
-LOOP0:		LD	HL,655		;2.5				\
-LOOP1:		LD	C,255		;1.75	\			|
-LOOP2:		DEC	C			;1		|			|
-			NOP				;1		| t=6C+0.5	| 
-			LD	A,C			;1		|			| t=HL(6C+6.5)+1.25
-			JR	NZ,LOOP2	;3/1.75	/			|
-			DEC	HL			;1					| with HL=655 and c=255, t=1.006sec (WOW!!!)
-			LD	A,H			;1					|
-			OR	L			;1					|
-			JR	NZ,LOOP1	;3/1.75				/
-			DJNZ LOOP0		;3.25/2
-			POP	HL
-			POP	BC
-			RET
-
-;================================================================================================
-; Delay X miliseconds, with X passed on reg B
-;================================================================================================
-DELAYMS:	PUSH BC
-DECB:		LD	C,0C8H
-DECC:		NOP
-			DEC	C
-			JR	NZ,DECC
-			DEC	B
-			JR	NZ,DECB
-			POP	BC
-			RET
-
-;================================================================================================
-; Delay 5*X microseconds, with X passed on reg C
-;================================================================================================
-DELAY5US:	PUSH BC
-DEC:		NOP
-			DEC	C
-			JR	NZ,DEC
-			POP	BC
-			RET
-
-;================================================================================================
-LCDSTATUS	.DB	0			; After LCD has been initialized, it will hold card addr.
-BUF			.DS	10H			; Buffer for Line Feed operation
+PORT1ST:
+		IN	A,(PORT1_STA)
+		AND 1
+		RET	Z
+		LD	A,0FFH
+		RET
+		
 ;================================================================================================
 ; Disk processing entry points
 ;================================================================================================
