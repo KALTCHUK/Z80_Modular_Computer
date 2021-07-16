@@ -1,6 +1,6 @@
 
 
-int   TTY_speed = 38400;
+int   TTY_speed = 19200;
 byte  TTY_addr = 0xa0;          // The other port only changes one bit from address word (a00)
 
 
