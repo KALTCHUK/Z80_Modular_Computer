@@ -34,7 +34,7 @@
 
 // Global variables
 bool  Status;                   // Tells if we are attending an I/O request from the CPU
-byte  TTY_addr = 0xd0;          // The other port only changes one bit from address word (a00)
+byte  TTY_addr = 0xa0;          // The other port only changes one bit from address word (a00)
 byte  pw;
 int   TTY_speed = 38400;
 
@@ -47,7 +47,7 @@ void setAllPinsInput(void) {
 }
 
 // **********************************************************************************************************************
-void setDataPinsOutput(void) {
+void setPinsForOutput(void) {
   DDRB = DDRB | B00000011;
   DDRD = DDRD | B11111100;
 }
@@ -112,7 +112,21 @@ void loop() {
 
 // **********************************************************************************************************************
 void writeCommand(void) {               // CPU wants to write a command
+  byte  baud;
 
+  baud = (PINB << 6) | (PIND >> 2);
+  switch (var) {
+    case 1:
+      //do something when var equals 1
+      break;
+    case 2:
+      //do something when var equals 2
+      break;
+    default:
+      // if nothing else matches, do the default
+      // default is optional
+      break;
+  }
 }
 
 // **********************************************************************************************************************
