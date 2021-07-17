@@ -20,7 +20,7 @@
 // (wr, rd and iorq are active low)
 //
 // The content of PORT_C defines if this TTY is being demmanded by the CPU.
-// The content of PORT_B defines the operation demmanded.
+// The content of PORT_B defines the operation demanded.
 // ************************************************************************************************************************************
 
 // Control signals
@@ -32,16 +32,18 @@
 
 #define IORQed  true
 
+#define LED     13
+
 // Global variables
 bool  Status;                   // Tells if we are attending an I/O request from the CPU
 byte  TTY_addr = 0xa0;          // The other port only changes one bit from address word (a00)
 byte  pw;
-int   TTY_speed = 38400;
+int   TTY_speed = 9600;
 
 // **********************************************************************************************************************
 void setAllPinsInput(void) {
-  // Set all pins as inputs (except for TX, RX, RESET and XTAL which remain "as are")
-  DDRB = DDRB & B11000000;
+  // Set all pins as inputs (except for TX, RX, RESET, XTAL and LED which remain "as are")
+  DDRB = DDRB & B11100000;
   DDRD = DDRD & B00000011;
   DDRC = DDRC & B11000000;
 }
@@ -56,6 +58,7 @@ void setPinsForOutput(void) {
 // setup()
 // **********************************************************************************************************************
 void setup() {
+  pinMode(LED, OUTPUT);
   setAllPinsInput();
   pw = (TTY_addr >> 4) | (TTY_addr <<5) | B00010000; 
   Status = ~IORQed;              // Not attending an interrupt request
@@ -63,14 +66,14 @@ void setup() {
   //Initialize serial and wait for port to open:
   Serial.begin(TTY_speed);
   Serial.setTimeout(100);
-  while (!Serial) {}  ;           // wait for serial port to connect. Needed for native USB port only
+  //while (!Serial) {}  ;           // wait for serial port to connect. Needed for native USB port only
 
-  Serial.println(" ");
-  Serial.print("*** TTY address = ");
+  Serial.println();
+  Serial.print("TTY address = ");
   Serial.println(TTY_addr, HEX);
-  Serial.print("*** TTY speed   = ");
+  Serial.print("TTY speed   = ");
   Serial.println(TTY_speed, DEC);
-  Serial.print(" ");
+  Serial.println();
 }
 
 // **********************************************************************************************************************
@@ -82,6 +85,7 @@ void loop() {
   if ((PINC & 0x3F) == pw) {                // Is CPU is calling us?
     if (Status != IORQed) {                 // Yeah, it's a new IORQ
       Status = IORQed;
+      digitalWrite(LED, HIGH);
       operation = PINB & B00011100;         // Keep only, WR, RD and A01
       switch (operation) {
         case CMD_WR:
@@ -98,6 +102,7 @@ void loop() {
           break;
         default:
           Status = ~IORQed;
+          digitalWrite(LED, LOW);
           break;
       }
     }
@@ -105,6 +110,7 @@ void loop() {
   else {                                    // CPU isn't calling us,
     if (Status == IORQed) {                 // so reset status flag
       Status = ~IORQed;
+      digitalWrite(LED, LOW);
       setAllPinsInput();
     }
   }
@@ -115,18 +121,38 @@ void writeCommand(void) {               // CPU wants to write a command
   byte  baud;
 
   baud = (PINB << 6) | (PIND >> 2);
-  switch (var) {
+  switch (baud) {
     case 1:
-      //do something when var equals 1
+      TTY_speed = 1200;
       break;
     case 2:
-      //do something when var equals 2
+      TTY_speed = 2400;
+      break;
+    case 3:
+      TTY_speed = 4800;
+      break;
+    case 4:
+      TTY_speed = 9600;
+      break;
+    case 5:
+      TTY_speed = 19200;
+      break;
+    case 6:
+      TTY_speed = 38400;
+      break;
+    case 7:
+      TTY_speed = 57600;
+      break;
+    case 8:
+      TTY_speed = 115200;
       break;
     default:
-      // if nothing else matches, do the default
-      // default is optional
+      TTY_speed = 9600;
       break;
   }
+  Serial.end();
+  Serial.begin(TTY_speed);
+  Serial.setTimeout(100);
 }
 
 // **********************************************************************************************************************

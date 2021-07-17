@@ -1,4 +1,3 @@
-- Wire-up USARTv2 with Aduino Nano on TTY0 and ATmega328 on TTY1.
 - Test USARTv2:
 	- performance at 9600, 38400 and 115200bps.
 	- run DDT and ZSID.
