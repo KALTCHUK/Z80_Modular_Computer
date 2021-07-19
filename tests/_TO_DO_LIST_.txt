@@ -1,12 +1,13 @@
-- Wire-up USARTv2 with Aduino Nano on TTY0 and ATmega328 on TTY1.
+- Get familiar with ATMEGA328 and Atmel Studio:
+	- do the blink.
+	- do PCI tests.
+	- do USART tests.
+- Modify USARTv2 to use card select with 74LS85 and 74LS00. Also include ISP connector.
+- Wire-up USARTv2 with two ATmega328.
 - Test USARTv2:
 	- performance at 9600, 38400 and 115200bps.
 	- run DDT and ZSID.
 	- run WS and SC.
-- Get familiar with ATMEGA328:
-	- check if IC already has bootloader.
-	- do the blink.
-	- do the new preTTY.
 - Get familiar with ESP8266:
 	- do the Blink.
 	- do WiFiSearch.
