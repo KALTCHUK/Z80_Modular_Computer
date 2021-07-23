@@ -1,3 +1,3 @@
-cd C:\Program Files (x86)\Arduino\hardware\tools\avr\bin
-avrdude -p m328p -c arduino -e 
+cd C:\
+avrdude -p m328p -c arduino -U flash:w:\Users\kaltchuk\Documents\Atmel Studio\7.0\MyBlink\MyBlink\Debug\MyBlink.hex
 pause
