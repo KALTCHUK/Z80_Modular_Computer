@@ -1,3 +1,12 @@
+- Get familiar with ESP8266:
+	- do the Blink.***OK***
+	- do WiFiSearch.***OK***
+	- do the TelnetSerial.
+	- do local telnet.
+	- configure dynamic DNS.
+	- do external telnet.
+	- implement reset via telnet.
+
 - Get familiar with ATMEGA328 and Atmel Studio: (WAITING PROGRAMMER)
 	- do the blink.
 	- do PCI tests.
@@ -9,15 +18,6 @@
 	- performance at 9600, 38400 and 115200bps.
 	- run DDT and ZSID.
 	- run WS and SC.
-
-- Get familiar with ESP8266:
-	- do the Blink.
-	- do WiFiSearch.
-	- do the TelnetSerial.
-	- do local telnet.
-	- configure dynamic DNS.
-	- do external telnet.
-	- implement reset via telnet.
 
 - Rethink KEYBOARD.CNF for TeraTerm.
 - Assemble CPU and FLASHv2 PCBs. (WAITING PCBS)
