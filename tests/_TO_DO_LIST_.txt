@@ -1,13 +1,15 @@
-- Get familiar with ATMEGA328 and Atmel Studio:
+- Get familiar with ATMEGA328 and Atmel Studio: (WAITING PROGRAMMER)
 	- do the blink.
 	- do PCI tests.
 	- do USART tests.
-- Modify USARTv2 to use card select with 74LS85 and 74LS00. Also include ISP connector.
+
+- Modify USARTv2 to use card select with 74LS85 and 74LS00.include ISP conn.
 - Wire-up USARTv2 with two ATmega328.
 - Test USARTv2:
 	- performance at 9600, 38400 and 115200bps.
 	- run DDT and ZSID.
 	- run WS and SC.
+
 - Get familiar with ESP8266:
 	- do the Blink.
 	- do WiFiSearch.
@@ -16,12 +18,14 @@
 	- configure dynamic DNS.
 	- do external telnet.
 	- implement reset via telnet.
+
 - Rethink KEYBOARD.CNF for TeraTerm.
-- Assemble CPU and FLASHv2 PCBs.
+- Assemble CPU and FLASHv2 PCBs. (WAITING PCBS)
 - Test CPU and FLASHv2 PCBs.
+
 - Design MEM PCB.
 - Connect ESP8266 to USARTv2.
-- Modify USART v2 to work with ATMEGA328P.
 - Design PCB for USARTv2.
+
 - Design device with ESP8266 and relays.
 
