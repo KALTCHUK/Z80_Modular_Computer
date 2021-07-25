@@ -1,0 +1,144 @@
+
+(session "AVRisp 328p adapter.ses"
+  (base_design "AVRisp 328p adapter.dsn")
+  (placement
+    (resolution um 10)
+    (component Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical
+      (place J1 1219200 -1219200 front 0)
+    )
+    (component Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical
+      (place J2 1219200 -1371600 front 0)
+    )
+    (component Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical
+      (place J3 1320800 -1371600 front 0)
+    )
+    (component Connector_PinSocket_2.54mm:PinSocket_2x03_P2.54mm_Vertical
+      (place J4 1473200 -1346200 front 0)
+    )
+  )
+  (was_is
+  )
+  (routes 
+    (resolution um 10)
+    (parser
+      (host_cad "KiCad's Pcbnew")
+      (host_version "(5.1.4)-1")
+    )
+    (library_out 
+      (padstack "Via[0-1]_800:400_um"
+        (shape
+          (circle B.Cu 8000 0 0)
+        )
+        (attach off)
+      )
+    )
+    (network_out 
+      (net /RESET
+        (wire
+          (path B.Cu 3810
+            1473200 -1397000
+            1495427 -1374773
+            1495427 -1332390
+            1382237 -1219200
+            1219200 -1219200
+          )
+        )
+      )
+      (net +5V
+        (wire
+          (path B.Cu 7620
+            1219478 -1371600
+            1203046 -1388032
+            1203046 -1403660
+            1221786 -1422400
+            1320800 -1422400
+          )
+        )
+        (wire
+          (path B.Cu 7620
+            1227262 -1371600
+            1235323 -1371600
+          )
+        )
+        (wire
+          (path B.Cu 7620
+            1219200 -1371600
+            1219478 -1371600
+          )
+        )
+        (wire
+          (path B.Cu 7620
+            1227262 -1371600
+            1219478 -1371600
+          )
+        )
+        (wire
+          (path B.Cu 7620
+            1320800 -1422400
+            1320800 -1397000
+          )
+        )
+        (wire
+          (path B.Cu 7620
+            1235323 -1371600
+            1260723 -1346200
+            1447800 -1346200
+          )
+        )
+      )
+      (net GND
+        (wire
+          (path B.Cu 7620
+            1320800 -1371600
+            1336923 -1371600
+          )
+        )
+        (wire
+          (path B.Cu 7620
+            1447800 -1397000
+            1362323 -1397000
+            1336923 -1371600
+          )
+        )
+        (wire
+          (path B.Cu 7620
+            1320800 -1371600
+            1318200 -1371600
+          )
+        )
+        (wire
+          (path B.Cu 7620
+            1315458 -1371600
+            1304677 -1371600
+          )
+        )
+        (wire
+          (path B.Cu 7620
+            1315458 -1371600
+            1318200 -1371600
+          )
+        )
+        (wire
+          (path B.Cu 7620
+            1304677 -1371600
+            1279277 -1397000
+            1219200 -1397000
+          )
+        )
+      )
+      (net /MISO
+        (wire
+          (path B.Cu 3810
+            1473200 -1346200
+            1458490 -1331490
+            1234160 -1331490
+            1193027 -1372623
+            1193027 -1407118
+            1259109 -1473200
+            1320800 -1473200
+          )
+        )
+      )
+    )
+  )
+)

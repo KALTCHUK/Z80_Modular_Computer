@@ -1,0 +1,211 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Connector_Generic:Conn_02x03_Odd_Even J4
+U 1 1 60FC74A6
+P 6900 3600
+F 0 "J4" H 6950 3917 50  0000 C CNN
+F 1 "ISP" H 6950 3826 50  0000 C CNN
+F 2 "Connector_PinSocket_2.54mm:PinSocket_2x03_P2.54mm_Vertical" H 6900 3600 50  0001 C CNN
+F 3 "~" H 6900 3600 50  0001 C CNN
+	1    6900 3600
+	1    0    0    -1  
+$EndComp
+Text Label 7200 3600 0    50   ~ 0
+MOSI
+Text Label 6700 3500 2    50   ~ 0
+MISO
+Text Label 6700 3600 2    50   ~ 0
+SCK
+Text Label 6700 3700 2    50   ~ 0
+RESET
+$Comp
+L power:GND #PWR09
+U 1 1 60FCAF69
+P 7300 3800
+F 0 "#PWR09" H 7300 3550 50  0001 C CNN
+F 1 "GND" H 7305 3627 50  0000 C CNN
+F 2 "" H 7300 3800 50  0001 C CNN
+F 3 "" H 7300 3800 50  0001 C CNN
+	1    7300 3800
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+5V #PWR08
+U 1 1 60FCBBD2
+P 7300 3400
+F 0 "#PWR08" H 7300 3250 50  0001 C CNN
+F 1 "+5V" H 7315 3573 50  0000 C CNN
+F 2 "" H 7300 3400 50  0001 C CNN
+F 3 "" H 7300 3400 50  0001 C CNN
+	1    7300 3400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7300 3400 7300 3500
+Wire Wire Line
+	7300 3500 7200 3500
+Wire Wire Line
+	7200 3700 7300 3700
+Wire Wire Line
+	7300 3700 7300 3800
+$Comp
+L power:PWR_FLAG #FLG02
+U 1 1 60FCF049
+P 6800 2550
+F 0 "#FLG02" H 6800 2625 50  0001 C CNN
+F 1 "PWR_FLAG" H 6800 2723 50  0000 C CNN
+F 2 "" H 6800 2550 50  0001 C CNN
+F 3 "~" H 6800 2550 50  0001 C CNN
+	1    6800 2550
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:PWR_FLAG #FLG01
+U 1 1 60FCF817
+P 6200 2550
+F 0 "#FLG01" H 6200 2625 50  0001 C CNN
+F 1 "PWR_FLAG" H 6200 2723 50  0000 C CNN
+F 2 "" H 6200 2550 50  0001 C CNN
+F 3 "~" H 6200 2550 50  0001 C CNN
+	1    6200 2550
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR06
+U 1 1 60FD0647
+P 6200 2550
+F 0 "#PWR06" H 6200 2300 50  0001 C CNN
+F 1 "GND" H 6205 2377 50  0000 C CNN
+F 2 "" H 6200 2550 50  0001 C CNN
+F 3 "" H 6200 2550 50  0001 C CNN
+	1    6200 2550
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+5V #PWR07
+U 1 1 60FD0D19
+P 7100 2550
+F 0 "#PWR07" H 7100 2400 50  0001 C CNN
+F 1 "+5V" H 7115 2723 50  0000 C CNN
+F 2 "" H 7100 2550 50  0001 C CNN
+F 3 "" H 7100 2550 50  0001 C CNN
+	1    7100 2550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6800 2550 6800 2600
+Wire Wire Line
+	6800 2600 7100 2600
+Wire Wire Line
+	7100 2600 7100 2550
+$Comp
+L Connector:Conn_01x01_Male J1
+U 1 1 60FD3A13
+P 3800 2800
+F 0 "J1" H 3908 2889 50  0000 C CNN
+F 1 "Conn_01x01_Male" H 3908 2890 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical" H 3800 2800 50  0001 C CNN
+F 3 "~" H 3800 2800 50  0001 C CNN
+	1    3800 2800
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x02_Male J2
+U 1 1 60FD40C2
+P 3800 3200
+F 0 "J2" H 3908 3289 50  0000 C CNN
+F 1 "Conn_01x02_Male" H 3908 3290 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 3800 3200 50  0001 C CNN
+F 3 "~" H 3800 3200 50  0001 C CNN
+	1    3800 3200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x06_Male J3
+U 1 1 60FD4B30
+P 3800 3850
+F 0 "J3" H 3908 4139 50  0000 C CNN
+F 1 "Conn_01x06_Male" H 3908 4140 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical" H 3800 3850 50  0001 C CNN
+F 3 "~" H 3800 3850 50  0001 C CNN
+	1    3800 3850
+	1    0    0    -1  
+$EndComp
+Text Label 4000 2800 0    50   ~ 0
+RESET
+$Comp
+L power:+5V #PWR01
+U 1 1 60FD5CB6
+P 4000 3200
+F 0 "#PWR01" H 4000 3050 50  0001 C CNN
+F 1 "+5V" V 4015 3328 50  0000 L CNN
+F 2 "" H 4000 3200 50  0001 C CNN
+F 3 "" H 4000 3200 50  0001 C CNN
+	1    4000 3200
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR02
+U 1 1 60FD681E
+P 4000 3300
+F 0 "#PWR02" H 4000 3050 50  0001 C CNN
+F 1 "GND" V 4005 3172 50  0000 R CNN
+F 2 "" H 4000 3300 50  0001 C CNN
+F 3 "" H 4000 3300 50  0001 C CNN
+	1    4000 3300
+	0    -1   -1   0   
+$EndComp
+Text Label 4000 4150 0    50   ~ 0
+MOSI
+Text Label 4000 4050 0    50   ~ 0
+MISO
+Text Label 4000 3950 0    50   ~ 0
+SCK
+$Comp
+L power:+5V #PWR05
+U 1 1 60FD760F
+P 4000 3850
+F 0 "#PWR05" H 4000 3700 50  0001 C CNN
+F 1 "+5V" V 4015 3978 50  0000 L CNN
+F 2 "" H 4000 3850 50  0001 C CNN
+F 3 "" H 4000 3850 50  0001 C CNN
+	1    4000 3850
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+5V #PWR04
+U 1 1 60FD7E89
+P 4000 3750
+F 0 "#PWR04" H 4000 3600 50  0001 C CNN
+F 1 "+5V" V 4015 3878 50  0000 L CNN
+F 2 "" H 4000 3750 50  0001 C CNN
+F 3 "" H 4000 3750 50  0001 C CNN
+	1    4000 3750
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR03
+U 1 1 60FD8409
+P 4000 3650
+F 0 "#PWR03" H 4000 3400 50  0001 C CNN
+F 1 "GND" V 4005 3522 50  0000 R CNN
+F 2 "" H 4000 3650 50  0001 C CNN
+F 3 "" H 4000 3650 50  0001 C CNN
+	1    4000 3650
+	0    -1   -1   0   
+$EndComp
+$EndSCHEMATC
