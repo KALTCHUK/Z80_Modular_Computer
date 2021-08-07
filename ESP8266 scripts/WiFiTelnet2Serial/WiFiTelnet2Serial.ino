@@ -1,22 +1,5 @@
 /*
-  WiFiTelnetToSerial - Example Transparent UART to Telnet Server for esp8266
-
-  Copyright (c) 2015 Hristo Gochkov. All rights reserved.
-  This file is part of the ESP8266WiFi library for Arduino environment.
-
-  This library is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 2.1 of the License, or (at your option) any later version.
-
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-  Lesser General Public License for more details.
-
-  You should have received a copy of the GNU Lesser General Public
-  License along with this library; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+  WiFiTelnet2Serial - Transparent UART to Telnet Server for esp8266
 */
 #include <ESP8266WiFi.h>
 
@@ -37,33 +20,8 @@
 
 #define SWAP_PINS 0
 
-/*
-    SERIAL_LOOPBACK
-    0: normal serial operations
-    1: RX-TX are internally connected (loopback)
-*/
-
-//#define SERIAL_LOOPBACK 0
-
-//#define BAUD_SERIAL 115200
 #define BAUD_SERIAL 38400
-//#define BAUD_LOGGER 115200
 #define RXBUFFERSIZE 1024
-
-////////////////////////////////////////////////////////////
-
-//#if SERIAL_LOOPBACK
-//#undef BAUD_SERIAL
-//#define BAUD_SERIAL 3000000
-//#include <esp8266_peri.h>
-//#endif
-
-//#if SWAP_PINS
-//#include <SoftwareSerial.h>
-//SoftwareSerial* logger = nullptr;
-//#else
-//#define logger (&Serial1)
-//#endif
 
 #define STACK_PROTECTOR  512 // bytes
 
@@ -84,38 +42,11 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);   // turn the LED off
 
-//#if SWAP_PINS
-//  Serial.swap();
-  // Hardware serial is now on RX:GPIO13 TX:GPIO15
-  // use SoftwareSerial on regular RX(3)/TX(1) for logging
-//  logger = new SoftwareSerial(3, 1);
-//  logger->begin(BAUD_LOGGER);
-//  logger->enableIntTx(false);
-//  logger->println("\n\nUsing SoftwareSerial for logging");
-//#else
-//  logger->begin(BAUD_LOGGER);
-//  logger->println("\n\nUsing Serial1 for logging");
-//#endif
-//  logger->println(ESP.getFullVersion());
-//  logger->printf("Serial baud: %d (8n1: %d KB/s)\n", BAUD_SERIAL, BAUD_SERIAL * 8 / 10 / 1024);
-//  logger->printf("Serial receive buffer size: %d bytes\n", RXBUFFERSIZE);
-
-//#if SERIAL_LOOPBACK
-//  USC0(0) |= (1 << UCLBE); // incomplete HardwareSerial API
-//  logger->println("Serial Internal Loopback enabled");
-//#endif
-
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
-//  logger->print("\nConnecting to ");
-//  logger->println(ssid);
   while (WiFi.status() != WL_CONNECTED) {
-//    logger->print('.');
     delay(500);
   }
-//  logger->println();
-//  logger->print("connected, address=");
-//  logger->println(WiFi.localIP());
 
   digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on
 
@@ -123,9 +54,6 @@ void setup() {
   server.begin();
   server.setNoDelay(true);
 
-//  logger->print("Ready! Use 'telnet ");
-//  logger->print(WiFi.localIP());
-//  logger->printf(" %d' to connect\n", port);
 }
 
 void loop() {
@@ -137,8 +65,6 @@ void loop() {
       if (!serverClients[i]) { // equivalent to !serverClients[i].connected()
         serverClients[i] = server.available();
         serverClients[i].write("*** Console Session ***\n\r");
-//        logger->print("New client: index ");
-//        logger->print(i);
         break;
       }
 
@@ -149,7 +75,6 @@ void loop() {
       // when out of scope, a WiFiClient will
       // - flush() - all data will be sent
       // - stop() - automatically too
-//      logger->printf("server is busy with %d active connections\n", MAX_SRV_CLIENTS);
     }
   }
 
@@ -189,9 +114,6 @@ void loop() {
         } else {
           maxToTcp = std::min(maxToTcp, afw);
         }
-      } else {
-        // warn but ignore congested clients
-//        logger->println("one client is congested");
       }
     }
 
@@ -202,15 +124,13 @@ void loop() {
     uint8_t sbuf[len];
     int serial_got = Serial.readBytes(sbuf, len);
     // push UART data to all connected telnet clients
-    for (int i = 0; i < MAX_SRV_CLIENTS; i++)
+    for (int i = 0; i < MAX_SRV_CLIENTS; i++) {
       // if client.availableForWrite() was 0 (congested)
       // and increased since then,
       // ensure write space is sufficient:
       if (serverClients[i].availableForWrite() >= serial_got) {
         size_t tcp_sent = serverClients[i].write(sbuf, serial_got);
-//        if (tcp_sent != len) {
-//          logger->printf("len mismatch: available:%zd serial-read:%zd tcp-write:%zd\n", len, serial_got, tcp_sent);
-//        }
       }
+    }
   }
 }

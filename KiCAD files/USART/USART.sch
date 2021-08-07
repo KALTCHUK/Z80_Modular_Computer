@@ -839,9 +839,7 @@ Connection ~ 3300 4300
 Wire Wire Line
 	6200 4000 6500 4000
 Wire Wire Line
-	7600 3400 7000 3400
-Wire Wire Line
-	7600 3800 6850 3800
+	7600 3400 7300 3400
 NoConn ~ 13250 1100
 NoConn ~ 10400 3700
 Wire Wire Line
@@ -1385,4 +1383,67 @@ Wire Wire Line
 	4050 3350 3300 3350
 Wire Wire Line
 	3300 3350 3300 2950
+$Comp
+L Connector_Generic:Conn_01x03 J?
+U 1 1 610DB591
+P 6850 4400
+F 0 "J?" V 6768 4580 50  0000 L CNN
+F 1 "Conn_01x03" V 6813 4580 50  0001 L CNN
+F 2 "" H 6850 4400 50  0001 C CNN
+F 3 "~" H 6850 4400 50  0001 C CNN
+	1    6850 4400
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x04 J?
+U 1 1 610DCAD3
+P 7400 5000
+F 0 "J?" V 7318 5180 50  0000 L CNN
+F 1 "Conn_01x04" V 7363 5180 50  0001 L CNN
+F 2 "" H 7400 5000 50  0001 C CNN
+F 3 "~" H 7400 5000 50  0001 C CNN
+	1    7400 5000
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	6850 3800 6850 4200
+Wire Wire Line
+	7600 3800 6950 3800
+Wire Wire Line
+	6950 3800 6950 4200
+Wire Wire Line
+	6600 4200 6750 4200
+Wire Wire Line
+	7200 4800 6600 4800
+Wire Wire Line
+	6600 4200 6600 4800
+Wire Wire Line
+	7300 4800 7300 3400
+Connection ~ 7300 3400
+Wire Wire Line
+	7300 3400 7000 3400
+NoConn ~ 7400 4800
+$Comp
+L power:GND #PWR?
+U 1 1 61126C77
+P 7800 4800
+F 0 "#PWR?" H 7800 4550 50  0001 C CNN
+F 1 "GND" H 7805 4627 50  0000 C CNN
+F 2 "" H 7800 4800 50  0001 C CNN
+F 3 "" H 7800 4800 50  0001 C CNN
+	1    7800 4800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7800 4800 7500 4800
+Text Notes 6650 4550 0    50   ~ 0
+TTL
+Text Notes 6950 4550 0    50   ~ 0
+RS232
+Text Notes 7250 5200 1    50   ~ 0
+RX
+Text Notes 7350 5200 1    50   ~ 0
+TX
+Text Notes 7550 5250 1    50   ~ 0
+GND
 $EndSCHEMATC
