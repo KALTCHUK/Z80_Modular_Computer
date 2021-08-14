@@ -3,7 +3,7 @@
 	- do PCI tests.
 	- do USART tests.
 
-- Modify USARTv2 to use card select with 74LS85 and 74LS00.include ISP conn.
+- Modify USARTv2 to use card select with 74LS85 and 74LS00.
 - Wire-up USARTv2 with two ATmega328.
 - Test USARTv2:
 	- performance at 9600, 38400 and 115200bps.

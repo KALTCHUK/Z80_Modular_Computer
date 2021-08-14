@@ -91,9 +91,9 @@ int main(void)
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
-  8c:	2f ef       	ldi	r18, 0xFF	; 255
-  8e:	81 ee       	ldi	r24, 0xE1	; 225
-  90:	94 e0       	ldi	r25, 0x04	; 4
+  8c:	2f e7       	ldi	r18, 0x7F	; 127
+  8e:	84 e8       	ldi	r24, 0x84	; 132
+  90:	9e e1       	ldi	r25, 0x1E	; 30
   92:	21 50       	subi	r18, 0x01	; 1
   94:	80 40       	sbci	r24, 0x00	; 0
   96:	90 40       	sbci	r25, 0x00	; 0
@@ -103,7 +103,7 @@ int main(void)
 	
     while (1) 
     {
-		_delay_ms(100);
+		_delay_ms(500);
 		PORTB ^= (1 << LED);			//Toggle LED
   9e:	95 b1       	in	r25, 0x05	; 5
   a0:	82 e0       	ldi	r24, 0x02	; 2
