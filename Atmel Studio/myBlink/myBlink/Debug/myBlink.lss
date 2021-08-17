@@ -3,29 +3,29 @@ myBlink.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  00800100  00000100  2**0
+  0 .data         00000000  00800100  00800100  00000122  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         000000ac  00000000  00000000  00000054  2**1
+  1 .text         000000ce  00000000  00000000  00000054  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .comment      00000030  00000000  00000000  00000100  2**0
+  2 .comment      00000030  00000000  00000000  00000122  2**0
                   CONTENTS, READONLY
-  3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000130  2**2
+  3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000154  2**2
                   CONTENTS, READONLY
-  4 .debug_aranges 00000020  00000000  00000000  00000170  2**0
+  4 .debug_aranges 00000020  00000000  00000000  00000194  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   000006fd  00000000  00000000  00000190  2**0
+  5 .debug_info   00000745  00000000  00000000  000001b4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 0000065e  00000000  00000000  0000088d  2**0
+  6 .debug_abbrev 00000699  00000000  00000000  000008f9  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   0000025b  00000000  00000000  00000eeb  2**0
+  7 .debug_line   00000280  00000000  00000000  00000f92  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000024  00000000  00000000  00001148  2**2
+  8 .debug_frame  00000024  00000000  00000000  00001214  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    000003a5  00000000  00000000  0000116c  2**0
+  9 .debug_str    000003a5  00000000  00000000  00001238  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    00000048  00000000  00000000  00001511  2**0
+ 10 .debug_loc    0000006c  00000000  00000000  000015dd  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000010  00000000  00000000  00001559  2**0
+ 11 .debug_ranges 00000010  00000000  00000000  00001649  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -66,18 +66,18 @@ Disassembly of section .text:
   70:	de bf       	out	0x3e, r29	; 62
   72:	cd bf       	out	0x3d, r28	; 61
   74:	0e 94 40 00 	call	0x80	; 0x80 <main>
-  78:	0c 94 54 00 	jmp	0xa8	; 0xa8 <_exit>
+  78:	0c 94 65 00 	jmp	0xca	; 0xca <_exit>
 
 0000007c <__bad_interrupt>:
   7c:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
 00000080 <main>:
-#include <util/delay.h>
-
 
 int main(void)
 {
-    DDRB  |= (1 << LED);
+    int		i;
+	
+	DDRB  |= (1 << LED);
   80:	84 b1       	in	r24, 0x04	; 4
   82:	82 60       	ori	r24, 0x02	; 2
   84:	84 b9       	out	0x04, r24	; 4
@@ -85,34 +85,57 @@ int main(void)
   86:	85 b1       	in	r24, 0x05	; 5
   88:	8d 7f       	andi	r24, 0xFD	; 253
   8a:	85 b9       	out	0x05, r24	; 5
+	
+    while (1) 
+    {
+		for(i=0; i<10; i++) {
+  8c:	20 e0       	ldi	r18, 0x00	; 0
+  8e:	30 e0       	ldi	r19, 0x00	; 0
+  90:	0f c0       	rjmp	.+30     	; 0xb0 <main+0x30>
+			PORTB ^= (1 << LED);			//Toggle LED
+  92:	95 b1       	in	r25, 0x05	; 5
+  94:	82 e0       	ldi	r24, 0x02	; 2
+  96:	89 27       	eor	r24, r25
+  98:	85 b9       	out	0x05, r24	; 5
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
-  8c:	2f e7       	ldi	r18, 0x7F	; 127
-  8e:	84 e8       	ldi	r24, 0x84	; 132
-  90:	9e e1       	ldi	r25, 0x1E	; 30
-  92:	21 50       	subi	r18, 0x01	; 1
-  94:	80 40       	sbci	r24, 0x00	; 0
-  96:	90 40       	sbci	r25, 0x00	; 0
-  98:	e1 f7       	brne	.-8      	; 0x92 <main+0x12>
-  9a:	00 c0       	rjmp	.+0      	; 0x9c <main+0x1c>
-  9c:	00 00       	nop
+  9a:	4f e7       	ldi	r20, 0x7F	; 127
+  9c:	8a e1       	ldi	r24, 0x1A	; 26
+  9e:	96 e0       	ldi	r25, 0x06	; 6
+  a0:	41 50       	subi	r20, 0x01	; 1
+  a2:	80 40       	sbci	r24, 0x00	; 0
+  a4:	90 40       	sbci	r25, 0x00	; 0
+  a6:	e1 f7       	brne	.-8      	; 0xa0 <main+0x20>
+  a8:	00 c0       	rjmp	.+0      	; 0xaa <main+0x2a>
+  aa:	00 00       	nop
+	DDRB  |= (1 << LED);
+	PORTB &= ~(1 << LED);			//Turn off LED
 	
     while (1) 
     {
-		_delay_ms(500);
-		PORTB ^= (1 << LED);			//Toggle LED
-  9e:	95 b1       	in	r25, 0x05	; 5
-  a0:	82 e0       	ldi	r24, 0x02	; 2
-  a2:	89 27       	eor	r24, r25
-  a4:	85 b9       	out	0x05, r24	; 5
-  a6:	f2 cf       	rjmp	.-28     	; 0x8c <main+0xc>
+		for(i=0; i<10; i++) {
+  ac:	2f 5f       	subi	r18, 0xFF	; 255
+  ae:	3f 4f       	sbci	r19, 0xFF	; 255
+  b0:	2a 30       	cpi	r18, 0x0A	; 10
+  b2:	31 05       	cpc	r19, r1
+  b4:	74 f3       	brlt	.-36     	; 0x92 <main+0x12>
+  b6:	2f e7       	ldi	r18, 0x7F	; 127
+  b8:	4e ee       	ldi	r20, 0xEE	; 238
+  ba:	86 e3       	ldi	r24, 0x36	; 54
+  bc:	21 50       	subi	r18, 0x01	; 1
+  be:	40 40       	sbci	r20, 0x00	; 0
+  c0:	80 40       	sbci	r24, 0x00	; 0
+  c2:	e1 f7       	brne	.-8      	; 0xbc <main+0x3c>
+  c4:	00 c0       	rjmp	.+0      	; 0xc6 <main+0x46>
+  c6:	00 00       	nop
+  c8:	e1 cf       	rjmp	.-62     	; 0x8c <main+0xc>
 
-000000a8 <_exit>:
-  a8:	f8 94       	cli
+000000ca <_exit>:
+  ca:	f8 94       	cli
 
-000000aa <__stop_program>:
-  aa:	ff cf       	rjmp	.-2      	; 0xaa <__stop_program>
+000000cc <__stop_program>:
+  cc:	ff cf       	rjmp	.-2      	; 0xcc <__stop_program>

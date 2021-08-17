@@ -13,13 +13,18 @@
 
 int main(void)
 {
-    DDRB  |= (1 << LED);
+    int		i;
+	
+	DDRB  |= (1 << LED);
 	PORTB &= ~(1 << LED);			//Turn off LED
 	
     while (1) 
     {
-		_delay_ms(500);
-		PORTB ^= (1 << LED);			//Toggle LED
+		for(i=0; i<10; i++) {
+			PORTB ^= (1 << LED);			//Toggle LED
+			_delay_ms(100);
+		}
+		_delay_ms(900);
     }
 }
 
