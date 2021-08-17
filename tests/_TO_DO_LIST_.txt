@@ -1,12 +1,12 @@
-- Get familiar with ATMEGA328 and Atmel Studio: (WAITING PROGRAMMER)
-	- do the blink.
-	- do PCI tests.
+- Get familiar with ATMEGA328 and Atmel Studio:
 	- do USART tests.
 
 - Modify USARTv2 to use card select with 74LS85 and 74LS00.
 - Wire-up USARTv2 with two ATmega328.
 - Test USARTv2:
+	- develop routines to communicate with USARTv2
 	- performance at 9600, 38400 and 115200bps.
+	- modify BIOS for new USARTv2
 	- run DDT and ZSID.
 	- run WS and SC.
 
