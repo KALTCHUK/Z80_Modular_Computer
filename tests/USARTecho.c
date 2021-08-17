@@ -1,31 +1,28 @@
+/*
+ * Send back every char received
+ */
 
+#define F_CPU		20000000UL
 
-#define F_OSC 20000000 // Clock Speed
-#define BAUD 9600
-#define MYUBRR F_OSC/16/BAUD-1
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <util/delay.h>
 
-void main( void )
-{
-
-	USART_Init(MYUBRR)
-
-	while(1)
-	{
-		
-	}
-}
+#define BAUD 2400
+#define MYUBRR ((F_CPU/16/BAUD)-1)
 
 void USART_Init( unsigned int ubrr)
 {
-	/*Set baud rate */
+	/* Set baud rate */
 	UBRR0H = (unsigned char)(ubrr>>8);
 	UBRR0L = (unsigned char)ubrr;
 
-	Enable receiver and transmitter */
-	UCSR0B = (1<<RXEN0)|(1<<TXEN0);
+	/* Enable receiver and transmitter */
+	/* Enable RX_complete_interrupt    */
+	UCSR0B = (1<<RXCIE0)|(1<<RXEN0)|(1<<TXEN0);
 
-	/* Set frame format: 8data, 2stop bit */
-	UCSR0C = (1<<USBS0)|(3<<UCSZ00);
+	/* Set frame format: 8N1 */
+	UCSR0C = (3<<UCSZ00);
 }
 
 void USART_Transmit( unsigned char data )
@@ -50,3 +47,15 @@ ISR(USART_RX_vect)
 {
 	USART_Transmit(USART_Receive());
 }
+
+void main( void )
+{
+
+	USART_Init(MYUBRR)
+
+	while(1)
+	{
+		
+	}
+}
+
