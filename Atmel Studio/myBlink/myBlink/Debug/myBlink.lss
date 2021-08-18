@@ -88,7 +88,7 @@ int main(void)
 	
     while (1) 
     {
-		for(i=0; i<10; i++) {
+		for(i=0; i<20; i++) {
   8c:	20 e0       	ldi	r18, 0x00	; 0
   8e:	30 e0       	ldi	r19, 0x00	; 0
   90:	0f c0       	rjmp	.+30     	; 0xb0 <main+0x30>
@@ -103,9 +103,9 @@ int main(void)
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
-  9a:	4f e7       	ldi	r20, 0x7F	; 127
-  9c:	8a e1       	ldi	r24, 0x1A	; 26
-  9e:	96 e0       	ldi	r25, 0x06	; 6
+  9a:	4f e3       	ldi	r20, 0x3F	; 63
+  9c:	8d e0       	ldi	r24, 0x0D	; 13
+  9e:	93 e0       	ldi	r25, 0x03	; 3
   a0:	41 50       	subi	r20, 0x01	; 1
   a2:	80 40       	sbci	r24, 0x00	; 0
   a4:	90 40       	sbci	r25, 0x00	; 0
@@ -117,10 +117,10 @@ int main(void)
 	
     while (1) 
     {
-		for(i=0; i<10; i++) {
+		for(i=0; i<20; i++) {
   ac:	2f 5f       	subi	r18, 0xFF	; 255
   ae:	3f 4f       	sbci	r19, 0xFF	; 255
-  b0:	2a 30       	cpi	r18, 0x0A	; 10
+  b0:	24 31       	cpi	r18, 0x14	; 20
   b2:	31 05       	cpc	r19, r1
   b4:	74 f3       	brlt	.-36     	; 0x92 <main+0x12>
   b6:	2f e7       	ldi	r18, 0x7F	; 127

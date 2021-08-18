@@ -1,6 +1,9 @@
 /*
- * Send back every char received
- */
+ * USARTecho.c
+ *
+ * Created: 17/08/2021 16:43:09
+ * Author : kaltchuk
+ */ 
 
 #define F_CPU		20000000UL
 
@@ -10,6 +13,7 @@
 
 #define BAUD 2400
 #define MYUBRR ((F_CPU/16/BAUD)-1)
+#define LED_ON	PORTB |= (1<<PORTB1)
 
 void USART_Init( unsigned int ubrr)
 {
@@ -48,14 +52,16 @@ ISR(USART_RX_vect)
 	USART_Transmit(USART_Receive());
 }
 
-void main( void )
+
+int main(void)
 {
+	USART_Init(MYUBRR);
+	DDRB |= (1<<DDB1);		// set PB0 as output (LED)
+	LED_ON;
 
-	USART_Init(MYUBRR)
-
-	while(1)
-	{
-		
-	}
+    /* Replace with your application code */
+    while (1) 
+    {
+    }
 }
 

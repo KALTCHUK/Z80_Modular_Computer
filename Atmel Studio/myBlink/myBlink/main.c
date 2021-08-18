@@ -20,9 +20,9 @@ int main(void)
 	
     while (1) 
     {
-		for(i=0; i<10; i++) {
+		for(i=0; i<20; i++) {
 			PORTB ^= (1 << LED);			//Toggle LED
-			_delay_ms(100);
+			_delay_ms(50);
 		}
 		_delay_ms(900);
     }
