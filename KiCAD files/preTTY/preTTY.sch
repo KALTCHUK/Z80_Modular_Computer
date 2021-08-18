@@ -740,11 +740,11 @@ Text Label 9800 2250 2    50   ~ 0
 TX0
 Text Label 9800 2350 2    50   ~ 0
 RX0TTL
-Text Label 8250 2250 2    50   ~ 0
+Text Label 5200 4050 2    50   ~ 0
 RX0TTL
-Text Label 8250 2350 2    50   ~ 0
+Text Label 5200 4150 2    50   ~ 0
 RX0
-Text Label 8250 2450 2    50   ~ 0
+Text Label 5200 4250 2    50   ~ 0
 RX0RS232
 $Comp
 L preTTY-rescue:ATmega328P-PU-MCU_Microchip_ATmega U1
@@ -1056,7 +1056,7 @@ Wire Wire Line
 Text Label 7200 1700 0    50   ~ 0
 iorq
 Text Label 7300 2950 0    50   ~ 0
-cs0
+CS0
 Text Label 5850 3150 2    50   ~ 0
 a00
 Text Label 5250 2000 2    50   ~ 0
@@ -1182,12 +1182,12 @@ $EndComp
 $Comp
 L Connector_Generic:Conn_01x03 J5
 U 1 1 61202836
-P 8450 2350
-F 0 "J5" H 8530 2392 50  0000 L CNN
-F 1 "TTL/RS232" H 8530 2301 50  0000 L CNN
-F 2 "" H 8450 2350 50  0001 C CNN
-F 3 "~" H 8450 2350 50  0001 C CNN
-	1    8450 2350
+P 5400 4150
+F 0 "J5" H 5480 4192 50  0000 L CNN
+F 1 "TTL/RS232" H 5480 4101 50  0000 L CNN
+F 2 "" H 5400 4150 50  0001 C CNN
+F 3 "~" H 5400 4150 50  0001 C CNN
+	1    5400 4150
 	1    0    0    -1  
 $EndComp
 Connection ~ 1200 4200
@@ -1202,11 +1202,11 @@ d01
 Text Label 1600 3900 2    50   ~ 0
 d02
 Text Label 1600 4000 2    50   ~ 0
-mosi
+MOSI
 Text Label 1600 4100 2    50   ~ 0
-miso
+MISO
 Text Label 1600 4200 2    50   ~ 0
-sck
+SCK
 Text Label 1600 4600 2    50   ~ 0
 a01
 Text Label 1600 4700 2    50   ~ 0
@@ -1217,7 +1217,7 @@ NoConn ~ 1600 4900
 NoConn ~ 1600 5000
 NoConn ~ 1600 5100
 Text Label 1600 5600 2    50   ~ 0
-cs0
+CS0
 Text Label 1600 5700 2    50   ~ 0
 d03
 Text Label 1600 5800 2    50   ~ 0
@@ -1231,42 +1231,42 @@ d07
 $Comp
 L Connector_Generic:Conn_02x03_Odd_Even J4
 U 1 1 61227C0B
-P 4300 4100
-F 0 "J4" H 4350 4417 50  0000 C CNN
-F 1 "ISP" H 4350 4326 50  0000 C CNN
-F 2 "" H 4300 4100 50  0001 C CNN
-F 3 "~" H 4300 4100 50  0001 C CNN
-	1    4300 4100
+P 3700 4150
+F 0 "J4" H 3750 4467 50  0000 C CNN
+F 1 "ISP" H 3750 4376 50  0000 C CNN
+F 2 "" H 3700 4150 50  0001 C CNN
+F 3 "~" H 3700 4150 50  0001 C CNN
+	1    3700 4150
 	1    0    0    -1  
 $EndComp
-Text Label 4100 4000 2    50   ~ 0
-miso
-Text Label 4100 4100 2    50   ~ 0
-sck
-Text Label 4100 4200 2    50   ~ 0
+Text Label 3500 4050 2    50   ~ 0
+MISO
+Text Label 3500 4150 2    50   ~ 0
+SCK
+Text Label 3500 4250 2    50   ~ 0
 reset
-Text Label 4600 4100 0    50   ~ 0
-mosi
+Text Label 4000 4150 0    50   ~ 0
+MOSI
 $Comp
 L power:+5V #PWR024
 U 1 1 6122E66E
-P 4600 4000
-F 0 "#PWR024" H 4600 3850 50  0001 C CNN
-F 1 "+5V" H 4615 4173 50  0000 C CNN
-F 2 "" H 4600 4000 50  0001 C CNN
-F 3 "" H 4600 4000 50  0001 C CNN
-	1    4600 4000
+P 4000 4050
+F 0 "#PWR024" H 4000 3900 50  0001 C CNN
+F 1 "+5V" H 4015 4223 50  0000 C CNN
+F 2 "" H 4000 4050 50  0001 C CNN
+F 3 "" H 4000 4050 50  0001 C CNN
+	1    4000 4050
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR025
 U 1 1 61230D7B
-P 4600 4200
-F 0 "#PWR025" H 4600 3950 50  0001 C CNN
-F 1 "GND" H 4605 4027 50  0000 C CNN
-F 2 "" H 4600 4200 50  0001 C CNN
-F 3 "" H 4600 4200 50  0001 C CNN
-	1    4600 4200
+P 4000 4250
+F 0 "#PWR025" H 4000 4000 50  0001 C CNN
+F 1 "GND" H 4005 4077 50  0000 C CNN
+F 2 "" H 4000 4250 50  0001 C CNN
+F 3 "" H 4000 4250 50  0001 C CNN
+	1    4000 4250
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1298,5 +1298,5 @@ Wire Wire Line
 Wire Wire Line
 	950  5200 950  5150
 Text Label 7300 2400 0    50   ~ 0
-cs1
+CS1
 $EndSCHEMATC

@@ -22,8 +22,7 @@ void USART_Init( unsigned int ubrr)
 	UBRR0L = (unsigned char)ubrr;
 
 	/* Enable receiver and transmitter */
-	/* Enable RX_complete_interrupt    */
-	UCSR0B = (1<<RXCIE0)|(1<<RXEN0)|(1<<TXEN0);
+	UCSR0B = (1<<RXEN0)|(1<<TXEN0);
 
 	/* Set frame format: 8N1 */
 	UCSR0C = (3<<UCSZ00);
@@ -47,12 +46,6 @@ unsigned char USART_Receive( void )
 	return UDR0;
 }
 
-ISR(USART_RX_vect)
-{
-	USART_Transmit(USART_Receive());
-}
-
-
 int main(void)
 {
 	USART_Init(MYUBRR);
@@ -62,6 +55,7 @@ int main(void)
     /* Replace with your application code */
     while (1) 
     {
+		USART_Transmit(USART_Receive());
     }
 }
 
