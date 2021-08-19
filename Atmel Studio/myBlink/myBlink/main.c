@@ -5,7 +5,12 @@
  * Author : kaltchuk
  */ 
 #define F_CPU	20000000UL
-#define LED		PB1
+
+#define LED				PORTB1
+#define LED_ON			PORTB |= (1<<LED)
+#define LED_OFF			PORTB &= ~(1<<LED)
+#define LED_TOGGLE		PINB |= (1<<LED)
+
 
 #include <avr/io.h>
 #include <util/delay.h>
@@ -16,12 +21,12 @@ int main(void)
     int		i;
 	
 	DDRB  |= (1 << LED);
-	PORTB &= ~(1 << LED);			//Turn off LED
+	LED_OFF;					//Turn off LED
 	
     while (1) 
     {
 		for(i=0; i<20; i++) {
-			PORTB ^= (1 << LED);			//Toggle LED
+			LED_TOGGLE;			//Toggle LED
 			_delay_ms(50);
 		}
 		_delay_ms(900);
