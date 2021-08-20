@@ -1,18 +1,9 @@
-/**********************************************************
+/*
  * preTTY.c
  *
- * Created: 19/08/2021 11:51:55
+ * Created: 19/08/2021 19:33:30
  * Author : kaltchuk
- * 
- **********************************************************
- *ATmega328 pin use for preTTY
- *            7     6     5     4     3     2     1     0
- *PORT B	XTAL2 XTAL1  SCK  MISO  MOSI   D02   D01   D00
- *PORT C    ----- RESET   nc   nc    nc    WR    RD    A01
- *PORT D     D07   D06   D05   D04   D03   CS    TX    RX
- *
- *RESET, WR, RD and CS are all active low signals.
- **********************************************************/
+ */ 
 
 #define F_CPU			20000000UL
 
@@ -23,7 +14,9 @@
 #define INPUT			1
 #define OUTPUT			0
 
+#include <stdlib.h>
 #include <avr/io.h>
+#include <avr/interrupt.h>
 #include <util/delay.h>
 
 #define UBRR_2400		520
@@ -49,7 +42,7 @@ int		TX_wr_ptr=0, TX_rd_ptr=0;
 // ************************** //
 void init_DDR(void)		// Configure I/O pins
 {
-						// keep in mind that 0=In, 1=Out
+	// keep in mind that 0=In, 1=Out
 	DDRB &= 0xf8;		// mask = X  X  X  X  X  In In In --> &11111000
 	DDRC &= 0xf8;		// mask = X  X  X  X  X  In In In --> &11111000
 	DDRD &= 0x03;		// mask = In In In In In In X  X  --> &00000011
@@ -81,21 +74,21 @@ void send_char(void)	// Transmit the next char in the TX_buff
 	/* Put data into buffer, sends the data */
 	UDR0 = TX_buff[TX_rd_ptr++];
 	if (TX_rd_ptr == MAX_BUFF_SIZE)
-		TX_rd_ptr = 0;
+	TX_rd_ptr = 0;
 }
 
 void config_data_pins(int direction)
 {
-		if (direction == INPUT)
-		{
-			DDRB &= 0xf8;		// mask = X  X  X  X  X  In In In --> &11111000
-			DDRD &= 0x03;		// mask = In In In In In X  X  X  --> &00000111
-		}
-		else
-		{
-			DDRB |= 0x03;		// mask =  X   X   X   X   X  Out Out Out --> |00000111
-			DDRD |= 0xf8;		// mask = Out Out Out Out Out  X   X  X   --> |11111000
-		}
+	if (direction == INPUT)
+	{
+		DDRB &= 0xf8;		// mask = X  X  X  X  X  In In In --> &11111000
+		DDRD &= 0x03;		// mask = In In In In In X  X  X  --> &00000111
+	}
+	else
+	{
+		DDRB |= 0x03;		// mask =  X   X   X   X   X  Out Out Out --> |00000111
+		DDRD |= 0xf8;		// mask = Out Out Out Out Out  X   X  X   --> |11111000
+	}
 }
 
 // ************************** //
@@ -105,7 +98,7 @@ ISR(USART_RX_vect)		// Catch an incoming char on the serial port and put it on t
 {
 	RX_buff[RX_wr_ptr++] = UDR0;
 	if (RX_wr_ptr == MAX_BUFF_SIZE)
-		RX_wr_ptr = 0;
+	RX_wr_ptr = 0;
 	reti();
 }
 
@@ -119,18 +112,19 @@ ISR(INT0_vect)			// Houston, we got a chip_select... CPU wants something
 // ************************** //
 // ****** MAIN PROGRAM ****** //
 // ************************** //
+
 int main(void)
 {
 	init_DDR();
 	init_USART(UBRR_9600);
 	sei();
 	
-    while (1) 
-    {
+	while (1)
+	{
 		if(TX_buff_use() > 0)
 		{
 			send_char();
 		}
-    }
+	}
 }
 

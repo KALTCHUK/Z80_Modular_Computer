@@ -3,29 +3,29 @@ myBlink.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  00800100  00000122  2**0
+  0 .data         00000000  00800100  00800100  00000120  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         000000ce  00000000  00000000  00000054  2**1
+  1 .text         000000cc  00000000  00000000  00000054  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .comment      00000030  00000000  00000000  00000122  2**0
+  2 .comment      00000030  00000000  00000000  00000120  2**0
                   CONTENTS, READONLY
-  3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000154  2**2
+  3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000150  2**2
                   CONTENTS, READONLY
-  4 .debug_aranges 00000020  00000000  00000000  00000194  2**0
+  4 .debug_aranges 00000020  00000000  00000000  00000190  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   00000745  00000000  00000000  000001b4  2**0
+  5 .debug_info   00000745  00000000  00000000  000001b0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 00000699  00000000  00000000  000008f9  2**0
+  6 .debug_abbrev 00000699  00000000  00000000  000008f5  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   00000280  00000000  00000000  00000f92  2**0
+  7 .debug_line   00000280  00000000  00000000  00000f8e  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000024  00000000  00000000  00001214  2**2
+  8 .debug_frame  00000024  00000000  00000000  00001210  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    000003a5  00000000  00000000  00001238  2**0
+  9 .debug_str    000003a5  00000000  00000000  00001234  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    0000006c  00000000  00000000  000015dd  2**0
+ 10 .debug_loc    0000006c  00000000  00000000  000015d9  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000010  00000000  00000000  00001649  2**0
+ 11 .debug_ranges 00000010  00000000  00000000  00001645  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -66,7 +66,7 @@ Disassembly of section .text:
   70:	de bf       	out	0x3e, r29	; 62
   72:	cd bf       	out	0x3d, r28	; 61
   74:	0e 94 40 00 	call	0x80	; 0x80 <main>
-  78:	0c 94 65 00 	jmp	0xca	; 0xca <_exit>
+  78:	0c 94 64 00 	jmp	0xc8	; 0xc8 <_exit>
 
 0000007c <__bad_interrupt>:
   7c:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -79,11 +79,11 @@ int main(void)
 	
 	DDRB  |= (1 << LED);
   80:	84 b1       	in	r24, 0x04	; 4
-  82:	82 60       	ori	r24, 0x02	; 2
+  82:	80 62       	ori	r24, 0x20	; 32
   84:	84 b9       	out	0x04, r24	; 4
-	PORTB &= ~(1 << LED);			//Turn off LED
+	LED_OFF;					//Turn off LED
   86:	85 b1       	in	r24, 0x05	; 5
-  88:	8d 7f       	andi	r24, 0xFD	; 253
+  88:	8f 7d       	andi	r24, 0xDF	; 223
   8a:	85 b9       	out	0x05, r24	; 5
 	
     while (1) 
@@ -91,51 +91,50 @@ int main(void)
 		for(i=0; i<20; i++) {
   8c:	20 e0       	ldi	r18, 0x00	; 0
   8e:	30 e0       	ldi	r19, 0x00	; 0
-  90:	0f c0       	rjmp	.+30     	; 0xb0 <main+0x30>
-			PORTB ^= (1 << LED);			//Toggle LED
-  92:	95 b1       	in	r25, 0x05	; 5
-  94:	82 e0       	ldi	r24, 0x02	; 2
-  96:	89 27       	eor	r24, r25
-  98:	85 b9       	out	0x05, r24	; 5
+  90:	0e c0       	rjmp	.+28     	; 0xae <main+0x2e>
+			LED_TOGGLE;			//Toggle LED
+  92:	83 b1       	in	r24, 0x03	; 3
+  94:	80 62       	ori	r24, 0x20	; 32
+  96:	83 b9       	out	0x03, r24	; 3
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
-  9a:	4f e3       	ldi	r20, 0x3F	; 63
-  9c:	8d e0       	ldi	r24, 0x0D	; 13
-  9e:	93 e0       	ldi	r25, 0x03	; 3
-  a0:	41 50       	subi	r20, 0x01	; 1
-  a2:	80 40       	sbci	r24, 0x00	; 0
-  a4:	90 40       	sbci	r25, 0x00	; 0
-  a6:	e1 f7       	brne	.-8      	; 0xa0 <main+0x20>
-  a8:	00 c0       	rjmp	.+0      	; 0xaa <main+0x2a>
-  aa:	00 00       	nop
+  98:	4f ef       	ldi	r20, 0xFF	; 255
+  9a:	80 e7       	ldi	r24, 0x70	; 112
+  9c:	92 e0       	ldi	r25, 0x02	; 2
+  9e:	41 50       	subi	r20, 0x01	; 1
+  a0:	80 40       	sbci	r24, 0x00	; 0
+  a2:	90 40       	sbci	r25, 0x00	; 0
+  a4:	e1 f7       	brne	.-8      	; 0x9e <main+0x1e>
+  a6:	00 c0       	rjmp	.+0      	; 0xa8 <main+0x28>
+  a8:	00 00       	nop
 	DDRB  |= (1 << LED);
-	PORTB &= ~(1 << LED);			//Turn off LED
+	LED_OFF;					//Turn off LED
 	
     while (1) 
     {
 		for(i=0; i<20; i++) {
-  ac:	2f 5f       	subi	r18, 0xFF	; 255
-  ae:	3f 4f       	sbci	r19, 0xFF	; 255
-  b0:	24 31       	cpi	r18, 0x14	; 20
-  b2:	31 05       	cpc	r19, r1
-  b4:	74 f3       	brlt	.-36     	; 0x92 <main+0x12>
-  b6:	2f e7       	ldi	r18, 0x7F	; 127
-  b8:	4e ee       	ldi	r20, 0xEE	; 238
-  ba:	86 e3       	ldi	r24, 0x36	; 54
-  bc:	21 50       	subi	r18, 0x01	; 1
-  be:	40 40       	sbci	r20, 0x00	; 0
-  c0:	80 40       	sbci	r24, 0x00	; 0
-  c2:	e1 f7       	brne	.-8      	; 0xbc <main+0x3c>
-  c4:	00 c0       	rjmp	.+0      	; 0xc6 <main+0x46>
-  c6:	00 00       	nop
-  c8:	e1 cf       	rjmp	.-62     	; 0x8c <main+0xc>
+  aa:	2f 5f       	subi	r18, 0xFF	; 255
+  ac:	3f 4f       	sbci	r19, 0xFF	; 255
+  ae:	24 31       	cpi	r18, 0x14	; 20
+  b0:	31 05       	cpc	r19, r1
+  b2:	7c f3       	brlt	.-34     	; 0x92 <main+0x12>
+  b4:	2f ef       	ldi	r18, 0xFF	; 255
+  b6:	41 ef       	ldi	r20, 0xF1	; 241
+  b8:	8b e2       	ldi	r24, 0x2B	; 43
+  ba:	21 50       	subi	r18, 0x01	; 1
+  bc:	40 40       	sbci	r20, 0x00	; 0
+  be:	80 40       	sbci	r24, 0x00	; 0
+  c0:	e1 f7       	brne	.-8      	; 0xba <main+0x3a>
+  c2:	00 c0       	rjmp	.+0      	; 0xc4 <main+0x44>
+  c4:	00 00       	nop
+  c6:	e2 cf       	rjmp	.-60     	; 0x8c <main+0xc>
 
-000000ca <_exit>:
-  ca:	f8 94       	cli
+000000c8 <_exit>:
+  c8:	f8 94       	cli
 
-000000cc <__stop_program>:
-  cc:	ff cf       	rjmp	.-2      	; 0xcc <__stop_program>
+000000ca <__stop_program>:
+  ca:	ff cf       	rjmp	.-2      	; 0xca <__stop_program>
