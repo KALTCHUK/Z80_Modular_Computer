@@ -82,7 +82,7 @@ void USART_Init( unsigned int ubrr)
 	UBRR0L = (unsigned char)ubrr;
   84:	80 93 c4 00 	sts	0x00C4, r24	; 0x8000c4 <__TEXT_REGION_LENGTH__+0x7f80c4>
 
-	/* Enable receiver and transmitter */
+	/* Enable receiver, transmitter and RX_complete interrupt */
 	UCSR0B = (1<<RXCIE0)|(1<<RXEN0)|(1<<TXEN0);
   88:	88 e9       	ldi	r24, 0x98	; 152
   8a:	80 93 c1 00 	sts	0x00C1, r24	; 0x8000c1 <__TEXT_REGION_LENGTH__+0x7f80c1>
@@ -135,7 +135,7 @@ ISR(USART_RX_vect,ISR_BLOCK)
 int main(void)
 {
 	USART_Init(MYUBRR);
-  c8:	89 e0       	ldi	r24, 0x09	; 9
+  c8:	8f e1       	ldi	r24, 0x1F	; 31
   ca:	90 e0       	ldi	r25, 0x00	; 0
   cc:	0e 94 40 00 	call	0x80	; 0x80 <USART_Init>
 	DDRB |= (1<<LED);		// set PB0 as output (LED)

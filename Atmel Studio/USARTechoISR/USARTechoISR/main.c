@@ -11,7 +11,7 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
-#define BAUD 125000
+#define BAUD 38400
 #define MYUBRR ((F_CPU/16/BAUD)-1)
 #define LED		PORTB1
 #define LED_ON	PORTB |= (1<<LED)
