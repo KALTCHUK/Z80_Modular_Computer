@@ -39,12 +39,25 @@
 
 #define MAX_BUFF_SIZE	256
 
-#define INPUT			1
-#define OUTPUT			0
+#define asInput			1
+#define asOutput		0
 
 #define WR_data			3
 #define RD_status		4
 #define RD_data			5
+
+#define D0pin			0
+#define D1pin			1
+#define D2pin			2
+#define D3pin			3
+#define D4pin			4
+#define D5pin			5
+#define D6pin			6
+#define D7pin			7
+#define A01pin			0
+#define RDpin			1
+#define WRpin			2
+#define CSpin			2
 
 #include <stdlib.h>
 #include <avr/io.h>
@@ -53,6 +66,7 @@
 
 char	RX_buff[MAX_BUFF_SIZE];		// stuff that came through the serial port
 int		RX_wr_ptr=0, RX_rd_ptr=0;
+
 char	TX_buff[MAX_BUFF_SIZE];		// stuff that has to be sent through the serial port
 int		TX_wr_ptr=0, TX_rd_ptr=0;
 
@@ -90,7 +104,7 @@ void init_EI0(void)		// Enable INT0 (this is our chip select)
 // ************************************************************************* //
 void config_data_pins(int direction)
 {
-		if (direction == INPUT)
+		if (direction == asInput)
 		{
 			DDRB &= 0xf8;		// mask = X  X  X  X  X  In In In --> &11111000
 			DDRD &= 0x03;		// mask = In In In In In X  X  X  --> &00000111
@@ -121,11 +135,32 @@ ISR(INT0_vect)			// Houston, we got a chip_select... CPU wants something
 	switch (PINC & 0x7)		// get only 3 LSB (wr, rd, a01)
 	​{
 		case RD_status:
-			// statements
+			config_data_pins(asOutput);
+			if ((RX_rd_ptr - RX_wr_ptr) != 0)
+			{
+				PORTB |= 0x7;		// reply 0xff to CPU
+				PORTD |= 0xf8;
+			}
+			else
+			{
+				PORTB &= 0xf8;		// reply 0 to CPU
+				PORTD &= 0x7;
+			}
+			while (!(PINC & (1<<RDpin)))	// wait till CPU releases RD signal
+				;
+			config_data_pins(asInput);
 			break;
 
 		case RD_data:
-			// statements
+			config_data_pins(asOutput);
+			data = RX_buff[RX_rd_ptr++]
+			if (RX_rd_ptr == MAX_BUFF_SIZE)
+				RX_rd_ptr = 0;
+			PORTB = (PORTB & 0xf8)|(data & 0x7);
+			PORTD = (PORTD & 0x7)|(data & 0xf8);
+			while (!(PINC & (1<<RDpin)))	// wait till CPU releases RD signal
+				;
+			config_data_pins(asInput);
 			break;
 
 		case WR_data:
@@ -133,10 +168,11 @@ ISR(INT0_vect)			// Houston, we got a chip_select... CPU wants something
 			TX_buff[TX_wr_ptr++] = data;
 			if (TX_wr_ptr == MAX_BUFF_SIZE)
 				TX_wr_ptr = 0;
-			while ()
 			break;
 
 	}
+	while (!(PIND & (1<<CSpin)))		// wait till CPU releases IORQ signal
+		;
 	reti();
 }
 
@@ -156,7 +192,7 @@ int main(void)
 		{
 			/* Wait for empty transmit register */
 			while ( !( UCSR0A & (1<<UDRE0)) )
-			;
+				;
 			UDR0 = TX_buff[TX_rd_ptr++];
 			if (TX_rd_ptr == MAX_BUFF_SIZE)
 				TX_rd_ptr = 0;
