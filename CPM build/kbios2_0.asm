@@ -46,14 +46,12 @@ ROM_RAM1		.EQU	MEM_ADDR+2		; ROM + RAM bank 1
 NOROM_RAM1		.EQU	MEM_ADDR+3		; no ROM + RAM bank 1 (full RAM)
 
 ; USART card stuff
-PORT0			.EQU	0D0H		; PORT 0 address		(physical device TTY for CP/M)
+PORT0			.EQU	0C0H		; PORT 0 address		(physical device TTY for CP/M)
 PORT0_DAT		.EQU	PORT0+2		; PORT 0 data addr
-PORT0_CMD		.EQU	PORT0		; PORT 0 command addr
 PORT0_STA		.EQU	PORT0		; PORT 0 status addr
 
-PORT1			.EQU	0D1H		; PORT 1 address		(physical device CRT for CP/M)
+PORT1			.EQU	PORT0+1		; PORT 1 address		(physical device CRT for CP/M)
 PORT1_DAT		.EQU	PORT1+2		; PORT 1 data addr
-PORT1_CMD		.EQU	PORT1		; PORT 1 command addr
 PORT1_STA		.EQU	PORT1		; PORT 1 status addr
 
 ; FLASH card stuff
@@ -404,7 +402,7 @@ PORT0OUT:
 ; PORT 0 (on USART v2) status.
 ;================================================================================================
 PORT0ST:
-		IN	A,(PORT1_STA)
+		IN	A,(PORT0_STA)
 		AND 1
 		RET	Z
 		LD	A,0FFH
