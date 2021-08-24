@@ -1,11 +1,20 @@
-- Get familiar with ATMEGA328 and Atmel Studio:
-	- do USART tests.
+- preTTY tests:
+	- blink TX_LED.
+	- card_select. if /CS, blink LED.
+	- card_select. if /CS, send "*" to serial.
+	- card_select. if /CS, if read_data, 		send "R" to serial.
+	                       if write_data, 		send "W" to serial.
+	                       if read_status, 		send "S" to serial.
+	                       if write_command,	send "C" to serial.
+	- preTTY.
+	
+- ESP8266. Continue tests with Telnet2serial.
 
-- Modify USARTv2 to use card select with 74LS85 and 74LS00.
-- Wire-up USARTv2 with two ATmega328.
-- Test USARTv2:
+- Design device with ESP8266 and relays for power-on and reset
+
+- Test USARTv2 (preTTY card):
 	- develop routines to communicate with USARTv2
-	- performance at 9600, 38400 and 115200bps.
+	- performance at 9600, 38400 and 115200bps (125kbps).
 	- modify BIOS for new USARTv2
 	- run DDT and ZSID.
 	- run WS and SC.
@@ -17,6 +26,3 @@
 - Design MEM PCB.
 - Connect ESP8266 to USARTv2.
 - Design PCB for USARTv2.
-
-- Design device with ESP8266 and relays.
-

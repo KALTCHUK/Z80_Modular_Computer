@@ -11,7 +11,7 @@ Comp ""
 Comment1 ""
 Comment2 ""
 Comment3 ""
-Comment4 "This board is intended for concept test to USARTv2."
+Comment4 "This board is intended for concept test for USARTv2."
 $EndDescr
 $Comp
 L Connector_Generic:Conn_02x05_Odd_Even J1
