@@ -6,16 +6,28 @@
 	                       if write_data, 		send "W" to serial.
 	                       if read_status, 		send "S" to serial.
 	                       if write_command,	send "C" to serial.
-	- preTTY.
-- ESP8266. Continue tests with Telnet2serial.
-- Design board with PSU, ESP8266 and relays for power-on and reset.
-- Test USARTv2 (preTTY card):
-	- develop routines to communicate with USARTv2
-	- performance at 9600, 38400 and 115200bps (125kbps).
-	- modify BIOS for new USARTv2
+	- write preTTY.
+	- develop routines to communicate with preTTY
+	- test performance at 9600, 38400 and 115200bps (125kbps).
+	- modify BIOS for new preTTY
 	- run DDT and ZSID.
 	- run WS and SC.
+- Design new TTY schematics based no preTTY.
+- Design TTY PCB.
+
+
+- Continue tests with ESP8266. 
+- Connect ESP8266 to preTTY.
+
+- Design board with ESP8266 and relays for power-on and reset.
 - Rethink KEYBOARD.CNF for TeraTerm.
+
 - Design MEM PCB.
-- Connect ESP8266 to USARTv2.
-- Design PCB for USARTv2.
+
+- Design Backplane v2 (6 cards + PSU) PCB.
+
+- Design the frontal panels and 3D print them.
+- Design the slotted card guide and 3D print it.
+- Build the enclosure with aluminium frames.
+
+
