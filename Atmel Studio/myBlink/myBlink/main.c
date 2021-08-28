@@ -4,11 +4,11 @@
  * Created: 24/07/2021 11:51:55
  * Author : kaltchuk
  */ 
-#define F_CPU	16000000UL
+#define F_CPU	20000000UL
 
-#define LED				PORTD1
-#define LED_ON			PORTD |= (1<<LED)
-#define LED_OFF			PORTD &= ~(1<<LED)
+#define LED				PORTC1
+#define LED_ON			PORTC |= (1<<LED)
+#define LED_OFF			PORTC &= ~(1<<LED)
 
 #include <avr/io.h>
 #include <util/delay.h>
@@ -16,15 +16,15 @@
 
 int main(void)
 {
-	DDRD  |= (1 << LED);
+	DDRC  |= (1 << LED);
 	LED_OFF;					//Turn off LED
 	
     while (1) 
     {
 		LED_ON;			//Toggle LED
-		_delay_ms(500);
+		_delay_ms(200);
 		LED_OFF;
-		_delay_ms(500);
+		_delay_ms(200);
     }
 }
 

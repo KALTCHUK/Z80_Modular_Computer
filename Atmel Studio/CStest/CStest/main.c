@@ -11,15 +11,25 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
-#define BAUD 38400
-#define MYUBRR ((F_CPU/16/BAUD)-1)
+#define BAUD	38400
+#define MYUBRR	((F_CPU/16/BAUD)-1)
 
-#define LED			PORTD1
-#define LED_OFF		PORTD |= (1<<LED)
-#define LED_ON		PORTD &= ~(1<<LED)
-#define LED_TOGGLE	PORTD ^= (1<<LED)
+#define CS		(PIND&(1<<INT0))
+#define RSM		3
+#define RSM_LO	PORTC &= ~(1<<RSM)
+#define RSM_HI	PORTC |= (1<<RSM)
 
-#define CS			(PIND&(1<<INT0))
+#define CR		0x0d
+#define LF		0x0a
+
+char	i=1;
+
+void mySend(char send_this)
+{
+	while ( !( UCSR0A & (1<<UDRE0)) )
+	{}
+	UDR0 = send_this;
+}
 
 void USART_Init( unsigned int ubrr)
 {
@@ -36,19 +46,47 @@ void USART_Init( unsigned int ubrr)
 
 ISR(INT0_vect)			// Houston, we got a chip_select... CPU wants something
 {
-	while ( !( UCSR0A & (1<<UDRE0)) )
-	;
-	/* Put data into buffer, sends the data */
-	UDR0 = 0x2a;
+	char	operation;		//snapshots from I/O pins
+	
+	operation = PINC & 0x7;
+	
+	RSM_LO;
+	RSM_HI;
+	switch (operation)
+	{
+		case 4:		// read data
+			mySend('r');
+			mySend('d');
+			mySend(CR);
+			mySend(LF);
+			break;
+		case 5:		// read status
+			mySend('r');
+			mySend('s');
+			mySend(CR);
+			mySend(LF);
+			break;
+		case 2:		// write data
+			mySend('w');
+			mySend('d');
+			mySend(CR);
+			mySend(LF);
+			break;
+		case 3:		// write command
+			mySend('w');
+			mySend('c');
+			mySend(CR);
+			mySend(LF);
+			break;
+	}
 }
 
 int main(void)
 {
 	USART_Init(MYUBRR);
-
+	DDRC |= (1<<RSM);
+	RSM_HI;
 	EIMSK = (1<<INT0);		// enable INT0 (CS)
-	//DDRD  |= (1 << LED);
-	//LED_OFF;
 	
 	sei();
     while (1) 

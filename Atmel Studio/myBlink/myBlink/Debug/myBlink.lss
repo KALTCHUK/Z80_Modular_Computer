@@ -77,21 +77,21 @@ Disassembly of section .text:
 
 int main(void)
 {
-	DDRD  |= (1 << LED);
-  80:	8a b1       	in	r24, 0x0a	; 10
+	DDRC  |= (1 << LED);
+  80:	87 b1       	in	r24, 0x07	; 7
   82:	82 60       	ori	r24, 0x02	; 2
-  84:	8a b9       	out	0x0a, r24	; 10
+  84:	87 b9       	out	0x07, r24	; 7
 	LED_OFF;					//Turn off LED
-  86:	8b b1       	in	r24, 0x0b	; 11
+  86:	88 b1       	in	r24, 0x08	; 8
   88:	8d 7f       	andi	r24, 0xFD	; 253
-  8a:	8b b9       	out	0x0b, r24	; 11
+  8a:	88 b9       	out	0x08, r24	; 8
 	
     while (1) 
     {
 		LED_ON;			//Toggle LED
-  8c:	8b b1       	in	r24, 0x0b	; 11
+  8c:	88 b1       	in	r24, 0x08	; 8
   8e:	82 60       	ori	r24, 0x02	; 2
-  90:	8b b9       	out	0x0b, r24	; 11
+  90:	88 b9       	out	0x08, r24	; 8
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
@@ -99,22 +99,22 @@ int main(void)
 
 	__builtin_avr_delay_cycles(__ticks_dc);
   92:	2f ef       	ldi	r18, 0xFF	; 255
-  94:	89 e6       	ldi	r24, 0x69	; 105
-  96:	98 e1       	ldi	r25, 0x18	; 24
+  94:	84 e3       	ldi	r24, 0x34	; 52
+  96:	9c e0       	ldi	r25, 0x0C	; 12
   98:	21 50       	subi	r18, 0x01	; 1
   9a:	80 40       	sbci	r24, 0x00	; 0
   9c:	90 40       	sbci	r25, 0x00	; 0
   9e:	e1 f7       	brne	.-8      	; 0x98 <main+0x18>
   a0:	00 c0       	rjmp	.+0      	; 0xa2 <main+0x22>
   a2:	00 00       	nop
-		_delay_ms(500);
+		_delay_ms(200);
 		LED_OFF;
-  a4:	8b b1       	in	r24, 0x0b	; 11
+  a4:	88 b1       	in	r24, 0x08	; 8
   a6:	8d 7f       	andi	r24, 0xFD	; 253
-  a8:	8b b9       	out	0x0b, r24	; 11
+  a8:	88 b9       	out	0x08, r24	; 8
   aa:	2f ef       	ldi	r18, 0xFF	; 255
-  ac:	89 e6       	ldi	r24, 0x69	; 105
-  ae:	98 e1       	ldi	r25, 0x18	; 24
+  ac:	84 e3       	ldi	r24, 0x34	; 52
+  ae:	9c e0       	ldi	r25, 0x0C	; 12
   b0:	21 50       	subi	r18, 0x01	; 1
   b2:	80 40       	sbci	r24, 0x00	; 0
   b4:	90 40       	sbci	r25, 0x00	; 0

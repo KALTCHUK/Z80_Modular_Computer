@@ -1,3 +1,4 @@
+- update IC inventory.
 - preTTY tests:
 	- blink TX_LED.
 	- card_select. if /CS, blink LED.
