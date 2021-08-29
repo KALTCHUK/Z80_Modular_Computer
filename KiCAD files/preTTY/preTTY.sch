@@ -1,5 +1,4 @@
 EESchema Schematic File Version 4
-LIBS:preTTY-cache
 EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
@@ -12,7 +11,7 @@ Comp ""
 Comment1 ""
 Comment2 ""
 Comment3 ""
-Comment4 "This board is intended for concept test for USARTv2."
+Comment4 "This circuit is intended for concept test of the new TTY card."
 $EndDescr
 $Comp
 L Connector_Generic:Conn_02x05_Odd_Even J1

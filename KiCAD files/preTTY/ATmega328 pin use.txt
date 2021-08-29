@@ -3,9 +3,9 @@ ATmega328 pin use for USART v2
           7     6     5     4     3     2     1     0
 PORT B	XTAL2 XTAL1  SCK  MISO  MOSI   D02   D01   D00
 
-PORT C  ----- RESET   nc   nc    nc    WR    RD    A01
+PORT C  ----- RESET   nc   nc    RSM   WR    RD    A01
 
 PORT D   D07   D06   D05   D04   D03   CS    TX    RX
 
 
-RESET, WR, RD and CS are all active low signals.
+RESET, RSM, WR, RD and CS are all active low signals.
