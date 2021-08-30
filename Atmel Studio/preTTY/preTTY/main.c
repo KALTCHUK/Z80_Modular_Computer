@@ -28,6 +28,9 @@
 #define RD_DATA		4
 #define RD_STATUS	5
 
+#define CR			0x0d
+#define LF			0x0a
+
 #define MAXBUFF		256
 
 char	uBuffRX[MAXBUFF]; 					// Buffer for chars that arrived through serial port.
@@ -126,6 +129,8 @@ ISR(INT0_vect)								// We got a chip_select (CPU wants something)
 		uBuffTX[uBuffTX_inPtr++] = dataByte;
 		if (uBuffTX_inPtr == MAXBUFF)
 		uBuffTX_inPtr = 0;
+		RSM_LO;							// Release wait line
+		RSM_HI;
 		break;
 
 		case WR_COMMAND:		// write command request
@@ -137,7 +142,16 @@ ISR(INT0_vect)								// We got a chip_select (CPU wants something)
 
 int main(void)
 {
+	char	iniMsg[] = ">preTTY card\r\n>38400bps 8N1\r\n\r\n\0";
+	int		i=0;
+	
 	USART_Init(MYUBRR);		// Initialize USART
+	while ( iniMsg[i] != 0)
+	{
+		while ( !( UCSR0A & (1<<UDRE0)) )
+		{}
+		UDR0 = iniMsg[i++];
+	}
 	DDRC |= (1<<RSM);		// Configure RSM pin as output
 	RSM_HI;					// Turn off RSM (active low)
 	EIMSK = (1<<INT0);		// Enable INT0 (chip select)
@@ -149,7 +163,8 @@ int main(void)
 		{
 			while ( !( UCSR0A & (1<<UDRE0)) )
 			{}
-			UDR0 = uBuffTX[uBuffTX_outPtr++];
+			//UDR0 = uBuffTX[uBuffTX_outPtr++];
+			UDR0 = 'A';
 			if (uBuffTX_outPtr == MAXBUFF)
 				uBuffTX_outPtr = 0;
 		}
