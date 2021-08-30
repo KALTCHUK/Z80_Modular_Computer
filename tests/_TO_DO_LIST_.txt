@@ -1,18 +1,11 @@
 - update IC inventory.
 - preTTY tests:
-	- blink TX_LED.
-	- card_select. if /CS, blink LED.
-	- card_select. if /CS, send "*" to serial.
-	- card_select. if /CS, if read_data, 		send "R" to serial.
-	                       if write_data, 		send "W" to serial.
-	                       if read_status, 		send "S" to serial.
-	                       if write_command,	send "C" to serial.
-	- write preTTY.
+	- write preTTY firmware.
 	- develop routines to communicate with preTTY
+	- modify BIOS for preTTY
 	- test performance at 9600, 38400 and 115200bps (125kbps).
-	- modify BIOS for new preTTY
-	- run DDT and ZSID.
 	- run WS and SC.
+	- run DDT and ZSID.
 - Design new TTY schematics based no preTTY.
 - Design TTY PCB.
 
