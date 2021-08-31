@@ -14,11 +14,12 @@
 - Connect ESP8266 to preTTY.
 
 - Design board with ESP8266 and relays for power-on and reset.
-- Rethink KEYBOARD.CNF for TeraTerm.
 
 - Design MEM PCB.
 
-- Design Backplane v2 (6 cards + PSU) PCB.
+- Design Backplane v2 (8 cards + PSU) PCB.
+
+- Design PSU.
 
 - Design the frontal panels and 3D print them.
 - Design the slotted card guide and 3D print it.
