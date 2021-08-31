@@ -78,7 +78,7 @@ ISR(INT0_vect)								// We got a chip_select (CPU wants something)
 	char	operation, dataByte;
 	
 	operation = PINC & 0x7;					// Snapshots from I/O pins
-	dataByte = (PIND & 0xF)|(PINB & 0x07);
+	dataByte = (PIND & 0xf8)|(PINB & 0x07);
 	
 	switch (operation)
 	{
@@ -102,7 +102,7 @@ ISR(INT0_vect)								// We got a chip_select (CPU wants something)
 
 		setDataBus(asInput);
 		break;
-
+		//------------------//
 		case RD_STATUS:						// Read status request
 		setDataBus(asOutput);
 		if (uBuffRX_inPtr != uBuffRX_outPtr)	// Put 0xff on data bus
@@ -124,7 +124,7 @@ ISR(INT0_vect)								// We got a chip_select (CPU wants something)
 
 		setDataBus(asInput);
 		break;
-		
+		//------------------//
 		case WR_DATA:		// write data request
 		uBuffTX[uBuffTX_inPtr++] = dataByte;
 		if (uBuffTX_inPtr == MAXBUFF)
@@ -132,7 +132,7 @@ ISR(INT0_vect)								// We got a chip_select (CPU wants something)
 		RSM_LO;							// Release wait line
 		RSM_HI;
 		break;
-
+		//------------------//
 		case WR_COMMAND:		// write command request
 		RSM_LO;							// Release wait line
 		RSM_HI;
