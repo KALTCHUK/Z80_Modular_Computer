@@ -140,17 +140,22 @@ ISR(INT0_vect)								// We got a chip_select (CPU wants something)
 	}
 }
 
+void xmit(char toSend)
+{
+	while ( !( UCSR0A & (1<<UDRE0)) )
+	{}
+	UDR0 = toSend;
+}
+
 int main(void)
 {
 	char	iniMsg[] = ">preTTY card\r\n>38400bps 8N1\r\n\r\n\0";
 	int		i=0;
 	
 	USART_Init(MYUBRR);		// Initialize USART
-	while ( iniMsg[i] != 0)
+	while ( iniMsg[i] != 0)	
 	{
-		while ( !( UCSR0A & (1<<UDRE0)) )
-		{}
-		UDR0 = iniMsg[i++];
+		xmit(iniMsg[i++]);
 	}
 	DDRC |= (1<<RSM);		// Configure RSM pin as output
 	RSM_HI;					// Turn off RSM (active low)
@@ -161,10 +166,8 @@ int main(void)
 	{						// from CPU, let's empty the TX buffer.
 		if (uBuffTX_inPtr != uBuffTX_outPtr)
 		{
-			while ( !( UCSR0A & (1<<UDRE0)) )
-			{}
-			//UDR0 = uBuffTX[uBuffTX_outPtr++];
-			UDR0 = 'A';
+			//xmit(uBuffTX[uBuffTX_outPtr++]);
+			xmit('A');
 			if (uBuffTX_outPtr == MAXBUFF)
 				uBuffTX_outPtr = 0;
 		}
