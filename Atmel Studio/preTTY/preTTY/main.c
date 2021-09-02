@@ -43,14 +43,30 @@ void setDataBus(int modus)
 {
 	if (modus == asInput)	// Write zeros to PORTs
 	{
-		PORTB &= ~0x07;
-		PORTD &= ~0xf8;
+		DDRB &= ~0x07;
+		DDRD &= ~0xf8;
 	}
 	else					// Write ones to PORTs
 	{
-		PORTB |= 0x07;
-		PORTD |= 0xf8;
+		DDRB |= 0x07;
+		DDRD |= 0xf8;
 	}
+}
+
+void reply(char toPost)
+{
+	setDataBus(asOutput);
+	PORTB = (PINB&~0x7)|(toPost&0x7);
+	PORTD = (PIND&~0xf8)|(toPost&0xf8);
+
+	RSM_LO;							// Release wait line
+	RSM_HI;
+
+//	while (CS == 0)					// Wait till CS is high
+//	{
+//	}
+
+	setDataBus(asInput);
 }
 
 void USART_Init( unsigned int ubrr)
@@ -70,7 +86,7 @@ ISR(USART_RX_vect)
 {
 	uBuffRX[uBuffRX_inPtr++] = UDR0;
 	if (uBuffRX_inPtr == MAXBUFF)
-	uBuffRX_inPtr = 0;
+		uBuffRX_inPtr = 0;
 }
 
 ISR(INT0_vect)								// We got a chip_select (CPU wants something)
@@ -83,24 +99,17 @@ ISR(INT0_vect)								// We got a chip_select (CPU wants something)
 	switch (operation)
 	{
 		case RD_DATA:								// Read data request
-		setDataBus(asOutput);
 		if (uBuffRX_inPtr != uBuffRX_outPtr)
 		{
-			PORTB = (PINB & ~0x07)|(uBuffRX[uBuffRX_outPtr] & 0x07);
-			PORTD = (PIND & ~0xf8)|(uBuffRX[uBuffRX_outPtr] & 0xf8);
-			
-			uBuffRX_outPtr += 1;
+			reply(uBuffRX[uBuffRX_outPtr++]);
 			if (uBuffRX_outPtr == MAXBUFF)
-			uBuffRX_outPtr = 0;
+				uBuffRX_outPtr = 0;
 		}
-		RSM_LO;							// Release wait line
-		RSM_HI;
-		
-		while (CS == 0)					// Wait till CS is high
+		else
 		{
+			RSM_LO;							// Release wait line
+			RSM_HI;
 		}
-
-		setDataBus(asInput);
 		break;
 		//------------------//
 		case RD_STATUS:						// Read status request
@@ -149,7 +158,7 @@ void xmit(char toSend)
 
 int main(void)
 {
-	char	iniMsg[] = ">preTTY card\r\n>38400bps 8N1\r\n\r\n\0";
+	char	iniMsg[] = "\r\n>preTTY card\r\n>38400bps 8N1\r\n\r\n\0";
 	int		i=0;
 	
 	USART_Init(MYUBRR);		// Initialize USART
@@ -166,8 +175,7 @@ int main(void)
 	{						// from CPU, let's empty the TX buffer.
 		if (uBuffTX_inPtr != uBuffTX_outPtr)
 		{
-			//xmit(uBuffTX[uBuffTX_outPtr++]);
-			xmit('A');
+			xmit(uBuffTX[uBuffTX_outPtr++]);
 			if (uBuffTX_outPtr == MAXBUFF)
 				uBuffTX_outPtr = 0;
 		}
