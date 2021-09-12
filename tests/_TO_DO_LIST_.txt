@@ -14,8 +14,10 @@
 
 - Design MEM PCB.
 
-- Continue tests with ESP8266. 
-- Connect ESP8266 to preTTY.
+- Continue tests with ESP8266.
+	- work on Telnet.
+	- work on Dynamic IP.
+	- Connect ESP8266 to preTTY.
 
 - Design board with ESP8266 and relays for power-on and reset.
 
@@ -23,6 +25,7 @@
 
 - Design PSU.
 
+Machanical issues:
 - Design the frontal panels and 3D print them.
 - Design the slotted card guide and 3D print it.
 - Build the enclosure with aluminium frames.
