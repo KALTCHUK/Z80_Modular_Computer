@@ -1,4 +1,5 @@
 EESchema Schematic File Version 4
+LIBS:preTTY-cache
 EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
@@ -1660,4 +1661,12 @@ F 3 "" H 4400 2650 50  0001 C CNN
 	1    4400 2650
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	2800 2200 2450 2200
+Wire Wire Line
+	2450 2200 2450 2050
+Wire Wire Line
+	2800 2300 2350 2300
+Wire Wire Line
+	2350 2300 2350 2050
 $EndSCHEMATC

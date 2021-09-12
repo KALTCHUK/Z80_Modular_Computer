@@ -36,6 +36,9 @@
 char	uBuffRX[MAXBUFF]; 					// Buffer for chars that arrived through serial port.
 int		uBuffRX_inPtr=0, uBuffRX_outPtr=0;
 
+char	uBuffTX[MAXBUFF]; 					// Buffer for chars to be sent through serial port.
+int		uBuffTX_inPtr=0, uBuffTX_outPtr=0;
+
 void setDataBus(int modus)
 {
 	if (modus == asInput)	// Write zeros to PORTs
@@ -55,8 +58,6 @@ void xmit(char toSend)
 	while ( !( UCSR0A & (1<<UDRE0)) )
 	{}
 	UDR0 = toSend;
-	while ( !( UCSR0A & (1<<UDRE0)) )
-	{}
 }
 
 void reply(char toPost)
@@ -161,7 +162,9 @@ ISR(INT0_vect)									// We got a chip_select (CPU wants something)
 		break;
 		
 		case WR_DATA:							// write data request
-			xmit(dataByte);
+			uBuffTX[uBuffTX_inPtr++] = dataByte;
+			if (uBuffTX_inPtr == MAXBUFF)
+				uBuffTX_inPtr = 0;
 			RSM_LO;								// Release wait line
 			RSM_HI;
 		break;
@@ -197,7 +200,7 @@ ISR(INT0_vect)									// We got a chip_select (CPU wants something)
 					newBaud = 125000;
 					break;
 				case '9':
-					newBaud = 250000;
+					newBaud = 1250000;
 					break;
 			}
 			USART_Init((F_CPU/16/newBaud)-1);
@@ -224,5 +227,11 @@ int main(void)
 	sei();
 	while (1) 				// If we're not busy attending a service request
 	{						// from CPU, let's empty the TX buffer.
+		if (uBuffTX_inPtr != uBuffTX_outPtr)
+		{
+			xmit(uBuffTX[uBuffTX_outPtr++]);
+			if (uBuffTX_outPtr == MAXBUFF)
+				uBuffTX_outPtr = 0;
+		}
 	}
 }
