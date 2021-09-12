@@ -1,6 +1,10 @@
 - update IC inventory.
 
 - preTTY:
+	- delete hex2ascii().
+	- use reply() in RD_STATUS.
+	- remove case '0' from WR_COMMAND and include default=case '9'. Also remove while(CS==0).
+	- remove while(CS==0) from reply().
 	- debug anomally with CPU @ 10MHz.
 
 - Write BIOS 2.0 with TTY drivers and IOBYTE implementation.
