@@ -1,13 +1,10 @@
 - update IC inventory.
 
 - preTTY:
-	- test new circuit with tri-state buffer (74LS245).
-	- write preTTY firmware.
-	- develop routines to communicate with preTTY
-	- modify BIOS for preTTY
-	- test performance at 9600, 38400 and 115200bps (125kbps).
-	- run WS and SC.
-	- run DDT and ZSID.
+	- debug anomally with CPU @ 10MHz.
+
+- Write BIOS 2.0 with TTY drivers and IOBYTE implementation.
+
 - Design new TTY schematics based no preTTY.
 - Design TTY PCB.
 
