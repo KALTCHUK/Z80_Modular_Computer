@@ -1,11 +1,7 @@
 - update IC inventory.
 
 - preTTY:
-	- delete hex2ascii().
-	- use reply() in RD_STATUS.
-	- remove case '0' from WR_COMMAND and include default=case '9'. Also remove while(CS==0).
-	- remove while(CS==0) from reply().
-	- debug anomally with CPU @ 10MHz.
+	- debug anomally with CPU f > 8MHz.
 
 - Write BIOS 2.0 with TTY drivers and IOBYTE implementation.
 
@@ -24,6 +20,8 @@
 - Design Backplane v2 (8 cards + PSU) PCB.
 
 - Design PSU.
+
+- Develop terminal-in-a-box with RPi.
 
 Machanical issues:
 - Design the frontal panels and 3D print them.
