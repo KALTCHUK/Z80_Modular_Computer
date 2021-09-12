@@ -27,3 +27,10 @@ Machanical issues:
 - Design the frontal panels and 3D print them.
 - Design the slotted card guide and 3D print it.
 - Build the enclosure with aluminium frames.
+
+Some ideas for new cards:
+- VGA and keyboard
+- digital I/O for automation
+- analog I/O for automation
+- Real-time clock
+- audio
