@@ -1,6 +1,9 @@
 - update IC inventory.
 
 - preTTY:
+	- write new TTYBAUD with port addr and nominal speed.
+	- test preTTY with USART using double speed (U2Xn=1) to reduce baudrate error.
+	- change firmware to support new TTYBAUD speed parameter.
 	- debug anomally with CPU f > 8MHz.
 
 - Write BIOS 2.0 with TTY drivers and IOBYTE implementation.
@@ -10,14 +13,14 @@
 
 - Design MEM PCB.
 
+- Design Backplane v2 (8 cards + PSU) PCB.
+
 - Continue tests with ESP8266.
 	- work on Telnet.
 	- work on Dynamic IP.
 	- Connect ESP8266 to preTTY.
 
 - Design board with ESP8266 and relays for power-on and reset.
-
-- Design Backplane v2 (8 cards + PSU) PCB.
 
 - Design PSU.
 
