@@ -2,6 +2,7 @@
 
 - preTTY:
 	- write new TTYBAUD with port addr and nominal speed.
+	- test preTTY with USART using double speed (U2Xn=1) to reduce baudrate error.
 	- change firmware to support new TTYBAUD speed parameter.
 	- debug anomally with CPU f > 8MHz.
 
