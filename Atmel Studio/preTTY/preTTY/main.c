@@ -13,7 +13,7 @@
 #include <util/delay.h>
 
 #define BAUD		250000
-#define MYUBRR		((F_CPU/16/BAUD)-1)
+#define MYUBRR		((F_CPU/8/BAUD)-1)
 
 #define CS			(PIND&(1<<INT0))
 #define RSM			3
@@ -33,8 +33,10 @@
 
 #define MAXBUFF		256
 
-char	uBuffRX[MAXBUFF]; 					// Buffer for chars that arrived through serial port.
-int		uBuffRX_inPtr=0, uBuffRX_outPtr=0;
+char			uBuffRX[MAXBUFF]; 					// Buffer for chars that arrived through serial port.
+int				uBuffRX_inPtr=0, uBuffRX_outPtr=0;
+
+unsigned int long	baud[] = {1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 57600, 76800, 115200, 125000, 250000, 500000};
 
 void setDataBus(int modus)
 {
@@ -93,9 +95,9 @@ ISR(USART_RX_vect)
 
 ISR(INT0_vect)									// We got a chip_select (CPU wants something)
 {
-	char			operation;
-	char			dataByte;
-	unsigned long	newBaud=38400;
+	char				operation;
+	char				dataByte;
+	unsigned long int	newBaud;
 	
 	operation = PINC & 0x7;						// Snapshots from I/O pins
 	dataByte = (PIND & 0xf8)|(PINB & 0x07);
@@ -134,38 +136,11 @@ ISR(INT0_vect)									// We got a chip_select (CPU wants something)
 		break;
 		
 		case WR_COMMAND:						// write command request
-			switch (dataByte)
+			if ()
 			{
-				case '1':
-					newBaud = 600;
-					break;
-				case '2':
-					newBaud = 1200;
-					break;
-				case '3':
-					newBaud = 2400;
-					break;
-				case '4':
-					newBaud = 4800;
-					break;
-				case '5':
-					newBaud = 9600;
-					break;
-				case '6':
-					newBaud = 19200;
-					break;
-				case '7':
-					newBaud = 38400;
-					break;
-				case '8':
-					newBaud = 125000;
-					break;
-				case '9':
-				default:
-					newBaud = 250000;
-					break;
+				newBaud = baud[dataByte];
+				USART_Init((F_CPU/8/newBaud)-1);
 			}
-			USART_Init((F_CPU/16/newBaud)-1);
 			RSM_LO;								// Release wait line
 			RSM_HI;
 		break;

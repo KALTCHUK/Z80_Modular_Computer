@@ -33,8 +33,8 @@
 
 #define MAXBUFF		256
 
-char	uBuffRX[MAXBUFF]; 					// Buffer for chars that arrived through serial port.
-int		uBuffRX_inPtr=0, uBuffRX_outPtr=0;
+char			uBuffRX[MAXBUFF]; 					// Buffer for chars that arrived through serial port.
+int				uBuffRX_inPtr=0, uBuffRX_outPtr=0;
 
 void setDataBus(int modus)
 {
@@ -68,31 +68,9 @@ void reply(char toPost)
 	RSM_LO;							// Release wait line
 	RSM_HI;
 
-	while (CS == 0)					// Wait till CS is high
-	{
-	}
-
 	setDataBus(asInput);
 }
 
-void hex2ascii(char original)
-{
-	char nibble;
-	
-	nibble = original>>4;
-	if (nibble > 9)
-		nibble += 0x37;
-	else
-		nibble += 0x30;
-	xmit(nibble);
-	
-	nibble = original&0xf;
-	if (nibble > 9)
-	nibble += 0x37;
-	else
-	nibble += 0x30;
-	xmit(nibble);
-}
 void USART_Init(unsigned int ubrr)
 {
 	/* Set baud rate */
@@ -139,25 +117,14 @@ ISR(INT0_vect)									// We got a chip_select (CPU wants something)
 		break;
 		
 		case RD_STATUS:							// Read status request
-			setDataBus(asOutput);
 			if (uBuffRX_inPtr != uBuffRX_outPtr)	// Put 0xff on data bus
 			{
-				PORTB |= 0x07;
-				PORTD |= 0xf8;
+				reply(0xff);
 			}
 			else								// Put 00 on data bus
 			{
-				PORTB &= ~0x07;
-				PORTD &= ~0xf8;
+				reply(0);
 			}
-			RSM_LO;								// Release wait line
-			RSM_HI;
-		
-			while (CS == 0)						// Wait till CS is high
-			{
-			}
-
-			setDataBus(asInput);
 		break;
 		
 		case WR_DATA:							// write data request
@@ -169,9 +136,6 @@ ISR(INT0_vect)									// We got a chip_select (CPU wants something)
 		case WR_COMMAND:						// write command request
 			switch (dataByte)
 			{
-				case '0':
-					newBaud = 300;
-					break;
 				case '1':
 					newBaud = 600;
 					break;
@@ -197,6 +161,7 @@ ISR(INT0_vect)									// We got a chip_select (CPU wants something)
 					newBaud = 125000;
 					break;
 				case '9':
+				default:
 					newBaud = 250000;
 					break;
 			}

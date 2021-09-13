@@ -15,19 +15,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   5 .debug_aranges 00000050  00000000  00000000  00000534  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00000895  00000000  00000000  00000584  2**0
+  6 .debug_info   000008b7  00000000  00000000  00000584  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 000006d4  00000000  00000000  00000e19  2**0
+  7 .debug_abbrev 000006d4  00000000  00000000  00000e3b  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000003e5  00000000  00000000  000014ed  2**0
+  8 .debug_line   000003e6  00000000  00000000  0000150f  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000114  00000000  00000000  000018d4  2**2
+  9 .debug_frame  00000114  00000000  00000000  000018f8  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    000003f9  00000000  00000000  000019e8  2**0
+ 10 .debug_str    000003fe  00000000  00000000  00001a0c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    000003ab  00000000  00000000  00001de1  2**0
+ 11 .debug_loc    000003ab  00000000  00000000  00001e0a  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000040  00000000  00000000  0000218c  2**0
+ 12 .debug_ranges 00000040  00000000  00000000  000021b5  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -109,8 +109,8 @@ Disassembly of section .text:
   b2:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
 000000b6 <setDataBus>:
-char	uBuffRX[MAXBUFF]; 					// Buffer for chars that arrived through serial port.
-int		uBuffRX_inPtr=0, uBuffRX_outPtr=0;
+
+unsigned int long	baud[] = {1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 57600, 76800, 115200, 125000, 250000};
 
 void setDataBus(int modus)
 {
