@@ -19,7 +19,7 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   7 .debug_abbrev 000006e3  00000000  00000000  00000ded  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00000382  00000000  00000000  000014d0  2**0
+  8 .debug_line   00000381  00000000  00000000  000014d0  2**0
                   CONTENTS, READONLY, DEBUGGING
   9 .debug_frame  00000114  00000000  00000000  00001854  2**2
                   CONTENTS, READONLY, DEBUGGING
@@ -148,8 +148,6 @@ void xmit(char toSend)
   d2:	08 95       	ret
 
 000000d4 <reply>:
-//	while ( !( UCSR0A & (1<<UDRE0)) )
-//	{}
 }
 
 void reply(char toPost)

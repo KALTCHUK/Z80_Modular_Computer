@@ -462,10 +462,10 @@ END GROUP
  .debug_abbrev  0x00000000      0x5a2 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega328p/avr5/crtatmega328p.o
  .debug_abbrev  0x000005a2      0x141 main.o
 
-.debug_line     0x00000000      0x382
+.debug_line     0x00000000      0x381
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x134 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_line    0x00000134      0x24e main.o
+ .debug_line    0x00000134      0x24d main.o
 
 .debug_frame    0x00000000      0x114
  *(.debug_frame)

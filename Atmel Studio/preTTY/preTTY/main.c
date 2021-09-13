@@ -57,8 +57,6 @@ void xmit(char toSend)
 	while ( !( UCSR0A & (1<<UDRE0)) )
 	{}
 	UDR0 = toSend;
-//	while ( !( UCSR0A & (1<<UDRE0)) )
-//	{}
 }
 
 void reply(char toPost)
