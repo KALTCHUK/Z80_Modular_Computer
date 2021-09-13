@@ -36,7 +36,7 @@
 char			uBuffRX[MAXBUFF]; 					// Buffer for chars that arrived through serial port.
 int				uBuffRX_inPtr=0, uBuffRX_outPtr=0;
 
-unsigned int long	baud[] = {1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 57600, 76800, 115200, 125000, 250000, 500000};
+unsigned int long	baud[] = {1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 57600, 125000, 250000};
 
 void setDataBus(int modus)
 {
@@ -57,8 +57,8 @@ void xmit(char toSend)
 	while ( !( UCSR0A & (1<<UDRE0)) )
 	{}
 	UDR0 = toSend;
-	while ( !( UCSR0A & (1<<UDRE0)) )
-	{}
+//	while ( !( UCSR0A & (1<<UDRE0)) )
+//	{}
 }
 
 void reply(char toPost)
@@ -78,6 +78,9 @@ void USART_Init(unsigned int ubrr)
 	/* Set baud rate */
 	UBRR0H = (unsigned char)(ubrr>>8);
 	UBRR0L = (unsigned char)ubrr;
+
+	/* Enable double speed */
+	UCSR0A |= (1<<U2X0);
 
 	/* Enable receiver, transmitter and also RX_complete_interrupt */
 	UCSR0B = (1<<RXCIE0)|(1<<RXEN0)|(1<<TXEN0);
@@ -120,13 +123,9 @@ ISR(INT0_vect)									// We got a chip_select (CPU wants something)
 		
 		case RD_STATUS:							// Read status request
 			if (uBuffRX_inPtr != uBuffRX_outPtr)	// Put 0xff on data bus
-			{
 				reply(0xff);
-			}
 			else								// Put 00 on data bus
-			{
 				reply(0);
-			}
 		break;
 		
 		case WR_DATA:							// write data request
@@ -136,9 +135,9 @@ ISR(INT0_vect)									// We got a chip_select (CPU wants something)
 		break;
 		
 		case WR_COMMAND:						// write command request
-			if ()
+			if (dataByte < 11)
 			{
-				newBaud = baud[dataByte];
+				newBaud = baud[(int) dataByte];
 				USART_Init((F_CPU/8/newBaud)-1);
 			}
 			RSM_LO;								// Release wait line
