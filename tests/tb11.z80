@@ -1,0 +1,102 @@
+;----------------------------------------------------------
+;
+;TTYBAUD.Z80 -	Select baur rate.
+; 		Emulates a terminal.
+;		
+;		v1.1 - extends baudrate to 500kbps.
+;----------------------------------------------------------
+
+TPA		EQU	0100H
+
+BIOS		EQU	0E620H
+WBOOT		EQU	BIOS+3
+CONST		EQU	BIOS+6
+CONIN		EQU	BIOS+9
+CONOUT		EQU	BIOS+12
+
+TTY		EQU	0C0H
+DATA		EQU	TTY
+STAT		EQU	TTY+2
+CMD		EQU	TTY+2
+
+CTRLC		EQU	03H
+LF		EQU	0AH
+CR		EQU	0DH
+;----------------------------------------------------------
+; MAIN PROGRAM
+;----------------------------------------------------------
+		ORG	TPA
+		LD	HL,MYSTACK
+		LD	SP,HL
+
+		LD	HL,IMSG
+		CALL	PRTMSG
+
+START:		CALL	CONIN
+		CP	CTRLC
+		JP	Z,WBOOT
+		CP	'0'
+		JP	M,INVALID
+		CP	':'
+		JP	P,LETTER
+		LD	C,A
+		PUSH	BC
+		CALL	CONOUT
+		POP	BC
+		LD	A,C
+		SUB	30H
+CONTINUE:	OUT	(CMD),A
+		JP	WBOOT
+
+LETTER:		CP	'A'
+		JR	Z,UPPER
+		CP	'a'
+		JR	Z,LOWER
+INVALID:	LD	HL,WMSG
+		CALL	PRTMSG
+		JR	START
+
+LOWER:		SUB	20H
+UPPER:		LD	C,A
+		PUSH	BC
+		CALL	CONOUT
+		POP	BC
+		LD	A,C
+		SUB	37H
+		JR	CONTINUE
+
+		
+;----------------------------------------------------------
+; PRINT STRING POINTED BY HL, ENDING WITH 00.
+;----------------------------------------------------------
+PRTMSG:		LD	A,(HL)
+		CP	0
+		RET	Z
+		LD	C,A
+		CALL	CONOUT
+		INC	HL
+		JR	PRTMSG
+
+
+;----------------------------------------------------------
+IMSG		DB	CR,LF
+		DB	"TTYBAUD v1.1 by Kaltchuk, 09/2021.",CR,LF
+		DB	"Select baud rate (bps):",CR,LF
+		DB	" 0 =   1200",CR,LF
+		DB	" 1 =   2400",CR,LF
+		DB	" 2 =   4800",CR,LF
+		DB	" 3 =   9600",CR,LF
+		DB	" 4 =  14400",CR,LF
+		DB	" 5 =  19200",CR,LF
+		DB	" 6 =  28800",CR,LF
+		DB	" 7 =  38400",CR,LF
+		DB	" 8 =  57600",CR,LF
+		DB	" 9 = 125000",CR,LF
+		DB	" A = 250000",CR,LF,CR,LF,0
+
+WMSG		DB	"Invalid option",CR,LF,0
+
+		DS	020H
+MYSTACK		EQU	$
+
+		END
