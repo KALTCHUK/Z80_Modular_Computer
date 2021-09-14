@@ -1,16 +1,16 @@
 - update IC inventory.
 
+- Design new TTY schematics based no preTTY.
+- Design TTY PCB.
+
+- Design MEM PCB.
+
 - preTTY:
 	- debug anomally with CPU_CLOCK > 8MHz.
 
 - Write BIOS 2.0 with TTY drivers and IOBYTE implementation.
 
 - Modify BIOS to perform disc boot instead of ROM boot.
-
-- Design new TTY schematics based no preTTY.
-- Design TTY PCB.
-
-- Design MEM PCB.
 
 - Design Backplane v2 (8 cards + PSU) PCB.
 
@@ -31,8 +31,8 @@ Machanical issues:
 - Build the enclosure with aluminium frames.
 
 Some ideas for new cards:
-- VGA and keyboard
-- digital I/O for automation
+- VGA and keyboard (FPGA?)
+- digital I/O for automation (8255)
 - analog I/O for automation
 - Real-time clock
 - audio
