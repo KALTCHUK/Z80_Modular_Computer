@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source "C:\\Users\\kaltchuk\\Documents\\GitHub\\Z80_Modular_Computer\\KiCAD files\\MEM\\MEM.sch")
-    (date "02/07/2021 12:13:55")
+    (date "15/09/2021 18:36:20")
     (tool "Eeschema (5.1.4)-1")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -115,7 +115,7 @@
       (tstamp 5EBBE45A))
     (comp (ref J4)
       (value "RAM bank")
-      (footprint Connector_PinSocket_2.54mm:PinSocket_2x03_P2.54mm_Vertical)
+      (footprint Connector_PinHeader_2.54mm:PinHeader_2x03_P2.54mm_Vertical)
       (datasheet ~)
       (libsource (lib Connector_Generic) (part Conn_02x03_Odd_Even) (description "Generic connector, double row, 02x03, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"))
       (sheetpath (names /) (tstamps /))

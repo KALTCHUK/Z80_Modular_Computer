@@ -3,8 +3,6 @@
 - Design new TTY schematics based no preTTY.
 - Design TTY PCB.
 
-- Design MEM PCB.
-
 - Write BIOS 2.0 with TTY drivers and IOBYTE implementation.
 
 - Modify BIOS to perform disc boot instead of ROM boot.

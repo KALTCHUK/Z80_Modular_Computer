@@ -812,7 +812,7 @@ U 1 1 5EC42B6B
 P 5650 2850
 F 0 "J4" H 5700 3167 50  0000 C CNN
 F 1 "RAM bank" H 5700 3076 50  0000 C CNN
-F 2 "Connector_PinSocket_2.54mm:PinSocket_2x03_P2.54mm_Vertical" H 5650 2850 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_2x03_P2.54mm_Vertical" H 5650 2850 50  0001 C CNN
 F 3 "~" H 5650 2850 50  0001 C CNN
 	1    5650 2850
 	1    0    0    -1  
