@@ -2,7 +2,7 @@
 
   (general
     (thickness 1.6)
-    (drawings 11)
+    (drawings 12)
     (tracks 875)
     (zones 0)
     (modules 28)
@@ -1924,6 +1924,7 @@
     )
   )
 
+  (target plus (at 98.425 125.73) (size 5) (width 0.05) (layer Edge.Cuts))
   (gr_text "1  ss  0" (at 116.205 86.36) (layer F.SilkS) (tstamp 61427546)
     (effects (font (size 0.999998 0.999998) (thickness 0.14986)))
   )

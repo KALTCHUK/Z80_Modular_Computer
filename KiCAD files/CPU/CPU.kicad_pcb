@@ -2,7 +2,7 @@
 
   (general
     (thickness 1.6)
-    (drawings 26)
+    (drawings 27)
     (tracks 600)
     (zones 0)
     (modules 29)
@@ -1875,6 +1875,18 @@
     )
   )
 
+  (dimension 6.985 (width 0.12) (layer F.SilkS)
+    (gr_text "0.2750 in" (at 193.9925 113.03) (layer F.SilkS)
+      (effects (font (size 1 1) (thickness 0.15)))
+    )
+    (feature1 (pts (xy 197.485 117.475) (xy 197.485 113.713579)))
+    (feature2 (pts (xy 190.5 117.475) (xy 190.5 113.713579)))
+    (crossbar (pts (xy 190.5 114.3) (xy 197.485 114.3)))
+    (arrow1a (pts (xy 197.485 114.3) (xy 196.358496 114.886421)))
+    (arrow1b (pts (xy 197.485 114.3) (xy 196.358496 113.713579)))
+    (arrow2a (pts (xy 190.5 114.3) (xy 191.626504 114.886421)))
+    (arrow2b (pts (xy 190.5 114.3) (xy 191.626504 113.713579)))
+  )
   (gr_text "Grid 25.00mils" (at 147.955 135.255) (layer F.SilkS)
     (effects (font (size 1 1) (thickness 0.15)))
   )
