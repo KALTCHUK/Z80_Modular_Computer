@@ -1,10 +1,4 @@
-- update IC inventory.
-
-- Write BIOS 2.0 with TTY drivers and IOBYTE implementation.
-
-- Modify BIOS to perform disc boot instead of ROM boot.
-
-- Design Backplane v2 (8 cards + PSU) PCB.
+- Design PSU.
 
 - Continue tests with ESP8266.
 	- work on Telnet.
@@ -13,7 +7,11 @@
 
 - Design board with ESP8266 and relays for power-on and reset.
 
-- Design PSU.
+- Write BIOS 2.0 with TTY drivers and IOBYTE implementation.
+
+- Modify BIOS to perform disc boot instead of ROM boot.
+
+- Design Backplane v2 (8 cards + PSU) PCB.
 
 - Develop terminal-in-a-box with RPi.
 
