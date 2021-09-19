@@ -17,7 +17,7 @@
 
 ------------------------------------------------------------------
 Machanical issues:
-- Design the frontal panels and 3D print them.
+- Design the frontal panels (PCB?).
 - Design the slotted card guide and 3D print it.
 - Build the enclosure with aluminium frames.
 
