@@ -1,5 +1,4 @@
 EESchema Schematic File Version 4
-LIBS:TTY-cache
 EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
@@ -674,7 +673,7 @@ RX0
 Text Label 3250 6400 2    50   ~ 0
 RX0RS232
 $Comp
-L preTTY-rescue:ATmega328P-PU-MCU_Microchip_ATmega U3
+L MCU_Microchip_ATmega:ATmega328P-PU U3
 U 1 1 60FA7136
 P 2200 4900
 F 0 "U3" H 2900 6450 50  0000 R CNN
@@ -993,7 +992,6 @@ F 3 "" H 5750 1200 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	2100 3400 2200 3400
-Connection ~ 2200 3400
 $Comp
 L Device:C C10
 U 1 1 610F95A6
@@ -1540,7 +1538,7 @@ F 3 "~" H 3000 7200 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L preTTY-rescue:ATmega328P-PU-MCU_Microchip_ATmega U4
+L MCU_Microchip_ATmega:ATmega328P-PU U4
 U 1 1 6150E52C
 P 4400 4700
 F 0 "U4" H 5100 6250 50  0000 R CNN
@@ -1643,7 +1641,6 @@ Text Label 3800 5200 2    50   ~ 0
 RX1
 Wire Wire Line
 	4300 3200 4400 3200
-Connection ~ 4400 3200
 Connection ~ 3400 4000
 Wire Wire Line
 	3400 4000 3600 4000
