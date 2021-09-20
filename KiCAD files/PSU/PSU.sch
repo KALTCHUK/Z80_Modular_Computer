@@ -61,17 +61,17 @@ $EndComp
 $Comp
 L Connector_Generic:Conn_01x02 J2
 U 1 1 6145B14B
-P 3950 3300
-F 0 "J2" H 3868 3425 50  0000 C CNN
-F 1 "Power switch" H 3868 3426 50  0001 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 3950 3300 50  0001 C CNN
-F 3 "~" H 3950 3300 50  0001 C CNN
-	1    3950 3300
+P 3950 3200
+F 0 "J2" H 3868 3325 50  0000 C CNN
+F 1 "Power switch" H 3868 3326 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 3950 3200 50  0001 C CNN
+F 3 "~" H 3950 3200 50  0001 C CNN
+	1    3950 3200
 	-1   0    0    -1  
 $EndComp
 Text Notes 3800 2900 2    50   ~ 0
 External\nPower on
-Text Notes 3800 3400 2    50   ~ 0
+Text Notes 3800 3300 2    50   ~ 0
 Power on\nSwitch
 Text Notes 3850 4500 2    50   ~ 0
 220Vac\n\nLine\nNeutral\nNC
@@ -117,10 +117,6 @@ NoConn ~ 7850 4300
 NoConn ~ 7350 4300
 NoConn ~ 7350 4200
 Wire Wire Line
-	4150 3400 4300 3400
-Wire Wire Line
-	4300 3400 4300 3600
-Wire Wire Line
 	4300 4300 4150 4300
 $Comp
 L Connector_Generic:Conn_01x02 J1
@@ -135,17 +131,9 @@ F 3 "~" H 3950 2800 50  0001 C CNN
 $EndComp
 NoConn ~ 5100 3200
 Wire Wire Line
-	4150 3300 4400 3300
-Wire Wire Line
-	4400 3300 4400 3950
+	4150 3200 4400 3200
 Wire Wire Line
 	4400 3950 4650 3950
-Wire Wire Line
-	4500 3300 4400 3300
-Connection ~ 4400 3300
-Connection ~ 4300 3600
-Wire Wire Line
-	4300 3600 4300 4300
 Wire Wire Line
 	4150 2900 4500 2900
 Wire Wire Line
@@ -162,8 +150,6 @@ Wire Wire Line
 	5250 3400 5250 3600
 Wire Wire Line
 	5100 3400 5250 3400
-Wire Wire Line
-	4300 3600 5250 3600
 Wire Wire Line
 	7200 4100 7200 3550
 Connection ~ 7200 4100
@@ -246,4 +232,18 @@ F 3 "https://www.meanwell.com/Upload/PDF/IRM-10/IRM-10-SPEC.PDF" H 6050 3900 50 
 	1    6050 4300
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	4400 3200 4400 3600
+Wire Wire Line
+	4150 3300 4300 3300
+Connection ~ 4300 3300
+Wire Wire Line
+	4300 3300 4500 3300
+Wire Wire Line
+	4300 3300 4300 4300
+Wire Wire Line
+	5250 3600 4400 3600
+Connection ~ 4400 3600
+Wire Wire Line
+	4400 3600 4400 3950
 $EndSCHEMATC

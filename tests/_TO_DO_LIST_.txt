@@ -1,19 +1,12 @@
 - Design PSU.
 
-- Continue tests with ESP8266.
-	- work on Telnet.
-	- work on Dynamic IP.
-	- Connect ESP8266 to preTTY.
-
-- Design board with ESP8266 and relays for power-on and reset.
+- Develop terminal-in-a-box with RPi.
 
 - Write BIOS 2.0 with TTY drivers and IOBYTE implementation.
 
 - Modify BIOS to perform disc boot instead of ROM boot.
 
 - Design Backplane v2 (8 cards + PSU) PCB.
-
-- Develop terminal-in-a-box with RPi.
 
 Machanical issues:
 - Design the frontal panels and 3D print them.

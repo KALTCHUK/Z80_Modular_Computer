@@ -13,7 +13,7 @@
 //#define STAPSK  "XFONE123"
 #endif
 
-#define BAUD_SERIAL 38400
+#define BAUD_SERIAL 250000
 #define RXBUFFERSIZE 1024
 #define STACK_PROTECTOR  512 // bytes
 #define MAX_SRV_CLIENTS 2
@@ -38,6 +38,7 @@ void setup() {
   Serial.setRxBufferSize(RXBUFFERSIZE);
 
   WiFi.mode(WIFI_STA);
+  
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);

@@ -56,7 +56,7 @@ F 1 "Mains" H 3868 4626 50  0001 C CNN
 F 2 "Connector_Phoenix_MC_HighVoltage:PhoenixContact_MC_1,5_3-G-5.08_1x03_P5.08mm_Horizontal" H 3950 4400 50  0001 C CNN
 F 3 "~" H 3950 4400 50  0001 C CNN
 	1    3950 4400
-	-1   0    0    -1  
+	-1   0    0    1   
 $EndComp
 $Comp
 L Connector_Generic:Conn_01x02 J2
