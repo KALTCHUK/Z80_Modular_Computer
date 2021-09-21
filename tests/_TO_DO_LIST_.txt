@@ -1,19 +1,16 @@
-- Design PSU.
-
-- Develop terminal-in-a-box with RPi.
+- Build PSU.
 
 - Write BIOS 2.0 with TTY drivers and IOBYTE implementation.
 
 - Modify BIOS to perform disc boot instead of ROM boot.
 
+- Develop terminal-in-a-box with RPi.
+
 - Design Backplane v2 (8 cards + PSU) PCB.
 
-<<<<<<< HEAD
-=======
 - Develop terminal-in-a-box with RPi (pico?).
 
 ------------------------------------------------------------------
->>>>>>> deaed4a665bd3a26cfaa9cdd86e44ee19445832a
 Machanical issues:
 - Design the frontal panels (PCB?).
 - Design the slotted card guide and 3D print it.
