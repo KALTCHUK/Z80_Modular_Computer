@@ -1,3 +1,4 @@
+1  REM rename b:mandel2.*=b:mandel3.*, delete b:mandel3.*, xmodem this file to Z80MC
 6  DIM COR(19)
 7  COR[19]={30,31,32,33,33,34,34,35,35,36,36,36,37,37,37,37,37,37}
 8  P$=" #*%%&&;;::::......"
