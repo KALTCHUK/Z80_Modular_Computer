@@ -183,8 +183,7 @@ dpbLast:
 ; Cold boot
 ;================================================================================================
 
-boot:
-		DI						; Disable interrupts.
+boot:	DI						; Disable interrupts.
 		LD	SP,BIOSSTACK		; Set default stack.
 
 		OUT (NOROM_RAM0),A		; Turn off ROM. Doesn't matter what we output
@@ -217,8 +216,7 @@ boot:
 ; Warm boot
 ;================================================================================================
 
-wboot:
-		DI						; Disable interrupts.
+wboot:	DI						; Disable interrupts.
 		LD	SP,BIOSSTACK		; Set default stack.
 
 		OUT (ROM_RAM0),A		; Turn on ROM. Doesn't matter what we output
@@ -235,8 +233,7 @@ wboot:
 ; Common code for cold and warm boot
 ;================================================================================================
 
-gocpm:
-		XOR	A					; 0 to accumulator
+gocpm:	XOR	A					; 0 to accumulator
 		LD	(hstact),A			; host buffer inactive
 		LD	(unacnt),A			; clear unalloc count
 
