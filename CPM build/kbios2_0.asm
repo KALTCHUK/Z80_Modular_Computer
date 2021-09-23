@@ -45,14 +45,14 @@ NOROM_RAM0		.EQU	MEM_ADDR+1		; no ROM + RAM bank 0 (full RAM)
 ROM_RAM1		.EQU	MEM_ADDR+2		; ROM + RAM bank 1
 NOROM_RAM1		.EQU	MEM_ADDR+3		; no ROM + RAM bank 1 (full RAM)
 
-; USART card stuff
+; TTY card stuff
 PORT0			.EQU	0C0H		; PORT 0 address		(physical device TTY for CP/M)
-PORT0_DAT		.EQU	PORT0+2		; PORT 0 data addr
-PORT0_STA		.EQU	PORT0		; PORT 0 status addr
+PORT0_DAT		.EQU	PORT0		; PORT 0 data addr
+PORT0_STA		.EQU	PORT0+2		; PORT 0 status addr
 
 PORT1			.EQU	PORT0+1		; PORT 1 address		(physical device CRT for CP/M)
-PORT1_DAT		.EQU	PORT1+2		; PORT 1 data addr
-PORT1_STA		.EQU	PORT1		; PORT 1 status addr
+PORT1_DAT		.EQU	PORT1		; PORT 1 data addr
+PORT1_STA		.EQU	PORT1+2		; PORT 1 status addr
 
 ; FLASH card stuff
 FLASH_ADDR		.EQU	0B0H			; FLASH card address
@@ -206,9 +206,10 @@ boot:
 		LD	(iobyte),A			; Set IOBYTE to 00
 
 		CALL	PRINTSEQ
-		.DB CR,LF,"Z80 Modular Computer by Kaltchuk 2020.",CR,LF
-		.DB "BIOS 2.0 - 128MB Compact Flash, LCD drive.",CR,LF
-		.DB "CP/M 2.2+ Copyright 1979 (c) by Digital Research",CR,LF,CR,LF,0
+		.DB CR,LF
+		.DB "Z80 Modular Computer by Kaltchuk 2020.",CR,LF
+		.DB "BIOS 2.0 - 128MB Compact Flash.",CR,LF
+		.DB "CP/M 2.2 Copyright 1979 (c) by Digital Research",CR,LF,CR,LF,0
 
 		JP	gocpm
 
@@ -260,31 +261,32 @@ gocpm:
 ;================================================================================================
 ; PHYSICAL DEVICE JUMP TABLE.
 ; Used by CONST, CONIN, CONOUT, LIST, PUNCH, READER and LISTST according to IOBYTE setting.
+; All physical devices that aren't present will be forwarded to TTY.
 ;================================================================================================
 TTYST:	JP	PORT0ST
 CRTST:	JP	PORT1ST
 BATST:	JP	LISTST
-UC1ST:	JP	PORT0ST		; No physical device present
-LPTST:	JP	PORT0ST		; No physical device present
-UL1ST:	JP	PORT0ST		; No physical device present
+UC1ST:	JP	TTYST		; No physical device present
+LPTST:	JP	TTYST		; No physical device present
+UL1ST:	JP	TTYST		; No physical device present
 
 TTYIN:	JP	PORT0IN
 CRTIN:	JP	PORT1IN
 BATIN:	JP	READER
-UC1IN:	JP	PORT0IN		; No physical device present
-PTRIN:	JP	PORT0IN		; No physical device present
-UR1IN:	JP	PORT0IN		; No physical device present
-UR2IN:	JP	PORT0IN		; No physical device present
+UC1IN:	JP	TTYIN		; No physical device present
+PTRIN:	JP	TTYIN		; No physical device present
+UR1IN:	JP	TTYIN		; No physical device present
+UR2IN:	JP	TTYIN		; No physical device present
 
 TTYOUT:	JP	PORT0OUT
 CRTOUT:	JP	PORT1OUT
 BATOUT:	JP	LIST
-UC1OUT:	JP	PORT0OUT	; No physical device present
-LPTOUT:	JP	PORT0OUT	; No physical device present
-UL1OUT:	JP	PORT0OUT	; No physical device present
-PTPOUT:	JP	PORT0OUT	; No physical device present
-UP1OUT:	JP	PORT0OUT	; No physical device present
-UP2OUT:	JP	PORT0OUT	; No physical device present
+UC1OUT:	JP	TTYOUT		; No physical device present
+LPTOUT:	JP	TTYOUT		; No physical device present
+UL1OUT:	JP	TTYOUT		; No physical device present
+PTPOUT:	JP	TTYOUT		; No physical device present
+UP1OUT:	JP	TTYOUT		; No physical device present
+UP2OUT:	JP	TTYOUT		; No physical device present
 
 ;================================================================================================
 ; Console I/O routines
@@ -368,7 +370,7 @@ PUNCH:	LD	A,(iobyte)
 		JP	UP2OUT
 
 ;================================================================================================
-; List Status (List = Console)
+; List Status
 ;================================================================================================
 LISTST:	LD	A,(iobyte)
 		AND	0C0H
