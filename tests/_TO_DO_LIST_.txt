@@ -2,8 +2,6 @@
 
 - Assemble and test TTY PCB (waiting for components).
 
-- Write BIOS 2.0 with TTY drivers and IOBYTE implementation.
-
 - Modify BIOS to perform disc boot instead of ROM boot.
 
 - Develop terminal-in-a-box with RPi.
