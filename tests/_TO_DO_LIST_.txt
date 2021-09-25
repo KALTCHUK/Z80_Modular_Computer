@@ -1,5 +1,3 @@
-- Build PSU.
-
 - Assemble and test MEM PCB (waiting for components).
 
 - Assemble and test TTY PCB (waiting for components).
