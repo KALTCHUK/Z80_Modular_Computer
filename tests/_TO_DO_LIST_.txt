@@ -6,7 +6,7 @@
 
 - Develop terminal-in-a-box with RPi.
 
-- Design Backplane v2 (8 cards + PSU) PCB.
+- Design Backplane v2 PCB.
 
 - Develop terminal-in-a-box with RPi (pico?).
 
