@@ -4,14 +4,14 @@ EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
-Title ""
+Title "Serial Communication Card for Z80 Modular Computer"
 Date ""
 Rev ""
 Comp ""
-Comment1 ""
-Comment2 ""
-Comment3 ""
-Comment4 ""
+Comment1 "250kbps (maximum speed)."
+Comment2 "Each port can be configured to work on a different baud rate. The initial setup is 8N1,"
+Comment3 "work with RS232 or TTL signal. Due to limited space, only TTY0 has a DB9 connector."
+Comment4 "This card has two independent serial ports. Each port can be configured via jumper to "
 $EndDescr
 $Comp
 L Connector_Generic:Conn_02x05_Odd_Even J1
