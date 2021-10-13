@@ -1,6 +1,7 @@
-- Test MEM PCB.
+- Design frontal for MEM card.
 
-- Test TTY PCB.
+- Design frontal for TTY card.
+- Test TTY1.
 
 - Modify BIOS to perform disc boot instead of ROM boot.
 
