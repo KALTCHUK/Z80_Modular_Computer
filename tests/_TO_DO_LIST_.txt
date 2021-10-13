@@ -3,6 +3,8 @@
 - Design frontal for TTY card.
 - Test TTY1.
 
+- Write system documentation.
+
 - Modify BIOS to perform disc boot instead of ROM boot.
 
 - Develop terminal-in-a-box with RPi.
