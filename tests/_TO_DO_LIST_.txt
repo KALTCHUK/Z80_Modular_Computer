@@ -1,6 +1,6 @@
-- Assemble and test MEM PCB (waiting for components).
+- Test MEM PCB.
 
-- Assemble and test TTY PCB (waiting for components).
+- Test TTY PCB.
 
 - Modify BIOS to perform disc boot instead of ROM boot.
 
