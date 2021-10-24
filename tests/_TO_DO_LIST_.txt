@@ -1,6 +1,3 @@
-- Design frontal for MEM card.
-
-- Design frontal for TTY card.
 - Test TTY1.
 
 - Write system documentation.
@@ -10,8 +7,6 @@
 - Develop terminal-in-a-box with RPi.
 
 - Design Backplane v2 PCB.
-
-- Develop terminal-in-a-box with RPi (pico?).
 
 ------------------------------------------------------------------
 Machanical issues:
