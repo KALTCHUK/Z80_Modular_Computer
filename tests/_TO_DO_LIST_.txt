@@ -3,7 +3,9 @@
 
 - Write Monitor on block 1 and test with TTY card.
 
-- Write system documentation.
+- Write system documentation for Proton - Z80MC.
+
+- Write system documentation for Monitor 2.0.
 
 - Modify BIOS to perform disc boot instead of ROM boot.
 
