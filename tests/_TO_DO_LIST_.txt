@@ -1,4 +1,7 @@
+- Modify initial message of TTY firmare and program ATmega.
 - Test TTY1.
+
+- Write Monitor on block 1 and test with TTY card.
 
 - Write system documentation.
 
@@ -10,7 +13,7 @@
 
 ------------------------------------------------------------------
 Machanical issues:
-- Design the frontal panels (PCB?).
+- Design the frontal panels.
 - Design the slotted card guide and 3D print it.
 - Build the enclosure with aluminium frames.
 

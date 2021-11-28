@@ -343,7 +343,7 @@ END GROUP
  *(.fini0)
                 0x00000372                _etext = .
 
-.data           0x00800100       0x72 load address 0x00000372
+.data           0x00800100       0x90 load address 0x00000372
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -351,35 +351,35 @@ END GROUP
                 0x00800100                baud
  *(.gnu.linkonce.d*)
  *(.rodata)
- .rodata        0x0080012c       0x46 main.o
+ .rodata        0x0080012c       0x64 main.o
  *(.rodata*)
  *(.gnu.linkonce.r*)
-                0x00800172                . = ALIGN (0x2)
-                0x00800172                _edata = .
-                0x00800172                PROVIDE (__data_end, .)
+                0x00800190                . = ALIGN (0x2)
+                0x00800190                _edata = .
+                0x00800190                PROVIDE (__data_end, .)
 
-.bss            0x00800172      0x104
-                0x00800172                PROVIDE (__bss_start, .)
+.bss            0x00800190      0x104
+                0x00800190                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
  .bss.uBuffRX_outPtr
-                0x00800172        0x2 main.o
-                0x00800172                uBuffRX_outPtr
+                0x00800190        0x2 main.o
+                0x00800190                uBuffRX_outPtr
  .bss.uBuffRX_inPtr
-                0x00800174        0x2 main.o
-                0x00800174                uBuffRX_inPtr
+                0x00800192        0x2 main.o
+                0x00800192                uBuffRX_inPtr
  *(COMMON)
- COMMON         0x00800176      0x100 main.o
-                0x00800176                uBuffRX
-                0x00800276                PROVIDE (__bss_end, .)
+ COMMON         0x00800194      0x100 main.o
+                0x00800194                uBuffRX
+                0x00800294                PROVIDE (__bss_end, .)
                 0x00000372                __data_load_start = LOADADDR (.data)
-                0x000003e4                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x00000402                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800276        0x0
+.noinit         0x00800294        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
  *(.noinit*)
                 [!provide]                PROVIDE (__noinit_end, .)
-                0x00800276                _end = .
+                0x00800294                _end = .
                 [!provide]                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
