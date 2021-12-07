@@ -1,6 +1,3 @@
-- Modify initial message of TTY firmare and program ATmega.
-- Test TTY1.
-
 - Write Monitor on ROM block 1 and test with TTY card.
 
 - Write system documentation for Proton - Z80MC.

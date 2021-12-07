@@ -3,31 +3,31 @@ preTTY.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000090  00800100  00000372  00000406  2**0
+  0 .data         00000078  00800100  00000372  00000406  2**0
                   CONTENTS, ALLOC, LOAD, DATA
   1 .text         00000372  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000104  00800190  00800190  00000496  2**0
+  2 .bss          00000104  00800178  00800178  0000047e  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  00000496  2**0
+  3 .comment      00000030  00000000  00000000  0000047e  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000004c8  2**2
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000004b0  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000050  00000000  00000000  00000508  2**0
+  5 .debug_aranges 00000050  00000000  00000000  000004f0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   000008b5  00000000  00000000  00000558  2**0
+  6 .debug_info   000008b5  00000000  00000000  00000540  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 000006e3  00000000  00000000  00000e0d  2**0
+  7 .debug_abbrev 000006e3  00000000  00000000  00000df5  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00000381  00000000  00000000  000014f0  2**0
+  8 .debug_line   00000381  00000000  00000000  000014d8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000114  00000000  00000000  00001874  2**2
+  9 .debug_frame  00000114  00000000  00000000  0000185c  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    000003fe  00000000  00000000  00001988  2**0
+ 10 .debug_str    000003fe  00000000  00000000  00001970  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    0000030a  00000000  00000000  00001d86  2**0
+ 11 .debug_loc    0000030a  00000000  00000000  00001d6e  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000040  00000000  00000000  00002090  2**0
+ 12 .debug_ranges 00000040  00000000  00000000  00002078  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -77,13 +77,13 @@ Disassembly of section .text:
   7e:	02 c0       	rjmp	.+4      	; 0x84 <__do_copy_data+0x10>
   80:	05 90       	lpm	r0, Z+
   82:	0d 92       	st	X+, r0
-  84:	a0 39       	cpi	r26, 0x90	; 144
+  84:	a8 37       	cpi	r26, 0x78	; 120
   86:	b1 07       	cpc	r27, r17
   88:	d9 f7       	brne	.-10     	; 0x80 <__do_copy_data+0xc>
 
 0000008a <__do_clear_bss>:
   8a:	22 e0       	ldi	r18, 0x02	; 2
-  8c:	a0 e9       	ldi	r26, 0x90	; 144
+  8c:	a8 e7       	ldi	r26, 0x78	; 120
   8e:	b1 e0       	ldi	r27, 0x01	; 1
   90:	01 c0       	rjmp	.+2      	; 0x94 <.do_clear_bss_start>
 
@@ -91,7 +91,7 @@ Disassembly of section .text:
   92:	1d 92       	st	X+, r1
 
 00000094 <.do_clear_bss_start>:
-  94:	a4 39       	cpi	r26, 0x94	; 148
+  94:	ac 37       	cpi	r26, 0x7C	; 124
   96:	b2 07       	cpc	r27, r18
   98:	e1 f7       	brne	.-8      	; 0x92 <.do_clear_bss_loop>
   9a:	0e 94 63 01 	call	0x2c6	; 0x2c6 <main>
@@ -236,16 +236,16 @@ ISR(USART_RX_vect)
  142:	ef 93       	push	r30
  144:	ff 93       	push	r31
 	uBuffRX[uBuffRX_inPtr++] = UDR0;
- 146:	80 91 92 01 	lds	r24, 0x0192	; 0x800192 <uBuffRX_inPtr>
- 14a:	90 91 93 01 	lds	r25, 0x0193	; 0x800193 <uBuffRX_inPtr+0x1>
+ 146:	80 91 7a 01 	lds	r24, 0x017A	; 0x80017a <uBuffRX_inPtr>
+ 14a:	90 91 7b 01 	lds	r25, 0x017B	; 0x80017b <uBuffRX_inPtr+0x1>
  14e:	9c 01       	movw	r18, r24
  150:	2f 5f       	subi	r18, 0xFF	; 255
  152:	3f 4f       	sbci	r19, 0xFF	; 255
- 154:	30 93 93 01 	sts	0x0193, r19	; 0x800193 <uBuffRX_inPtr+0x1>
- 158:	20 93 92 01 	sts	0x0192, r18	; 0x800192 <uBuffRX_inPtr>
+ 154:	30 93 7b 01 	sts	0x017B, r19	; 0x80017b <uBuffRX_inPtr+0x1>
+ 158:	20 93 7a 01 	sts	0x017A, r18	; 0x80017a <uBuffRX_inPtr>
  15c:	40 91 c6 00 	lds	r20, 0x00C6	; 0x8000c6 <__TEXT_REGION_LENGTH__+0x7f80c6>
  160:	fc 01       	movw	r30, r24
- 162:	ec 56       	subi	r30, 0x6C	; 108
+ 162:	e4 58       	subi	r30, 0x84	; 132
  164:	fe 4f       	sbci	r31, 0xFE	; 254
  166:	40 83       	st	Z, r20
 	if (uBuffRX_inPtr == MAXBUFF)
@@ -253,8 +253,8 @@ ISR(USART_RX_vect)
  16a:	31 40       	sbci	r19, 0x01	; 1
  16c:	21 f4       	brne	.+8      	; 0x176 <__vector_18+0x48>
 		uBuffRX_inPtr = 0;
- 16e:	10 92 93 01 	sts	0x0193, r1	; 0x800193 <uBuffRX_inPtr+0x1>
- 172:	10 92 92 01 	sts	0x0192, r1	; 0x800192 <uBuffRX_inPtr>
+ 16e:	10 92 7b 01 	sts	0x017B, r1	; 0x80017b <uBuffRX_inPtr+0x1>
+ 172:	10 92 7a 01 	sts	0x017A, r1	; 0x80017a <uBuffRX_inPtr>
 }
  176:	ff 91       	pop	r31
  178:	ef 91       	pop	r30
@@ -321,10 +321,10 @@ ISR(INT0_vect)									// We got a chip_select (CPU wants something)
 	{
 		case RD_DATA:							// Read data request
 			if (uBuffRX_inPtr != uBuffRX_outPtr)
- 1d8:	20 91 92 01 	lds	r18, 0x0192	; 0x800192 <uBuffRX_inPtr>
- 1dc:	30 91 93 01 	lds	r19, 0x0193	; 0x800193 <uBuffRX_inPtr+0x1>
- 1e0:	80 91 90 01 	lds	r24, 0x0190	; 0x800190 <__data_end>
- 1e4:	90 91 91 01 	lds	r25, 0x0191	; 0x800191 <__data_end+0x1>
+ 1d8:	20 91 7a 01 	lds	r18, 0x017A	; 0x80017a <uBuffRX_inPtr>
+ 1dc:	30 91 7b 01 	lds	r19, 0x017B	; 0x80017b <uBuffRX_inPtr+0x1>
+ 1e0:	80 91 78 01 	lds	r24, 0x0178	; 0x800178 <__data_end>
+ 1e4:	90 91 79 01 	lds	r25, 0x0179	; 0x800179 <__data_end+0x1>
  1e8:	28 17       	cp	r18, r24
  1ea:	39 07       	cpc	r19, r25
  1ec:	d1 f0       	breq	.+52     	; 0x222 <__vector_1+0x94>
@@ -333,23 +333,23 @@ ISR(INT0_vect)									// We got a chip_select (CPU wants something)
  1ee:	9c 01       	movw	r18, r24
  1f0:	2f 5f       	subi	r18, 0xFF	; 255
  1f2:	3f 4f       	sbci	r19, 0xFF	; 255
- 1f4:	30 93 91 01 	sts	0x0191, r19	; 0x800191 <__data_end+0x1>
- 1f8:	20 93 90 01 	sts	0x0190, r18	; 0x800190 <__data_end>
+ 1f4:	30 93 79 01 	sts	0x0179, r19	; 0x800179 <__data_end+0x1>
+ 1f8:	20 93 78 01 	sts	0x0178, r18	; 0x800178 <__data_end>
  1fc:	fc 01       	movw	r30, r24
- 1fe:	ec 56       	subi	r30, 0x6C	; 108
+ 1fe:	e4 58       	subi	r30, 0x84	; 132
  200:	fe 4f       	sbci	r31, 0xFE	; 254
  202:	80 81       	ld	r24, Z
  204:	0e 94 6a 00 	call	0xd4	; 0xd4 <reply>
 				if (uBuffRX_outPtr == MAXBUFF)
- 208:	80 91 90 01 	lds	r24, 0x0190	; 0x800190 <__data_end>
- 20c:	90 91 91 01 	lds	r25, 0x0191	; 0x800191 <__data_end+0x1>
+ 208:	80 91 78 01 	lds	r24, 0x0178	; 0x800178 <__data_end>
+ 20c:	90 91 79 01 	lds	r25, 0x0179	; 0x800179 <__data_end+0x1>
  210:	81 15       	cp	r24, r1
  212:	91 40       	sbci	r25, 0x01	; 1
  214:	09 f0       	breq	.+2      	; 0x218 <__vector_1+0x8a>
  216:	46 c0       	rjmp	.+140    	; 0x2a4 <__vector_1+0x116>
 					uBuffRX_outPtr = 0;
- 218:	10 92 91 01 	sts	0x0191, r1	; 0x800191 <__data_end+0x1>
- 21c:	10 92 90 01 	sts	0x0190, r1	; 0x800190 <__data_end>
+ 218:	10 92 79 01 	sts	0x0179, r1	; 0x800179 <__data_end+0x1>
+ 21c:	10 92 78 01 	sts	0x0178, r1	; 0x800178 <__data_end>
  220:	41 c0       	rjmp	.+130    	; 0x2a4 <__vector_1+0x116>
 			}
 			else
@@ -368,10 +368,10 @@ ISR(INT0_vect)									// We got a chip_select (CPU wants something)
 		
 		case RD_STATUS:							// Read status request
 			if (uBuffRX_inPtr != uBuffRX_outPtr)	// Put 0xff on data bus
- 230:	20 91 92 01 	lds	r18, 0x0192	; 0x800192 <uBuffRX_inPtr>
- 234:	30 91 93 01 	lds	r19, 0x0193	; 0x800193 <uBuffRX_inPtr+0x1>
- 238:	80 91 90 01 	lds	r24, 0x0190	; 0x800190 <__data_end>
- 23c:	90 91 91 01 	lds	r25, 0x0191	; 0x800191 <__data_end+0x1>
+ 230:	20 91 7a 01 	lds	r18, 0x017A	; 0x80017a <uBuffRX_inPtr>
+ 234:	30 91 7b 01 	lds	r19, 0x017B	; 0x80017b <uBuffRX_inPtr+0x1>
+ 238:	80 91 78 01 	lds	r24, 0x0178	; 0x800178 <__data_end>
+ 23c:	90 91 79 01 	lds	r25, 0x0179	; 0x800179 <__data_end+0x1>
  240:	28 17       	cp	r18, r24
  242:	39 07       	cpc	r19, r25
  244:	21 f0       	breq	.+8      	; 0x24e <__vector_1+0xc0>
@@ -465,15 +465,15 @@ int main(void)
  2c8:	df 93       	push	r29
  2ca:	cd b7       	in	r28, 0x3d	; 61
  2cc:	de b7       	in	r29, 0x3e	; 62
- 2ce:	c4 56       	subi	r28, 0x64	; 100
+ 2ce:	cc 54       	subi	r28, 0x4C	; 76
  2d0:	d1 09       	sbc	r29, r1
  2d2:	0f b6       	in	r0, 0x3f	; 63
  2d4:	f8 94       	cli
  2d6:	de bf       	out	0x3e, r29	; 62
  2d8:	0f be       	out	0x3f, r0	; 63
  2da:	cd bf       	out	0x3d, r28	; 61
-	char	iniMsg[] = "\r\n*** TTY Card - firmware v1.0. ***\r\
- 2dc:	84 e6       	ldi	r24, 0x64	; 100
+	char	iniMsg[] = "\r\n*** TTY Card - firmware v1.1. ***\r\n*** by Kaltchuk, sep/2021.    ***\r\n\r\n\0";
+ 2dc:	8c e4       	ldi	r24, 0x4C	; 76
  2de:	ec e2       	ldi	r30, 0x2C	; 44
  2e0:	f1 e0       	ldi	r31, 0x01	; 1
  2e2:	de 01       	movw	r26, r28
@@ -482,18 +482,17 @@ int main(void)
  2e8:	0d 92       	st	X+, r0
  2ea:	8a 95       	dec	r24
  2ec:	e1 f7       	brne	.-8      	; 0x2e6 <main+0x20>
-	                       n*** by Kaltchuk, sep/2021.    ***\r\n\r\n\0";
 	int		i=0;
 	
 	USART_Init(MYUBRR);		// Initialize USART
  2ee:	89 e0       	ldi	r24, 0x09	; 9
  2f0:	90 e0       	ldi	r25, 0x00	; 0
  2f2:	0e 94 87 00 	call	0x10e	; 0x10e <USART_Init>
+}
 
 int main(void)
 {
-	char	iniMsg[] = "\r\n*** TTY Card - firmware v1.0. ***\r\
-	                       n*** by Kaltchuk, sep/2021.    ***\r\n\r\n\0";
+	char	iniMsg[] = "\r\n*** TTY Card - firmware v1.1. ***\r\n*** by Kaltchuk, sep/2021.    ***\r\n\r\n\0";
 	int		i=0;
  2f6:	00 e0       	ldi	r16, 0x00	; 0
  2f8:	10 e0       	ldi	r17, 0x00	; 0
@@ -506,8 +505,8 @@ int main(void)
  2fc:	0f 5f       	subi	r16, 0xFF	; 255
  2fe:	1f 4f       	sbci	r17, 0xFF	; 255
  300:	0e 94 63 00 	call	0xc6	; 0xc6 <xmit>
-	char	iniMsg[] = "\r\n*** TTY Card - firmware v1.0. ***\r\
-	                       n*** by Kaltchuk, sep/2021.    ***\r\n\r\n\0";
+{
+	char	iniMsg[] = "\r\n*** TTY Card - firmware v1.1. ***\r\n*** by Kaltchuk, sep/2021.    ***\r\n\r\n\0";
 	int		i=0;
 	
 	USART_Init(MYUBRR);		// Initialize USART

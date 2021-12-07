@@ -146,8 +146,7 @@ ISR(INT0_vect)									// We got a chip_select (CPU wants something)
 
 int main(void)
 {
-	char	iniMsg[] = "\r\n*** TTY Card - firmware v1.0. ***\r\
-	                       n*** by Kaltchuk, sep/2021.    ***\r\n\r\n\0";
+	char	iniMsg[] = "\r\n*** TTY Card - firmware v1.1. ***\r\n*** by Kaltchuk, sep/2021.    ***\r\n\r\n\0";
 	int		i=0;
 	
 	USART_Init(MYUBRR);		// Initialize USART
