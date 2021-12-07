@@ -1,4 +1,5 @@
 EESchema Schematic File Version 4
+LIBS:TTY-cache
 EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
@@ -673,7 +674,7 @@ RX0
 Text Label 3250 6400 2    50   ~ 0
 RX0RS232
 $Comp
-L MCU_Microchip_ATmega:ATmega328P-PU U3
+L TTY-rescue:ATmega328P-PU-MCU_Microchip_ATmega U3
 U 1 1 60FA7136
 P 2200 4900
 F 0 "U3" H 2900 6450 50  0000 R CNN
@@ -1538,7 +1539,7 @@ F 3 "~" H 3000 7200 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L MCU_Microchip_ATmega:ATmega328P-PU U4
+L TTY-rescue:ATmega328P-PU-MCU_Microchip_ATmega U4
 U 1 1 6150E52C
 P 4400 4700
 F 0 "U4" H 5100 6250 50  0000 R CNN
