@@ -1,28 +1,28 @@
 - Modify initial message of TTY firmare and program ATmega.
 - Test TTY1.
 
-- Write Monitor on block 1 and test with TTY card.
+- Write Monitor on ROM block 1 and test with TTY card.
 
 - Write system documentation for Proton - Z80MC.
 
 - Write system documentation for Monitor 2.0.
 
-- Modify BIOS to perform disc boot instead of ROM boot.
+- Modify BIOS to perform disc boot and put bootloader on ROM block 2.
 
 - Develop terminal-in-a-box with RPi.
 
 - Design Backplane v2 PCB.
 
+- Design frontal panels in PCB.
+
 ------------------------------------------------------------------
 Machanical issues:
-- Design the frontal panels.
 - Design the slotted card guide and 3D print it.
-- Build the enclosure with aluminium frames.
 
 ------------------------------------------------------------------
 Some ideas for new cards:
 - VGA and keyboard (FPGA?)
-- digital I/O for automation (8255)
+- LPT - digital I/O for automation (8255)
 - analog I/O for automation
 - Real-time clock
 - audio
