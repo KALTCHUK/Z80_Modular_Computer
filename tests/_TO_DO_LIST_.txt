@@ -1,16 +1,18 @@
 - Write Monitor on ROM block 1 and test with TTY card.
 
-- Write system documentation for Proton - Z80MC.
-
-- Write system documentation for Monitor 2.0.
-
 - Modify BIOS to perform disc boot and put bootloader on ROM block 2.
+
+- Modify TTYBAUD to include serial port address.
 
 - Develop terminal-in-a-box with RPi.
 
 - Design Backplane v2 PCB.
 
 - Design frontal panels in PCB.
+
+- Write system documentation for Proton - Z80MC.
+
+- Write system documentation for Monitor 2.0.
 
 ------------------------------------------------------------------
 Machanical issues:
