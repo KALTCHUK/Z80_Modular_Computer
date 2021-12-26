@@ -1,21 +1,23 @@
 ;================================================================================================
 ; MONITOR 2.0  - USE WITH VT100 TERMINAL
 ; MONITOR 2.1B - Unified command set, no more environment change.
-; MONITOR 2.1C - working on dread.
-; MONITOR 2.1D - implement ascii2com function.
-; MONITOR 2.1E - implement memory compare function.
+; MONITOR 2.1C - Working on dread.
+; MONITOR 2.1D - Implement ascii2com function.
+; MONITOR 2.1E - Implement memory compare function.
 ; MONITOR 2.1F - Improved memory compare function. Find difference before displaying content.
 ;                Put some NOPs in DISKWRITE and DISKREAD.
-; MONITOR 2.1G - implement disk verification function.
-; MONITOR 2.2  - implement FLASH function.
+; MONITOR 2.1G - Implement disk verification function.
+; MONITOR 2.2  - Implement FLASH function.
+; MONITOR 2.3  - Fix bug in COMPARE.
+;                Fix bug in GETDISK.
 ;================================================================================================
 #INCLUDE	"equates.h"
 
 IOBYTE		.EQU	3
 TPA			.EQU	0100H				; Transient Programs Area
-MONITOR		.EQU	CCP				; Monitor entry point
+MONITOR		.EQU	CCP					; Monitor entry point
 DMA			.EQU	0080H				; Buffer used by Monitor
-DISKPAD		.EQU	0E000H				; Draft area used by disk R/W ops
+DISKPAD		.EQU	0E400H				; Draft area used by disk R/W ops
 DISKBKUP	.EQU	0E200H				; Backup area used by disk verify operation
 CFINIT		.EQU	0E869H
 
@@ -85,6 +87,8 @@ US			.EQU	1FH
 MAXLBUF		.EQU	DMA+80
 PROMPT		.EQU	'>'
 MAXTRY		.EQU	10
+CLOCK		.EQU	10					; clock (MHz)
+KT			.EQU	5814*CLOCK
 
 ;================================================================================================
 ; FLASH card stuff
@@ -121,6 +125,8 @@ CF_SET_FEAT		.EQU 	0EFH
 ;================================================================================================
 			.ORG MONITOR
 
+			XOR	A
+			LD	(FCINI),A				; FLASH Card not initialized.
 CYCLE:		CALL PRINTENV
 			CALL LINER					; Call the line manager
 			LD	A,(DMA)
@@ -139,21 +145,21 @@ UNK:		CALL UNKNOWN
 ;================================================================================================
 HELP:		CALL CRLF
 			CALL PRINTSEQ
-			.DB	" MONITOR 2.1G - May/2021.",CR,LF
+			.DB	" MONITOR 2.3 - Dec/2021.",CR,LF
 			.DB	" Options:   READ aaaa             read from memory.",CR,LF
 			.DB "            WRITE aaaa,c1 c2 cN   write to memory.",CR,LF
 			.DB "            COPY aaaa-bbbb,cccc   copy memory block.",CR,LF
 			.DB "            FILL aaaa-bbbb,cc     fill memory block.",CR,LF
 			.DB "            COMPARE aaaa,bbbb     compare memory areas.",CR,LF
-			.DB "            FLASH                 initialize FLASH Card."CR,LF
+			.DB "            FLASH                 initialize FLASH Card.",CR,LF
 			.DB	"            DREAD d,ttt,ss        read from disk.",CR,LF
 			.DB "            DOWN d,ttt,ss         download one sector from disk.",CR,LF
 			.DB "            UP d,ttt,ss           upload one sector to disk.",CR,LF
 			.DB "            VERIFY d              verify disk.",CR,LF
 			.DB "            FORMAT d              format disk.",CR,LF
-			.DB "            XMODEM aaaa           receive file using xmodem protocol.",CR,LF
+			.DB "            XMODEM r aaaa         receive file using xmodem protocol.",CR,LF
+			.DB "            XMODEM s aaaa-bbbb    receive file using xmodem protocol.",CR,LF
 			.DB "            HEX2COM aaaa          convert intel hex to executable.",CR,LF
-			.DB "            ASCII2COM aaaa        convert ASCII to executable.",CR,LF
 			.DB "            RUN aaaa              run program.",CR,LF
 			.DB "            BOOT",CR,LF,0
 			JP	CYCLE
@@ -345,7 +351,7 @@ MFPRIM:		LD	HL,(AAAA)		; This routine is also used by disk verify.
 ;================================================================================================
 ; Compare two memory areas - COMPARE AAAA,BBBB
 ;================================================================================================
-MCOMP:		LD	DE,DMA+7
+MCOMP:		LD	DE,DMA+8
 			CALL GETWORD		; Get aaaa
 			CP	1				; Is the argument OK?
 			JP	NZ,CYCLE
@@ -359,25 +365,6 @@ MCOMP:		LD	DE,DMA+7
 			LD	(BBBB),BC		; Save bbbb
 			PUSH BC
 			POP	IY
-MCNBC:		LD	A,(IX+0)
-			LD	B,(IY+0)
-			CP	B
-			JR	NZ,MCDIF
-			INC	IX
-			INC IY
-			JR	MCNBC
-MCDIF:		PUSH IX
-			POP	BC
-			LD	A,C
-			AND	0F0H
-			LD	C,A
-			LD	(AAAA),BC		; Save new aaaa
-			PUSH IY
-			POP	BC
-			LD	A,C
-			AND	0F0H
-			LD	C,A
-			LD	(BBBB),BC		; Save new bbbb
 MCNEWL:		LD	DE,(AAAA)
 			CALL PRINTADDR
 			LD	B,16
@@ -433,166 +420,264 @@ MCAGAIN:	CALL CONIN			; Wait for user's decision
 			JR	MCAGAIN
 
 ;================================================================================================
-; Xmodem Command - XMODEM AAAA
+; Xmodem Command - XMODEM R AAAA or XMODEM S AAAA-BBBB
 ;================================================================================================
-XMODEM:		LD	A,0C0H
-			LD	(IOBYTE),A			; Set LCD as LIST device.
-			LD	C,DC1
-			CALL LIST
-			
-			
-			LD	DE,DMA+6
-			CALL GETWORD		
+XMODEM:		LD	DE,DMA+7
+			LD	A,(DE)
+			CP	'S'				; is it send operation?
+			JP	Z,SENDOP
+			CP	's'
+			JP	Z,SENDOP
+			CP	'R'				; is it receive operation?
+			JP	Z,RECOP
+			CP	'r'
+			JP	Z,RECOP
+			CALL PRINTSEQ
+			.DB	"Missing or invalid operation.",CR,LF,0
+			JP	CYCLE
+
+;================================================================================================
+; XMODEM RECEIVE OPERATION
+;================================================================================================
+RECOP:      LD	DE,DMA+9
+			CALL GETWORD			; Get aaaa
 			CP	1					; Is the argument OK?
 			JP	NZ,CYCLE
-			LD	(AAAA),BC			; Save address
-			LD	A,0
-			LD	(RETRY),A			; Init retry counter
-			INC	A
-			LD	(BLOCK),A			; Init block counter
+			LD	(AAAA),BC			; Save aaaa
+			XOR	A
+            LD      (RETRY),A       ; Init retry counter
+            INC     A
+            LD      (BLOCK),A       ; Init block counter
+ALIVE:      CALL	SENDNAK
+GET1ST:     LD      B,5
+            CALL 	TOCONIN         ; 5s timeout
+            JR      C,REPEAT        ; Timed out?
+            CP      EOT
+            JR      Z,GOTEOT        ; EOT? WRAP IT UP
+            CP      CAN
+            JP      Z,CYCLE         ; CAN?
+            CP      SOH
+            JR      Z,GOTSOH        ; SOH? GET NEXT BLOCK
+            JR      GET1ST
 
-ALIVE:		CALL SENDNAK
-;***********************************
-			LD	C,'A'
-			CALL LIST
-;***********************************			
-GET1ST:		LD	B,5
-			CALL TOCONIN			; 5s timeout
-			JR	C,REPEAT			; Timed out?
-			CP	EOT
-			JR	Z,GOTEOT			; EOT?
-			CP	CAN
-			JP	Z,CYCLE				; CAN?
-			CP	SOH
-			JR	Z,GOTSOH			; SOH?
-REPEAT:		LD	A,(RETRY)
-			INC	A
-			LD	(RETRY),A
-			CP	MAXTRY
-			JR	NZ,ALIVE			; Try again?
-OUT3:		
-			CALL SENDCAN
+REPEAT:     LD      A,(RETRY)
+            INC     A
+            LD      (RETRY),A
+            CP      MAXTRY
+            JR      NZ,ALIVE        ; Try again?
+            CALL 	SENDCAN
+            JP      CYCLE
+
+GOTEOT:     CALL 	SENDNAK
+            LD      B,1
+            CALL 	TOCONIN
+            CALL 	SENDACK
+            CALL    PRINTSEQ
+            .DB      "FILE RECEIVED",CR,LF,0
+            JP      CYCLE
+
+GOTSOH:     LD      B,131
+            LD      HL,XBUFFER
+XGETBYTE:	PUSH    BC
+            LD      B,1
+            CALL 	CONIN         ; Get incoming block number
+;           JP      C,CYCLE           Timed out?
+            LD      (HL),A          ; STORE BYTE IN BUFFER
+            INC     HL
+            POP     BC
+            DJNZ    XGETBYTE
+            LD      HL,XBUFFER
+            LD      A,(HL)          ; PICK RECEIVED BLOCK NUMBER
+            LD      B,A
+            LD      A,(BLOCK)
+            CP      B
+            JR      Z,BLKNUMOK
+BLKERR:     CALL    SENDNAK
+            JP      GET1ST
+
+BLKNUMOK:   LD      B,A
+            INC     HL
+            LD      A,(HL)          ; PICK RECEIVED /BLOCK NUMBER
+            ADD     A,B
+            CP      0FFH
+            JR      NZ,BLKERR
+            XOR     A               ; DO THE CHECKSUM
+            LD      HL,XBUFFER+2
+            LD      B,128
+SUMBYTE:    ADD     A,(HL)
+            INC     HL
+            DJNZ    SUMBYTE
+            CP      (HL)
+            JR      NZ,BLKERR
+            CALL    WRITEFILE
+            LD      A,0
+            LD      (RETRY),A       ; Reset retry counter
+            LD      A,(BLOCK)
+            INC     A
+            LD      (BLOCK),A       ; Increment block counter
+            CALL 	SENDACK
+            JP      GET1ST
+
+;================================================================================================
+; XMODEM SEND OPERATION
+;================================================================================================
+SENDOP:     LD	DE,DMA+9
+			CALL GETWORD			; Get aaaa
+			CP	1					; Is the argument OK?
+			JP	NZ,CYCLE
+			LD	(AAAA),BC			; Save aaaa
+			LD	DE,DMA+14
+			CALL GETWORD			; Get bbbb
+			CP	1					; Is the argument OK?
+			JP	NZ,CYCLE
+			LD	(BBBB),BC			; Save bbbb
+			XOR     A
+            LD      (BLOCK),A       ; INIT BLOCK COUNTER
+			LD	(RETRY),A	; INIT RETRY COUNTER
+            LD      A,SOH
+            LD      (XBUFFER),A
+FOPENOK:    LD      B,5		; 5SEC TIMEOUT
+            CALL    TOCONIN
+            JP      C,REPEATS       ; REPEAT
+            CP      NAK
+            JR      Z,CLR2GO        ; CLEAR TO CONTINUE
+            CP      CAN
+            JP      Z,CYCLE         ; CANCELED BY RTU
+            JR      FOPENOK			; try again
+
+REPEATS:    LD      A,(RETRY)
+            INC     A
+            LD      (RETRY),A
+            CP      MAXTRY
+            JR      NZ,FOPENOK		; Try again?
+            CALL 	SENDCAN
+            JP      CYCLE
+				
+CLR2GO:		CALL    READFILE
+            CP      1				; EOF?
+            JR      Z,GOTEOF
+            CP      0				; GOT NEW BLOCK?
+            JR      Z,GOTNEWBLK
+            CALL    SENDCAN         ; ERROR READING FILE
+            JP      CYCLE
+
+GOTEOF:     CALL    SENDEOT
+            CALL    SENDEOT
+            CALL    PRINTSEQ
+            .DB      "FILE TRANSMITTED",CR,LF,0
+			CALL	PURGE
 			JP	CYCLE
-			
-GOTEOT:		CALL SENDNAK
-			LD	B,1
-			CALL TOCONIN
-			CALL SENDACK
-			JP	CYCLE
-			
-GOTSOH:		LD	A,0
-			LD	(CHKSUM),A			; Reset checksum
-			LD	(BYTECNT),A			; Reset byte counter
-			LD	B,1
-			CALL TOCONIN			; Get incoming block number
-			JR	C,OUT2				; Timed out?
-			LD	C,A					; Save incoming block number
-			LD	B,1
-			CALL TOCONIN			; Get complement of incoming block number
-			JR	C,OUT2				; Timed out?
-			CPL
-			CP	C
-			JR	NZ,OUT2				; block = //block?
-			LD	A,(BLOCK)
-			CP	C					; Is block number what we expected?
-			JR	Z,RECPACK
-			DEC	A
-			CP	C					; block number is the anterior? Probably sender missed our ACK.
-			JR	NZ,OUT2
-ANTBLK:		CALL PURGE				; Purge input buffer before sending ACK
-			CALL SENDACK
-			JP	GET1ST
-OUT2:		CALL PURGE
-			CALL SENDCAN
-			JP	CYCLE
-RECPACK:	LD	B,1					; Start receiving data packet (128 bytes)
-			CALL TOCONIN
-			JR	C,OUT2				; Timed out?
-			LD	HL,(AAAA)
-			LD	(HL),A				; Put byte in buffer
-			INC	HL					; Inc buffer pointer
-			LD	(AAAA),HL
-			LD	C,A
-			LD	A,(CHKSUM)
-			ADD	A,C
-			LD	(CHKSUM),A			; Update checksum
-			LD	A,(BYTECNT)			; Inc byte counter
-			INC	A
-			LD	(BYTECNT),A
-			CP	128					; Check if we received a full data packet
-			JR	NZ,RECPACK
-			LD	B,1
-			CALL TOCONIN			; Get checksum
-			JR	C,OUT2				; Timed out?
-			LD	C,A
-			LD	A,(CHKSUM)
-			CP	C
-			JP	NZ,REPEAT			; Checksum OK?
-			LD	A,0
-			LD	(RETRY),A			; Reset retry counter
-			LD	A,(BLOCK)
-			INC	A
-			LD	(BLOCK),A			; Increment block counter
 
-			CALL SENDACK
-			JP	GET1ST
-			
-SENDACK:	LD C,ACK
-			CALL CONOUT
-			RET
+GOTNEWBLK:  LD      A,(BLOCK)
+            INC     A
+			LD	(BLOCK),A
+            LD      (XBUFFER+1),A    ; WRITE BLOCK
+            CPL
+            LD      (XBUFFER+2),A    ; WRITE /BLOCK
+            XOR     A               ; CALCULATE CHECKSUM
+            LD      B,128
+            LD      HL,XBUFFER+3
+NEXTCS:     ADD     A,(HL)
+            INC     HL
+            DJNZ    NEXTCS
+            LD      (HL),A          ; WRITE CHECKSUM
+SENDBLOCK:  LD      B,132
+            LD      HL,XBUFFER
+SENDBYTE:   LD      A,(HL)          ; SEND THE BUFFER
+            LD      C,A
+            CALL    CONOUT
+            INC     HL
+            DJNZ    SENDBYTE
+GETREPLY:   LD      B,5             ; GET RTU'S REPLY
+            CALL    TOCONIN
+            JP      C,CYCLE         ; NO ANSWER
+            CP      NAK
+            JR      Z,SENDBLOCK     ; RESEND BLOCK
+            CP      ACK
+            JR      Z,CLR2GO
+            JR      GETREPLY
 
-SENDNAK:	LD C,NAK
-			CALL CONOUT
-			RET
+PURGE:		CALL	CONST
+			CP	0
+			RET	Z
+			CALL	CONIN
+            JR      PURGE
 
-SENDCAN:	LD C,CAN
-			CALL CONOUT
-			RET
-
-;==================================================================================
-; Timed Out Console Input - X seconds, with X passed on reg B
+;================================================================================================
+; Timed Out Console Input - X seconds, with X passed on regB
 ; Incoming byte, if any, returns in A
 ; Carry flag set if timed out.
-;==================================================================================
-TOCONIN:	PUSH	BC
-			PUSH	HL
-			
-;***********************************
-			LD	C,'T'
-			CALL LIST
-			LD	B,5
-;***********************************
-			
-LOOP0:		LD	HL,685				;2.5					\
-LOOP1:		LD	C,35				;1.75	\				|
-LOOP2:		CALL CONST				;36.5	|t=41.5C+0.5	| 
-			INC	A					;1		|				|
-			JR	Z,BWAITING			;3/1.75	|				| t=HL(41.5C+6.5)+1.25
-			LD	A,C					;1		|				|
-			DEC	C					;1		|				|
-			JR	NZ,LOOP2			;3/1.75	/				| with HL=685 and c=35,
-			DEC	HL					;1						|  t=0.9994sec (WOW!!!)
-			LD	A,H					;1						|
-			OR	L					;1						|
-			JR	NZ,LOOP1			;3/1.75					/
-			DJNZ	LOOP0			;3.25/2
+;================================================================================================
+TOCONIN:	PUSH    BC
+			PUSH    HL
+
+TOLOOP1:	LD	HL,KT
+TOLOOP2:	CALL	CONST
+			CP	0FFH
+			JR	Z,BWAITING
+			DEC	HL
+			LD	A,H
+			OR	L
+			JR	NZ,TOLOOP2
+			DJNZ	TOLOOP1
 			SCF
-			JR	TOUT
-BWAITING:	CALL CONIN
-			SCF						; Reset carry flag
+			JR	TOOUT
+
+BWAITING:	CALL 	CONIN
+			SCF                     ; Reset carry flag
 			CCF
-TOUT:		POP	HL
-			POP	BC
+TOOUT:		POP     HL
+            POP     BC
+            RET
+
+;================================================================================================
+; Send control characters used by Xmodem
+;================================================================================================
+SENDACK:    LD C,ACK
+            CALL CONOUT
+            RET
+
+SENDNAK:    LD C,NAK
+            CALL CONOUT
+            RET
+
+SENDEOT:    LD C,EOT
+            CALL CONOUT
+            RET
+
+SENDCAN:    LD C,CAN
+            CALL CONOUT
+            RET
+
+;================================================================================================
+; (pseudo) read file and write file used by Xmodem
+;================================================================================================
+READFILE:	XOR	A					; if not EOF, copy 128 byte
+			LD	HL,(BBBB)
+			LD	DE,(AAAA)
+			SCF
+			CCF
+			SBC	HL,DE
+			JP	M,XEOF
+			EX	DE,HL
+			LD	DE,XBUFFER+3
+			LD	BC,128
+			LDIR
+			LD	(AAAA),HL
+			RET						; return 0 if not EOF
+
+XEOF:		INC	A					; return 1 if EOF
 			RET
 
-;==================================================================================
-; Purge console input.
-;==================================================================================
-PURGE:		LD	B,3
-			CALL TOCONIN
-			JR	NC,PURGE
+			
+				
+WRITEFILE	LD	HL,XBUFFER+2
+			LD	DE,(AAAA)
+			LD	BC,128
+			LDIR
+			LD	(AAAA),DE
 			RET
-
+				
 ;================================================================================================
 ; Hexadecimal to Executable conversion command HEX2COM AAAA
 ; Record structure:
@@ -686,61 +771,10 @@ HGW:		PUSH IX
 			RET
 
 ;================================================================================================
-; ASCII to Executable conversion command - ASCII2COM AAAA
-; Each pair of characters is converted to one byte. The executable is loaded @ 0100h (TPA).
-;	IX = source address 
-;	IY = target address
-;================================================================================================
-ASCII2COM:	LD	DE,DMA+10
-			CALL GETWORD		
-			CP	1					; Is the argument OK?
-			JP	NZ,CYCLE
-			PUSH BC					; IX holds the source address
-			POP	IX
-			LD	IY,0100H
-
-A2CNB:		LD	A,(IX+0)
-			CALL ISITHEX
-			CP	1
-			JR	NZ,A2CEND
-			CALL HGB
-			CP	1
-			JR	NZ,A2CEND
-			LD	(IY+0),B
-			INC	IY
-			INC IX
-			JR	A2CNB
-			
-A2CEND:		CALL PRINTSEQ
-			.DB	">Target contains ",0
-			LD	BC,0100H
-			PUSH IY
-			POP	HL
-			SCF
-			CCF
-			SBC	HL,BC
-			LD	(AAAA),HL			; AAAA contains total bytes written.
-			LD	B,H
-			CALL B2HL				; Convert MSByte to ASCII
-			LD	C,H
-			CALL CONOUT
-			LD	C,L
-			CALL CONOUT
-			LD	HL,(AAAA)
-			LD	B,L
-			CALL B2HL				; Convert LSByte to ASCII
-			LD	C,H
-			CALL CONOUT
-			LD	C,L
-			CALL CONOUT
-			CALL PRINTSEQ
-			.DB	"h bytes.",CR,LF,0
-			RET
-			
-;================================================================================================
 ; Read disk operation - READ D,TTT,SS
 ;================================================================================================
-DREAD:		LD	DE,DMA+6
+DREAD:		CALL CHECKFC		; Check if FLASH Card is initialized.
+			LD	DE,DMA+5
 			CALL GETDTS
 			CP	1				; Is the argument OK?
 			JP	NZ,CYCLE
@@ -752,7 +786,8 @@ TAGAIN:		CALL CONIN			; Wait for user's decision
 			CP	CR
 			JR	NZ,NOTCR
 			CALL INCDTS
-			JP	NEXTSEC
+			JR	NEXTSEC
+			
 NOTCR:		CP	ESC
 			JP	Z,CYCLE
 			JR	TAGAIN
@@ -785,8 +820,7 @@ PRINTDTS:	CALL PRINTSEQ
 			LD	A,(LBA0)
 			CALL PRINTBYTE
 			CALL PRINTSEQ
-			.DB	" (DISKPAD = E000)",CR,LF,0
-
+			.DB	" (DISKPAD = E400)",CR,LF,0
 			RET
 
 PRINTBYTE:	LD	B,A
@@ -810,6 +844,7 @@ INCDTS:		LD	A,(SEC)
 			INC	A
 			LD	(SEC),A
 			RET
+			
 ZSEC:		XOR	A
 			LD	(SEC),A
 			LD	HL,(TRK)
@@ -822,6 +857,7 @@ ZSEC:		XOR	A
 			INC	HL
 			LD	(TRK),HL
 			RET
+			
 ZTRK:		LD	HL,0
 			LD	(TRK),HL
 			LD	A,(DSK)
@@ -830,14 +866,24 @@ ZTRK:		LD	HL,0
 			INC	A
 			LD	(DSK),A
 			RET
+			
 ZDSK:		XOR	A
 			LD	(DSK),A
+			RET
+			
+CHECKFC:	LD A,(FCINI)
+			CP	1
+			RET	Z
+			CALL CFINIT
+			LD	A,1
+			LD	(FCINI),A
 			RET
 			
 ;================================================================================================
 ; Download 1 sector from disk to memory (@ DMIRROR)
 ;================================================================================================
-DDOWN:		LD	DE,DMA+5
+DDOWN:		CALL CHECKFC		; Check if FLASH Card is initialized.
+			LD	DE,DMA+4
 			CALL GETDTS
 			CP	1				; Is the argument OK?
 			JP	NZ,CYCLE
@@ -864,17 +910,28 @@ GETDTS:		CALL GETDISK
 			RET
 
 GETDISK:	LD	A,(DE)
-			CP	0
-			JP	NZ,GD1
+			CP	' '
+			JR	NZ,GCPZ
+			INC	DE
+			JR	GETDISK
+GCPZ:		CP	0
+			JR 	NZ,GD1
 			CALL GBNA
 			RET
-GD1:		SUB	'A'
-			LD	(DSK),A
-			CP	10H
-			JP	M,GD2
+
+GD1:		CP	'A'
+			JP	P,GD2
 			CALL GBIA
 			RET
-GD2:		LD	A,1
+			
+GD2:		CP	'Q'
+			JP	M,GD3
+			CALL GBIA
+			RET
+			
+GD3:		SUB	'A'
+			LD	(DSK),A
+			LD	A,1
 			RET
 
 GETTRACK:	LD	A,'0'
@@ -1044,7 +1101,8 @@ wrByte:		NOP
 ;================================================================================================
 ; Upload 1 sector from memory (@ DMIRROR) to disk - UP D,TTT,SS
 ;================================================================================================
-DUP:		LD	DE,DMA+3
+DUP:		CALL CHECKFC		; Check if FLASH Card is initialized.
+			LD	DE,DMA+2
 			CALL GETDTS
 			CP	1				; Is the argument OK?
 			JP	NZ,CYCLE
@@ -1055,7 +1113,8 @@ DUP:		LD	DE,DMA+3
 ;================================================================================================
 ; Verify disk. Do this on on all sectors of the disk - VERIFY D
 ;================================================================================================
-DVERIFY:	LD	DE,DMA+7
+DVERIFY:	CALL CHECKFC		; Check if FLASH Card is initialized.
+			LD	DE,DMA+6
 			CALL GETDISK
 			CP	1				; Is the argument OK?
 			JP	NZ,CYCLE
@@ -1075,7 +1134,17 @@ NEWTRK:		LD	A,0
 			LD	HL,(TRK)
 			LD	A,L
 			CALL PRINTBYTE
-NEWSEC:		CALL DTS2LBA
+NEWSEC:		CALL CONST
+			CP	0
+			JR	Z,DVCONT
+			CALL CONIN
+			CP	ESC
+			JR	NZ,DVCONT
+			CALL PRINTSEQ
+			.DB	" ABORTED",CR,LF,0
+			JP	CYCLE
+			
+DVCONT:		CALL DTS2LBA
 			CALL BKUP			; Backup content of sector before tests
 			LD	A,0				; Test R/W filling sector with 00
 			CALL BLKTEST
@@ -1158,13 +1227,71 @@ PRTB2HL:	CALL B2HL
 ;================================================================================================
 ; Format a disk - FORMAT D
 ;================================================================================================
-DFORMAT:	RET
+DFORMAT:	CALL CHECKFC		; Check if FLASH Card is initialized.
+			LD	DE,DMA+6
+			CALL GETDISK
+			CP	1				; Is the argument OK?
+			JP	NZ,CYCLE
+			LD	HL,DISKPAD		; Fill diskpad with empty FAT content
+			LD	(HL),0E5H
+			INC	HL
+			LD	B,11
+DF1:		LD	(HL),020H
+			INC	HL
+			DJNZ DF1
+			LD	B,20
+DF2:		LD	(HL),0
+			INC	HL
+			DJNZ DF2
+			LD	HL,DISKPAD
+			LD	DE,DISKPAD+020H
+			LD	BC,480
+			LDIR
+			CALL PRINTSEQ
+			.DB	"Format disk ",0
+			LD	A,(DSK)
+			ADD	A,'A'
+			LD	C,A
+			CALL CONOUT
+			CALL PRINTSEQ
+			.DB " (y/n)? ",0
+			CALL CONIN
+			LD	B,A
+			LD	C,A
+			CALL CONOUT
+			CALL CRLF
+			LD	A,B
+			CP	'Y'
+			JR	Z,DFCONT
+			CP	'y'
+			JP	NZ,CYCLE
+			
+DFCONT:		LD	HL,0
+			LD	A,(DSK)
+			CP	0
+			JR	NZ,DFNOTA
+			INC	HL
+DFNOTA:		LD	(TRK),HL
+			XOR	A
+			LD	(SEC),A
+			LD	B,32
+DFNSEC:		CALL DTS2LBA
+			CALL DISKWRITE
+			LD	A,(SEC)
+			INC	A
+			LD	(SEC),A
+			DJNZ DFNSEC
+			CALL PRINTSEQ
+			.DB	"Format complete.",CR,LF,0
+			JP	CYCLE
 
 ;================================================================================================
-; Format a disk - FORMAT D
+; Initialize FLASH Card for use with disk operations.
 ;================================================================================================
-FLASH:		CALL CFINIT
-			RET
+FLASH:		CALL CHECKFC
+			CALL PRINTSEQ
+			.DB	"FLASH Card initialized.",CR,LF,0
+			JP	CYCLE
 
 ;================================================================================================
 ; Run (Execute) Command - RUN AAAA
@@ -1377,7 +1504,7 @@ GETWORD:	CALL GETBYTE
 			
 ;================================================================================================
 ; Routine to get byte from command line. DE=line_buf_ptr(should point to where byte starts).
-; If successfull, return byte in regB. A=0 if missing arg, A=1 if OK, A=2 if invalid arg. 
+; If successfull, returns byte in regB. A=0 if missing arg, A=1 if OK, A=2 if invalid arg. 
 ;================================================================================================
 GETBYTE:	LD	A,(DE)
 			CP	0
@@ -1397,10 +1524,12 @@ GETBYTE:	LD	A,(DE)
 			CALL HL2B				; Convert ASCII pair to byte
 			LD	A,1
 			RET
+			
 GBNA:		CALL PRINTSEQ
 			.DB	">Missing argument.",CR,LF,0
 			LD	A,0
 			RET
+			
 GBSPC:		INC	DE
 			JR	GETBYTE
 GBIA:		CALL PRINTSEQ
@@ -1408,21 +1537,21 @@ GBIA:		CALL PRINTSEQ
 			LD	A,2
 			RET
 
-PRINTENV:	LD	C,PROMPT
-			CALL CONOUT
-			RET
-
 ISITHEX:	CP	'G'
 			JP	P,NOTHEX
 			CP	'A'
 			JP	P,ISHEX
-			CP	040H
+			CP	'@'
 			JP	P,NOTHEX
 			CP	'0'
 			JP	P,ISHEX
 NOTHEX:		LD	A,0
 			RET
 ISHEX:		LD	A,1
+			RET
+
+PRINTENV:	LD	C,PROMPT
+			CALL CONOUT
 			RET
 
 ;================================================================================================
@@ -1497,7 +1626,6 @@ CMDTBL:		.DB	"?",RS
 			.DB	"BOOT",RS
 			.DB	"XMODEM",RS
 			.DB	"HEX2COM",RS
-			.DB	"ASCII2COM",RS
 			.DB	"COMPARE",RS
 			.DB	"RUN",RS
 			.DB	"READ",RS
@@ -1508,13 +1636,13 @@ CMDTBL:		.DB	"?",RS
 			.DB	"DOWN",RS
 			.DB	"UP",RS
 			.DB	"FORMAT",RS
+			.DB	"FLASH",RS
 			.DB	"VERIFY",ETX
 
 JMPTBL:		JP	HELP
 			JP	WBOOT
 			JP	XMODEM
 			JP	HEX2COM
-			JP	ASCII2COM
 			JP	MCOMP
 			JP	RUN
 			JP	MREAD
@@ -1525,6 +1653,7 @@ JMPTBL:		JP	HELP
 			JP	DDOWN
 			JP	DUP
 			JP	DFORMAT
+			JP	FLASH
 			JP	DVERIFY
 			
 ;================================================================================================
@@ -1539,6 +1668,8 @@ CHKSUM	 	.DB	0					; Checksum for xmodem
 BYTECNT		.DB	0					; Byte counter for xmodem and hex2com
 RETRY		.DB 0					; Retry counter for xmodem
 BLOCK		.DB	0					; Block counter for xmodem
+XBUFFER		.DS 132					; Buffer used by xmodem to store a block
+									; 	<BLK> </BLK> 128 X <BYTE> <CHKSUM>
 DSK			.DB	0					; Disk number [00,0F]
 TRK			.DW	0					; Track number [0,1FF]
 SEC			.DB	0					; Sector number [0,1F]
@@ -1546,5 +1677,6 @@ LBA3		.DB	0
 LBA2		.DB	0
 LBA1		.DB	0
 LBA0		.DB	0
+FCINI		.DB	0					; FLASH Card initialized (1=yes, 0=no)
 
 			.END

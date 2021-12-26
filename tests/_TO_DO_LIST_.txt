@@ -1,5 +1,3 @@
-- Write Monitor on ROM block 1 and test with TTY card.
-
 - Write system documentation for Proton - Z80MC.
 
 - Write system documentation for Monitor 2.0.

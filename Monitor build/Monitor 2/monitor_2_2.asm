@@ -139,13 +139,13 @@ UNK:		CALL UNKNOWN
 ;================================================================================================
 HELP:		CALL CRLF
 			CALL PRINTSEQ
-			.DB	" MONITOR 2.1G - May/2021.",CR,LF
+			.DB	" MONITOR 2.2 - Dec/2021.",CR,LF
 			.DB	" Options:   READ aaaa             read from memory.",CR,LF
 			.DB "            WRITE aaaa,c1 c2 cN   write to memory.",CR,LF
 			.DB "            COPY aaaa-bbbb,cccc   copy memory block.",CR,LF
 			.DB "            FILL aaaa-bbbb,cc     fill memory block.",CR,LF
 			.DB "            COMPARE aaaa,bbbb     compare memory areas.",CR,LF
-			.DB "            FLASH                 initialize FLASH Card."CR,LF
+			.DB "            FLASH                 initialize FLASH Card.",CR,LF
 			.DB	"            DREAD d,ttt,ss        read from disk.",CR,LF
 			.DB "            DOWN d,ttt,ss         download one sector from disk.",CR,LF
 			.DB "            UP d,ttt,ss           upload one sector to disk.",CR,LF
@@ -1164,7 +1164,14 @@ DFORMAT:	RET
 ; Format a disk - FORMAT D
 ;================================================================================================
 FLASH:		CALL CFINIT
-			RET
+			CALL PRINTSEQ
+			.DB	"FLASH Card initialized.",CR,LF
+FEBUF:		CALL CONST
+			CP	0
+			JP	Z, WBOOT
+			CALL CONIN
+			JR	FEBUF
+			JP	WBOOT
 
 ;================================================================================================
 ; Run (Execute) Command - RUN AAAA
@@ -1508,6 +1515,7 @@ CMDTBL:		.DB	"?",RS
 			.DB	"DOWN",RS
 			.DB	"UP",RS
 			.DB	"FORMAT",RS
+			.DB	"FLASH",RS
 			.DB	"VERIFY",ETX
 
 JMPTBL:		JP	HELP
@@ -1525,6 +1533,7 @@ JMPTBL:		JP	HELP
 			JP	DDOWN
 			JP	DUP
 			JP	DFORMAT
+			JP	FLASH
 			JP	DVERIFY
 			
 ;================================================================================================
