@@ -157,11 +157,11 @@ HELP:		CALL CRLF
 			.DB "            UP d,ttt,ss           upload one sector to disk.",CR,LF
 			.DB "            VERIFY d              verify disk.",CR,LF
 			.DB "            FORMAT d              format disk.",CR,LF
-			.DB "            XMODEM r aaaa         receive file using xmodem protocol.",CR,LF
-			.DB "            XMODEM s aaaa-bbbb    receive file using xmodem protocol.",CR,LF
+			.DB "            XMODEM r aaaa         receive data using xmodem protocol.",CR,LF
+			.DB "            XMODEM s aaaa-bbbb    send data using xmodem protocol.",CR,LF
 			.DB "            HEX2COM aaaa          convert intel hex to executable.",CR,LF
 			.DB "            RUN aaaa              run program.",CR,LF
-			.DB "            BOOT",CR,LF,0
+			.DB "            BOOT                  warm boot.",CR,LF,0
 			JP	CYCLE
 			
 ;================================================================================================

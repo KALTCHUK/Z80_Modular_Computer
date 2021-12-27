@@ -207,7 +207,7 @@ boot:	DI						; Disable interrupts.
 		CALL	PRINTSEQ
 		.DB CR,LF
 		.DB "Z80 Modular Computer by Kaltchuk 2020.",CR,LF
-		.DB "BIOS 2.0 - 128MB Compact Flash.",CR,LF
+		.DB "KBIOS 2.0 - 128MB Compact Flash.",CR,LF
 		.DB "CP/M 2.2 Copyright 1979 (c) by Digital Research",CR,LF,CR,LF,0
 
 		JP	gocpm

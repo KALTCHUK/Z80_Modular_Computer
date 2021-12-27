@@ -1,18 +1,18 @@
 - Write system documentation for Proton - Z80MC.
 
-- Write system documentation for Monitor 2.0.
-
 - Modify BIOS to perform disc boot and put bootloader on ROM block 2.
 
 - Develop terminal-in-a-box with RPi.
 
 - Design Backplane v2 PCB.
 
+- Design upper/lower cover BCB
+
 - Design frontal panels in PCB.
 
 ------------------------------------------------------------------
 Machanical issues:
-- Design the slotted card guide and 3D print it.
+- Design the attachments for the slotted card guides.
 
 ------------------------------------------------------------------
 Some ideas for new cards:

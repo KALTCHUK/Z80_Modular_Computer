@@ -198,8 +198,8 @@ boot:	DI						; Disable interrupts.
 		CALL	PRINTSEQ
 		.DB CR,LF
 		.DB "Z80 Modular Computer by Kaltchuk 2020.",CR,LF
-		.DB "MBIOS 2.1.",CR,LF
-		.DB "Monitor by Kaltchuk 2020",CR,LF,CR,LF,0
+		.DB "MBIOS 2.1",CR,LF
+		.DB "Monitor by Kaltchuk 2020.",CR,LF,CR,LF,0
 
 		JP	gocpm
 

@@ -110,23 +110,23 @@
 0102   E620             ; BIOS jump table.
 0103   E620             ;================================================================================================
 0104   E620 C3 83 E7    		JP	boot						;  0 Initialize.
-0105   E623 C3 2B E8    wboote:	JP	wboot						;  1 Warm boot.
-0106   E626 C3 AB E8    		JP	CONST						;  2 Console status.
-0107   E629 C3 C2 E8    		JP	CONIN						;  3 Console input.
-0108   E62C C3 D9 E8    		JP	CONOUT						;  4 Console OUTput.
-0109   E62F C3 07 E9    		JP	LIST						;  5 List OUTput.
-0110   E632 C3 1E E9    		JP	PUNCH						;  6 punch OUTput.
-0111   E635 C3 F0 E8    		JP	READER						;  7 Reader input.
-0112   E638 C3 94 E9    		JP	home						;  8 Home disk.
-0113   E63B C3 6C E9    		JP	seldsk						;  9 Select disk.
-0114   E63E C3 A0 E9    		JP	settrk						; 10 Select track.
-0115   E641 C3 A5 E9    		JP	setsec						; 11 Select sector.
-0116   E644 C3 AA E9    		JP	setdma						; 12 Set DMA ADDress.
-0117   E647 C3 B2 E9    		JP	read						; 13 Read 128 bytes.
-0118   E64A C3 C6 E9    		JP	write						; 14 Write 128 bytes.
-0119   E64D C3 35 E9    		JP	LISTST						; 15 List status.
-0120   E650 C3 AF E9    		JP	sectran						; 16 Sector translate.
-0121   E653 C3 A0 EB    		JP	PRINTSEQ					; not a BIOS function
+0105   E623 C3 2C E8    wboote:	JP	wboot						;  1 Warm boot.
+0106   E626 C3 AC E8    		JP	CONST						;  2 Console status.
+0107   E629 C3 C3 E8    		JP	CONIN						;  3 Console input.
+0108   E62C C3 DA E8    		JP	CONOUT						;  4 Console OUTput.
+0109   E62F C3 08 E9    		JP	LIST						;  5 List OUTput.
+0110   E632 C3 1F E9    		JP	PUNCH						;  6 punch OUTput.
+0111   E635 C3 F1 E8    		JP	READER						;  7 Reader input.
+0112   E638 C3 95 E9    		JP	home						;  8 Home disk.
+0113   E63B C3 6D E9    		JP	seldsk						;  9 Select disk.
+0114   E63E C3 A1 E9    		JP	settrk						; 10 Select track.
+0115   E641 C3 A6 E9    		JP	setsec						; 11 Select sector.
+0116   E644 C3 AB E9    		JP	setdma						; 12 Set DMA ADDress.
+0117   E647 C3 B3 E9    		JP	read						; 13 Read 128 bytes.
+0118   E64A C3 C7 E9    		JP	write						; 14 Write 128 bytes.
+0119   E64D C3 36 E9    		JP	LISTST						; 15 List status.
+0120   E650 C3 B0 E9    		JP	sectran						; 16 Sector translate.
+0121   E653 C3 A1 EB    		JP	PRINTSEQ					; not a BIOS function
 0122   E656             
 0123   E656             ;================================================================================================
 0124   E656             ; Disk parameter headers for disk 0 to 15
@@ -134,68 +134,68 @@
 0126   E656             dpbase:
 0127   E656 00 00 00 00 	 	.DW 0000h,0000h,0000h,0000h,dirbuf,dpb0,0000h,alv00
 0127   E65A 00 00 00 00 
-0127   E65E B4 EB 56 E7 
-0127   E662 00 00 34 EC 
+0127   E65E B5 EB 56 E7 
+0127   E662 00 00 35 EC 
 0128   E666 00 00 00 00 	 	.DW 0000h,0000h,0000h,0000h,dirbuf,dpb,0000h,alv01
 0128   E66A 00 00 00 00 
-0128   E66E B4 EB 65 E7 
-0128   E672 00 00 35 ED 
+0128   E66E B5 EB 65 E7 
+0128   E672 00 00 36 ED 
 0129   E676 00 00 00 00 	 	.DW 0000h,0000h,0000h,0000h,dirbuf,dpb,0000h,alv02
 0129   E67A 00 00 00 00 
-0129   E67E B4 EB 65 E7 
-0129   E682 00 00 36 EE 
+0129   E67E B5 EB 65 E7 
+0129   E682 00 00 37 EE 
 0130   E686 00 00 00 00 	 	.DW 0000h,0000h,0000h,0000h,dirbuf,dpb,0000h,alv03
 0130   E68A 00 00 00 00 
-0130   E68E B4 EB 65 E7 
-0130   E692 00 00 37 EF 
+0130   E68E B5 EB 65 E7 
+0130   E692 00 00 38 EF 
 0131   E696 00 00 00 00 	 	.DW 0000h,0000h,0000h,0000h,dirbuf,dpb,0000h,alv04
 0131   E69A 00 00 00 00 
-0131   E69E B4 EB 65 E7 
-0131   E6A2 00 00 38 F0 
+0131   E69E B5 EB 65 E7 
+0131   E6A2 00 00 39 F0 
 0132   E6A6 00 00 00 00 	 	.DW 0000h,0000h,0000h,0000h,dirbuf,dpb,0000h,alv05
 0132   E6AA 00 00 00 00 
-0132   E6AE B4 EB 65 E7 
-0132   E6B2 00 00 39 F1 
+0132   E6AE B5 EB 65 E7 
+0132   E6B2 00 00 3A F1 
 0133   E6B6 00 00 00 00 	 	.DW 0000h,0000h,0000h,0000h,dirbuf,dpb,0000h,alv06
 0133   E6BA 00 00 00 00 
-0133   E6BE B4 EB 65 E7 
-0133   E6C2 00 00 3A F2 
+0133   E6BE B5 EB 65 E7 
+0133   E6C2 00 00 3B F2 
 0134   E6C6 00 00 00 00 	 	.DW 0000h,0000h,0000h,0000h,dirbuf,dpb,0000h,alv07
 0134   E6CA 00 00 00 00 
-0134   E6CE B4 EB 65 E7 
-0134   E6D2 00 00 3B F3 
+0134   E6CE B5 EB 65 E7 
+0134   E6D2 00 00 3C F3 
 0135   E6D6 00 00 00 00 	 	.DW 0000h,0000h,0000h,0000h,dirbuf,dpb,0000h,alv08
 0135   E6DA 00 00 00 00 
-0135   E6DE B4 EB 65 E7 
-0135   E6E2 00 00 3C F4 
+0135   E6DE B5 EB 65 E7 
+0135   E6E2 00 00 3D F4 
 0136   E6E6 00 00 00 00 	 	.DW 0000h,0000h,0000h,0000h,dirbuf,dpb,0000h,alv09
 0136   E6EA 00 00 00 00 
-0136   E6EE B4 EB 65 E7 
-0136   E6F2 00 00 3D F5 
+0136   E6EE B5 EB 65 E7 
+0136   E6F2 00 00 3E F5 
 0137   E6F6 00 00 00 00 	 	.DW 0000h,0000h,0000h,0000h,dirbuf,dpb,0000h,alv10
 0137   E6FA 00 00 00 00 
-0137   E6FE B4 EB 65 E7 
-0137   E702 00 00 3E F6 
+0137   E6FE B5 EB 65 E7 
+0137   E702 00 00 3F F6 
 0138   E706 00 00 00 00 	 	.DW 0000h,0000h,0000h,0000h,dirbuf,dpb,0000h,alv11
 0138   E70A 00 00 00 00 
-0138   E70E B4 EB 65 E7 
-0138   E712 00 00 3F F7 
+0138   E70E B5 EB 65 E7 
+0138   E712 00 00 40 F7 
 0139   E716 00 00 00 00 	 	.DW 0000h,0000h,0000h,0000h,dirbuf,dpb,0000h,alv12
 0139   E71A 00 00 00 00 
-0139   E71E B4 EB 65 E7 
-0139   E722 00 00 40 F8 
+0139   E71E B5 EB 65 E7 
+0139   E722 00 00 41 F8 
 0140   E726 00 00 00 00 	 	.DW 0000h,0000h,0000h,0000h,dirbuf,dpb,0000h,alv13
 0140   E72A 00 00 00 00 
-0140   E72E B4 EB 65 E7 
-0140   E732 00 00 41 F9 
+0140   E72E B5 EB 65 E7 
+0140   E732 00 00 42 F9 
 0141   E736 00 00 00 00 	 	.DW 0000h,0000h,0000h,0000h,dirbuf,dpb,0000h,alv14
 0141   E73A 00 00 00 00 
-0141   E73E B4 EB 65 E7 
-0141   E742 00 00 42 FA 
+0141   E73E B5 EB 65 E7 
+0141   E742 00 00 43 FA 
 0142   E746 00 00 00 00 	 	.DW 0000h,0000h,0000h,0000h,dirbuf,dpbLast,0000h,alv15
 0142   E74A 00 00 00 00 
-0142   E74E B4 EB 74 E7 
-0142   E752 00 00 43 FB 
+0142   E74E B5 EB 74 E7 
+0142   E752 00 00 44 FB 
 0143   E756             
 0144   E756             ; First drive has a reserved track for CP/M
 0145   E756             dpb0:
@@ -240,17 +240,17 @@
 0184   E783             ;================================================================================================
 0185   E783             
 0186   E783 F3          boot:	DI						; Disable interrupts.
-0187   E784 31 7F FE    		LD	SP,BIOSSTACK		; Set default stack.
+0187   E784 31 80 FE    		LD	SP,BIOSSTACK		; Set default stack.
 0188   E787             
 0189   E787 D3 F1       		OUT (NOROM_RAM0),A		; Turn off ROM. Doesn't matter what we output
 0190   E789             
-0191   E789 CD 95 EB    		CALL	cfWait			; Initialize FLASH
+0191   E789 CD 96 EB    		CALL	cfWait			; Initialize FLASH
 0192   E78C 3E 01       		LD 	A,CF_8BIT			; Set IDE to be 8bit
 0193   E78E D3 B1       		OUT	(CF_FEATURES),A
 0194   E790 3E EF       		LD	A,CF_SET_FEAT
 0195   E792 D3 B7       		OUT	(CF_COMMAND),A
 0196   E794             
-0197   E794 CD 95 EB    		CALL	cfWait
+0197   E794 CD 96 EB    		CALL	cfWait
 0198   E797 3E 82       		LD 	A,CF_NOCACHE		; No write cache
 0199   E799 D3 B1       		OUT	(CF_FEATURES),A
 0200   E79B 3E EF       		LD	A,CF_SET_FEAT
@@ -260,7 +260,7 @@
 0204   E7A0 32 04 00    		LD	(userdrv),A			; set drive byte to A:
 0205   E7A3 32 03 00    		LD	(iobyte),A			; Set IOBYTE to 00
 0206   E7A6             
-0207   E7A6 CD A0 EB    		CALL	PRINTSEQ
+0207   E7A6 CD A1 EB    		CALL	PRINTSEQ
 0208   E7A9 0D 0A       		.DB CR,LF
 0209   E7AB 5A 38 30 20 		.DB "Z80 Modular Computer by Kaltchuk 2020.",CR,LF
 0209   E7AF 4D 6F 64 75 
@@ -272,748 +272,748 @@
 0209   E7C7 63 68 75 6B 
 0209   E7CB 20 32 30 32 
 0209   E7CF 30 2E 0D 0A 
-0210   E7D3 42 49 4F 53 		.DB "BIOS 2.0 - 128MB Compact Flash.",CR,LF
-0210   E7D7 20 32 2E 30 
-0210   E7DB 20 2D 20 31 
-0210   E7DF 32 38 4D 42 
-0210   E7E3 20 43 6F 6D 
-0210   E7E7 70 61 63 74 
-0210   E7EB 20 46 6C 61 
-0210   E7EF 73 68 2E 0D 
-0210   E7F3 0A 
-0211   E7F4 43 50 2F 4D 		.DB "CP/M 2.2 Copyright 1979 (c) by Digital Research",CR,LF,CR,LF,0
-0211   E7F8 20 32 2E 32 
-0211   E7FC 20 43 6F 70 
-0211   E800 79 72 69 67 
-0211   E804 68 74 20 31 
-0211   E808 39 37 39 20 
-0211   E80C 28 63 29 20 
-0211   E810 62 79 20 44 
-0211   E814 69 67 69 74 
-0211   E818 61 6C 20 52 
-0211   E81C 65 73 65 61 
-0211   E820 72 63 68 0D 
-0211   E824 0A 0D 0A 00 
-0212   E828             
-0213   E828 C3 3E E8    		JP	gocpm
-0214   E82B             
-0215   E82B             ;================================================================================================
-0216   E82B             ; Warm boot
-0217   E82B             ;================================================================================================
-0218   E82B             
-0219   E82B F3          wboot:	DI						; Disable interrupts.
-0220   E82C 31 7F FE    		LD	SP,BIOSSTACK		; Set default stack.
-0221   E82F             
-0222   E82F D3 F0       		OUT (ROM_RAM0),A		; Turn on ROM. Doesn't matter what we output
-0223   E831             
-0224   E831 01 20 16    		LD	BC,BIOS-CCP			; Copy CP/M ROM (01000h) to RAM (0D000h)
-0225   E834 11 00 D0    		LD	DE,CCP				; Don't copy the BIOS!!!
-0226   E837 21 00 10    		LD	HL,ROM_CCP
-0227   E83A ED B0       		LDIR
-0228   E83C             
-0229   E83C D3 F1       		OUT (NOROM_RAM0),A		; Turn off ROM. Doesn't matter what we output
-0230   E83E             
-0231   E83E             
-0232   E83E             ;================================================================================================
-0233   E83E             ; Common code for cold and warm boot
-0234   E83E             ;================================================================================================
-0235   E83E             
-0236   E83E AF          gocpm:	XOR	A					; 0 to accumulator
-0237   E83F 32 52 FC    		LD	(hstact),A			; host buffer inactive
-0238   E842 32 54 FC    		LD	(unacnt),A			; clear unalloc count
-0239   E845             
-0240   E845 21 80 00    		LD	HL,tpabuf			; ADDress of BIOS DMA buffer.
-0241   E848 22 5D FC    		LD	(dmaAddr),HL
-0242   E84B             		
-0243   E84B 3E C3       		LD	A,0C3h				; Opcode for 'JP'.
-0244   E84D 32 00 00    		LD	(00h),A				; Load at start of RAM.
-0245   E850 21 23 E6    		LD	HL,wboote			; ADDress of jump for a warm boot.
-0246   E853 22 01 00    		LD	(01h),HL
-0247   E856 32 05 00    		LD	(05h),A				; Opcode for 'JP'.
-0248   E859 2A 1E E6    		LD	HL,(BIOS-2)			; ADDress of jump for the BDOS.
-0249   E85C 22 06 00    		LD	(06h),HL
-0250   E85F 3A 04 00    		LD	A,(userdrv)			; Save new drive number (0).
-0251   E862 4F          		LD	C,A					; Pass drive number in C.
-0252   E863             
-0253   E863 ED 46       		IM	0
-0254   E865 FB          		EI
-0255   E866             	
-0256   E866 C3 00 D0    		JP	ccp					; Start CP/M by jumping to the CCP.
-0257   E869             
-0258   E869             ;================================================================================================
-0259   E869             ; PHYSICAL DEVICE JUMP TABLE.
-0260   E869             ; Used by CONST, CONIN, CONOUT, LIST, PUNCH, READER and LISTST according to IOBYTE setting.
-0261   E869             ; All physical devices that aren't present will be forwarded to TTY.
-0262   E869             ;================================================================================================
-0263   E869 C3 59 E9    TTYST:	JP	PORT0ST
-0264   E86C C3 69 E9    CRTST:	JP	PORT1ST
-0265   E86F C3 35 E9    BATST:	JP	LISTST
-0266   E872 C3 69 E8    UC1ST:	JP	TTYST		; No physical device present
-0267   E875 C3 69 E8    LPTST:	JP	TTYST		; No physical device present
-0268   E878 C3 69 E8    UL1ST:	JP	TTYST		; No physical device present
-0269   E87B             
-0270   E87B C3 4C E9    TTYIN:	JP	PORT0IN
-0271   E87E C3 5C E9    CRTIN:	JP	PORT1IN
-0272   E881 C3 F0 E8    BATIN:	JP	READER
-0273   E884 C3 7B E8    UC1IN:	JP	TTYIN		; No physical device present
-0274   E887 C3 7B E8    PTRIN:	JP	TTYIN		; No physical device present
-0275   E88A C3 7B E8    UR1IN:	JP	TTYIN		; No physical device present
-0276   E88D C3 7B E8    UR2IN:	JP	TTYIN		; No physical device present
-0277   E890             
-0278   E890 C3 55 E9    TTYOUT:	JP	PORT0OUT
-0279   E893 C3 65 E9    CRTOUT:	JP	PORT1OUT
-0280   E896 C3 07 E9    BATOUT:	JP	LIST
-0281   E899 C3 90 E8    UC1OUT:	JP	TTYOUT		; No physical device present
-0282   E89C C3 90 E8    LPTOUT:	JP	TTYOUT		; No physical device present
-0283   E89F C3 90 E8    UL1OUT:	JP	TTYOUT		; No physical device present
-0284   E8A2 C3 90 E8    PTPOUT:	JP	TTYOUT		; No physical device present
-0285   E8A5 C3 90 E8    UP1OUT:	JP	TTYOUT		; No physical device present
-0286   E8A8 C3 90 E8    UP2OUT:	JP	TTYOUT		; No physical device present
-0287   E8AB             
-0288   E8AB             ;================================================================================================
-0289   E8AB             ; Console I/O routines
-0290   E8AB             ;================================================================================================
-0291   E8AB             ;================================================================================================
-0292   E8AB             ; Console Status (Return A=0FFh if character waiting. Otherwise, A=0)
-0293   E8AB             ;================================================================================================
-0294   E8AB 3A 03 00    CONST:	LD	A,(iobyte)
-0295   E8AE E6 03       		AND	3
-0296   E8B0 FE 00       		CP	0
-0297   E8B2 CA 69 E8    		JP	Z,TTYST
-0298   E8B5 FE 01       		CP	1
-0299   E8B7 CA 6C E8    		JP	Z,CRTST
-0300   E8BA FE 02       		CP	2
-0301   E8BC CA 6F E8    		JP	Z,BATST
-0302   E8BF C3 72 E8    		JP	UC1ST
-0303   E8C2             
-0304   E8C2             ;================================================================================================
-0305   E8C2             ; Console Input (Wait for input and return character in A)
-0306   E8C2             ;================================================================================================
-0307   E8C2 3A 03 00    CONIN:	LD	A,(iobyte)
-0308   E8C5 E6 03       		AND	3
-0309   E8C7 FE 00       		CP	0
-0310   E8C9 CA 7B E8    		JP	Z,TTYIN
-0311   E8CC FE 01       		CP	1
-0312   E8CE CA 7E E8    		JP	Z,CRTIN
-0313   E8D1 FE 02       		CP	2
-0314   E8D3 CA 81 E8    		JP	Z,BATIN
-0315   E8D6 C3 84 E8    		JP	UC1IN
-0316   E8D9             
-0317   E8D9             ;================================================================================================
-0318   E8D9             ; Console Output (Send character in reg C)
-0319   E8D9             ;================================================================================================
-0320   E8D9 3A 03 00    CONOUT:	LD	A,(iobyte)
-0321   E8DC E6 03       		AND	3
-0322   E8DE FE 00       		CP	0
-0323   E8E0 CA 90 E8    		JP	Z,TTYOUT
-0324   E8E3 FE 01       		CP	1
-0325   E8E5 CA 93 E8    		JP	Z,CRTOUT
-0326   E8E8 FE 02       		CP	2
-0327   E8EA CA 96 E8    		JP	Z,BATOUT
-0328   E8ED C3 99 E8    		JP	UC1OUT
-0329   E8F0             
-0330   E8F0             ;================================================================================================
-0331   E8F0             ; Reader Input
-0332   E8F0             ;================================================================================================
-0333   E8F0 3A 03 00    READER:	LD	A,(iobyte)
-0334   E8F3 E6 0C       		AND	0CH
-0335   E8F5 FE 00       		CP	0
-0336   E8F7 CA 7B E8    		JP	Z,TTYIN
-0337   E8FA FE 04       		CP	4
-0338   E8FC CA 87 E8    		JP	Z,PTRIN
-0339   E8FF FE 08       		CP	8
-0340   E901 CA 8A E8    		JP	Z,UR1IN
-0341   E904 C3 8D E8    		JP	UR2IN
-0342   E907             
-0343   E907             ;================================================================================================
-0344   E907             ; List Output
-0345   E907             ;================================================================================================
-0346   E907 3A 03 00    LIST:	LD	A,(iobyte)
-0347   E90A E6 C0       		AND	0C0H
-0348   E90C FE 00       		CP	0
-0349   E90E CA 90 E8    		JP	Z,TTYOUT
-0350   E911 FE 40       		CP	40H
-0351   E913 CA 93 E8    		JP	Z,CRTOUT
-0352   E916 FE 80       		CP	80H
-0353   E918 CA 9C E8    		JP	Z,LPTOUT
-0354   E91B C3 9F E8    		JP	UL1OUT
-0355   E91E             
-0356   E91E             ;================================================================================================
-0357   E91E             ; Punch Output
-0358   E91E             ;================================================================================================
-0359   E91E 3A 03 00    PUNCH:	LD	A,(iobyte)
-0360   E921 E6 30       		AND	030H
-0361   E923 FE 00       		CP	0
-0362   E925 CA 90 E8    		JP	Z,TTYOUT
-0363   E928 FE 40       		CP	40H
-0364   E92A CA A2 E8    		JP	Z,PTPOUT
-0365   E92D FE 80       		CP	80H
-0366   E92F CA A5 E8    		JP	Z,UP1OUT
-0367   E932 C3 A8 E8    		JP	UP2OUT
-0368   E935             
-0369   E935             ;================================================================================================
-0370   E935             ; List Status
-0371   E935             ;================================================================================================
-0372   E935 3A 03 00    LISTST:	LD	A,(iobyte)
-0373   E938 E6 C0       		AND	0C0H
-0374   E93A FE 00       		CP	0
-0375   E93C CA 69 E8    		JP	Z,TTYST
-0376   E93F FE 40       		CP	40H
-0377   E941 CA 6C E8    		JP	Z,CRTST
-0378   E944 FE 80       		CP	80H
-0379   E946 CA 75 E8    		JP	Z,LPTST
-0380   E949 C3 78 E8    		JP	UL1ST
-0381   E94C             
-0382   E94C             ;================================================================================================
-0383   E94C             ; PORT 0 (on TTY card) input.
-0384   E94C             ;================================================================================================
-0385   E94C             PORT0IN:
-0386   E94C DB C2       		IN	A,(PORT0_STA)
-0387   E94E FE 00       		CP	0
-0388   E950 28 FA       		JR	Z,PORT0IN
-0389   E952 DB C0       		IN	A,(PORT0_DAT)
-0390   E954 C9          		RET
-0391   E955             		
-0392   E955             ;================================================================================================
-0393   E955             ; PORT 0 (on USART v2) output.
-0394   E955             ;================================================================================================
-0395   E955             PORT0OUT:
-0396   E955 79          		LD	A,C
-0397   E956 D3 C0       		OUT	(PORT0_DAT),A
-0398   E958 C9          		RET
-0399   E959             		
-0400   E959             ;================================================================================================
-0401   E959             ; PORT 0 (on TTY card) status.
-0402   E959             ;================================================================================================
-0403   E959             PORT0ST:
-0404   E959 DB C2       		IN	A,(PORT0_STA)
-0405   E95B C9          		RET
-0406   E95C             		
-0407   E95C             ;================================================================================================
-0408   E95C             ; PORT 1 (on USART v2) input.
-0409   E95C             ;================================================================================================
-0410   E95C             PORT1IN:
-0411   E95C DB C3       		IN	A,(PORT1_STA)
-0412   E95E FE 00       		CP	0
-0413   E960 28 FA       		JR	Z,PORT1IN
-0414   E962 DB C1       		IN	A,(PORT1_DAT)
-0415   E964 C9          		RET
-0416   E965             		
-0417   E965             ;================================================================================================
-0418   E965             ; PORT 1 (on USART v2) output.
-0419   E965             ;================================================================================================
-0420   E965             PORT1OUT:
-0421   E965 79          		LD	A,C
-0422   E966 D3 C1       		OUT	(PORT1_DAT),A
-0423   E968 C9          		RET
-0424   E969             		
-0425   E969             ;================================================================================================
-0426   E969             ; PORT 1 (on USART v2) status.
-0427   E969             ;================================================================================================
-0428   E969             PORT1ST:
-0429   E969 DB C3       		IN	A,(PORT1_STA)
-0430   E96B C9          		RET
-0431   E96C             		
-0432   E96C             ;================================================================================================
-0433   E96C             ; Disk processing entry points
-0434   E96C             ;================================================================================================
-0435   E96C             seldsk:
-0436   E96C 21 00 00    		LD	HL,$0000
-0437   E96F 79          		LD	A,C
-0438   E970 FE 10       		CP	16		; 16 for 128MB disk, 8 for 64MB disk
-0439   E972 38 0D       		jr	C,chgdsk	; if invalid drive will give BDOS error
-0440   E974 3A 04 00    		LD	A,(userdrv)	; so set the drive back to a:
-0441   E977 B9          		CP	C		; If the default disk is not the same as the
-0442   E978 C0          		RET	NZ		; selected drive then return, 
-0443   E979 AF          		XOR	A		; else reset default back to a:
-0444   E97A 32 04 00    		LD	(userdrv),A	; otherwise will be stuck in a loop
-0445   E97D 32 48 FC    		LD	(sekdsk),A
-0446   E980 C9          		ret
-0447   E981             
-0448   E981 32 48 FC    chgdsk:		LD 	(sekdsk),A
-0449   E984 CB 07       		RLC	a		;*2
-0450   E986 CB 07       		RLC	a		;*4
-0451   E988 CB 07       		RLC	a		;*8
-0452   E98A CB 07       		RLC	a		;*16
-0453   E98C 21 56 E6    		LD 	HL,dpbase
-0454   E98F 06 00       		LD	b,0
-0455   E991 4F          		LD	c,A	
-0456   E992 09          		ADD	HL,BC
-0457   E993             
-0458   E993 C9          		RET
-0459   E994             
-0460   E994             ;------------------------------------------------------------------------------------------------
-0461   E994             home:
-0462   E994 3A 53 FC    		ld	a,(hstwrt)	;check for pending write
-0463   E997 B7          		or	a
-0464   E998 20 03       		jr	nz,homed
-0465   E99A 32 52 FC    		ld	(hstact),a	;clear host active flag
-0466   E99D             homed:
-0467   E99D 01 00 00    		LD 	BC,0000h
-0468   E9A0             
-0469   E9A0             ;------------------------------------------------------------------------------------------------
-0470   E9A0 ED 43 49 FC settrk:		LD 	(sektrk),BC	; Set track passed from BDOS in register BC.
-0471   E9A4 C9          		RET
-0472   E9A5             
-0473   E9A5             ;------------------------------------------------------------------------------------------------
-0474   E9A5 ED 43 4B FC setsec:		LD 	(seksec),BC	; Set sector passed from BDOS in register BC.
-0475   E9A9 C9          		RET
-0476   E9AA             
-0477   E9AA             ;------------------------------------------------------------------------------------------------
-0478   E9AA ED 43 5D FC setdma:		LD 	(dmaAddr),BC	; Set DMA ADDress given by registers BC.
-0479   E9AE C9          		RET
-0480   E9AF             
-0481   E9AF             ;------------------------------------------------------------------------------------------------
-0482   E9AF C5          sectran:	PUSH 	BC
-0483   E9B0 E1          		POP 	HL
-0484   E9B1 C9          		RET
-0485   E9B2             
-0486   E9B2             ;------------------------------------------------------------------------------------------------
-0487   E9B2             read:
-0488   E9B2             		;read the selected CP/M sector
-0489   E9B2 AF          		xor	a
-0490   E9B3 32 54 FC    		ld	(unacnt),a
-0491   E9B6 3E 01       		ld	a,1
-0492   E9B8 32 5B FC    		ld	(readop),a		;read operation
-0493   E9BB 32 5A FC    		ld	(rsflag),a		;must read data
-0494   E9BE 3E 02       		ld	a,wrual
-0495   E9C0 32 5C FC    		ld	(wrtype),a		;treat as unalloc
-0496   E9C3 C3 2D EA    		jp	rwoper			;to perform the read
-0497   E9C6             
-0498   E9C6             
-0499   E9C6             ;------------------------------------------------------------------------------------------------
-0500   E9C6             write:
-0501   E9C6             		;write the selected CP/M sector
-0502   E9C6 AF          		xor	a		;0 to accumulator
-0503   E9C7 32 5B FC    		ld	(readop),a	;not a read operation
-0504   E9CA 79          		ld	a,c		;write type in c
-0505   E9CB 32 5C FC    		ld	(wrtype),a
-0506   E9CE FE 02       		cp	wrual		;write unallocated?
-0507   E9D0 20 17       		jr	nz,chkuna	;check for unalloc
-0508   E9D2             ;
-0509   E9D2             ;		write to unallocated, set parameters
-0510   E9D2 3E 20       		ld	a,blksiz/128	;next unalloc recs
-0511   E9D4 32 54 FC    		ld	(unacnt),a
-0512   E9D7 3A 48 FC    		ld	a,(sekdsk)		;disk to seek
-0513   E9DA 32 55 FC    		ld	(unadsk),a		;unadsk = sekdsk
-0514   E9DD 2A 49 FC    		ld	hl,(sektrk)
-0515   E9E0 22 56 FC    		ld	(unatrk),hl		;unatrk = sectrk
-0516   E9E3 3A 4B FC    		ld	a,(seksec)
-0517   E9E6 32 58 FC    		ld	(unasec),a		;unasec = seksec
-0518   E9E9             ;
-0519   E9E9             chkuna:
-0520   E9E9             ;		check for write to unallocated sector
-0521   E9E9 3A 54 FC    		ld	a,(unacnt)		;any unalloc remain?
-0522   E9EC B7          		or	a	
-0523   E9ED 28 36       		jr	z,alloc		;skip if not
-0524   E9EF             ;
-0525   E9EF             ;		more unallocated records remain
-0526   E9EF 3D          		dec	a		;unacnt = unacnt-1
-0527   E9F0 32 54 FC    		ld	(unacnt),a
-0528   E9F3 3A 48 FC    		ld	a,(sekdsk)		;same disk?
-0529   E9F6 21 55 FC    		ld	hl,unadsk
-0530   E9F9 BE          		cp	(hl)		;sekdsk = unadsk?
-0531   E9FA C2 25 EA    		jp	nz,alloc		;skip if not
-0532   E9FD             ;
-0533   E9FD             ;		disks are the same
-0534   E9FD 21 56 FC    		ld	hl,unatrk
-0535   EA00 CD C4 EA    		call	sektrkcmp	;sektrk = unatrk?
-0536   EA03 C2 25 EA    		jp	nz,alloc		;skip if not
-0537   EA06             ;
-0538   EA06             ;		tracks are the same
-0539   EA06 3A 4B FC    		ld	a,(seksec)		;same sector?
-0540   EA09 21 58 FC    		ld	hl,unasec
-0541   EA0C BE          		cp	(hl)		;seksec = unasec?
-0542   EA0D C2 25 EA    		jp	nz,alloc		;skip if not
-0543   EA10             ;
-0544   EA10             ;		match, move to next sector for future ref
-0545   EA10 34          		inc	(hl)		;unasec = unasec+1
-0546   EA11 7E          		ld	a,(hl)		;end of track?
-0547   EA12 FE 80       		cp	cpmspt		;count CP/M sectors
-0548   EA14 38 09       		jr	c,noovf		;skip if no overflow
-0549   EA16             ;
-0550   EA16             ;		overflow to next track
-0551   EA16 36 00       		ld	(hl),0		;unasec = 0
-0552   EA18 2A 56 FC    		ld	hl,(unatrk)
-0553   EA1B 23          		inc	hl
-0554   EA1C 22 56 FC    		ld	(unatrk),hl		;unatrk = unatrk+1
-0555   EA1F             ;
-0556   EA1F             noovf:
-0557   EA1F             		;match found, mark as unnecessary read
-0558   EA1F AF          		xor	a		;0 to accumulator
-0559   EA20 32 5A FC    		ld	(rsflag),a		;rsflag = 0
-0560   EA23 18 08       		jr	rwoper		;to perform the write
-0561   EA25             ;
-0562   EA25             alloc:
-0563   EA25             		;not an unallocated record, requires pre-read
-0564   EA25 AF          		xor	a		;0 to accum
-0565   EA26 32 54 FC    		ld	(unacnt),a		;unacnt = 0
-0566   EA29 3C          		inc	a		;1 to accum
-0567   EA2A 32 5A FC    		ld	(rsflag),a		;rsflag = 1
-0568   EA2D             
-0569   EA2D             ;------------------------------------------------------------------------------------------------
-0570   EA2D             rwoper:
-0571   EA2D             		;enter here to perform the read/write
-0572   EA2D AF          		xor	a		;zero to accum
-0573   EA2E 32 59 FC    		ld	(erflag),a		;no errors (yet)
-0574   EA31 3A 4B FC    		ld	a,(seksec)		;compute host sector
-0575   EA34 B7          		or	a		;carry = 0
-0576   EA35 1F          		rra			;shift right
-0577   EA36 B7          		or	a		;carry = 0
-0578   EA37 1F          		rra			;shift right
-0579   EA38 32 51 FC    		ld	(sekhst),a		;host sector to seek
-0580   EA3B             ;
-0581   EA3B             ;		active host sector?
-0582   EA3B 21 52 FC    		ld	hl,hstact	;host active flag
-0583   EA3E 7E          		ld	a,(hl)
-0584   EA3F 36 01       		ld	(hl),1		;always becomes 1
-0585   EA41 B7          		or	a		;was it already?
-0586   EA42 28 21       		jr	z,filhst		;fill host if not
-0587   EA44             ;
-0588   EA44             ;		host buffer active, same as seek buffer?
-0589   EA44 3A 48 FC    		ld	a,(sekdsk)
-0590   EA47 21 4D FC    		ld	hl,hstdsk	;same disk?
-0591   EA4A BE          		cp	(hl)		;sekdsk = hstdsk?
-0592   EA4B 20 11       		jr	nz,nomatch
-0593   EA4D             ;
-0594   EA4D             ;		same disk, same track?
-0595   EA4D 21 4E FC    		ld	hl,hsttrk
-0596   EA50 CD C4 EA    		call	sektrkcmp	;sektrk = hsttrk?
-0597   EA53 20 09       		jr	nz,nomatch
-0598   EA55             ;
-0599   EA55             ;		same disk, same track, same buffer?
-0600   EA55 3A 51 FC    		ld	a,(sekhst)
-0601   EA58 21 50 FC    		ld	hl,hstsec	;sekhst = hstsec?
-0602   EA5B BE          		cp	(hl)
-0603   EA5C 28 24       		jr	z,match		;skip if match
-0604   EA5E             ;
-0605   EA5E             nomatch:
-0606   EA5E             		;proper disk, but not correct sector
-0607   EA5E 3A 53 FC    		ld	a,(hstwrt)		;host written?
-0608   EA61 B7          		or	a
-0609   EA62 C4 6C EB    		call	nz,writehst	;clear host buff
-0610   EA65             ;
-0611   EA65             filhst:
-0612   EA65             		;may have to fill the host buffer
-0613   EA65 3A 48 FC    		ld	a,(sekdsk)
-0614   EA68 32 4D FC    		ld	(hstdsk),a
-0615   EA6B 2A 49 FC    		ld	hl,(sektrk)
-0616   EA6E 22 4E FC    		ld	(hsttrk),hl
-0617   EA71 3A 51 FC    		ld	a,(sekhst)
-0618   EA74 32 50 FC    		ld	(hstsec),a
-0619   EA77 3A 5A FC    		ld	a,(rsflag)		;need to read?
-0620   EA7A B7          		or	a
-0621   EA7B C4 43 EB    		call	nz,readhst		;yes, if 1
-0622   EA7E AF          		xor	a		;0 to accum
-0623   EA7F 32 53 FC    		ld	(hstwrt),a		;no pending write
-0624   EA82             ;
-0625   EA82             match:
-0626   EA82             		;copy data to or from buffer
-0627   EA82 3A 4B FC    		ld	a,(seksec)		;mask buffer number
-0628   EA85 E6 03       		and	secmsk		;least signif bits
-0629   EA87 6F          		ld	l,a		;ready to shift
-0630   EA88 26 00       		ld	h,0		;double count
-0631   EA8A 29          		add	hl,hl
-0632   EA8B 29          		add	hl,hl
-0633   EA8C 29          		add	hl,hl
-0634   EA8D 29          		add	hl,hl
-0635   EA8E 29          		add	hl,hl
-0636   EA8F 29          		add	hl,hl
-0637   EA90 29          		add	hl,hl
-0638   EA91             ;		hl has relative host buffer address
-0639   EA91 11 5F FC    		ld	de,hstbuf
-0640   EA94 19          		add	hl,de		;hl = host address
-0641   EA95 EB          		ex	de,hl			;now in DE
-0642   EA96 2A 5D FC    		ld	hl,(dmaAddr)		;get/put CP/M data
-0643   EA99 0E 80       		ld	c,128		;length of move
-0644   EA9B 3A 5B FC    		ld	a,(readop)		;which way?
-0645   EA9E B7          		or	a
-0646   EA9F 20 06       		jr	nz,rwmove		;skip if read
-0647   EAA1             ;
-0648   EAA1             ;	write operation, mark and switch direction
-0649   EAA1 3E 01       		ld	a,1
-0650   EAA3 32 53 FC    		ld	(hstwrt),a		;hstwrt = 1
-0651   EAA6 EB          		ex	de,hl			;source/dest swap
-0652   EAA7             ;
-0653   EAA7             rwmove:
-0654   EAA7             		;C initially 128, DE is source, HL is dest
-0655   EAA7 1A          		ld	a,(de)		;source character
-0656   EAA8 13          		inc	de
-0657   EAA9 77          		ld	(hl),a		;to dest
-0658   EAAA 23          		inc	hl
-0659   EAAB 0D          		dec	c		;loop 128 times
-0660   EAAC 20 F9       		jr	nz,rwmove
-0661   EAAE             ;
-0662   EAAE             ;		data has been moved to/from host buffer
-0663   EAAE 3A 5C FC    		ld	a,(wrtype)		;write type
-0664   EAB1 FE 01       		cp	wrdir		;to directory?
-0665   EAB3 3A 59 FC    		ld	a,(erflag)		;in case of errors
-0666   EAB6 C0          		ret	nz			;no further processing
-0667   EAB7             ;
-0668   EAB7             ;		clear host buffer for directory write
-0669   EAB7 B7          		or	a		;errors?
-0670   EAB8 C0          		ret	nz			;skip if so
-0671   EAB9 AF          		xor	a		;0 to accum
-0672   EABA 32 53 FC    		ld	(hstwrt),a		;buffer written
-0673   EABD CD 6C EB    		call	writehst
-0674   EAC0 3A 59 FC    		ld	a,(erflag)
-0675   EAC3 C9          		ret
-0676   EAC4             
-0677   EAC4             ;------------------------------------------------------------------------------------------------
-0678   EAC4             ;Utility subroutine for 16-bit compare
-0679   EAC4             sektrkcmp:
-0680   EAC4             		;HL = .unatrk or .hsttrk, compare with sektrk
-0681   EAC4 EB          		ex	de,hl
-0682   EAC5 21 49 FC    		ld	hl,sektrk
-0683   EAC8 1A          		ld	a,(de)		;low byte compare
-0684   EAC9 BE          		cp	(HL)		;same?
-0685   EACA C0          		ret	nz			;return if not
-0686   EACB             ;		low bytes equal, test high 1s
-0687   EACB 13          		inc	de
-0688   EACC 23          		inc	hl
-0689   EACD 1A          		ld	a,(de)
-0690   EACE BE          		cp	(hl)	;sets flags
-0691   EACF C9          		ret
-0692   EAD0             
-0693   EAD0             ;================================================================================================
-0694   EAD0             ; Convert track/head/sector into LBA for physical access to the disk
-0695   EAD0             ;================================================================================================
-0696   EAD0             setLBAaddr:	
-0697   EAD0 2A 4E FC    		LD	HL,(hsttrk)
-0698   EAD3 CB 05       		RLC	L
-0699   EAD5 CB 05       		RLC	L
-0700   EAD7 CB 05       		RLC	L
-0701   EAD9 CB 05       		RLC	L
-0702   EADB CB 05       		RLC	L
-0703   EADD 7D          		LD	A,L
-0704   EADE E6 E0       		AND	0E0H
-0705   EAE0 6F          		LD	L,A
-0706   EAE1 3A 50 FC    		LD	A,(hstsec)
-0707   EAE4 85          		ADD	A,L
-0708   EAE5 32 44 FC    		LD	(lba0),A
-0709   EAE8             
-0710   EAE8 2A 4E FC    		LD	HL,(hsttrk)
-0711   EAEB CB 0D       		RRC	L
-0712   EAED CB 0D       		RRC	L
-0713   EAEF CB 0D       		RRC	L
-0714   EAF1 7D          		LD	A,L
-0715   EAF2 E6 1F       		AND	01FH
-0716   EAF4 6F          		LD	L,A
-0717   EAF5 CB 04       		RLC	H
-0718   EAF7 CB 04       		RLC	H
-0719   EAF9 CB 04       		RLC	H
-0720   EAFB CB 04       		RLC	H
-0721   EAFD CB 04       		RLC	H
-0722   EAFF 7C          		LD	A,H
-0723   EB00 E6 20       		AND	020H
-0724   EB02 67          		LD	H,A
-0725   EB03 3A 4D FC    		LD	A,(hstdsk)
-0726   EB06 CB 07       		RLC	a
-0727   EB08 CB 07       		RLC	a
-0728   EB0A CB 07       		RLC	a
-0729   EB0C CB 07       		RLC	a
-0730   EB0E CB 07       		RLC	a
-0731   EB10 CB 07       		RLC	a
-0732   EB12 E6 C0       		AND	0C0H
-0733   EB14 84          		ADD	A,H
-0734   EB15 85          		ADD	A,L
-0735   EB16 32 45 FC    		LD	(lba1),A
-0736   EB19             		
-0737   EB19             
-0738   EB19 3A 4D FC    		LD	A,(hstdsk)
-0739   EB1C CB 0F       		RRC	A
-0740   EB1E CB 0F       		RRC	A
-0741   EB20 E6 03       		AND	03H
-0742   EB22 32 46 FC    		LD	(lba2),A
-0743   EB25             
-0744   EB25             ; LBA Mode using drive 0 = E0
-0745   EB25 3E E0       		LD	a,0E0H
-0746   EB27 32 47 FC    		LD	(lba3),A
-0747   EB2A             
-0748   EB2A             
-0749   EB2A 3A 44 FC    		LD	A,(lba0)
-0750   EB2D D3 B3       		OUT 	(CF_LBA0),A
-0751   EB2F             
-0752   EB2F 3A 45 FC    		LD	A,(lba1)
-0753   EB32 D3 B4       		OUT 	(CF_LBA1),A
-0754   EB34             
-0755   EB34 3A 46 FC    		LD	A,(lba2)
-0756   EB37 D3 B5       		OUT 	(CF_LBA2),A
-0757   EB39             
-0758   EB39 3A 47 FC    		LD	A,(lba3)
-0759   EB3C D3 B6       		OUT 	(CF_LBA3),A
-0760   EB3E             
-0761   EB3E 3E 01       		LD 	A,1
-0762   EB40 D3 B2       		OUT 	(CF_SECCOUNT),A
-0763   EB42             
-0764   EB42 C9          		RET				
-0765   EB43             
-0766   EB43             ;================================================================================================
-0767   EB43             ; Read physical sector from host
-0768   EB43             ;================================================================================================
-0769   EB43             readhst:
-0770   EB43 F5          		PUSH 	AF
-0771   EB44 C5          		PUSH 	BC
-0772   EB45 E5          		PUSH 	HL
-0773   EB46             
-0774   EB46 CD 95 EB    		CALL 	cfWait
-0775   EB49             
-0776   EB49 CD D0 EA    		CALL 	setLBAaddr
-0777   EB4C             
-0778   EB4C 3E 20       		LD 	A,CF_READ_SEC
-0779   EB4E D3 B7       		OUT 	(CF_COMMAND),A
-0780   EB50             
-0781   EB50 CD 95 EB    		CALL 	cfWait
-0782   EB53             
-0783   EB53 0E 04       		LD 	c,4
-0784   EB55 21 5F FC    		LD 	HL,hstbuf
-0785   EB58             rd4secs:
-0786   EB58 06 80       		LD 	b,128
-0787   EB5A             rdByte:
-0788   EB5A DB B0       		in 	A,(CF_DATA)
-0789   EB5C 77          		LD 	(HL),A
-0790   EB5D 23          		iNC 	HL
-0791   EB5E 05          		dec 	b
-0792   EB5F 20 F9       		JR 	NZ, rdByte
-0793   EB61 0D          		dec 	c
-0794   EB62 20 F4       		JR 	NZ,rd4secs
-0795   EB64             
-0796   EB64 E1          		POP 	HL
-0797   EB65 C1          		POP 	BC
-0798   EB66 F1          		POP 	AF
-0799   EB67             
-0800   EB67 AF          		XOR 	a
-0801   EB68 32 59 FC    		ld	(erflag),a
-0802   EB6B C9          		RET
-0803   EB6C             
-0804   EB6C             ;================================================================================================
-0805   EB6C             ; Write physical sector to host
-0806   EB6C             ;================================================================================================
-0807   EB6C             writehst:
-0808   EB6C F5          		PUSH 	AF
-0809   EB6D C5          		PUSH 	BC
-0810   EB6E E5          		PUSH 	HL
-0811   EB6F             
-0812   EB6F CD 95 EB    		CALL 	cfWait
-0813   EB72             
-0814   EB72 CD D0 EA    		CALL 	setLBAaddr
-0815   EB75             
-0816   EB75 3E 30       		LD 	A,CF_WRITE_SEC
-0817   EB77 D3 B7       		OUT 	(CF_COMMAND),A
-0818   EB79             
-0819   EB79 CD 95 EB    		CALL 	cfWait
-0820   EB7C             
-0821   EB7C 0E 04       		LD 	c,4
-0822   EB7E 21 5F FC    		LD 	HL,hstbuf
-0823   EB81             wr4secs:
-0824   EB81 06 80       		LD 	b,128
-0825   EB83 7E          wrByte:		LD 	A,(HL)
-0826   EB84 D3 B0       		OUT 	(CF_DATA),A
-0827   EB86 23          		iNC 	HL
-0828   EB87 05          		dec 	b
-0829   EB88 20 F9       		JR 	NZ, wrByte
-0830   EB8A             
-0831   EB8A 0D          		dec 	c
-0832   EB8B 20 F4       		JR 	NZ,wr4secs
-0833   EB8D             
-0834   EB8D E1          		POP 	HL
-0835   EB8E C1          		POP 	BC
-0836   EB8F F1          		POP 	AF
-0837   EB90             
-0838   EB90 AF          		XOR 	a
-0839   EB91 32 59 FC    		ld	(erflag),a
-0840   EB94 C9          		RET
-0841   EB95             
-0842   EB95             ;================================================================================================
-0843   EB95             ; Wait for disk to be ready (busy=0,ready=1)
-0844   EB95             ;================================================================================================
-0845   EB95             cfWait:
-0846   EB95 F5          		PUSH 	AF
-0847   EB96             cfWait1:
-0848   EB96 DB B7       		in 	A,(CF_STATUS)
-0849   EB98 E6 80       		AND 	080H
-0850   EB9A FE 80       		cp 	080H
-0851   EB9C 28 F8       		JR	Z,cfWait1
-0852   EB9E F1          		POP 	AF
-0853   EB9F C9          		RET
-0854   EBA0             
-0855   EBA0             ;================================================================================================
-0856   EBA0             ; Print (on console) a sequence of characters ending with zero
-0857   EBA0             ;================================================================================================
-0858   EBA0             PRINTSEQ:
-0859   EBA0 E3          		EX 	(SP),HL 		; Push HL and put RET address into HL
-0860   EBA1 F5          		PUSH 	AF
-0861   EBA2 C5          		PUSH 	BC
-0862   EBA3             NEXTCHAR:
-0863   EBA3 7E          		LD 	A,(HL)
-0864   EBA4 FE 00       		CP	0
-0865   EBA6 28 07       		JR	Z,ENDOFPRINT
-0866   EBA8 4F          		LD  	C,A
-0867   EBA9 CD D9 E8    		CALL 	CONOUT		; Print to console
-0868   EBAC 23          		INC 	HL
-0869   EBAD 18 F4       		JR	NEXTCHAR
-0870   EBAF             ENDOFPRINT:
-0871   EBAF 23          		INC 	HL 			; Get past "null" terminator
-0872   EBB0 C1          		POP 	BC
-0873   EBB1 F1          		POP 	AF
-0874   EBB2 E3          		EX 	(SP),HL 		; Push new RET address on stack and restore HL
-0875   EBB3 C9          		RET
-0876   EBB4             
-0877   EBB4             ;================================================================================================
-0878   EBB4             ; Data storage
-0879   EBB4             ;================================================================================================
-0880   EBB4             dirbuf: 	.ds 128 		;scratch directory area
-0881   EC34             alv00: 		.ds 257			;allocation vector 0
-0882   ED35             alv01: 		.ds 257			;allocation vector 1
-0883   EE36             alv02: 		.ds 257			;allocation vector 2
-0884   EF37             alv03: 		.ds 257			;allocation vector 3
-0885   F038             alv04: 		.ds 257			;allocation vector 4
-0886   F139             alv05: 		.ds 257			;allocation vector 5
-0887   F23A             alv06: 		.ds 257			;allocation vector 6
-0888   F33B             alv07: 		.ds 257			;allocation vector 7
-0889   F43C             alv08: 		.ds 257			;allocation vector 8
-0890   F53D             alv09: 		.ds 257			;allocation vector 9
-0891   F63E             alv10: 		.ds 257			;allocation vector 10
-0892   F73F             alv11: 		.ds 257			;allocation vector 11
-0893   F840             alv12: 		.ds 257			;allocation vector 12
-0894   F941             alv13: 		.ds 257			;allocation vector 13
-0895   FA42             alv14: 		.ds 257			;allocation vector 14
-0896   FB43             alv15: 		.ds 257			;allocation vector 15
-0897   FC44             
-0898   FC44 00          lba0		.DB	00h
-0899   FC45 00          lba1		.DB	00h
-0900   FC46 00          lba2		.DB	00h
-0901   FC47 00          lba3		.DB	00h
-0902   FC48             
-0903   FC48             sekdsk:		.ds	1		;seek disk number
-0904   FC49             sektrk:		.ds	2		;seek track number
-0905   FC4B             seksec:		.ds	2		;seek sector number
-0906   FC4D             ;
-0907   FC4D             hstdsk:		.ds	1		;host disk number
-0908   FC4E             hsttrk:		.ds	2		;host track number
-0909   FC50             hstsec:		.ds	1		;host sector number
-0910   FC51             ;
-0911   FC51             sekhst:		.ds	1		;seek shr secshf
-0912   FC52             hstact:		.ds	1		;host active flag
-0913   FC53             hstwrt:		.ds	1		;host written flag
-0914   FC54             ;
-0915   FC54             unacnt:		.ds	1		;unalloc rec cnt
-0916   FC55             unadsk:		.ds	1		;last unalloc disk
-0917   FC56             unatrk:		.ds	2		;last unalloc track
-0918   FC58             unasec:		.ds	1		;last unalloc sector
-0919   FC59             ;
-0920   FC59             erflag:		.ds	1		;error reporting
-0921   FC5A             rsflag:		.ds	1		;read sector flag
-0922   FC5B             readop:		.ds	1		;1 if read operation
-0923   FC5C             wrtype:		.ds	1		;write operation type
-0924   FC5D             dmaAddr:	.ds	2		;last dma address
-0925   FC5F             hstbuf:		.ds	512		;host buffer
-0926   FE5F             hstBufEnd:	.EQU	$
-0927   FE5F             
-0928   FE5F             			.DS	020h			; Start of BIOS stack area.
-0929   FE7F             BIOSSTACK:	.EQU	$
-0930   FE7F             
-0931   FE7F             biosEnd:	.EQU	$
-0932   FE7F             
-0933   FE7F             		.END
+0210   E7D3 4B 42 49 4F 		.DB "KBIOS 2.0 - 128MB Compact Flash.",CR,LF
+0210   E7D7 53 20 32 2E 
+0210   E7DB 30 20 2D 20 
+0210   E7DF 31 32 38 4D 
+0210   E7E3 42 20 43 6F 
+0210   E7E7 6D 70 61 63 
+0210   E7EB 74 20 46 6C 
+0210   E7EF 61 73 68 2E 
+0210   E7F3 0D 0A 
+0211   E7F5 43 50 2F 4D 		.DB "CP/M 2.2 Copyright 1979 (c) by Digital Research",CR,LF,CR,LF,0
+0211   E7F9 20 32 2E 32 
+0211   E7FD 20 43 6F 70 
+0211   E801 79 72 69 67 
+0211   E805 68 74 20 31 
+0211   E809 39 37 39 20 
+0211   E80D 28 63 29 20 
+0211   E811 62 79 20 44 
+0211   E815 69 67 69 74 
+0211   E819 61 6C 20 52 
+0211   E81D 65 73 65 61 
+0211   E821 72 63 68 0D 
+0211   E825 0A 0D 0A 00 
+0212   E829             
+0213   E829 C3 3F E8    		JP	gocpm
+0214   E82C             
+0215   E82C             ;================================================================================================
+0216   E82C             ; Warm boot
+0217   E82C             ;================================================================================================
+0218   E82C             
+0219   E82C F3          wboot:	DI						; Disable interrupts.
+0220   E82D 31 80 FE    		LD	SP,BIOSSTACK		; Set default stack.
+0221   E830             
+0222   E830 D3 F0       		OUT (ROM_RAM0),A		; Turn on ROM. Doesn't matter what we output
+0223   E832             
+0224   E832 01 20 16    		LD	BC,BIOS-CCP			; Copy CP/M ROM (01000h) to RAM (0D000h)
+0225   E835 11 00 D0    		LD	DE,CCP				; Don't copy the BIOS!!!
+0226   E838 21 00 10    		LD	HL,ROM_CCP
+0227   E83B ED B0       		LDIR
+0228   E83D             
+0229   E83D D3 F1       		OUT (NOROM_RAM0),A		; Turn off ROM. Doesn't matter what we output
+0230   E83F             
+0231   E83F             
+0232   E83F             ;================================================================================================
+0233   E83F             ; Common code for cold and warm boot
+0234   E83F             ;================================================================================================
+0235   E83F             
+0236   E83F AF          gocpm:	XOR	A					; 0 to accumulator
+0237   E840 32 53 FC    		LD	(hstact),A			; host buffer inactive
+0238   E843 32 55 FC    		LD	(unacnt),A			; clear unalloc count
+0239   E846             
+0240   E846 21 80 00    		LD	HL,tpabuf			; ADDress of BIOS DMA buffer.
+0241   E849 22 5E FC    		LD	(dmaAddr),HL
+0242   E84C             		
+0243   E84C 3E C3       		LD	A,0C3h				; Opcode for 'JP'.
+0244   E84E 32 00 00    		LD	(00h),A				; Load at start of RAM.
+0245   E851 21 23 E6    		LD	HL,wboote			; ADDress of jump for a warm boot.
+0246   E854 22 01 00    		LD	(01h),HL
+0247   E857 32 05 00    		LD	(05h),A				; Opcode for 'JP'.
+0248   E85A 2A 1E E6    		LD	HL,(BIOS-2)			; ADDress of jump for the BDOS.
+0249   E85D 22 06 00    		LD	(06h),HL
+0250   E860 3A 04 00    		LD	A,(userdrv)			; Save new drive number (0).
+0251   E863 4F          		LD	C,A					; Pass drive number in C.
+0252   E864             
+0253   E864 ED 46       		IM	0
+0254   E866 FB          		EI
+0255   E867             	
+0256   E867 C3 00 D0    		JP	ccp					; Start CP/M by jumping to the CCP.
+0257   E86A             
+0258   E86A             ;================================================================================================
+0259   E86A             ; PHYSICAL DEVICE JUMP TABLE.
+0260   E86A             ; Used by CONST, CONIN, CONOUT, LIST, PUNCH, READER and LISTST according to IOBYTE setting.
+0261   E86A             ; All physical devices that aren't present will be forwarded to TTY.
+0262   E86A             ;================================================================================================
+0263   E86A C3 5A E9    TTYST:	JP	PORT0ST
+0264   E86D C3 6A E9    CRTST:	JP	PORT1ST
+0265   E870 C3 36 E9    BATST:	JP	LISTST
+0266   E873 C3 6A E8    UC1ST:	JP	TTYST		; No physical device present
+0267   E876 C3 6A E8    LPTST:	JP	TTYST		; No physical device present
+0268   E879 C3 6A E8    UL1ST:	JP	TTYST		; No physical device present
+0269   E87C             
+0270   E87C C3 4D E9    TTYIN:	JP	PORT0IN
+0271   E87F C3 5D E9    CRTIN:	JP	PORT1IN
+0272   E882 C3 F1 E8    BATIN:	JP	READER
+0273   E885 C3 7C E8    UC1IN:	JP	TTYIN		; No physical device present
+0274   E888 C3 7C E8    PTRIN:	JP	TTYIN		; No physical device present
+0275   E88B C3 7C E8    UR1IN:	JP	TTYIN		; No physical device present
+0276   E88E C3 7C E8    UR2IN:	JP	TTYIN		; No physical device present
+0277   E891             
+0278   E891 C3 56 E9    TTYOUT:	JP	PORT0OUT
+0279   E894 C3 66 E9    CRTOUT:	JP	PORT1OUT
+0280   E897 C3 08 E9    BATOUT:	JP	LIST
+0281   E89A C3 91 E8    UC1OUT:	JP	TTYOUT		; No physical device present
+0282   E89D C3 91 E8    LPTOUT:	JP	TTYOUT		; No physical device present
+0283   E8A0 C3 91 E8    UL1OUT:	JP	TTYOUT		; No physical device present
+0284   E8A3 C3 91 E8    PTPOUT:	JP	TTYOUT		; No physical device present
+0285   E8A6 C3 91 E8    UP1OUT:	JP	TTYOUT		; No physical device present
+0286   E8A9 C3 91 E8    UP2OUT:	JP	TTYOUT		; No physical device present
+0287   E8AC             
+0288   E8AC             ;================================================================================================
+0289   E8AC             ; Console I/O routines
+0290   E8AC             ;================================================================================================
+0291   E8AC             ;================================================================================================
+0292   E8AC             ; Console Status (Return A=0FFh if character waiting. Otherwise, A=0)
+0293   E8AC             ;================================================================================================
+0294   E8AC 3A 03 00    CONST:	LD	A,(iobyte)
+0295   E8AF E6 03       		AND	3
+0296   E8B1 FE 00       		CP	0
+0297   E8B3 CA 6A E8    		JP	Z,TTYST
+0298   E8B6 FE 01       		CP	1
+0299   E8B8 CA 6D E8    		JP	Z,CRTST
+0300   E8BB FE 02       		CP	2
+0301   E8BD CA 70 E8    		JP	Z,BATST
+0302   E8C0 C3 73 E8    		JP	UC1ST
+0303   E8C3             
+0304   E8C3             ;================================================================================================
+0305   E8C3             ; Console Input (Wait for input and return character in A)
+0306   E8C3             ;================================================================================================
+0307   E8C3 3A 03 00    CONIN:	LD	A,(iobyte)
+0308   E8C6 E6 03       		AND	3
+0309   E8C8 FE 00       		CP	0
+0310   E8CA CA 7C E8    		JP	Z,TTYIN
+0311   E8CD FE 01       		CP	1
+0312   E8CF CA 7F E8    		JP	Z,CRTIN
+0313   E8D2 FE 02       		CP	2
+0314   E8D4 CA 82 E8    		JP	Z,BATIN
+0315   E8D7 C3 85 E8    		JP	UC1IN
+0316   E8DA             
+0317   E8DA             ;================================================================================================
+0318   E8DA             ; Console Output (Send character in reg C)
+0319   E8DA             ;================================================================================================
+0320   E8DA 3A 03 00    CONOUT:	LD	A,(iobyte)
+0321   E8DD E6 03       		AND	3
+0322   E8DF FE 00       		CP	0
+0323   E8E1 CA 91 E8    		JP	Z,TTYOUT
+0324   E8E4 FE 01       		CP	1
+0325   E8E6 CA 94 E8    		JP	Z,CRTOUT
+0326   E8E9 FE 02       		CP	2
+0327   E8EB CA 97 E8    		JP	Z,BATOUT
+0328   E8EE C3 9A E8    		JP	UC1OUT
+0329   E8F1             
+0330   E8F1             ;================================================================================================
+0331   E8F1             ; Reader Input
+0332   E8F1             ;================================================================================================
+0333   E8F1 3A 03 00    READER:	LD	A,(iobyte)
+0334   E8F4 E6 0C       		AND	0CH
+0335   E8F6 FE 00       		CP	0
+0336   E8F8 CA 7C E8    		JP	Z,TTYIN
+0337   E8FB FE 04       		CP	4
+0338   E8FD CA 88 E8    		JP	Z,PTRIN
+0339   E900 FE 08       		CP	8
+0340   E902 CA 8B E8    		JP	Z,UR1IN
+0341   E905 C3 8E E8    		JP	UR2IN
+0342   E908             
+0343   E908             ;================================================================================================
+0344   E908             ; List Output
+0345   E908             ;================================================================================================
+0346   E908 3A 03 00    LIST:	LD	A,(iobyte)
+0347   E90B E6 C0       		AND	0C0H
+0348   E90D FE 00       		CP	0
+0349   E90F CA 91 E8    		JP	Z,TTYOUT
+0350   E912 FE 40       		CP	40H
+0351   E914 CA 94 E8    		JP	Z,CRTOUT
+0352   E917 FE 80       		CP	80H
+0353   E919 CA 9D E8    		JP	Z,LPTOUT
+0354   E91C C3 A0 E8    		JP	UL1OUT
+0355   E91F             
+0356   E91F             ;================================================================================================
+0357   E91F             ; Punch Output
+0358   E91F             ;================================================================================================
+0359   E91F 3A 03 00    PUNCH:	LD	A,(iobyte)
+0360   E922 E6 30       		AND	030H
+0361   E924 FE 00       		CP	0
+0362   E926 CA 91 E8    		JP	Z,TTYOUT
+0363   E929 FE 40       		CP	40H
+0364   E92B CA A3 E8    		JP	Z,PTPOUT
+0365   E92E FE 80       		CP	80H
+0366   E930 CA A6 E8    		JP	Z,UP1OUT
+0367   E933 C3 A9 E8    		JP	UP2OUT
+0368   E936             
+0369   E936             ;================================================================================================
+0370   E936             ; List Status
+0371   E936             ;================================================================================================
+0372   E936 3A 03 00    LISTST:	LD	A,(iobyte)
+0373   E939 E6 C0       		AND	0C0H
+0374   E93B FE 00       		CP	0
+0375   E93D CA 6A E8    		JP	Z,TTYST
+0376   E940 FE 40       		CP	40H
+0377   E942 CA 6D E8    		JP	Z,CRTST
+0378   E945 FE 80       		CP	80H
+0379   E947 CA 76 E8    		JP	Z,LPTST
+0380   E94A C3 79 E8    		JP	UL1ST
+0381   E94D             
+0382   E94D             ;================================================================================================
+0383   E94D             ; PORT 0 (on TTY card) input.
+0384   E94D             ;================================================================================================
+0385   E94D             PORT0IN:
+0386   E94D DB C2       		IN	A,(PORT0_STA)
+0387   E94F FE 00       		CP	0
+0388   E951 28 FA       		JR	Z,PORT0IN
+0389   E953 DB C0       		IN	A,(PORT0_DAT)
+0390   E955 C9          		RET
+0391   E956             		
+0392   E956             ;================================================================================================
+0393   E956             ; PORT 0 (on USART v2) output.
+0394   E956             ;================================================================================================
+0395   E956             PORT0OUT:
+0396   E956 79          		LD	A,C
+0397   E957 D3 C0       		OUT	(PORT0_DAT),A
+0398   E959 C9          		RET
+0399   E95A             		
+0400   E95A             ;================================================================================================
+0401   E95A             ; PORT 0 (on TTY card) status.
+0402   E95A             ;================================================================================================
+0403   E95A             PORT0ST:
+0404   E95A DB C2       		IN	A,(PORT0_STA)
+0405   E95C C9          		RET
+0406   E95D             		
+0407   E95D             ;================================================================================================
+0408   E95D             ; PORT 1 (on USART v2) input.
+0409   E95D             ;================================================================================================
+0410   E95D             PORT1IN:
+0411   E95D DB C3       		IN	A,(PORT1_STA)
+0412   E95F FE 00       		CP	0
+0413   E961 28 FA       		JR	Z,PORT1IN
+0414   E963 DB C1       		IN	A,(PORT1_DAT)
+0415   E965 C9          		RET
+0416   E966             		
+0417   E966             ;================================================================================================
+0418   E966             ; PORT 1 (on USART v2) output.
+0419   E966             ;================================================================================================
+0420   E966             PORT1OUT:
+0421   E966 79          		LD	A,C
+0422   E967 D3 C1       		OUT	(PORT1_DAT),A
+0423   E969 C9          		RET
+0424   E96A             		
+0425   E96A             ;================================================================================================
+0426   E96A             ; PORT 1 (on USART v2) status.
+0427   E96A             ;================================================================================================
+0428   E96A             PORT1ST:
+0429   E96A DB C3       		IN	A,(PORT1_STA)
+0430   E96C C9          		RET
+0431   E96D             		
+0432   E96D             ;================================================================================================
+0433   E96D             ; Disk processing entry points
+0434   E96D             ;================================================================================================
+0435   E96D             seldsk:
+0436   E96D 21 00 00    		LD	HL,$0000
+0437   E970 79          		LD	A,C
+0438   E971 FE 10       		CP	16		; 16 for 128MB disk, 8 for 64MB disk
+0439   E973 38 0D       		jr	C,chgdsk	; if invalid drive will give BDOS error
+0440   E975 3A 04 00    		LD	A,(userdrv)	; so set the drive back to a:
+0441   E978 B9          		CP	C		; If the default disk is not the same as the
+0442   E979 C0          		RET	NZ		; selected drive then return, 
+0443   E97A AF          		XOR	A		; else reset default back to a:
+0444   E97B 32 04 00    		LD	(userdrv),A	; otherwise will be stuck in a loop
+0445   E97E 32 49 FC    		LD	(sekdsk),A
+0446   E981 C9          		ret
+0447   E982             
+0448   E982 32 49 FC    chgdsk:		LD 	(sekdsk),A
+0449   E985 CB 07       		RLC	a		;*2
+0450   E987 CB 07       		RLC	a		;*4
+0451   E989 CB 07       		RLC	a		;*8
+0452   E98B CB 07       		RLC	a		;*16
+0453   E98D 21 56 E6    		LD 	HL,dpbase
+0454   E990 06 00       		LD	b,0
+0455   E992 4F          		LD	c,A	
+0456   E993 09          		ADD	HL,BC
+0457   E994             
+0458   E994 C9          		RET
+0459   E995             
+0460   E995             ;------------------------------------------------------------------------------------------------
+0461   E995             home:
+0462   E995 3A 54 FC    		ld	a,(hstwrt)	;check for pending write
+0463   E998 B7          		or	a
+0464   E999 20 03       		jr	nz,homed
+0465   E99B 32 53 FC    		ld	(hstact),a	;clear host active flag
+0466   E99E             homed:
+0467   E99E 01 00 00    		LD 	BC,0000h
+0468   E9A1             
+0469   E9A1             ;------------------------------------------------------------------------------------------------
+0470   E9A1 ED 43 4A FC settrk:		LD 	(sektrk),BC	; Set track passed from BDOS in register BC.
+0471   E9A5 C9          		RET
+0472   E9A6             
+0473   E9A6             ;------------------------------------------------------------------------------------------------
+0474   E9A6 ED 43 4C FC setsec:		LD 	(seksec),BC	; Set sector passed from BDOS in register BC.
+0475   E9AA C9          		RET
+0476   E9AB             
+0477   E9AB             ;------------------------------------------------------------------------------------------------
+0478   E9AB ED 43 5E FC setdma:		LD 	(dmaAddr),BC	; Set DMA ADDress given by registers BC.
+0479   E9AF C9          		RET
+0480   E9B0             
+0481   E9B0             ;------------------------------------------------------------------------------------------------
+0482   E9B0 C5          sectran:	PUSH 	BC
+0483   E9B1 E1          		POP 	HL
+0484   E9B2 C9          		RET
+0485   E9B3             
+0486   E9B3             ;------------------------------------------------------------------------------------------------
+0487   E9B3             read:
+0488   E9B3             		;read the selected CP/M sector
+0489   E9B3 AF          		xor	a
+0490   E9B4 32 55 FC    		ld	(unacnt),a
+0491   E9B7 3E 01       		ld	a,1
+0492   E9B9 32 5C FC    		ld	(readop),a		;read operation
+0493   E9BC 32 5B FC    		ld	(rsflag),a		;must read data
+0494   E9BF 3E 02       		ld	a,wrual
+0495   E9C1 32 5D FC    		ld	(wrtype),a		;treat as unalloc
+0496   E9C4 C3 2E EA    		jp	rwoper			;to perform the read
+0497   E9C7             
+0498   E9C7             
+0499   E9C7             ;------------------------------------------------------------------------------------------------
+0500   E9C7             write:
+0501   E9C7             		;write the selected CP/M sector
+0502   E9C7 AF          		xor	a		;0 to accumulator
+0503   E9C8 32 5C FC    		ld	(readop),a	;not a read operation
+0504   E9CB 79          		ld	a,c		;write type in c
+0505   E9CC 32 5D FC    		ld	(wrtype),a
+0506   E9CF FE 02       		cp	wrual		;write unallocated?
+0507   E9D1 20 17       		jr	nz,chkuna	;check for unalloc
+0508   E9D3             ;
+0509   E9D3             ;		write to unallocated, set parameters
+0510   E9D3 3E 20       		ld	a,blksiz/128	;next unalloc recs
+0511   E9D5 32 55 FC    		ld	(unacnt),a
+0512   E9D8 3A 49 FC    		ld	a,(sekdsk)		;disk to seek
+0513   E9DB 32 56 FC    		ld	(unadsk),a		;unadsk = sekdsk
+0514   E9DE 2A 4A FC    		ld	hl,(sektrk)
+0515   E9E1 22 57 FC    		ld	(unatrk),hl		;unatrk = sectrk
+0516   E9E4 3A 4C FC    		ld	a,(seksec)
+0517   E9E7 32 59 FC    		ld	(unasec),a		;unasec = seksec
+0518   E9EA             ;
+0519   E9EA             chkuna:
+0520   E9EA             ;		check for write to unallocated sector
+0521   E9EA 3A 55 FC    		ld	a,(unacnt)		;any unalloc remain?
+0522   E9ED B7          		or	a	
+0523   E9EE 28 36       		jr	z,alloc		;skip if not
+0524   E9F0             ;
+0525   E9F0             ;		more unallocated records remain
+0526   E9F0 3D          		dec	a		;unacnt = unacnt-1
+0527   E9F1 32 55 FC    		ld	(unacnt),a
+0528   E9F4 3A 49 FC    		ld	a,(sekdsk)		;same disk?
+0529   E9F7 21 56 FC    		ld	hl,unadsk
+0530   E9FA BE          		cp	(hl)		;sekdsk = unadsk?
+0531   E9FB C2 26 EA    		jp	nz,alloc		;skip if not
+0532   E9FE             ;
+0533   E9FE             ;		disks are the same
+0534   E9FE 21 57 FC    		ld	hl,unatrk
+0535   EA01 CD C5 EA    		call	sektrkcmp	;sektrk = unatrk?
+0536   EA04 C2 26 EA    		jp	nz,alloc		;skip if not
+0537   EA07             ;
+0538   EA07             ;		tracks are the same
+0539   EA07 3A 4C FC    		ld	a,(seksec)		;same sector?
+0540   EA0A 21 59 FC    		ld	hl,unasec
+0541   EA0D BE          		cp	(hl)		;seksec = unasec?
+0542   EA0E C2 26 EA    		jp	nz,alloc		;skip if not
+0543   EA11             ;
+0544   EA11             ;		match, move to next sector for future ref
+0545   EA11 34          		inc	(hl)		;unasec = unasec+1
+0546   EA12 7E          		ld	a,(hl)		;end of track?
+0547   EA13 FE 80       		cp	cpmspt		;count CP/M sectors
+0548   EA15 38 09       		jr	c,noovf		;skip if no overflow
+0549   EA17             ;
+0550   EA17             ;		overflow to next track
+0551   EA17 36 00       		ld	(hl),0		;unasec = 0
+0552   EA19 2A 57 FC    		ld	hl,(unatrk)
+0553   EA1C 23          		inc	hl
+0554   EA1D 22 57 FC    		ld	(unatrk),hl		;unatrk = unatrk+1
+0555   EA20             ;
+0556   EA20             noovf:
+0557   EA20             		;match found, mark as unnecessary read
+0558   EA20 AF          		xor	a		;0 to accumulator
+0559   EA21 32 5B FC    		ld	(rsflag),a		;rsflag = 0
+0560   EA24 18 08       		jr	rwoper		;to perform the write
+0561   EA26             ;
+0562   EA26             alloc:
+0563   EA26             		;not an unallocated record, requires pre-read
+0564   EA26 AF          		xor	a		;0 to accum
+0565   EA27 32 55 FC    		ld	(unacnt),a		;unacnt = 0
+0566   EA2A 3C          		inc	a		;1 to accum
+0567   EA2B 32 5B FC    		ld	(rsflag),a		;rsflag = 1
+0568   EA2E             
+0569   EA2E             ;------------------------------------------------------------------------------------------------
+0570   EA2E             rwoper:
+0571   EA2E             		;enter here to perform the read/write
+0572   EA2E AF          		xor	a		;zero to accum
+0573   EA2F 32 5A FC    		ld	(erflag),a		;no errors (yet)
+0574   EA32 3A 4C FC    		ld	a,(seksec)		;compute host sector
+0575   EA35 B7          		or	a		;carry = 0
+0576   EA36 1F          		rra			;shift right
+0577   EA37 B7          		or	a		;carry = 0
+0578   EA38 1F          		rra			;shift right
+0579   EA39 32 52 FC    		ld	(sekhst),a		;host sector to seek
+0580   EA3C             ;
+0581   EA3C             ;		active host sector?
+0582   EA3C 21 53 FC    		ld	hl,hstact	;host active flag
+0583   EA3F 7E          		ld	a,(hl)
+0584   EA40 36 01       		ld	(hl),1		;always becomes 1
+0585   EA42 B7          		or	a		;was it already?
+0586   EA43 28 21       		jr	z,filhst		;fill host if not
+0587   EA45             ;
+0588   EA45             ;		host buffer active, same as seek buffer?
+0589   EA45 3A 49 FC    		ld	a,(sekdsk)
+0590   EA48 21 4E FC    		ld	hl,hstdsk	;same disk?
+0591   EA4B BE          		cp	(hl)		;sekdsk = hstdsk?
+0592   EA4C 20 11       		jr	nz,nomatch
+0593   EA4E             ;
+0594   EA4E             ;		same disk, same track?
+0595   EA4E 21 4F FC    		ld	hl,hsttrk
+0596   EA51 CD C5 EA    		call	sektrkcmp	;sektrk = hsttrk?
+0597   EA54 20 09       		jr	nz,nomatch
+0598   EA56             ;
+0599   EA56             ;		same disk, same track, same buffer?
+0600   EA56 3A 52 FC    		ld	a,(sekhst)
+0601   EA59 21 51 FC    		ld	hl,hstsec	;sekhst = hstsec?
+0602   EA5C BE          		cp	(hl)
+0603   EA5D 28 24       		jr	z,match		;skip if match
+0604   EA5F             ;
+0605   EA5F             nomatch:
+0606   EA5F             		;proper disk, but not correct sector
+0607   EA5F 3A 54 FC    		ld	a,(hstwrt)		;host written?
+0608   EA62 B7          		or	a
+0609   EA63 C4 6D EB    		call	nz,writehst	;clear host buff
+0610   EA66             ;
+0611   EA66             filhst:
+0612   EA66             		;may have to fill the host buffer
+0613   EA66 3A 49 FC    		ld	a,(sekdsk)
+0614   EA69 32 4E FC    		ld	(hstdsk),a
+0615   EA6C 2A 4A FC    		ld	hl,(sektrk)
+0616   EA6F 22 4F FC    		ld	(hsttrk),hl
+0617   EA72 3A 52 FC    		ld	a,(sekhst)
+0618   EA75 32 51 FC    		ld	(hstsec),a
+0619   EA78 3A 5B FC    		ld	a,(rsflag)		;need to read?
+0620   EA7B B7          		or	a
+0621   EA7C C4 44 EB    		call	nz,readhst		;yes, if 1
+0622   EA7F AF          		xor	a		;0 to accum
+0623   EA80 32 54 FC    		ld	(hstwrt),a		;no pending write
+0624   EA83             ;
+0625   EA83             match:
+0626   EA83             		;copy data to or from buffer
+0627   EA83 3A 4C FC    		ld	a,(seksec)		;mask buffer number
+0628   EA86 E6 03       		and	secmsk		;least signif bits
+0629   EA88 6F          		ld	l,a		;ready to shift
+0630   EA89 26 00       		ld	h,0		;double count
+0631   EA8B 29          		add	hl,hl
+0632   EA8C 29          		add	hl,hl
+0633   EA8D 29          		add	hl,hl
+0634   EA8E 29          		add	hl,hl
+0635   EA8F 29          		add	hl,hl
+0636   EA90 29          		add	hl,hl
+0637   EA91 29          		add	hl,hl
+0638   EA92             ;		hl has relative host buffer address
+0639   EA92 11 60 FC    		ld	de,hstbuf
+0640   EA95 19          		add	hl,de		;hl = host address
+0641   EA96 EB          		ex	de,hl			;now in DE
+0642   EA97 2A 5E FC    		ld	hl,(dmaAddr)		;get/put CP/M data
+0643   EA9A 0E 80       		ld	c,128		;length of move
+0644   EA9C 3A 5C FC    		ld	a,(readop)		;which way?
+0645   EA9F B7          		or	a
+0646   EAA0 20 06       		jr	nz,rwmove		;skip if read
+0647   EAA2             ;
+0648   EAA2             ;	write operation, mark and switch direction
+0649   EAA2 3E 01       		ld	a,1
+0650   EAA4 32 54 FC    		ld	(hstwrt),a		;hstwrt = 1
+0651   EAA7 EB          		ex	de,hl			;source/dest swap
+0652   EAA8             ;
+0653   EAA8             rwmove:
+0654   EAA8             		;C initially 128, DE is source, HL is dest
+0655   EAA8 1A          		ld	a,(de)		;source character
+0656   EAA9 13          		inc	de
+0657   EAAA 77          		ld	(hl),a		;to dest
+0658   EAAB 23          		inc	hl
+0659   EAAC 0D          		dec	c		;loop 128 times
+0660   EAAD 20 F9       		jr	nz,rwmove
+0661   EAAF             ;
+0662   EAAF             ;		data has been moved to/from host buffer
+0663   EAAF 3A 5D FC    		ld	a,(wrtype)		;write type
+0664   EAB2 FE 01       		cp	wrdir		;to directory?
+0665   EAB4 3A 5A FC    		ld	a,(erflag)		;in case of errors
+0666   EAB7 C0          		ret	nz			;no further processing
+0667   EAB8             ;
+0668   EAB8             ;		clear host buffer for directory write
+0669   EAB8 B7          		or	a		;errors?
+0670   EAB9 C0          		ret	nz			;skip if so
+0671   EABA AF          		xor	a		;0 to accum
+0672   EABB 32 54 FC    		ld	(hstwrt),a		;buffer written
+0673   EABE CD 6D EB    		call	writehst
+0674   EAC1 3A 5A FC    		ld	a,(erflag)
+0675   EAC4 C9          		ret
+0676   EAC5             
+0677   EAC5             ;------------------------------------------------------------------------------------------------
+0678   EAC5             ;Utility subroutine for 16-bit compare
+0679   EAC5             sektrkcmp:
+0680   EAC5             		;HL = .unatrk or .hsttrk, compare with sektrk
+0681   EAC5 EB          		ex	de,hl
+0682   EAC6 21 4A FC    		ld	hl,sektrk
+0683   EAC9 1A          		ld	a,(de)		;low byte compare
+0684   EACA BE          		cp	(HL)		;same?
+0685   EACB C0          		ret	nz			;return if not
+0686   EACC             ;		low bytes equal, test high 1s
+0687   EACC 13          		inc	de
+0688   EACD 23          		inc	hl
+0689   EACE 1A          		ld	a,(de)
+0690   EACF BE          		cp	(hl)	;sets flags
+0691   EAD0 C9          		ret
+0692   EAD1             
+0693   EAD1             ;================================================================================================
+0694   EAD1             ; Convert track/head/sector into LBA for physical access to the disk
+0695   EAD1             ;================================================================================================
+0696   EAD1             setLBAaddr:	
+0697   EAD1 2A 4F FC    		LD	HL,(hsttrk)
+0698   EAD4 CB 05       		RLC	L
+0699   EAD6 CB 05       		RLC	L
+0700   EAD8 CB 05       		RLC	L
+0701   EADA CB 05       		RLC	L
+0702   EADC CB 05       		RLC	L
+0703   EADE 7D          		LD	A,L
+0704   EADF E6 E0       		AND	0E0H
+0705   EAE1 6F          		LD	L,A
+0706   EAE2 3A 51 FC    		LD	A,(hstsec)
+0707   EAE5 85          		ADD	A,L
+0708   EAE6 32 45 FC    		LD	(lba0),A
+0709   EAE9             
+0710   EAE9 2A 4F FC    		LD	HL,(hsttrk)
+0711   EAEC CB 0D       		RRC	L
+0712   EAEE CB 0D       		RRC	L
+0713   EAF0 CB 0D       		RRC	L
+0714   EAF2 7D          		LD	A,L
+0715   EAF3 E6 1F       		AND	01FH
+0716   EAF5 6F          		LD	L,A
+0717   EAF6 CB 04       		RLC	H
+0718   EAF8 CB 04       		RLC	H
+0719   EAFA CB 04       		RLC	H
+0720   EAFC CB 04       		RLC	H
+0721   EAFE CB 04       		RLC	H
+0722   EB00 7C          		LD	A,H
+0723   EB01 E6 20       		AND	020H
+0724   EB03 67          		LD	H,A
+0725   EB04 3A 4E FC    		LD	A,(hstdsk)
+0726   EB07 CB 07       		RLC	a
+0727   EB09 CB 07       		RLC	a
+0728   EB0B CB 07       		RLC	a
+0729   EB0D CB 07       		RLC	a
+0730   EB0F CB 07       		RLC	a
+0731   EB11 CB 07       		RLC	a
+0732   EB13 E6 C0       		AND	0C0H
+0733   EB15 84          		ADD	A,H
+0734   EB16 85          		ADD	A,L
+0735   EB17 32 46 FC    		LD	(lba1),A
+0736   EB1A             		
+0737   EB1A             
+0738   EB1A 3A 4E FC    		LD	A,(hstdsk)
+0739   EB1D CB 0F       		RRC	A
+0740   EB1F CB 0F       		RRC	A
+0741   EB21 E6 03       		AND	03H
+0742   EB23 32 47 FC    		LD	(lba2),A
+0743   EB26             
+0744   EB26             ; LBA Mode using drive 0 = E0
+0745   EB26 3E E0       		LD	a,0E0H
+0746   EB28 32 48 FC    		LD	(lba3),A
+0747   EB2B             
+0748   EB2B             
+0749   EB2B 3A 45 FC    		LD	A,(lba0)
+0750   EB2E D3 B3       		OUT 	(CF_LBA0),A
+0751   EB30             
+0752   EB30 3A 46 FC    		LD	A,(lba1)
+0753   EB33 D3 B4       		OUT 	(CF_LBA1),A
+0754   EB35             
+0755   EB35 3A 47 FC    		LD	A,(lba2)
+0756   EB38 D3 B5       		OUT 	(CF_LBA2),A
+0757   EB3A             
+0758   EB3A 3A 48 FC    		LD	A,(lba3)
+0759   EB3D D3 B6       		OUT 	(CF_LBA3),A
+0760   EB3F             
+0761   EB3F 3E 01       		LD 	A,1
+0762   EB41 D3 B2       		OUT 	(CF_SECCOUNT),A
+0763   EB43             
+0764   EB43 C9          		RET				
+0765   EB44             
+0766   EB44             ;================================================================================================
+0767   EB44             ; Read physical sector from host
+0768   EB44             ;================================================================================================
+0769   EB44             readhst:
+0770   EB44 F5          		PUSH 	AF
+0771   EB45 C5          		PUSH 	BC
+0772   EB46 E5          		PUSH 	HL
+0773   EB47             
+0774   EB47 CD 96 EB    		CALL 	cfWait
+0775   EB4A             
+0776   EB4A CD D1 EA    		CALL 	setLBAaddr
+0777   EB4D             
+0778   EB4D 3E 20       		LD 	A,CF_READ_SEC
+0779   EB4F D3 B7       		OUT 	(CF_COMMAND),A
+0780   EB51             
+0781   EB51 CD 96 EB    		CALL 	cfWait
+0782   EB54             
+0783   EB54 0E 04       		LD 	c,4
+0784   EB56 21 60 FC    		LD 	HL,hstbuf
+0785   EB59             rd4secs:
+0786   EB59 06 80       		LD 	b,128
+0787   EB5B             rdByte:
+0788   EB5B DB B0       		in 	A,(CF_DATA)
+0789   EB5D 77          		LD 	(HL),A
+0790   EB5E 23          		iNC 	HL
+0791   EB5F 05          		dec 	b
+0792   EB60 20 F9       		JR 	NZ, rdByte
+0793   EB62 0D          		dec 	c
+0794   EB63 20 F4       		JR 	NZ,rd4secs
+0795   EB65             
+0796   EB65 E1          		POP 	HL
+0797   EB66 C1          		POP 	BC
+0798   EB67 F1          		POP 	AF
+0799   EB68             
+0800   EB68 AF          		XOR 	a
+0801   EB69 32 5A FC    		ld	(erflag),a
+0802   EB6C C9          		RET
+0803   EB6D             
+0804   EB6D             ;================================================================================================
+0805   EB6D             ; Write physical sector to host
+0806   EB6D             ;================================================================================================
+0807   EB6D             writehst:
+0808   EB6D F5          		PUSH 	AF
+0809   EB6E C5          		PUSH 	BC
+0810   EB6F E5          		PUSH 	HL
+0811   EB70             
+0812   EB70 CD 96 EB    		CALL 	cfWait
+0813   EB73             
+0814   EB73 CD D1 EA    		CALL 	setLBAaddr
+0815   EB76             
+0816   EB76 3E 30       		LD 	A,CF_WRITE_SEC
+0817   EB78 D3 B7       		OUT 	(CF_COMMAND),A
+0818   EB7A             
+0819   EB7A CD 96 EB    		CALL 	cfWait
+0820   EB7D             
+0821   EB7D 0E 04       		LD 	c,4
+0822   EB7F 21 60 FC    		LD 	HL,hstbuf
+0823   EB82             wr4secs:
+0824   EB82 06 80       		LD 	b,128
+0825   EB84 7E          wrByte:		LD 	A,(HL)
+0826   EB85 D3 B0       		OUT 	(CF_DATA),A
+0827   EB87 23          		iNC 	HL
+0828   EB88 05          		dec 	b
+0829   EB89 20 F9       		JR 	NZ, wrByte
+0830   EB8B             
+0831   EB8B 0D          		dec 	c
+0832   EB8C 20 F4       		JR 	NZ,wr4secs
+0833   EB8E             
+0834   EB8E E1          		POP 	HL
+0835   EB8F C1          		POP 	BC
+0836   EB90 F1          		POP 	AF
+0837   EB91             
+0838   EB91 AF          		XOR 	a
+0839   EB92 32 5A FC    		ld	(erflag),a
+0840   EB95 C9          		RET
+0841   EB96             
+0842   EB96             ;================================================================================================
+0843   EB96             ; Wait for disk to be ready (busy=0,ready=1)
+0844   EB96             ;================================================================================================
+0845   EB96             cfWait:
+0846   EB96 F5          		PUSH 	AF
+0847   EB97             cfWait1:
+0848   EB97 DB B7       		in 	A,(CF_STATUS)
+0849   EB99 E6 80       		AND 	080H
+0850   EB9B FE 80       		cp 	080H
+0851   EB9D 28 F8       		JR	Z,cfWait1
+0852   EB9F F1          		POP 	AF
+0853   EBA0 C9          		RET
+0854   EBA1             
+0855   EBA1             ;================================================================================================
+0856   EBA1             ; Print (on console) a sequence of characters ending with zero
+0857   EBA1             ;================================================================================================
+0858   EBA1             PRINTSEQ:
+0859   EBA1 E3          		EX 	(SP),HL 		; Push HL and put RET address into HL
+0860   EBA2 F5          		PUSH 	AF
+0861   EBA3 C5          		PUSH 	BC
+0862   EBA4             NEXTCHAR:
+0863   EBA4 7E          		LD 	A,(HL)
+0864   EBA5 FE 00       		CP	0
+0865   EBA7 28 07       		JR	Z,ENDOFPRINT
+0866   EBA9 4F          		LD  	C,A
+0867   EBAA CD DA E8    		CALL 	CONOUT		; Print to console
+0868   EBAD 23          		INC 	HL
+0869   EBAE 18 F4       		JR	NEXTCHAR
+0870   EBB0             ENDOFPRINT:
+0871   EBB0 23          		INC 	HL 			; Get past "null" terminator
+0872   EBB1 C1          		POP 	BC
+0873   EBB2 F1          		POP 	AF
+0874   EBB3 E3          		EX 	(SP),HL 		; Push new RET address on stack and restore HL
+0875   EBB4 C9          		RET
+0876   EBB5             
+0877   EBB5             ;================================================================================================
+0878   EBB5             ; Data storage
+0879   EBB5             ;================================================================================================
+0880   EBB5             dirbuf: 	.ds 128 		;scratch directory area
+0881   EC35             alv00: 		.ds 257			;allocation vector 0
+0882   ED36             alv01: 		.ds 257			;allocation vector 1
+0883   EE37             alv02: 		.ds 257			;allocation vector 2
+0884   EF38             alv03: 		.ds 257			;allocation vector 3
+0885   F039             alv04: 		.ds 257			;allocation vector 4
+0886   F13A             alv05: 		.ds 257			;allocation vector 5
+0887   F23B             alv06: 		.ds 257			;allocation vector 6
+0888   F33C             alv07: 		.ds 257			;allocation vector 7
+0889   F43D             alv08: 		.ds 257			;allocation vector 8
+0890   F53E             alv09: 		.ds 257			;allocation vector 9
+0891   F63F             alv10: 		.ds 257			;allocation vector 10
+0892   F740             alv11: 		.ds 257			;allocation vector 11
+0893   F841             alv12: 		.ds 257			;allocation vector 12
+0894   F942             alv13: 		.ds 257			;allocation vector 13
+0895   FA43             alv14: 		.ds 257			;allocation vector 14
+0896   FB44             alv15: 		.ds 257			;allocation vector 15
+0897   FC45             
+0898   FC45 00          lba0		.DB	00h
+0899   FC46 00          lba1		.DB	00h
+0900   FC47 00          lba2		.DB	00h
+0901   FC48 00          lba3		.DB	00h
+0902   FC49             
+0903   FC49             sekdsk:		.ds	1		;seek disk number
+0904   FC4A             sektrk:		.ds	2		;seek track number
+0905   FC4C             seksec:		.ds	2		;seek sector number
+0906   FC4E             ;
+0907   FC4E             hstdsk:		.ds	1		;host disk number
+0908   FC4F             hsttrk:		.ds	2		;host track number
+0909   FC51             hstsec:		.ds	1		;host sector number
+0910   FC52             ;
+0911   FC52             sekhst:		.ds	1		;seek shr secshf
+0912   FC53             hstact:		.ds	1		;host active flag
+0913   FC54             hstwrt:		.ds	1		;host written flag
+0914   FC55             ;
+0915   FC55             unacnt:		.ds	1		;unalloc rec cnt
+0916   FC56             unadsk:		.ds	1		;last unalloc disk
+0917   FC57             unatrk:		.ds	2		;last unalloc track
+0918   FC59             unasec:		.ds	1		;last unalloc sector
+0919   FC5A             ;
+0920   FC5A             erflag:		.ds	1		;error reporting
+0921   FC5B             rsflag:		.ds	1		;read sector flag
+0922   FC5C             readop:		.ds	1		;1 if read operation
+0923   FC5D             wrtype:		.ds	1		;write operation type
+0924   FC5E             dmaAddr:	.ds	2		;last dma address
+0925   FC60             hstbuf:		.ds	512		;host buffer
+0926   FE60             hstBufEnd:	.EQU	$
+0927   FE60             
+0928   FE60             			.DS	020h			; Start of BIOS stack area.
+0929   FE80             BIOSSTACK:	.EQU	$
+0930   FE80             
+0931   FE80             biosEnd:	.EQU	$
+0932   FE80             
+0933   FE80             		.END
 tasm: Number of errors = 0
