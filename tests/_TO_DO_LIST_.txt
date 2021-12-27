@@ -10,6 +10,10 @@
 
 - Design frontal panels in PCB.
 
+- Write system documentation for Proton - Z80MC.
+
+- Write system documentation for Monitor 2.0.
+
 ------------------------------------------------------------------
 Machanical issues:
 - Design the attachments for the slotted card guides.
