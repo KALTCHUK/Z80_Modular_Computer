@@ -1,0 +1,23 @@
+; Delay for x ms, where x is passed by regB.
+;
+; Use:	LD	B,ms
+;		CALL DELAY
+;
+
+KT		EQU		308		; CPU @ 8MHz
+
+DELAY:	PUSH BC
+		PUSH HL
+		
+LOOP0:	LD	HL,KT		
+
+LOOP1:	DEC	HL			; 1ms loop
+		LD	A,L			
+		OR	H			
+		JR	NZ,LOOP1	
+		
+		DJNZ LOOP0		
+		
+		POP HL
+		POP BC
+		RET
