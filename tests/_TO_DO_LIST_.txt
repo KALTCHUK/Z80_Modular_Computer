@@ -10,10 +10,6 @@
 
 - Design frontal panels in PCB.
 
-- Write system documentation for Proton - Z80MC.
-
-- Write system documentation for Monitor 2.0.
-
 ------------------------------------------------------------------
 Machanical issues:
 - Design the attachments for the slotted card guides.
@@ -22,6 +18,6 @@ Machanical issues:
 Some ideas for new cards:
 - VGA and keyboard (FPGA?)
 - LPT - digital I/O for automation (8255)
-- analog I/O for automation
+- analog I/O for automation (4-20mA, RTD, TC?)
 - Real-time clock
 - audio
