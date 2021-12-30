@@ -1,6 +1,6 @@
-; Delay for x ms, where x is passed by regB.
+; Delay for X ms, where X is passed by regB.
 ;
-; Use:	LD	B,ms
+; Use:	LD	B,Xms
 ;		CALL DELAY
 ;
 
