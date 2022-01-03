@@ -1,13 +1,16 @@
+- Write driver for LCD.
+- Write driver manager (drvman).
+
 - Write system documentation for Proton - Z80MC.
 
 - Modify BIOS to perform disc boot and put bootloader on ROM block 2.
 
-- Develop terminal-in-a-box with RPi.
+- Get familiar with RPi
+- Build RP-100.
 
+- Build Proton case.
 - Design Backplane v2 PCB.
-
 - Design upper/lower cover BCB
-
 - Design frontal panels in PCB.
 
 ------------------------------------------------------------------
