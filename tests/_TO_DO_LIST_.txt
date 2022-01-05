@@ -5,7 +5,7 @@
 
 - Write system documentation for Proton - Z80MC.
 
-- Modify BIOS to perform disc boot and put bootloader on ROM block 2.
+- Write UNLBR.PY for unpacking .LBR files on windows.
 
 - Get familiar with RPi
 - Build RP-100.
