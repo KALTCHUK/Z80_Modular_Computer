@@ -1,6 +1,3 @@
-- Write driver for LCD.
-- Write driver manager (drvman).
-
 - Write system documentation for Proton - Z80MC.
 
 - Modify BIOS to perform disc boot and put bootloader on ROM block 2.
@@ -10,17 +7,17 @@
 
 - Build Proton case.
 - Design Backplane v2 PCB.
-- Design upper/lower cover BCB
+- Design upper/lower cover PCB
 - Design frontal panels in PCB.
 
 ------------------------------------------------------------------
 Machanical issues:
-- Design the attachments for the slotted card guides.
+- Design the frames for the case.
 
 ------------------------------------------------------------------
 Some ideas for new cards:
 - VGA and keyboard (FPGA?)
-- LPT - digital I/O for automation (8255)
+- DIO - digital I/O for automation (8255)
 - analog I/O for automation (4-20mA, RTD, TC?)
 - Real-time clock
 - audio
