@@ -1,0 +1,110 @@
+;----------------------------------------------------------
+;
+;TTYTERM.Z80 -	Comunicate with preTTY card (0C0h).
+; 		Emulates a terminal.
+;		
+;----------------------------------------------------------
+
+TPA		EQU	0100H
+
+BIOS		EQU	0E620H
+WBOOT		EQU	BIOS+3
+CONST		EQU	BIOS+6
+CONIN		EQU	BIOS+9
+CONOUT		EQU	BIOS+12
+
+TTY		EQU	0C0H
+DATA		EQU	TTY
+STAT		EQU	TTY+2
+CMD		EQU	TTY+2
+
+CTRLC		EQU	03H
+LF		EQU	0AH
+CR		EQU	0DH
+ESC		EQU	1BH
+;----------------------------------------------------------
+; MAIN PROGRAM
+;----------------------------------------------------------
+		ORG	TPA
+		LD	HL,MYSTACK
+		LD	SP,HL
+
+
+START:		CALL	CLEAR
+		CALL	HOME
+		LD	B,39
+NEXTLINE:	PUSH	BC
+		CALL	PRTLINE
+		POP	BC
+		DJNZ	NEXTLINE
+		LD	A,'0'
+		LD	(COLOR),A
+		CALL	SETCOLOR
+		JP	WBOOT
+
+;----------------------------------------------------------
+; PRTSEQ - PRINT SEQUENCE POINTED BY HL, ENDING WITH 00.
+;----------------------------------------------------------
+PRTSEQ:		LD	A,(HL)
+		CP	0
+		RET	Z
+		LD	C,A
+		CALL	CONOUT
+		INC	HL
+		JR	PRTSEQ
+
+;----------------------------------------------------------
+; CLEAR - CLEAR SCREEN
+;----------------------------------------------------------
+CLEAR:		LD	HL,CLEARSEQ
+		CALL	PRTSEQ
+		RET
+CLEARSEQ	DB	ESC,'[','2','J',0
+
+;----------------------------------------------------------
+; HOME - POSITION CURSOR AT 1,1.
+;----------------------------------------------------------
+HOME:		LD	HL,HOMESEQ
+		CALL	PRTSEQ
+		RET
+HOMESEQ		DB	ESC,'[','1',';','1','H',0
+
+;----------------------------------------------------------
+; SETCOLOR - SET BACKGROUND COLOR.
+;----------------------------------------------------------
+SETCOLOR:	LD	HL,COLORSEQ
+		CALL	PRTSEQ
+		RET
+COLORSEQ	DB	ESC,'[','4'
+COLOR		DB	0
+		DB	'm',0
+
+;----------------------------------------------------------
+; PRTLINE - PRINT FULL LINE WITH PATTERN
+;----------------------------------------------------------
+PRTLINE:	LD	A,'0'
+		LD	(COLOR),A
+NXTCOLOR:	CALL	SETCOLOR
+		LD	B,10
+NXTCHAR:	LD	C,' '
+		CALL	CONOUT
+		DJNZ	NXTCHAR
+		LD	A,(COLOR)
+		INC	A
+		CP	'8'
+		JR	Z,EOL
+		LD	(COLOR),A
+		JR	NXTCOLOR
+
+EOL:		LD	HL,EOLSEQ
+		CALL	PRTSEQ
+		RET
+EOLSEQ		DB	LF,CR,0
+
+;----------------------------------------------------------
+		DS	20H
+MYSTACK		EQU	$
+
+
+		END
+

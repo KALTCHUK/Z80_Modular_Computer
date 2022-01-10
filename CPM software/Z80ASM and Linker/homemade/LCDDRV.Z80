@@ -1,0 +1,137 @@
+   16
+FDELETE         EQU     19
+FREAD           EQU     20
+FWRITE          EQU     21
+FCREATE         EQU     22
+SETDMA          EQU     26
+
+MAXTRY          EQU     10
+FCBCR           EQU     FCB+32
+CLOCK		EQU	10		; clock (MHz)
+KT		EQU	5814*CLOCK
+
+;===========================================================
+; ASCII characters.
+;===========================================================
+SOH             EQU     01H
+ETX             EQU     03H
+EOT             EQU     04H
+ACK             EQU     06H
+LF              EQU     0AH
+CR              EQU     0DH
+NAK             EQU     15H
+CAN             EQU     18H
+
+;===========================================================
+; MAIN PROGRAM STARTS HERE
+;===========================================================
+                ORG     TPA
+
+XMODEM:         LD      (OLDSTACK),SP
+                LD      SP,XMSTACK
+
+		LD	HL,(WBOOTADDR)	; SET ALL BIOS FUNCTS ADDRS
+		LD	(WBOOT+1),HL
+		CALL	INC3XHL
+		LD	(CONST+1),HL
+		CALL	INC3XHL
+		LD	(CONIN+1),HL
+		CALL	INC3XHL
+		LD	(CONOUT+1),HL
+		JR	BFNOK
+		
+INC3XHL:	INC	HL
+		INC	HL
+		INC	HL
+		RET
+
+BFNOK:		LD      A,(FCB+1)       ; CHECK IF ARGUMENTS ARE OK
+                CP      ' '
+                JP      Z,NOFILE
+                LD      A,(FCB2+1)
+                CP      '-'
+                JP      NZ,ARGERR
+                LD      A,(FCB2+2)
+                CP      'R'
+                JP      Z,RECOP
+                CP      'S'
+                JP      Z,SENDOP
+ARGERR:         CALL    PRINTSEQ
+                DB      CR,LF,"INVALID OR MISSING ARGUMENT",CR,LF,CR,LF,0
+HOW2USE:        CALL    PRINTSEQ
+                DB      "XMODEM 1.3 (10MHz build) - by Kaltchuk, 2021.",CR,LF
+                DB      "Use: XMODEM [drive:]file_name -<option>",CR,LF
+                DB      "options:    R to receive file",CR,LF
+                DB      "            S to send file",CR,LF
+		DB	"(Ctrl-X to abort transmission)",CR,LF,0
+EXIT:           LD      SP,(OLDSTACK)
+                RET
+
+NOFILE:         CALL    PRINTSEQ
+                DB      "MISSING FILE NAME",CR,LF,CR,LF,0
+                JP      HOW2USE
+
+;===========================================================
+; RECEIVE OPERATION STARTS HERE
+;===========================================================
+RECOP:          CALL    DELETEFILE
+                CALL    CREATEFILE
+                INC     A
+                JP      NZ,FCREATOK
+                CALL    PRINTSEQ
+                DB      "FILE CREATE ERROR",CR,LF,CR,LF,0
+                JR      EXIT
+
+FCREATOK:       XOR	A
+                LD      (RETRY),A       ; Init retry counter
+                INC     A
+                LD      (BLOCK),A       ; Init block counter
+ALIVE:          CALL	SENDNAK
+GET1ST:         LD      B,5
+                CALL 	TOCONIN         ; 5s timeout
+                JR      C,REPEAT        ; Timed out?
+                CP      EOT
+                JR      Z,GOTEOT        ; EOT? WRAP IT UP
+                CP      CAN
+                JR      Z,EXIT          ; CAN? EXIT
+                CP      SOH
+                JR      Z,GOTSOH        ; SOH? GET NEXT BLOCK
+                JR      GET1ST
+
+REPEAT:         LD      A,(RETRY)
+                INC     A
+                LD      (RETRY),A
+                CP      MAXTRY
+                JR      NZ,ALIVE        ; Try again?
+                CALL 	SENDCAN
+                JR      EXIT
+
+GOTEOT:         CALL 	SENDNAK
+                LD      B,1
+                CALL 	TOCONIN
+                CALL 	SENDACK
+                CALL    PRINTSEQ
+                DB      "FILE RECEIVED",CR,LF,0
+                CALL    CLOSEFILE       ; CLOSE THE FILE
+                INC     A
+                JR      Z,CLOSERR
+                JP      EXIT
+
+CLOSERR:        CALL    PRINTSEQ
+                DB      "FILE CLOSE ERROR",CR,LF,0
+                JP      EXIT
+
+GOTSOH:         LD      B,131
+                LD      HL,BUFFER
+GETBYTE:        PUSH    BC
+                LD      B,1
+                CALL 	CONIN         ; Get incoming block number
+;                JP      C,EXIT           Timed out?
+                LD      (HL),A          ; STORE BYTE IN BUFFER
+                INC     HL
+                POP     BC
+                DJNZ    GETBYTE
+                LD      HL,BUFFER
+                LD      A,(HL)          ; PICK RECEIVED BLOCK NUMBER
+                LD      B,A
+ 
