@@ -2,7 +2,7 @@ import sys
 import string
 
 def ShowUse():
-    print("LBR v1.0 Library file extractor.")
+    print("LBR v1.0 - A very primitive LBR file extractor.")
     print("Commands:")
     print("   O <library>  open library (.LBR implicit)")
     print("   L            list files")
@@ -37,7 +37,7 @@ while True:
                 for i in range(9,12):
                     ext = ext + chr(record[i])
                 full_name = name.rstrip(" ") + "." + ext.rstrip(" ") 
-                print(x, full_name)
+                print(x, full_name, size, " records.")
 
     if command[0] == "x" or command[0] == "X":
         fp.seek(0)
