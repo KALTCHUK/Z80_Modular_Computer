@@ -27,9 +27,9 @@ Ashdod, october 2021.
 
 ## About the final product. ##
 
-Is it perfect? No.
-Is it state of the art? No
-Does I meet the initial goal? Yes.
+Is it perfect? No. 
+Is it state of the art? No. 
+Does I meet the initial goal? Yes. 
 Am I happy with it? For sure!
 
 ## Github directories ##
