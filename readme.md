@@ -32,9 +32,10 @@ Well, if you want to build your own Proton Z80 Modular Computer, you'll need to 
 
 1) Order the PCBs. You can order from PCBway with the codes in the Proton Manual.
 2) Buy the components according to the bill of materials in the Proton Manual.
-3) Download the software from Github.
-4) Burn the EEPROM.
-5) Configure the jumpers on the cards according to instructions in the Proton Manual.
+3) Assemble the cards.
+4) Download the software from Github.
+5) Burn the EEPROM.
+6) Configure the jumpers on the cards according to instructions in the Proton Manual.
 
 Ready to start! Now you can transfer all the CP/M software from your computer to the Proton.
 
