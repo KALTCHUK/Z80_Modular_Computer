@@ -1,7 +1,6 @@
 ;----------------------------------------------------------
 ;
-;TTYTERM.Z80 -	Comunicate with preTTY card (0C0h).
-; 		Emulates a terminal.
+;SCREEN.Z80 -	Print colored bar pattern.
 ;		
 ;----------------------------------------------------------
 
