@@ -1,8 +1,8 @@
-Proton - Z80 Modular Computer
+#Proton - Z80 Modular Computer#
 
-License *** terms under construction ***
+##License *** terms under construction ***##
 
-Overview
+##Overview##
 
 The content of this repo is a small portion of the knowledge of two years developing the Proton Z80 Modular Computer. Most of the information and results are in my logbook - a notebook (paper, not a computer), where I write everything before executing. During this period, I was the system engineer, hardware engineer, software engineer and project manager. why did it take me so long to complete this project? Because it's a weekend hobby and also because sometimes I had to wait many weeks to receive some components and PCBs.  
 
