@@ -15,7 +15,7 @@ Of course I couldn't avoid thinking about this "new project" with my Systems Eng
 
 After some research I decided to design the hardware fully compatible with CP/M 2.2.
 
-One and a half years after I finally had my wire wrapped computer running CP/M. I could write programs using WordStar and compile them with a BDS C compiler or Microsoft Basic compiler. It was fun, exciting and challenging. After that, I decided it was time to turn the prototype into a finished product.
+One and a half years after I finally had my wire wrapped computer running CP/M. I could write programs using WordStar and compile them with a BDS C compiler, Microsoft Basic compiler or SLR Z80 assempler. It was fun, exciting and challenging. After that, I decided it was time to turn the prototype into a finished product.
 
 It's gratifying to see that in two years, alone, I was able to transform an idea into a commercial product.
 
@@ -38,13 +38,13 @@ All directory names are self-explaining and you'll find a readme file inside eac
 
 ## What's most important ##
 
-Well, if you want to build your own Proton Z80 Modular Computer, you'll need to check these directories:
+Well, if you want to build your own Proton Z80 Modular Computer, you'll need to check at lest these directories:
 
-- CPM build
-- CPM software
-- KiCAD files
+- CPM build,
+- CPM software,
+- KiCAD files,
 - Monitor build
-- System manuals (Proton and Monitor)
+- System manuals (Proton and Monitor) and
 - pics
 
 ## You want your own Proton? So follow these steps: ##
@@ -58,4 +58,4 @@ Well, if you want to build your own Proton Z80 Modular Computer, you'll need to 
 
 Ready to start! Now you can transfer all the CP/M software from your computer to the Proton.
 
-Inside the Proton Manual there's a section called "Getting Started" which describes in details all the steps listed above. I suggest you read ALL the manual before starting.
+In the Proton Manual there's a section called "Getting Started" which describes in details all the steps listed above. I suggest you read ALL the manual before starting.
