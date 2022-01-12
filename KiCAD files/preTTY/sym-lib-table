@@ -1,3 +1,0 @@
-(sym_lib_table
-  (lib (name preTTY-rescue)(type Legacy)(uri ${KIPRJMOD}/preTTY-rescue.lib)(options "")(descr ""))
-)
