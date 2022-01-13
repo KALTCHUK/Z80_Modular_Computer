@@ -1,0 +1,4 @@
+## What you'll find in this directory ##
+During the development of the Proton I write a few programs in Python. Most of the were pure crap. The only thing worthwhile keeping was LBR.PY.
+
+When I want to send several files to use in CP/M, I pack the files with PKZIP (in Windows), send the zipped file with XMODEM and unpack them with UNZIP. But it doesn't work in the other direction, because I didn't find any equivalent to PKZIP for CP/M. So there are two options: a) send all files one by one, or b) pack the files in CP/M with NULU.COM, which generates a .LBR file, transmit the packed file with XMODEM and open the .LBR file in Windows. But, as you may expect, I didn't find any program in DOS/Windows that deals with .LBR files. So I created LBR.PY.
