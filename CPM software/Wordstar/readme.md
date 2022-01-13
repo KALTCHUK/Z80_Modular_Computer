@@ -1,2 +1,2 @@
 ## What you'll find in this directory ##
-WordStar, an impressive word processor from MicroPro Internation Corporation. WSU.COM is the uncongigured version of WordStar. WS.COM is configured version for use with VT-100 terminal, 40x80.
+WordStar, an impressive word processor from MicroPro Internation Corporation. WSU.COM is the unconfigured version of WordStar. WS.COM is the version I configured for use with VT-100 terminal, 40x80.
