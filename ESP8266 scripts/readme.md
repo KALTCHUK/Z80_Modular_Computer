@@ -1,0 +1,2 @@
+## What you'll find in this directory ##
+When I was almost finishing the Proton prototype I has this idea to use and ESP8266 connected to one of the serial ports of the TTY Card and access the Proton via telnet. I didn't complete the idea, but some of the experiences are here.
