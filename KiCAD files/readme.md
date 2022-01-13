@@ -1,0 +1,2 @@
+## What you'll find in this directory ##
+Each subdirectory contains the KiCAD files for a specific Proton card. (Except /AVRips 328p adapter, /EProg, /generic grid and /stickers). They all contain the circuit diagram. Most of them also have the PCB layout and some even have the Gerber files I sent to the PCB manufacturer (PCBway).
