@@ -5,4 +5,4 @@ The important thing here is the directory called "preTTY". (It's called preTTY b
 
 Before beginning the Proton project I already had a good experience using Arduino. But, for the TTY Card, I couldn't simply plug an Arduind board and that's it. So I used only the Arduino's microcontroller "bareback", with no bootloader, running at 20MHz.
 
-Yeah, yeah, I know, I'm using sequencial logic to implement combinational tasks. How cares? It was challenging and I did it.
+Yeah, yeah, I know, I'm using sequencial logic to implement combinational tasks. Who cares? It was challenging and I did it.
