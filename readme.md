@@ -15,7 +15,7 @@ Of course I couldn't avoid thinking about this "new project" with my Systems Eng
 
 After some research I decided to design the hardware fully compatible with CP/M 2.2.
 
-One and a half years after I finally had my wire wrapped computer running CP/M. I could write programs using WordStar and compile them with BDS C compiler, Microsoft Basic compiler or SLR Z80 macro assembler. It was fun, exciting and challenging. After that, I decided it was time to turn the prototype into a finished product.
+One and a half years after, I finally had my wire wrapped computer running CP/M. I could write programs using WordStar and compile them with BDS C compiler, Microsoft Basic compiler or SLR Z80 macro assembler. It was fun, exciting and challenging. After that, I decided it was time to turn the prototype into a finished product.
 
 It's gratifying to see that in two years, alone, I was able to transform an idea into a commercial product.
 
