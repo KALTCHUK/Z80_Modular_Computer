@@ -5,6 +5,9 @@
 ;		v1.1 - modifies baudrate range.
 ;               v1.2 - corrects a small bug showing selected
 ;		       baudrate before changing it.
+;
+;  ********* There's a newer version written in C *********
+;
 ;----------------------------------------------------------
 
 TPA		EQU	0100H
@@ -105,4 +108,4 @@ WMSG		DB	"Invalid option",CR,LF,0
 		DS	020H
 MYSTACK		EQU	$
 
-		END
+		END
