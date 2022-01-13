@@ -13,4 +13,4 @@ For all of them, you'll find three kinds of files:
 2) .LST, the list result after compiling.
 3) .OBJ, the HEX (Intel format) result after compiling.
 
-So you have to put romboot.obj, kcpm221.obj and kbios2_0.obj on the EEPROM. How? Read the "Getting Started" section on the Proton Manual.
+So you have to put romboot.obj, kcpm221.obj and kbios2_0.obj on the EEPROM. How? Read the "Getting Started" section in the Proton Manual. Be aware that the destination addresses are not the same seen in the HEX files. Depending on which ROM block will be used to boot, a displacement must be added.
