@@ -15,15 +15,15 @@ Of course I couldn't avoid thinking about this "new project" with my Systems Eng
 
 After some research I decided to design the hardware fully compatible with CP/M 2.2.
 
-One and a half years after, I finally had my wire wrapped computer running CP/M. I could write programs using WordStar and compile them with BDS C compiler, Microsoft Basic compiler or SLR Z80 macro assembler. It was fun, exciting and challenging. After that, I decided it was time to turn the prototype into a finished product.
+One and a half years later, I finally had my wire wrapped computer running CP/M. I could write programs using WordStar and compile them with BDS C compiler, Microsoft Basic compiler or SLR Z80 macro assembler. It was fun, exciting and challenging. After that, I decided it was time to turn the prototype into a finished product.
 
 It's gratifying to see that in two years, alone, I was able to transform an idea into a commercial product.
 
-The content of this repo is a small portion of the knowledge gathered during these two years developing the Proton Z80 Modular Computer. Most of the information and results are in my logbook - a notebook (paper, not a computer), where I write everything before executing. During this period, I was the system engineer, hardware engineer, software engineer and project manager. why did it take me so long to complete this project? Because it's a weekend hobby and also because sometimes I had to wait many weeks to receive some components and PCBs.  
+The content of this repo is a small portion of the knowledge gathered during these two years developing the Proton Z80 Modular Computer. Most of the information and results are in my logbook - a notebook (paper, not a computer), where I write everything before executing. During this period, I was the system engineer, hardware engineer, software engineer and project manager. Why did it take me so long to complete this project? Because it's a weekend hobby and also because sometimes I had to wait many weeks to receive some components and PCBs.  
 
 Ricardo Kaltchuk
 
-Ashdod, october 2021.
+Ashdod - IL, october 2021.
 
 ## About the final product. ##
 
