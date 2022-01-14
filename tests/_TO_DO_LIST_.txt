@@ -1,11 +1,9 @@
+- Write Proton Manual.
+
 - Build Proton case.
 - Design Backplane v2 PCB.
 - Design upper/lower cover PCB
 - Design frontal panels in PCB.
-
-------------------------------------------------------------------
-Machanical issues:
-- Design the frames for the case.
 
 ------------------------------------------------------------------
 Some ideas for new cards:
@@ -13,4 +11,4 @@ Some ideas for new cards:
 - DIO - digital I/O for automation (8255)
 - analog I/O for automation (4-20mA, RTD, TC?)
 - Real-time clock
-- audio
+- audio card for .WAV play
