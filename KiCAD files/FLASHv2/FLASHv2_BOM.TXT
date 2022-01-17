@@ -1,0 +1,15 @@
+REFERENCE	VALUE		DESCRIPTION								QTY
+-----------------------------------------------------------------------------------------------------------
+    C1	10uF		Capacitor_THT:CP_Radial_D5.0mm_P2.50mm						1
+  C2-C6	10nF		Capacitor_THT:C_Disc_D3.8mm_W2.6mm_P2.50mm					5
+    J1	card addr	Connector_PinHeader_2.54mm:PinHeader_2x04_P2.54mm_Vertical			1
+    J2	Power Bus	Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_90_deg_female			1
+    J3	Signal Bus	Connector_PinHeader_2.54mm:PinHeader_2x20_P2.54mm_90_deg_female			1
+    J4	IDE connector	Connector_PinHeader_2.00mm:PinHeader_2x22_P2.00mm_90_deg_female +		1
+			IDE 44 Pin Male to CF Compact Flash Male Adapter Connector +
+			Compact Flash 128MB
+    R6	1k		Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal			1
+    RN1	4x10k		Resistor_THT:R_Array_SIP5							1
+    U1	74LS04		Package_DIP:DIP-14_W7.62mm_Socket_LongPads + 14 pin DIP socket			1
+    U2	74LS85		Package_DIP:DIP-16_W7.62mm_Socket_LongPads + 16 pin DIP socket			1
+  U3, U4		74LS245	Package_DIP:DIP-20_W7.62mm_Socket_LongPads +20 pin DIP socket		2

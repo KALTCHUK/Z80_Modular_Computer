@@ -1,0 +1,9 @@
+    J1	Power Bus	Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_Vertical	~	1
+    J2	Signal Bus	Connector_PinHeader_2.54mm:PinHeader_2x20_P2.54mm_Vertical	~	1
+    J3	Power	Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical	~	1
+    J4	ADDR LO	Connector_PinHeader_2.54mm:PinHeader_1x08_P2.54mm_Vertical	~	1
+    J5	ADDR HI	Connector_PinHeader_2.54mm:PinHeader_1x08_P2.54mm_Vertical	~	1
+    J6	DATA	Connector_PinHeader_2.54mm:PinHeader_1x08_P2.54mm_Vertical	~	1
+    J7	BUS CTRL	Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical	~	1
+    J8	TIME CTRL	Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical	~	1
+    J9	AUX SIGNAL	Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical	~	1

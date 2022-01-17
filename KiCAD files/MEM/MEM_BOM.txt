@@ -1,0 +1,20 @@
+REFERENCE	VALUE		DESCRIPTION								QTY
+-----------------------------------------------------------------------------------------------------------
+    C1		10uF		Capacitor_THT:CP_Radial_D5.0mm_P2.50mm					1
+  C2-C8		10nF		Capacitor_THT:C_Disc_D3.8mm_W2.6mm_P2.50mm				7
+  D1-D4		LED		LED_THT:LED_D3.0mm (2 x green, 2 x blue)				4
+    J1		card addr	Connector_PinHeader_2.54mm:PinHeader_2x04_P2.54mm_Vertical		1
+    J2		Power Bus	Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_90_deg_female		1
+    J3		Signal Bus	Connector_PinHeader_2.54mm:PinHeader_2x20_P2.54mm_90_deg_female		1
+    J4		RAM bank	Connector_PinHeader_2.54mm:PinHeader_2x03_P2.54mm_Vertical		1
+    J5		ROM block	Connector_PinHeader_2.54mm:PinHeader_2x02_P2.54mm_Vertical		1
+  R1, R2	10k		Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal		2
+    RN1		4x10k		Resistor_THT:R_Array_SIP5						1
+    RN2		4x220		Resistor_THT:R_Array_SIP5						1
+    U1		74LS139		Package_DIP:DIP-16_W7.62mm_Socket_LongPads				1
+    U2		74LS04		Package_DIP:DIP-14_W7.62mm_Socket_LongPads				1
+    U3		74LS74		Package_DIP:DIP-14_W7.62mm_Socket_LongPads				1
+    U4		74LS85		Package_DIP:DIP-16_W7.62mm_Socket_LongPads				1
+    U5		SN74LS07N	Package_DIP:DIP-14_W7.62mm_Socket_LongPads				1
+    U6		628128		Package_DIP:DIP-32_W15.24mm_Socket_LongPads				1
+    U7		W27C512		Socket:DIP_Socket-28_W11.9_W12.7_W15.24_W17.78_W18.5_3M_228		1
