@@ -7,6 +7,8 @@ Here is all you need to put on the EEPROM to boot and run CP/M. We have:
 
 There are also some older versions of kbios and kcpm that I kept just for documentation reasons.
 
+Special thanks to Grant Searle for is magnificent work on the BIOS, specially the disk functions, which I used as a starting point for my KBIOS.
+
 For all of them, you'll find three kinds of files:
 
 1) .ASM, the source file with syntax for TASM Z80 compiler.
