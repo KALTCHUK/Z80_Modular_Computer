@@ -1,7 +1,7 @@
 # Proton - Z80 Modular Computer #
 
 ## Licence ##
-This project is made public under the terms of the strongly-reciprocal variant of the CERN Open Hardware Licence version 2.
+This project is made public under the terms of the strongly-reciprocal variant of the CERN Open Hardware Licence version 2. By using any part of this project you abide to this licence.
 
 ## Overview ##
 Two years ago I was searching for some ICs in my component drawers and came across a Z80 CPU and an Intel 8251 USART. I had an instant flashback and remembered my first contact with a microprocessor back in 1982. It was a Z80. After a few minutes of nostalgia I decided to make good use of these components and build a computer. 
