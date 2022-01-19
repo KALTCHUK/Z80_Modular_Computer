@@ -1,9 +1,7 @@
 - Write Proton Manual.
 
 - Build Proton case.
-- Design Backplane v2 PCB.
-- Design Protoboard v2 PCB.
-- Design Extension PCB.
+
 - Design Backplane v2 PCB.
 - Design frontal panels in PCB.
 
