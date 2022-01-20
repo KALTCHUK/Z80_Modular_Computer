@@ -3,7 +3,6 @@
 - Build Proton case.
 
 - Design Backplane v2 PCB.
-- Design frontal panels in PCB.
 
 ------------------------------------------------------------------
 Some ideas for new cards:
