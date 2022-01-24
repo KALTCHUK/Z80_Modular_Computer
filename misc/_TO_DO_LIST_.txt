@@ -2,7 +2,7 @@
 
 - Build Proton case.
 
-- Design Backplane v2 PCB.
+- Review and order Backplane v2, Protoboard v2 and Front panel PCBs.
 
 ------------------------------------------------------------------
 Some ideas for new cards:
