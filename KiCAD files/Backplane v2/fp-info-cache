@@ -1,4 +1,4 @@
-16301030725222435
+16305926660931298
 Battery
 BatteryHolder_Bulgin_BX0036_1xC
 Bulgin Battery Holder, BX0036, Battery Type C (https://www.bulgin.com/products/pub/media/bulgin/data/Battery_holders.pdf)
@@ -50413,6 +50413,27 @@ mounting hole 8.4mm m8
 0
 9
 1
+MyStuff
+Converter_ACDC_5V_10W_XPJ-01B
+
+
+0
+8
+4
+MyStuff
+FuseHolder_Cylinder-27x8.5mm_Horizontal
+
+
+0
+2
+2
+MyStuff
+Relay_SPDT_Songel-15x19mm
+
+
+0
+5
+5
 NetTie
 NetTie-2_SMD_Pad0.5mm
 Net tie, 2 pin, 0.5mm square SMD pads

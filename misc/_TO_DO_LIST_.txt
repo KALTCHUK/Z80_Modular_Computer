@@ -1,13 +1,12 @@
 - Write Proton Manual.
 
-- Build Proton case.
-
-- Review and order Backplane v2, Protoboard v2 and Front panel PCBs.
+- Design top-bottom panel PCB.
+- Design lateral panel PCB.
 
 ------------------------------------------------------------------
 Some ideas for new cards:
-- VGA and keyboard (FPGA?)
 - DIO - digital I/O for automation (8255)
 - analog I/O for automation (4-20mA, RTD, TC?)
 - Real-time clock
 - audio card for .WAV play
+- VGA and keyboard (FPGA?)
