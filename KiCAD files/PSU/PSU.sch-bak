@@ -51,7 +51,7 @@ Text Notes 3800 2900 2    50   ~ 0
 External\nPower on
 Text Notes 3800 3300 2    50   ~ 0
 Power on\nSwitch
-Text Notes 3850 4500 2    50   ~ 0
+Text Notes 3850 4400 2    50   ~ 0
 220Vac\n\nLine\nNeutral
 Wire Wire Line
 	5200 3950 5200 4200
@@ -243,10 +243,10 @@ $EndComp
 Wire Wire Line
 	5650 4200 5200 4200
 $Comp
-L Connector_Generic:Conn_01x02 J?
+L Connector_Generic:Conn_01x02 J3
 U 1 1 61F19FC2
 P 3950 4300
-F 0 "J?" H 3868 4517 50  0000 C CNN
+F 0 "J3" H 3868 4517 50  0000 C CNN
 F 1 "Mains" H 3868 4426 50  0000 C CNN
 F 2 "" H 3950 4300 50  0001 C CNN
 F 3 "~" H 3950 4300 50  0001 C CNN

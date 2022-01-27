@@ -1,7 +1,9 @@
 - Write Proton Manual.
 
 - Design top-bottom panel PCB.
-- Design lateral panel PCB.
+- Modify PSU PCB.
+
+- Study Forth.
 
 ------------------------------------------------------------------
 Some ideas for new cards:
