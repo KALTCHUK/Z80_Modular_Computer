@@ -1,0 +1,246 @@
+
+                    Getting Started with F83
+
+                         by Greg McCall
+
+
+  The  documentation  with  F83 is in F83.COM and in  the  shadow 
+screens that are part of the source files that come with F83.  At 
+a glance, the thought of sifting through hundreds of kilobytes of 
+shadow screens is bewildering to say the least.  Just to get  you 
+started,  I  have  put together a summary of how to use the  file 
+words  and how to edit these files.  This relates to the  CP/M-80 
+version  of  F83,  but as far as I know it should be  similar  to 
+other versions of Laxen and Perry's F83.
+
+ This Forth can have two files open at once.  One file is  called 
+the  CURRENT file.  This is the file used by all normal reads and 
+writes.  You  would normally edit or load from the CURRENT  file. 
+The other file is called the FROM file. This is a second file you 
+may have open for reading only. For example, if you are currently 
+working on a file (i.e.,  loading and editing),  and you wish  to 
+load  some  screens from another file,  then you may open a  FROM 
+file and load screens from it without changing the CURRENT  file. 
+Following is a description of some useful file words:
+
+CREATE-FILE    (S n -- )
+               Creates a new file containing n blocks. 10 CREATE-
+               FILE  TEST.BLK  opens a file called  test.blk  and 
+               writes ten blank screens to this file. The file is 
+               then closed.
+
+FILE?          Prints the name of the CURRENT file.
+
+DIR            Prints the directory of the current drive.
+
+OPEN           Open  the  following  file name and  make  it  the  
+               current file, e.g., OPEN TEST.BLK
+
+FROM           Make  the  next word in the input stream the  FROM 
+               file and OPEN it. It then sets the current vocabu-
+               lary to FILES.
+
+LOAD           In  the FORTH vocabulary,  LOAD will load  screens 
+               from  the CURRENT file.  In the FILES  vocabulary, 
+               LOAD  will  load screens from the  FROM  file.  So 
+               while we have a file as the CURRENT file,  we  can 
+               still open another file by making this second file 
+               the  FROM  file and loading from  it,  e.g.,  FROM 
+               TEST.BLK 10 LOAD
+
+CA             Copy a screen to its shadow.
+
+COPY           (S from to -- )
+               In  the FORTH vocabulary,  copies a screen in  the 
+               CURRENT file.  In the FILES vocabulary,  copies  a 
+               screen from the FROM file to the CURRENT file.  In 
+               the  SHADOW  vocabulary,  copies a screen and  its 
+               shadow in the CURRENT file.
+
+CONVEY         (S from to -- )
+               In the FORTH vocabulary,  copies a set of  screens 
+               in  the  CURRENT file.  In the  FILES  vocabulary, 
+               copies  a set of screens from the FROM file to the 
+               CURRENT file.  In the SHADOW vocabulary,  copies a 
+               set  of screens and their shadows in  the  CURRENT 
+               file.
+
+HOPPED         A  variable  containing the number of  screens  to 
+               skip when copying with CONVEY.
+
+U/D            A  variable containing the direction of the screen 
+               move using CONVEY. +1 is a forward screen move and 
+               -1 is a backward screen move.
+
+TO             Sets  up  the variables HOPPED and  U/D.  Used  as 
+               first-source   last-source  TO   first-destination 
+               CONVEY
+
+  The  F83  editor uses the same words as the editor in  Starting 
+Forth  by Leo Brodie,  with some additions such as the  word  NEW 
+which  allows  replacement of multiple lines.  To get the  editor 
+going  correctly,  you  should look at screens 28 - 30 and  88 of 
+ULITITY.BLK  which hold the terminal-dependent routines.  You can 
+select your terminal - or see if any of the routines are the same 
+as  those  of  your terminal - or write  your  own  routines. The 
+terminal words patch the words AT,  DARK,  BLOT and -LINE to suit 
+your terminal.  While we are looking at patching the editor,  you 
+could  remove  the  backslash in line 14 of  screen  24  so  that 
+(WHERE) is patched into WHERE and, if you have a real-time clock, 
+then  you  could change GET-ID in screen 23 so as to have  the ID 
+supplied  when the editor is first invoked.  These screen numbers 
+refer  to  the CP/M-80 version of F83.  To find where  the source 
+screens  are  for the editor in your Forth,  type VIEW  AT  which 
+should give you the second source screen of your editor. Now just 
+look through the editor's screens for the required words.
+
+  A summary of the editor commands follows:
+
+TOP            Go to the top of the screen.
+
+C              (S n -- )
+               Move n characters, right or left.
+
+T              (S n -- )
+               Go to beginning of line n.
+
+.BUFS          Displays  the  contents  of the  insert  and  find 
+               buffers.
+
+KEEP           Places the current line in the insert buffer.
+
+K              Exchanges  the  contents of the  insert  and  find 
+               buffers.
+
+W              Write all changes to disk.
+
+N              Move to next screen.
+
+B              Move back a screen.
+
+A              Alternate between a screen and its shadow.
+
+<text>         Represents  the  text following  the  command.  If 
+               <text> is just a carriage return,  the contents of 
+               the  insert buffer is used in place of the missing 
+               <text>.
+
+I <text>       Inserts <text> on the current line at the cursor.
+
+O <text>       Overwrites <text> onto the current line.
+
+P <text>       Replaces the current line with <text> and blanks.
+
+U <text>       Inserts a line under the current line.
+
+F <text>       Finds  the <text> and leaves the cursor just  pass 
+               it.
+
+S <text>       (S n -- )
+               Searches  for <text> through all screens from  the 
+               current one up to screen n.  Each time a match  is 
+               found,  n  remains on the stack until screen n  is 
+               reached. To continue the search, just type S until 
+               screen n is reached.
+
+R <text>       Replaces the text just found with <text>.
+
+D <text>       Finds and deletes the text.
+
+TILL <text>    Deletes all text on the line from the cursor up to 
+               and including <text>.
+
+JUST <text>    Deletes up to, but not including, <text>.
+
+KT <text>      Puts all text between the cursor and <text> inclu-
+               sive into the insert buffer ("keep-till").
+
+E              Erases the text just found with by F or S.
+
+X              Deletes the current line.
+
+SPLIT          Breaks the current line in two at the cursor.
+
+JOIN           Puts a copy of the next line after the cursor.
+
+WIPE           Clears the screen to blanks.
+
+G              (S screen line -- )
+               Gets  a line from another screen and inserts it in 
+               front of the current line.  In the shadow  vocabu-
+               lary,  G gets a line and its shadow . In the FILES 
+               vocabulary, G gets the line from the FROM file.
+
+BRING          (S screen first last -- )
+               Brings  several  lines  from  another  screen  and 
+               inserts them in front of the current line.  In the 
+               SHADOW vocabulary, BRING gets a range of lines and 
+               their shadows. In the FILES vocabulary, BRING gets 
+               the lines from the FROM file.
+
+NEW            (S n -- )
+               Moves the terminal's cursor to the start of line n 
+               and  overwrites  until the line has a null  input, 
+               i.e., just a carriage return.
+
+QUIT           Exits the editor without updating or flushing.
+
+DONE           Exits the editor,  updates the ID stamp, tells you 
+               if the screen was modified, flushes it to disk and 
+               removes automatic redisplay.
+
+ED             Re-enters the editor.  It clears and reinitialises 
+               the display, and begins automatic redisplay of the 
+               screen.
+
+EDIT           (S n -- )
+               Sets SCR to n, then uses ED to start the editing.
+
+
+  This  should enable you to copy and edit screens with Laxen and 
+Perry's F83. The best way to get the entire documentation on this 
+Forth  is by printing out all the source files.  If your  printer 
+can  print at least 132 characters per line,  then look  in  your 
+printer's manual for the characters needed to put your printer in 
+this mode. My FAX-80 needs a control-O to set the condensed mode.
+I  define  a word FAX-80 to send this code and then patch it into 
+the DEFERed word INIT-PR, i.e.,:
+
+: FAX-80  CONTROL O  EMIT  ;
+' FAX-80 IS INIT-PR
+
+  To  print  the  entire file,  you use  the  word  LISTING.  For 
+example, to list META80.BLK, I would type:
+
+OPEN META80.BLK LISTING
+
+
+                           -----------
+
+The  above text was taken from the article 'Getting Started  with 
+F83' by Greg McCall and published in volume 8, number 4 of 'Forth 
+Dimensions', the journal of the Forth Interest Group.
+
+Unless noted otherwise,  material published by the Forth Interest 
+Group  is in the public domain.  Such material may be  reproduced 
+with credit given to the author and to the Forth Interest Group.
+
+                      FORTH INTEREST GROUP
+                          P.O. Box 8231
+                       San Jose, CA  95155
+                              U.S.A
+
+                           -----------
+
+F83 is a public domain forth system by Henry Laxen and Mike Perry 
+and  conforms  to the FORTH 83 STANDARD.  The source  and  object 
+files for  F83 are available from the SIG/M and PC-BLUE  software 
+catalogs.
+
+          CP/M 80 version     -     SIG/M   volume 204
+          MC68000 version     -     SIG/M   volume 205
+          IBM PC  version     -     PC-BLUE volume 082
+
+                           -----------
+text was taken from the article 'Getting Started  with 
+F83' by Greg McC
