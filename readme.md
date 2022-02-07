@@ -35,7 +35,7 @@ Am I happy with it? For sure!
 
 ## Github directories ##
 
-All directory names are self-explaining and you'll find a readme file inside each one with some additional info.
+All directory names are self-explanatory and you'll find a readme file inside each one with some additional info.
 
 ## What's most important ##
 
@@ -50,7 +50,7 @@ Well, if you want to build your own Proton Z80 Modular Computer, you'll need to 
 
 ## You want your own Proton? So follow these steps: ##
 
-1) Order the PCBs. You can order from PCBway with the codes in the Proton Manual.
+1) Order the PCBs. You can order from PCBway and JLC PCB with the codes in the Proton Manual.
 2) Buy the components according to the bill of materials in the Proton Manual.
 3) Assemble the cards.
 4) Download the software from Github.
@@ -60,4 +60,4 @@ Well, if you want to build your own Proton Z80 Modular Computer, you'll need to 
 
 Ready to start! Now you can transfer all the CP/M software from your computer to the Proton.
 
-In the Proton Manual there's a section called "Getting Started" which describes in details all the steps listed above. I suggest you read ALL the manual before starting.
+In the Proton User's Manual there's a section called "Building Procedure" which describes in details all the steps listed above. I suggest you read ALL the manual before starting.
