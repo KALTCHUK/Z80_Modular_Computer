@@ -35,7 +35,7 @@ Am I happy with it? For sure!
 
 ## Github directories ##
 
-All directory names are self-explaining and you'll find a readme file inside each one with some additional info.
+All directory names are self-explanatory and you'll find a readme file inside each one with some additional info.
 
 ## What's most important ##
 
