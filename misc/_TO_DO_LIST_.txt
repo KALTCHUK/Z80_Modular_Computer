@@ -1,8 +1,14 @@
 - Write Proton Manual.
 
-- Design top-bottom panel PCB.
-- Design lateral panel PCB.
-- Modify PSU PCB.
+- Study Linux.
+
+- Build RP-100.
+
+- Finish rack assembly.
+
+- Modify and build PSU PCB.
+
+- Design AT89C4051 programmer.
 
 - Study Forth.
 
