@@ -1,12 +1,12 @@
-- Write Proton Manual.
+- Write Proton Manual. (BOM, front panel, building procedure). waiting for PCBs and CF.
 
 - Study Linux.
 
-- Build RP-100.
+- Build RP-100. waiting for IC
 
-- Finish rack assembly.
+- Finish rack assembly. waiting for PCBs and connectors
 
-- Modify and build PSU PCB.
+- Modify and build PSU PCB. waiting for AC socket
 
 - Design AT89C4051 programmer.
 
