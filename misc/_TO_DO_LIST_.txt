@@ -1,10 +1,10 @@
-- Write Proton Manual. (BOM, front panel, building procedure). waiting for PCBs and CF.
+- Write Proton Manual. (BOM, front panel, building procedure). waiting for connectors and CF.
 
 - Study Linux.
 
 - Build RP-100. waiting for IC
 
-- Finish rack assembly. waiting for PCBs and connectors
+- Finish rack assembly. waiting for connectors
 
 - Modify and build PSU PCB. waiting for AC socket
 
