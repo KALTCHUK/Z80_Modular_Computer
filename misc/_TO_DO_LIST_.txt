@@ -1,4 +1,4 @@
-- Write Proton Manual. (BOM, front panel, building procedure). waiting for connectors and CF.
+- Write Proton Manual. (BOM, front panel, review building procedure). waiting for connectors and CF.
 
 - Study Linux.
 
