@@ -16,6 +16,6 @@
 Some ideas for new cards:
 - DIO - digital I/O for automation (8255)
 - analog I/O for automation (4-20mA, RTD, TC?)
-- I2C with real-time clock
+- I2C with real-time clock and EPROM
 - audio card for .WAV play
 - VGA and keyboard (FPGA?)
