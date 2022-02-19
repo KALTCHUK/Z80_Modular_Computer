@@ -21,5 +21,5 @@ REFERENCE	QTY	VALUE		DESCRIPTION
     U2		1	74LS74		Package_DIP:DIP-14_W7.62mm_Socket_LongPads
     U3		1	Z80CPU		Package_DIP:DIP-40_W25.4mm_Socket_LongPads
     Y1		1	10MHz		Crystal:Crystal_HC49-U_Vertical					
-		1	PCB		CPU PCB
-		1	Fontal		CPU frontal
+    P1		1	PCB		CPU PCB
+    P2		1	Fontal		CPU frontal

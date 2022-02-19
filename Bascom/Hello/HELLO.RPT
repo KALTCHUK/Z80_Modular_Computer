@@ -1,0 +1,32 @@
+Compiler   : BASCOM 8051 LIBRARY V 2.14
+Processor  : AT89C4051
+Report     : HELLO
+Date       : 02-19-2022
+Time       : 16:58:03
+
+Baud Timer : 1
+Baudrate   : 2400
+Frequency  : 11059200
+Clock div. : 12
+ROM start  : &H0
+RAM start  : &H0
+LCD mode   : 4-bit
+StackStart : &H21
+Used ROM   : &H7E     126 (dec)  > Ok
+
+--------------------------------------------------------------------------------
+Variable                         Type            Address(hex)   Address(dec)
+--------------------------------------------------------------------------------
+
+ERR                              Bit               20.4
+
+
+
+
+
+CONSTANTS
+--------------------------------------------------------------------------------
+Constant                         Value
+--------------------------------------------------------------------------------
+_BUILDVERSION                    213
+
