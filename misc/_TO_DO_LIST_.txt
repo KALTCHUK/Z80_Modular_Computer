@@ -4,16 +4,16 @@
 	- review building procedure. waiting for CF
 
 - Study Linux.
-	- install/configure Putty,
+	- install/configure Putty, waiting for RJ45-USB converter
 	- crontab
 
 - Build RP-100. waiting for ADM3202 & RJ45-USB converter
 
 - Finish rack assembly. waiting for connectors
 
-- Modify and build PSU PCB. waiting for AC socket
+- Modify and build PSU PCB. waiting for switch
 
-- Design AT89C4051 programmer.
+- Design AT89C4051 programmer. waiting for ZIF socket
 
 - Study Forth.
 
