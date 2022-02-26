@@ -1,8 +1,13 @@
-- Write Proton Manual. (BOM, front panel, review building procedure). waiting for connectors and CF.
+- Write Proton Manual. 
+	- BOM,
+	- front panel, 
+	- review building procedure. waiting for CF
 
 - Study Linux.
+	- install/configure Putty,
+	- crontab
 
-- Build RP-100. waiting for IC
+- Build RP-100. waiting for ADM3202 & RJ45-USB converter
 
 - Finish rack assembly. waiting for connectors
 
