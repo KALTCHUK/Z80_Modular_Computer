@@ -9,11 +9,9 @@
 
 - Build RP-100. waiting for ADM3202 & RJ45-USB converter
 
-- Finish rack assembly. waiting for connectors
+- Modify and build PSU PCB (5, 12 and 3.3V). waiting for switch
 
-- Modify and build PSU PCB. waiting for switch
-
-- Design AT89C4051 programmer. waiting for ZIF socket
+- Design PX051 (AT89C4051 programmer). waiting for ZIF socket
 
 - Study Forth.
 
