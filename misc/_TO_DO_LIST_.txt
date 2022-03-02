@@ -9,7 +9,7 @@
 
 - Build RP-100. waiting for ADM3202 & RJ45-USB converter
 
-- Modify and build PSU PCB (5, 12 and 3.3V). waiting for switch
+- Design PSU2 PCB (5, 12 and 3.3V).
 
 - Design PX051 (AT89C4051 programmer). waiting for ZIF socket
 
