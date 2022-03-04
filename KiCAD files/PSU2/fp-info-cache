@@ -1,4 +1,4 @@
-20119277426259659
+20122532819573839
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -60150,6 +60150,20 @@ IEC60320_2pin
 0
 4
 2
+MyStuff
+MT3608_2-24V_2A
+
+
+0
+4
+4
+MyStuff
+Mounting_Hole_0.2in
+
+
+0
+1
+0
 MyStuff
 Relay_SPDT_Songel-15x19mm
 

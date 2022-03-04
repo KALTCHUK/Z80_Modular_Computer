@@ -1,4 +1,4 @@
-20112700833837619
+20119240047031422
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -60129,6 +60129,34 @@ Mounting 4.5mm 9774100982
 0
 8
 1
+MyStuff
+Converter_ACDC_5V_10W_XPJ-01B
+
+
+0
+8
+4
+MyStuff
+FuseHolder_Cylinder-27x8.5mm_Horizontal
+
+
+0
+2
+2
+MyStuff
+IEC60320_2pin
+
+
+0
+4
+2
+MyStuff
+Relay_SPDT_Songel-15x19mm
+
+
+0
+5
+5
 NetTie
 NetTie-2_SMD_Pad0.5mm
 Net tie, 2 pin, 0.5mm square SMD pads
