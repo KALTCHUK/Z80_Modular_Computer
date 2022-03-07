@@ -1,3 +1,7 @@
+- PSU2: print PCB, mount, test.
+
+- PX051 (AT89C4051 programmer). wire wrap, test
+
 - Write Proton Manual. 
 	- BOM,
 	- front panel, 
@@ -7,11 +11,7 @@
 	- install/configure Putty, waiting for RJ45-USB converter
 	- crontab
 
-- Build RP-100. waiting for ADM3202 & RJ45-USB converter
-
-- Design PSU2 PCB (5, 12 and 3.3V).
-
-- Design PX051 (AT89C4051 programmer). waiting for ZIF socket
+- Build RP-100.
 
 - Study Forth.
 
