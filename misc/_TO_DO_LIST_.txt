@@ -1,7 +1,5 @@
 - PX051 (AT89C4051 programmer). 
-	- wire wrap protoboard,
-	- etch frontal PCB,
-	- assemble & test,
+	- test logic.
 	- write software.
 
 - Write Proton Manual. 
