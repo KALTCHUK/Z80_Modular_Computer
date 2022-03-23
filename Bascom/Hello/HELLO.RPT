@@ -1,18 +1,18 @@
 Compiler   : BASCOM 8051 LIBRARY V 2.14
-Processor  : AT89C4051
+Processor  : 80515C
 Report     : HELLO
-Date       : 02-19-2022
-Time       : 16:58:03
+Date       : 03-21-2022
+Time       : 18:52:23
 
-Baud Timer : 1
+Baud Timer : Internal baudrate generator
 Baudrate   : 2400
 Frequency  : 11059200
-Clock div. : 12
+Clock div. : 6
 ROM start  : &H0
 RAM start  : &H0
 LCD mode   : 4-bit
 StackStart : &H21
-Used ROM   : &H7E     126 (dec)  > Ok
+Used ROM   : &HFE     254 (dec)  > Ok
 
 --------------------------------------------------------------------------------
 Variable                         Type            Address(hex)   Address(dec)
