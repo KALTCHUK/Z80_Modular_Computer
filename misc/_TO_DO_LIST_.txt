@@ -1,10 +1,7 @@
 - Debug Monitor.z80
+	- Use .BIN instead of .HEX
 
-- Test PX051. 
-	- change PPI.
-	- read 3x addr 0000.
-	- scope PA1 and PA2 with ext trigger = /CS_PPI.
-	- put some delay after setting PPI CW.
+- Test PX051. Waiting for new ICs
 
 - Proton enclosure.
 	- cut & drill top/bottom PCBs.
