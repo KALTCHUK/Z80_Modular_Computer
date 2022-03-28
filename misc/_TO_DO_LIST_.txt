@@ -1,11 +1,6 @@
 - Debug Monitor.z80
 	- Use .BIN instead of .HEX
 
-<<<<<<< HEAD
-=======
-- Test PX051. Waiting for new ICs
-
->>>>>>> 36e6a0388e5dd79c8ec398be1952dd259f060e2e
 - Proton enclosure.
 	- cut & drill top/bottom PCBs.
 	- trim slots.
