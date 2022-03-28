@@ -1,7 +1,8 @@
 - Debug Monitor.z80
-	- Use .BIN instead of .HEX
 
-- Proton enclosure.
+- Design I2C card.
+
+- Finish Proton enclosure.
 	- cut & drill top/bottom PCBs.
 	- trim slots.
 	- cut aluminium profiles.
@@ -24,6 +25,5 @@
 Some ideas for new cards:
 - DIO - digital I/O for automation (8255)
 - analog I/O for automation (4-20mA, RTD, TC?)
-- I2C with RTC and EPROM
 - audio card for .WAV play
 - VGA and keyboard (FPGA?)
