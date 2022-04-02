@@ -1,0 +1,35 @@
+Compiler   : BASCOM 8051 LIBRARY V 2.14
+Processor  : 80515C
+Report     : TESTSQW
+Date       : 04-02-2022
+Time       : 21:03:26
+
+Baud Timer : Internal baudrate generator
+Baudrate   : 0
+Frequency  : 24000000
+Clock div. : 6
+ROM start  : &H0
+RAM start  : &H0
+LCD mode   : 4-bit
+StackStart : &H21
+Used ROM   : &H187     391 (dec)  > Ok
+
+--------------------------------------------------------------------------------
+Variable                         Type            Address(hex)   Address(dec)
+--------------------------------------------------------------------------------
+
+ERR                              Bit               20.4
+
+
+
+
+
+CONSTANTS
+--------------------------------------------------------------------------------
+Constant                         Value
+--------------------------------------------------------------------------------
+_BUILDVERSION                    213
+RTCWR                             208
+RTCRD                             209
+CONTROL                           7
+
