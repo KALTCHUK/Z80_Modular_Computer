@@ -1,6 +1,7 @@
 - Debug Monitor.z80
 
 - I2C card.
+	- set osc addr = 0x68
 	- test Arduino I2C detector
 
 - Finish Proton enclosure.
