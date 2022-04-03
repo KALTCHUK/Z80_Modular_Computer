@@ -1,9 +1,7 @@
 - Debug Monitor.z80
 
 - I2C card.
-	- set osc addr = 0x68
-	- test new version of testsqw.bas
-	- test Arduino I2C detector
+	- implement read seconds reg on breadboard
 
 - Finish Proton enclosure.
 	- cut & drill top/bottom PCBs.
