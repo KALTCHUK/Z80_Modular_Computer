@@ -2,6 +2,7 @@
 
 - I2C card.
 	- set osc addr = 0x68
+	- test new version of testsqw.bas
 	- test Arduino I2C detector
 
 - Finish Proton enclosure.
