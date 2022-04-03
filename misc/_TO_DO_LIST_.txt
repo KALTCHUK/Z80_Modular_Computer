@@ -1,6 +1,7 @@
 - Debug Monitor.z80
 
-- Design I2C card.
+- I2C card.
+	- test Arduino I2C detector
 
 - Finish Proton enclosure.
 	- cut & drill top/bottom PCBs.
@@ -8,13 +9,14 @@
 	- cut aluminium profiles.
 	- assemble.
 
-- Write Proton Manual. 
+- Finish Proton Manual. 
 	- BOM,
 	- front panel, 
 	- review building procedure. waiting for CF
 
 - Study Linux.
-	- install/configure Putty, waiting for RJ45-USB converter
+	- install/configure Putty, waiting for WiFi-USB adapter
+	- serial port device
 	- crontab
 
 - Build RP-100.
@@ -26,4 +28,4 @@ Some ideas for new cards:
 - DIO - digital I/O for automation (8255)
 - analog I/O for automation (4-20mA, RTD, TC?)
 - audio card for .WAV play
-- VGA and keyboard (FPGA?)
+- VGA and keyboard (FPGA, STM32?)
