@@ -19,9 +19,14 @@ Const Rtcwr = &HD0
 Const Rtcrd = &HD1
 Const Cword = &H07
 
+const ack = 8
+const nack = 9
+
 I2cstop
 Set Unwait
-
+'********** 
+'********** Main program starts here
+'********** 
 'disable clock halt
 I2cstart
 I2cwbyte Rtcwr
@@ -31,17 +36,19 @@ I2cstop
 
 Wait 1
 
+'********** 
+'********** Loop ad eternum
+'********** 
 While 1 = 1
-
 'Read time
 I2cstart
 I2cwbyte Rtcwr
 I2cwbyte 0
-I2cstart
+I2cstart			'restart signal.
 I2cwbyte Rtcrd
-I2crbyte a, ack
-I2crbyte a, ack
-I2crbyte a, nack
+I2crbyte a, ack		'get seconds
+I2crbyte a, ack		'get minutes
+I2crbyte a, nack	'get hours
 I2cstop
 
 Wait 2
