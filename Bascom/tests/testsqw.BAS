@@ -1,10 +1,11 @@
 'TESTSQW.BAS
 'Instruct RTC to generate 32kHz square wave.
 
-$crystal = 12000000
+$crystal = 24000000
 
 Config Scl = P3.5
 Config Sda = P3.4
+CONFIG I2CDELAY = 0
 
 Unwait Alias P3.0
 Cs Alias P3.1
