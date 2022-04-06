@@ -28,11 +28,11 @@ Const Cword = &H07
 Const Ack = 8
 Const Nack = 9
 
-Const I2c_stop_cmd = 0
-Const I2c_start_cmd = 1
-Const I2c_write_cmd = 2
-Const I2c_readack_cmd = 3
-Const I2c_readnak_cmd = 4
+Const Cmd_stop = 0
+Const Cmd_start = 1
+Const Cmd_write = 2
+Const Cmd_readack = 3
+Const Cmd_readnak = 4
 
 I2cstop
 Gosub Release_wait
@@ -43,29 +43,29 @@ Wait 1
 While 1 = 1
    Gosub Wait_cs_wr
 
-   If Bus = I2c_start_cmd Then
+   If Bus = Cmd_start Then
       I2cstart
    End If
 
-   If Bus = I2c_stop_cmd Then
+   If Bus = Cmd_stop Then
       I2cstop
    End If
 
-   If Bus = I2c_write_cmd Then
+   If Bus = Cmd_write Then
       Gosub Release_wait
       Gosub Wait_cs_wr
       I2cwbyte Bus
       Gosub Release_wait
    End If
 
-   If Bus = I2c_readack_cmd Then
+   If Bus = Cmd_readack Then
       I2crbyte Bus , Ack
       Gosub Release_wait
       Gosub Wait_cs_rd
       Gosub Release_wait
    End If
 
-   If Bus = I2c_readnak_cmd Then
+   If Bus = Cmd_readnak Then
       I2crbyte Bus , Nack
       Gosub Release_wait
       Gosub Wait_cs_rd

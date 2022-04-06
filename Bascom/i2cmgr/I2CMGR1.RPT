@@ -1,8 +1,8 @@
 Compiler   : BASCOM 8051 LIBRARY V 2.14
 Processor  : 80515C
 Report     : I2CMGR1
-Date       : 04-05-2022
-Time       : 21:16:55
+Date       : 04-06-2022
+Time       : 18:10:12
 
 Baud Timer : Internal baudrate generator
 Baudrate   : 0
@@ -37,9 +37,9 @@ RTCRD                             209
 CWORD                             7
 ACK                              8
 NACK                             9
-I2C_STOP_CMD                     0
-I2C_START_CMD                    1
-I2C_WRITE_CMD                    2
-I2C_READACK_CMD                  3
-I2C_READNAK_CMD                  4
+CMD_STOP                         0
+CMD_START                        1
+CMD_WRITE                        2
+CMD_READACK                      3
+CMD_READNAK                      4
 
