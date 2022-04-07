@@ -1,11 +1,15 @@
 'I2CMGR1.BAS
 'I2C Manager - Receive commands from CPU and translate to I2C commands to slaves.
-'version 1.1 - no more command addres on I2C card
+'
+'version 1.1 - no more command address on I2C card.
+'version 1.2 - several bugs fixed.
+'
 'Commands:  00 I2C stop
 '           01 I2C start
 '           02 I2C write
 '           03 I2C read+ACK
 '           04 I2C read+NAK
+'
 
 $crystal = 24000000
 
@@ -21,9 +25,9 @@ Wr Alias P3.3
 A00 Alias P3.7
 
 'RTC_addr = 0x86
-Const Rtcwr = &HD0
-Const Rtcrd = &HD1
-Const Cword = &H07
+'Const Rtcwr = &HD0
+'Const Rtcrd = &HD1
+'Const Cword = &H07
 
 Const Ack = 8
 Const Nack = 9
@@ -42,40 +46,35 @@ Wait 1
 While 1 = 1
    Gosub Wait_cs_wr
 
-   If Bus = Cmd_start Then
+   select case bus
+   case Cmd_start:
       I2cstart
       Gosub Release_wait
-   End If
-
-   If Bus = Cmd_stop Then
+   
+   case Cmd_stop:
       I2cstop
       Gosub Release_wait
-   End If
-
-   If Bus = Cmd_write Then
+   
+   case Cmd_write:
       Gosub Release_wait
       Gosub Wait_cs_wr
       I2cwbyte Bus
       Gosub Release_wait
-   End If
 
-   If Bus = Cmd_readack Then
+   case Cmd_readack:
       I2crbyte Bus , Ack
       Gosub Release_wait
       Gosub Wait_cs_rd
       Gosub Release_wait
-   End If
 
-   If Bus = Cmd_readnak Then
+   case Cmd_readnak:
       I2crbyte Bus , Nack
       Gosub Release_wait
       Gosub Wait_cs_rd
       Gosub Release_wait
-   End If
+   End select
 
 Wend
-
-
 
 '*** Subroutines here
 
@@ -85,7 +84,7 @@ Release_wait:
    Set Unwait
 Return
 
-' *** Wait for CS + wr
+'*** Wait for CS + wr
 Wait_cs_wr:
    While 1 = 1
       If Cs = 1 And Wr = 0 Then
@@ -96,7 +95,7 @@ Wait_cs_wr:
 Return
 
 
-' *** Wait for CS + rd
+'*** Wait for CS + rd
 Wait_cs_rd:
    While 1 = 1
       If Cs = 1 And Rd = 0 Then

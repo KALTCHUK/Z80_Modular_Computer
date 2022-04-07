@@ -1,8 +1,8 @@
 'I2CMGR1.BAS
 'I2C Manager - Receive commands from CPU and translate to I2C commands to slaves.
 'version 1.1 - no more command addres on I2C card
-'Commands:  00 I2C stop
-'           01 I2C start
+'Commands:  00 I2C start
+'           01 I2C stop
 '           02 I2C write
 '           03 I2C read+ACK
 '           04 I2C read+NAK
