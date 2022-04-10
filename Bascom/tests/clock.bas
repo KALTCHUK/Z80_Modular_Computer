@@ -1,8 +1,9 @@
-'CLOCK.0000002041 æ}{;      C////C////C/C/C/C//   BAS
+'CLOCK.BAS
 'Read time and set time according to CPU request
 '
 'version 1.1 - no more command address on I2C card.
 'version 1.2 - several bugs fixed.
+'version 1.3 - several bugs fixed
 '
 'Commands:  00 Set time, receive second, minute, hour from CPU.
 '           01 Get time, sends second, minute, hour to CPU.
@@ -62,9 +63,9 @@ While 1 = 1
       I2cwbyte 0
       I2cstart                                                'restart signal.
       I2cwbyte Rtcwr
-      I2cwbyte A2                                             'write seconds
+      I2cwbyte A0                                             'write seconds
       I2cwbyte A1                                             'write minutes
-      I2cwbyte A0                                             'write hours
+      I2cwbyte A2                                             'write hours
       I2cstop
       Bus = &HFF
    Case Cmd_get_time:
@@ -77,11 +78,11 @@ While 1 = 1
       I2crbyte A1 , Ack                                       'read minutes
       I2crbyte A2 , Nack                                      'read hours
       I2cstop
-      Bus = A2
+      Bus = A0
       Gosub Wait_cs_rd                                        'send hour
       Bus = A1
       Gosub Wait_cs_rd                                        'send minute
-      Bus = A0
+      Bus = A2
       Gosub Wait_cs_rd                                        'send second
       Bus = &HFF
    Case Cmd_set_date:
