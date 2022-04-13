@@ -1,7 +1,7 @@
 - Debug Monitor.z80
 
 - I2C card.
-	- implement read seconds reg on breadboard
+	- continue debugging.
 
 - Finish Proton enclosure.
 	- cut & drill top/bottom PCBs.
@@ -12,6 +12,7 @@
 - Finish Proton Manual. 
 	- BOM,
 	- front panel, 
+	- include USART and I2C cards.
 	- review building procedure. waiting for CF
 
 - Study Linux.
