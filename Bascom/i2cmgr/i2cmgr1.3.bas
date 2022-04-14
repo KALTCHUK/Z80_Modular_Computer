@@ -5,15 +5,15 @@
 'version 1.2 - several bugs fixed.
 'version 1.3 - change communication protocol.
 '
-'Protocol:	CPU request		On the Z80				Condition test
-			------------	---------------------	-----------------------
-'			stop_cmd		OUT	(I2C_CMD),0			WR=0 AND A00=0 AND P1=0
-'			start_cmd		OUT	(I2C_CMD),1			WR=0 AND A00=0 AND P1=1
-'			write <byte>	OUT	(I2C_DATA),<byte>	WR=0 AND A00=1
-'			read+ack		IN	A,(I2C_ACK)			WR=1 AND A00=0
-'			read+nak		IN	A,(I2C_NAK)			WR=1 AND A00=1
+'Protocol:  CPU request    On the Z80              Condition test
 '
-'			All test conditions when INT0 triggered.
+'           stop_cmd       OUT (I2C_CMD),0         WR=0 AND A00=0 AND P1=0
+'           start_cmd      OUT (I2C_CMD),1         WR=0 AND A00=0 AND P1=1
+'           write <byte>   OUT (I2C_DATA),<byte>   WR=0 AND A00=1
+'           read+ack       IN A,(I2C_ACK)          WR=1 AND A00=0
+'           read+nak       IN A,(I2C_NAK)          WR=1 AND A00=1
+'
+'           All test conditions when INT0 triggered.
 
 $crystal = 24000000
 
@@ -48,33 +48,33 @@ Wait 1
 While 1 = 1
    Gosub Wait_cs_wr
 
-   select case bus
-   case Cmd_start:
+   Select Case Bus
+   Case Cmd_start:
       I2cstart
       Gosub Release_wait
-   
-   case Cmd_stop:
+
+   Case Cmd_stop:
       I2cstop
       Gosub Release_wait
-   
-   case Cmd_write:
+
+   Case Cmd_write:
       Gosub Release_wait
       Gosub Wait_cs_wr
       I2cwbyte Bus
       Gosub Release_wait
 
-   case Cmd_readack:
+   Case Cmd_readack:
       I2crbyte Bus , Ack
       Gosub Release_wait
       Gosub Wait_cs_rd
       Gosub Release_wait
 
-   case Cmd_readnak:
+   Case Cmd_readnak:
       I2crbyte Bus , Nack
       Gosub Release_wait
       Gosub Wait_cs_rd
       Gosub Release_wait
-   End select
+   End Select
 
 Wend
 
