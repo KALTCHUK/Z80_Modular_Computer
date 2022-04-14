@@ -13,7 +13,7 @@
 '			read+ack		IN	A,(I2C_ACK)			WR=1 AND A00=0
 '			read+nak		IN	A,(I2C_NAK)			WR=1 AND A00=1
 '
-'			All test conditions when INT0 trigger.
+'			All test conditions when INT0 triggered.
 
 $crystal = 24000000
 
@@ -23,9 +23,7 @@ Config Sda = P3.4
 Dim Bus As Byte
 
 Unwait Alias P3.0
-Cs Alias P3.1
-Rd Alias P3.2
-Wr Alias P3.3
+Wr Alias P3.1
 A00 Alias P3.7
 
 'RTC_addr = 0x86
