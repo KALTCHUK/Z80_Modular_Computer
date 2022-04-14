@@ -6,17 +6,14 @@
 'version 1.3 - change communication protocol.
 '
 'Protocol:	CPU request		Assembly				Condition test
+			------------	---------------------	-----------------------
 '			stop_cmd		OUT	(I2C_CMD),0			WR=0 AND A00=0 AND P1=0
 '			start_cmd		OUT	(I2C_CMD),1			WR=0 AND A00=0 AND P1=1
 '			write <byte>	OUT	(I2C_DATA),<byte>	WR=0 AND A00=1
-'			read+ack		IN	A,(I2C_ACK)			RD=0 AND A00=0
-'			read+nak		IN	A,(I2C_NAK)			RD=0 AND A00=1
+'			read+ack		IN	A,(I2C_ACK)			WR=1 AND A00=0
+'			read+nak		IN	A,(I2C_NAK)			WR=1 AND A00=1
 '
-'Where	I2C_DATA	= I2C card addr.
-'		I2C_CMD		= I2C card addr + 1
-'		I2C_ACK		= I2C card addr.
-'		I2C_NAK		= I2C card addr + 1
-'
+'			All test conditions after INT0 trigger.
 
 $crystal = 24000000
 
