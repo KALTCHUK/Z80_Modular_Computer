@@ -40,6 +40,10 @@ Const Cmd_write = 2
 Const Cmd_readack = 3
 Const Cmd_readnak = 4
 
+enable interrupts
+enable int0
+on int0 cpucalling
+
 I2cstop
 Gosub Release_wait
 Wait 1
