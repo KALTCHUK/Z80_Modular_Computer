@@ -1,7 +1,8 @@
 - Debug Monitor.z80
 
 - I2C card.
-	- continue debugging.
+	- check syntax and simulate I2CMGR.BAS.
+	- change CS connections
 
 - Finish Proton enclosure.
 	- cut & drill top/bottom PCBs.
@@ -12,11 +13,10 @@
 - Finish Proton Manual. 
 	- BOM,
 	- front panel, 
-	- include USART and I2C cards.
-	- review building procedure. waiting for CF
+	- include USART, LCD, PX051 and I2C cards.
+	- review building procedure.
 
 - Study Linux.
-	- install/configure Putty, waiting for WiFi-USB adapter
 	- serial port device
 	- crontab
 
