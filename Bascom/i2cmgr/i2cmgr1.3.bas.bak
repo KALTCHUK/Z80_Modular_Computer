@@ -24,85 +24,56 @@ Dim Bus As Byte
 
 Unwait Alias P3.0
 Wr Alias P3.1
+cs alias p3.2
 A00 Alias P3.7
-
-'RTC_addr = 0x86
-'Const Rtcwr = &HD0
-'Const Rtcrd = &HD1
-'Const Cword = &H07
-
-Const Ack = 8
-Const Nack = 9
 
 Const Cmd_stop = 0
 Const Cmd_start = 1
-Const Cmd_write = 2
-Const Cmd_readack = 3
-Const Cmd_readnak = 4
+Const Ack = 8
+Const Nack = 9
 
+'*** Main program starts here
 I2cstop
 Gosub Release_wait
 Wait 1
 
-'*** Main program starts here
+enable interrupts
+enable int0
+on int0 cpu_call
+
 While 1 = 1
-   Gosub Wait_cs_wr
-
-   select case bus
-   case Cmd_start:
-      I2cstart
-      Gosub Release_wait
-   
-   case Cmd_stop:
-      I2cstop
-      Gosub Release_wait
-   
-   case Cmd_write:
-      Gosub Release_wait
-      Gosub Wait_cs_wr
-      I2cwbyte Bus
-      Gosub Release_wait
-
-   case Cmd_readack:
-      I2crbyte Bus , Ack
-      Gosub Release_wait
-      Gosub Wait_cs_rd
-      Gosub Release_wait
-
-   case Cmd_readnak:
-      I2crbyte Bus , Nack
-      Gosub Release_wait
-      Gosub Wait_cs_rd
-      Gosub Release_wait
-   End select
-
+'Do nothing, just wait for a CPU call.
 Wend
 
 '*** Subroutines here
-
 '*** Release CPU wait signal
 Release_wait:
    Reset Unwait
    Set Unwait
 Return
 
-'*** Wait for CS + wr
-Wait_cs_wr:
-   While 1 = 1
-      If Cs = 1 And Wr = 0 Then
-         Bus = P1
-         Exit While
-      End If
-   Wend
-Return
-
-
-'*** Wait for CS + rd
-Wait_cs_rd:
-   While 1 = 1
-      If Cs = 1 And Rd = 0 Then
-         P1 = Bus
-         Exit While
-      End If
-   Wend
-Return
+'*** INT0 --> CPU calling
+CPU_call:
+if wr=1 then
+	if a00=1 then
+		I2crbyte Bus , nak		'read+nak
+		P1=bus
+	else 
+		I2crbyte Bus , ack		'read+ack
+		P1=bus
+	endif
+else
+	if a00=1 then
+		bus=P1					'write
+		I2cwbyte Bus
+	else
+		select case bus
+	    case Cmd_stop:			'stop
+		   I2cstop
+		case Cmd_start:			'start
+		   I2cstart
+		end select
+	endif
+endif
+Gosub Release_wait
+return
