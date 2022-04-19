@@ -25,7 +25,7 @@ Dim Bus As Byte
 
 Unwait Alias P3.0
 Wr Alias P3.1
-cs alias p3.2
+Cs Alias P3.2
 A00 Alias P3.7
 
 Const Cmd_stop = 0
@@ -38,6 +38,9 @@ I2cstop
 Gosub Release_wait
 Wait 1
 
+Enable Interrupts
+Enable Int0
+On Int0 Cpu_call
 
 While 1 = 1
 'Do nothing, just wait for a CPU call.
@@ -51,27 +54,27 @@ Release_wait:
 Return
 
 '*** INT0 --> CPU calling
-CPU_call:
-if wr=1 then
-	if a00=1 then
-		I2crbyte Bus , nak		'read+nak
-		P1=bus
-	else 
-		I2crbyte Bus , ack		'read+ack
-		P1=bus
-	endif
-else
-	if a00=1 then
-		bus=P1					'write
-		I2cwbyte Bus
-	else
-		select case bus
-	    case Cmd_stop:			'stop
-		   I2cstop
-		case Cmd_start:			'start
-		   I2cstart
-		end select
-	endif
-endif
+Cpu_call:
+If Wr = 1 Then
+ If A00 = 1 Then
+  I2crbyte Bus , Nak                                          'read+nak
+  P1 = Bus
+ Else
+  I2crbyte Bus , Ack                                          'read+ack
+  P1 = Bus
+ End If
+Else
+ If A00 = 1 Then
+  Bus = P1                                                    'write
+  I2cwbyte Bus
+ Else
+  Select Case Bus
+     Case Cmd_stop:                                           'stop
+     I2cstop
+  Case Cmd_start:                                             'start
+     I2cstart
+  End Select
+ End If
+End If
 Gosub Release_wait
-return
+Return
