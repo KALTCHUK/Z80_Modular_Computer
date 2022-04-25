@@ -39,7 +39,7 @@ Config Sda = P3.4
 Unwait Alias P3.0
 Wr Alias P3.1
 Cs Alias P3.2
-beacon alias P3.3 'Used for debbuging only
+beacon alias P3.3
 A00 Alias P3.7
 
 'Some constants
@@ -95,7 +95,7 @@ Send_via_p1:
    While Cs = 1
    Wend
    If Wr = 0 Then
-		set beacon ' Debug... writing on P1
+		set beacon
 		P1 = Port
 		reset beacon
    end if
