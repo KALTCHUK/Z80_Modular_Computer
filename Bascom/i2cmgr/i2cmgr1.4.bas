@@ -39,7 +39,7 @@ Config Sda = P3.4
 Unwait Alias P3.0
 Wr Alias P3.1
 Cs Alias P3.2
-beacon alias P3.3 'Used for debbuging only
+Beacon Alias P3.3                                             'Used for debbuging only
 A00 Alias P3.7
 
 'Some constants
@@ -59,8 +59,8 @@ Dim J As Byte                                                 'General use varia
 
 '*** Main program starts here
 I2cstop
-gosub release_wait
-reset beacon
+Gosub Release_wait
+Reset Beacon
 
 While 1 = 1
    If Cs = 0 Then
@@ -94,11 +94,11 @@ Return
 Send_via_p1:
    While Cs = 1
    Wend
-   If Wr = 0 Then
-		set beacon ' Debug... writing on P1
-		P1 = Port
-		reset beacon
-   end if
+   If Wr = 1 Then
+      Set Beacon                                              ' Debug... writing on P1
+      P1 = Port
+      Reset Beacon
+   End If
    Gosub Release_wait
 Return
 
@@ -199,4 +199,3 @@ Read_rand_op:
       Gosub Send_via_p1
    Next
 Return
-

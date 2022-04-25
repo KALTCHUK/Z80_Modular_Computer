@@ -1,8 +1,8 @@
 Compiler   : BASCOM 8051 LIBRARY V 2.14
 Processor  : 80515C
 Report     : I2CMGR1
-Date       : 04-22-2022
-Time       : 22:43:30
+Date       : 04-25-2022
+Time       : 20:19:55
 
 Baud Timer : Internal baudrate generator
 Baudrate   : 0
@@ -12,7 +12,7 @@ ROM start  : &H0
 RAM start  : &H0
 LCD mode   : 4-bit
 StackStart : &H39
-Used ROM   : &H3F1     1009 (dec)  > Ok
+Used ROM   : &H3F9     1017 (dec)  > Ok
 
 --------------------------------------------------------------------------------
 Variable                         Type            Address(hex)   Address(dec)
