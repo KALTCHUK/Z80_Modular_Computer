@@ -1,0 +1,48 @@
+Compiler   : BASCOM 8051 LIBRARY V 2.14
+Processor  : 80515C
+Report     : I2CMGR1
+Date       : 04-29-2022
+Time       : 20:33:31
+
+Baud Timer : Internal baudrate generator
+Baudrate   : 0
+Frequency  : 24000000
+Clock div. : 6
+ROM start  : &H0
+RAM start  : &H0
+LCD mode   : 4-bit
+StackStart : &H3B
+Used ROM   : &H39E     926 (dec)  > Ok
+
+--------------------------------------------------------------------------------
+Variable                         Type            Address(hex)   Address(dec)
+--------------------------------------------------------------------------------
+
+ERR                              Bit               20.4
+
+
+COMMAND                          Byte              0021          33 
+ASTEP                            Byte              0022          34 
+BUF                              Byte (19)         0023          35 
+PORT                             Byte              0036          54 
+ADDR_SIZE                        Byte              0037          55 
+NUM_BYTES                        Byte              0038          56 
+I                                Byte              0039          57 
+J                                Byte              003A          58 
+
+
+
+
+
+CONSTANTS
+--------------------------------------------------------------------------------
+Constant                         Value
+--------------------------------------------------------------------------------
+_BUILDVERSION                    213
+CMD_SYNC                         0
+CMD_WRITE                        1
+CMD_READ                         2
+CMD_READ_RAND                    3
+ACK                              8
+NACK                             9
+
