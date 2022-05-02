@@ -9,19 +9,21 @@
 'Protocol:
 '
 'WRITE
-'  <wr><slave><size_addr>[<addr_hi>]<addr_lo><num_bytes><b1>...<bn> ==>
+'  {wr}<slave><size_addr>[<addr_hi>]<addr_lo><num_bytes><b1>...<bn> ==>
 '
 'READ
-'  <rd><slave><num_bytes> ==>
+'  {rd}<slave><num_bytes> ==>
 '                         <==   <b1>...<bn>
 '
 'READ RANDOM
-'  <rr><slave><size_addr>[<addr_hi>]<addr_lo><num_bytes> ==>
+'  {rr}<slave><size_addr>[<addr_hi>]<addr_lo><num_bytes> ==>
 '                                                        <==   <b1>...<bn>
 '
-'<wr> = 1
-'<rd> = 2
-'<rr> = 3
+'Valid commands: 
+'{sync} = 0
+'{wr}   = 1
+'{rd}   = 2
+'{rr}   = 3
 '
 '<slave> = slave's address
 '<size_addr> = 1 or 2, number of bytes for address. If 2, <addrr_hi> must be submmited,
