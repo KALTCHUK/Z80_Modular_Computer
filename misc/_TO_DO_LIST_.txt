@@ -1,8 +1,6 @@
-- Debug Monitor.z80
-
 - I2C card.
-	- check syntax and simulate I2CMGR.BAS.
-	- change CS connections
+	- check I2C.H
+	- simulate I2CMGR 1.6
 
 - Finish Proton enclosure.
 	- cut & drill top/bottom PCBs.
