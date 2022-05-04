@@ -52,13 +52,13 @@ Const Nack = 9
 
 'Variables dimensioning
 Dim Command As Byte                                           'Current command being executed
-Dim Buf(16) As Byte                                           'Read/write buffer
-Dim char As Byte                                              'Char=P1 or P1=Char, for read and write, respectively
+Dim Astep As Byte                                             'Step be executed
+Dim Buf(19) As Byte                                           'Read/write buffer
+Dim Port As Byte                                              'Port=P1 or P1=Port, for read and write, respectively
 Dim Addr_size As Byte                                         'Size of address (1 or 2)
-dim addr_hi as byte
-dim addr_lo as byte
 Dim Num_bytes As Byte                                         'Number of bytes to be written or read
 Dim I As Byte                                                 'Used for Buf index
+Dim J As Byte                                                 'General use variable
 
 '*** Main program starts here
 I2cstop
