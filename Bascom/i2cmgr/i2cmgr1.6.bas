@@ -51,12 +51,13 @@ Const Ack = 8
 Const Nack = 9
 
 'Variables dimensioning
-Dim Command As Byte                                           'Current command being executed
+Dim Command As Byte
+Dim Slave As Byte                                             'Current command being executed
 Dim Buf(16) As Byte                                           'Read/write buffer
-Dim char As Byte                                              'Char=P1 or P1=Char, for read and write, respectively
+Dim Char As Byte                                              'Char=P1 or P1=Char, for read and write, respectively
 Dim Addr_size As Byte                                         'Size of address (1 or 2)
-dim addr_hi as byte
-dim addr_lo as byte
+Dim Addr_hi As Byte
+Dim Addr_lo As Byte
 Dim Num_bytes As Byte                                         'Number of bytes to be written or read
 Dim I As Byte                                                 'Used for Buf index
 
@@ -65,74 +66,75 @@ I2cstop
 Gosub Release_wait
 
 Beginning:
-	command=cmd_sync
-	gosub get_char
-	if command=cmd_sync then goto beginning
-	
-	gosub get_char
-	slave=char*2
-	if command=cmd_read then goto get_num_bytes
-	
-	gosub get_char
-	addr_size=char
-	if addr_size=2 then
-		gosub get_char
-		addr_hi=char
-	endif
+ Command = Cmd_sync
+ Gosub Get_char
+ If Command = Cmd_sync Then Goto Beginning
 
-	gosub get_char
-	addr_lo=char
+ Gosub Get_char
+ Slave = Char * 2
 
-get_num_bytes:
-	gosub get_char
-	num_bytes=char
-	
-	if command=cmd_read_random then
-		goto read_random
-	elseif command=cmd_read then
-		goto read_simple
-	endif
+ If Command = Cmd_read Then Goto Get_num_bytes
 
-	for i=1 to num_bytes
-		get_char
-		buf(i)=char
-	next
+ Gosub Get_char
+ Addr_size = Char
+ If Addr_size = 2 Then
+  Gosub Get_char
+  Addr_hi = Char
+ End If
 
-read_random:
-	i2cstart
-	i2cwbyte slave
-	if addr_size=2 then i2cwbyte addrr_hi
-	i2cwbyte addr_lo
-	
-	if command=cmd_read_random then goto read_simple
-	
-	for i=1 to num_bytes
-		i2cwbyte buf(i)
-	next
-	i2cstop
-	
-	goto beginning
-	
-read_simple:
-	incr slave
-	decr num_bytes
-	i2cstart
-	i2cwbyte slave
-	for i=1 to num_bytes
-		i2crbyte buf(i), ack
-	next
-	i2crbyte buf(i), nack
-	i2cstop
-	
-	incr num_bytes
-	for i=1 to num_bytes
-		char=buf(i)
-		put_char
-	next
+ Gosub Get_char
+ Addr_lo = Char
 
-	goto beginning
+Get_num_bytes:
+ Gosub Get_char
+ Num_bytes = Char
 
-	
+ If Command = Cmd_read_rand Then
+  Goto Read_random
+ Elseif Command = Cmd_read Then
+  Goto Read_simple
+ End If
+
+ For I = 1 To Num_bytes
+  Gosub Get_char
+  Buf(i) = Char
+ Next
+
+Read_random:
+ I2cstart
+ I2cwbyte Slave
+ If Addr_size = 2 Then I2cwbyte Addr_hi
+ I2cwbyte Addr_lo
+
+ If Command = Cmd_read_rand Then Goto Read_simple
+
+ For I = 1 To Num_bytes
+  I2cwbyte Buf(i)
+ Next
+ I2cstop
+
+ Goto Beginning
+
+Read_simple:
+ Incr Slave
+ Decr Num_bytes
+ I2cstart
+ I2cwbyte Slave
+ For I = 1 To Num_bytes
+  I2crbyte Buf(i) , Ack
+ Next
+ I2crbyte Buf(i) , Nack
+ I2cstop
+
+ Incr Num_bytes
+ For I = 1 To Num_bytes
+  Char = Buf(i)
+  Gosub Put_char
+ Next
+
+ Goto Beginning
+
+
 '*** Subroutines here
 
 '*** Release CPU wait signal
@@ -142,21 +144,21 @@ Release_wait:
 Return
 
 '*** Get char from P1
-get_char:
-	while cs=1
-	wend
+Get_char:
+ While Cs = 1
+ Wend
 
-	if a00=1 then command=p1 else char=p1
+ If A00 = 1 Then Command = P1 Else Char = P1
 
-	gosub release_wait
-return
+ Gosub Release_wait
+Return
 
 '*** Put char on P1
-put_char:
-	while cs=1
-	wend
+Put_char:
+ While Cs = 1
+ Wend
 
-	if wr=1 then p1=char
+ If Wr = 1 Then P1 = Char
 
-	gosub release_wait
-return
+ Gosub Release_wait
+Return
