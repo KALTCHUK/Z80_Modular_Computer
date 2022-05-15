@@ -1,0 +1,3 @@
+".\Objects\i2c_manager.obj" 
+TO ".\Objects\i2c_manager" 
+PRINT(".\Listings\i2c_manager.m51")
