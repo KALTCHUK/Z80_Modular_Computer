@@ -82,7 +82,7 @@
         <Book>
           <Number>0</Number>
           <Title>Data Sheet</Title>
-          <Path>DATASHTS\ATMEL\AT89C2051_DS.PDF</Path>
+          <Path>DATASHTS\ATMEL\AT89C4051_DS.PDF</Path>
         </Book>
         <Book>
           <Number>1</Number>

@@ -13,14 +13,14 @@
       <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
-          <Device>AT89C2051</Device>
+          <Device>AT89C4051</Device>
           <Vendor>Microchip</Vendor>
-          <Cpu>IRAM(0-0x7F) IROM(0-0x7FF) CLOCK(24000000)</Cpu>
+          <Cpu>IRAM(0 - 0x7F) IROM(0 - 0xFFF) CLOCK(24000000)</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile>"LIB\STARTUP.A51" ("Standard 8051 Startup Code")</StartupFile>
           <FlashDriverDll></FlashDriverDll>
-          <DeviceId>2984</DeviceId>
-          <RegisterFile>REG2051.H</RegisterFile>
+          <DeviceId>3030</DeviceId>
+          <RegisterFile>REGx051.H</RegisterFile>
           <MemoryEnv></MemoryEnv>
           <Cmp></Cmp>
           <Asm></Asm>
@@ -77,9 +77,9 @@
             <nStopB2X>0</nStopB2X>
           </BeforeMake>
           <AfterMake>
-            <RunUserProg1>0</RunUserProg1>
+            <RunUserProg1>1</RunUserProg1>
             <RunUserProg2>0</RunUserProg2>
-            <UserProg1Name></UserProg1Name>
+            <UserProg1Name>srec_cat #H -Intel -fill 0xFF 0x0000 0x0800 -o $H@P.bin -Binary</UserProg1Name>
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
@@ -169,7 +169,7 @@
         <Utilities>
           <Flash1>
             <UseTargetDll>0</UseTargetDll>
-            <UseExternalTool>0</UseExternalTool>
+            <UseExternalTool>1</UseExternalTool>
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>0</UpdateFlashBeforeDebugging>
             <Capability>0</Capability>
@@ -177,7 +177,7 @@
           </Flash1>
           <bUseTDR>0</bUseTDR>
           <Flash2></Flash2>
-          <Flash3>"" ()</Flash3>
+          <Flash3></Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -186,12 +186,12 @@
         </Utilities>
         <Target51>
           <Target51Misc>
-            <MemoryModel>2</MemoryModel>
+            <MemoryModel>0</MemoryModel>
             <RTOS>0</RTOS>
-            <RomSize>2</RomSize>
+            <RomSize>0</RomSize>
             <DataHold>0</DataHold>
             <XDataHold>0</XDataHold>
-            <UseOnchipRom>1</UseOnchipRom>
+            <UseOnchipRom>0</UseOnchipRom>
             <UseOnchipArithmetic>0</UseOnchipArithmetic>
             <UseMultipleDPTR>0</UseMultipleDPTR>
             <UseOnchipXram>0</UseOnchipXram>
@@ -233,7 +233,7 @@
               <RCB>
                 <Type>0</Type>
                 <StartAddress>0x0</StartAddress>
-                <Size>0xffff</Size>
+                <Size>0x7ff</Size>
               </RCB>
               <RXB>
                 <Type>0</Type>
@@ -273,7 +273,7 @@
               <IRO>
                 <Type>1</Type>
                 <StartAddress>0x0</StartAddress>
-                <Size>0x800</Size>
+                <Size>0x1000</Size>
               </IRO>
               <IRA>
                 <Type>0</Type>
@@ -316,7 +316,7 @@
             <Fuzzy>3</Fuzzy>
             <Optimize>8</Optimize>
             <WarningLevel>2</WarningLevel>
-            <SizeSpeed>1</SizeSpeed>
+            <SizeSpeed>0</SizeSpeed>
             <ObjectExtend>1</ObjectExtend>
             <ACallAJmp>0</ACallAJmp>
             <InterruptVectorAddress>0</InterruptVectorAddress>

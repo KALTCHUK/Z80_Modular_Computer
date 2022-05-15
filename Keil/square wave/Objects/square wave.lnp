@@ -1,3 +1,3 @@
 ".\Objects\sw10.obj" 
 TO ".\Objects\square wave" 
-PRINT(".\Listings\square wave.m51") CODE( 0X0000-0X07FF )
+PRINT(".\Listings\square wave.m51")

@@ -1,10 +1,10 @@
-C51 COMPILER V9.60.0.0   SW10                                                              05/05/2022 11:07:36 PAGE 1   
+C51 COMPILER V9.60.0.0   SW10                                                              05/12/2022 17:47:00 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE SW10
 OBJECT MODULE PLACED IN .\Objects\sw10.obj
-COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE sw10.c LARGE OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND CODE LISTINCLUD
-                    -E SYMBOLS PRINT(.\Listings\sw10.lst) TABS(2) OBJECT(.\Objects\sw10.obj)
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE sw10.c ROM(SMALL) OPTIMIZE(8,SIZE) BROWSE DEBUG OBJECTEXTEND CODE LISTIN
+                    -CLUDE SYMBOLS PRINT(.\Listings\sw10.lst) TABS(2) OBJECT(.\Objects\sw10.obj)
 
 line level    source
 
@@ -62,7 +62,7 @@ line level    source
   50      =1  sbit IT0  = 0x88;
   51      =1  sbit IE0  = 0x89;
   52      =1  sbit IT1  = 0x8A;
-C51 COMPILER V9.60.0.0   SW10                                                              05/05/2022 11:07:36 PAGE 2   
+C51 COMPILER V9.60.0.0   SW10                                                              05/12/2022 17:47:00 PAGE 2   
 
   53      =1  sbit IE1  = 0x8B;
   54      =1  sbit TR0  = 0x8C;
@@ -126,7 +126,7 @@ line level    source
  112      =1  
  113      =1  /*------------------------------------------------
  114      =1  P3 Bit Registers (Mnemonics & Ports)
-C51 COMPILER V9.60.0.0   SW10                                                              05/05/2022 11:07:36 PAGE 3   
+C51 COMPILER V9.60.0.0   SW10                                                              05/12/2022 17:47:00 PAGE 3   
 
  115      =1  ------------------------------------------------*/
  116      =1  sbit P3_0 = 0xB0;
@@ -190,18 +190,17 @@ line level    source
    9   1        unsigned char pval;     /* temp variable for port values */
   10   1      
   11   1        pval = 0;
-C51 COMPILER V9.60.0.0   SW10                                                              05/05/2022 11:07:36 PAGE 4   
+C51 COMPILER V9.60.0.0   SW10                                                              05/12/2022 17:47:00 PAGE 4   
 
   12   1      
   13   1        while (1) {
   14   2          P3 = pval;
-  15   2          pval++;
-  16   2          
-  17   2          P1_7 = ~P1_7;
-  18   2        }
-  19   1      
-  20   1      }
-C51 COMPILER V9.60.0.0   SW10                                                              05/05/2022 11:07:36 PAGE 5   
+  15   2          P1_7 = ~P1_7;
+  16   2          pval++;
+  17   2        }
+  18   1      
+  19   1      }
+C51 COMPILER V9.60.0.0   SW10                                                              05/12/2022 17:47:00 PAGE 5   
 
 ASSEMBLY LISTING OF GENERATED OBJECT CODE
 
@@ -218,14 +217,14 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 14
 0002 8FB0              MOV     P3,R7
                                            ; SOURCE LINE # 15
-0004 0F                INC     R7
+0004 B297              CPL     P1_7
+                                           ; SOURCE LINE # 16
+0006 0F                INC     R7
                                            ; SOURCE LINE # 17
-0005 B297              CPL     P1_7
-                                           ; SOURCE LINE # 18
 0007 80F9              SJMP    ?C0001
              ; FUNCTION main (END)
 
-C51 COMPILER V9.60.0.0   SW10                                                              05/05/2022 11:07:36 PAGE 6   
+C51 COMPILER V9.60.0.0   SW10                                                              05/12/2022 17:47:00 PAGE 6   
 
 NAME                                    CLASS   MSPACE  TYPE    OFFSET  SIZE
 ====                                    =====   ======  ====    ======  ====

@@ -12,9 +12,8 @@ void main (void)
 
 	while (1) {
 		P3 = pval;
-		pval++;
-		
 		P1_7 = ~P1_7;
+		pval++;
 	}
 
 }

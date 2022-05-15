@@ -1,0 +1,259 @@
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    05/14/2022  19:34:51  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\clock.obj TO .\Objects\clock PRINT (.\Listings\clock.m51)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\clock.obj (CLOCK)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_INIT)
+
+
+LINK MAP OF MODULE:  .\Objects\clock (CLOCK)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0001H     UNIT         ?DT?CLOCK
+            IDATA   0009H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+                    0003H     07FDH                  *** GAP ***
+            CODE    0800H     008CH     UNIT         ?C_C51STARTUP
+            CODE    088CH     004EH     UNIT         ?PR?_I2C_READ?CLOCK
+            CODE    08DAH     0047H     UNIT         ?PR?_I2C_WRITE?CLOCK
+            CODE    0921H     002DH     UNIT         ?PR?QUERY_RTC?CLOCK
+            CODE    094EH     0019H     UNIT         ?PR?MAIN?CLOCK
+            CODE    0967H     0017H     UNIT         ?PR?WRITE_RTC?CLOCK
+            CODE    097EH     0014H     UNIT         ?PR?I2C_DELAY?CLOCK
+            CODE    0992H     0008H     UNIT         ?PR?I2C_START?CLOCK
+            CODE    099AH     0008H     UNIT         ?PR?I2C_STOP?CLOCK
+            CODE    09A2H     0005H     UNIT         ?PR?FREE_WAIT?CLOCK
+            CODE    09A7H     0004H     UNIT         ?C_INITSEG
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\clock (CLOCK)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?CLOCK
+  +--> ?C_INITSEG
+
+?PR?MAIN?CLOCK
+  +--> ?PR?FREE_WAIT?CLOCK
+  +--> ?PR?QUERY_RTC?CLOCK
+  +--> ?PR?WRITE_RTC?CLOCK
+
+?PR?QUERY_RTC?CLOCK
+  +--> ?PR?I2C_START?CLOCK
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/14/2022  19:34:51  PAGE 2
+
+
+  +--> ?PR?_I2C_WRITE?CLOCK
+  +--> ?PR?I2C_STOP?CLOCK
+  +--> ?PR?I2C_DELAY?CLOCK
+  +--> ?PR?_I2C_READ?CLOCK
+
+?PR?I2C_START?CLOCK
+  +--> ?PR?I2C_DELAY?CLOCK
+
+?PR?_I2C_WRITE?CLOCK
+  +--> ?PR?I2C_DELAY?CLOCK
+
+?PR?I2C_STOP?CLOCK
+  +--> ?PR?I2C_DELAY?CLOCK
+
+?PR?_I2C_READ?CLOCK
+  +--> ?PR?I2C_DELAY?CLOCK
+
+?PR?WRITE_RTC?CLOCK
+  +--> ?PR?I2C_START?CLOCK
+  +--> ?PR?_I2C_WRITE?CLOCK
+  +--> ?PR?I2C_STOP?CLOCK
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\clock (CLOCK)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        CLOCK
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  C:0921H         PUBLIC        query_RTC
+  D:0008H         PUBLIC        counter
+  B:00B0H.0       PUBLIC        P3_0
+  B:00B0H.2       PUBLIC        P3_2
+  B:00B0H.4       PUBLIC        P3_4
+  B:00B0H.5       PUBLIC        P3_5
+  B:00B0H.7       PUBLIC        P3_7
+  C:094EH         PUBLIC        main
+  C:0983H         PUBLIC        I2C_delay
+  C:09A2H         PUBLIC        free_wait
+  C:088CH         PUBLIC        _I2C_read
+  C:08E1H         PUBLIC        _I2C_write
+  C:0992H         PUBLIC        I2C_start
+  C:099AH         PUBLIC        I2C_stop
+  C:0967H         PUBLIC        write_RTC
+  C:097EH         SYMBOL        L?0035
+  -------         PROC          L?0034
+  -------         ENDPROC       L?0034
+  C:097EH         SYMBOL        L?0035
+  -------         PROC          I2C_DELAY
+  -------         DO            
+  D:0006H         SYMBOL        i
+  -------         ENDDO         
+  C:0983H         LINE#         31
+  C:0983H         LINE#         34
+  C:0991H         LINE#         35
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/14/2022  19:34:51  PAGE 3
+
+
+  -------         ENDPROC       I2C_DELAY
+  -------         PROC          I2C_START
+  C:0992H         LINE#         40
+  C:0992H         LINE#         41
+  C:0994H         LINE#         42
+  C:0997H         LINE#         43
+  C:0999H         LINE#         44
+  -------         ENDPROC       I2C_START
+  -------         PROC          I2C_STOP
+  C:099AH         LINE#         49
+  C:099AH         LINE#         50
+  C:099CH         LINE#         51
+  C:099FH         LINE#         52
+  C:09A1H         LINE#         53
+  -------         ENDPROC       I2C_STOP
+  -------         PROC          L?0033
+  -------         ENDPROC       L?0033
+  -------         PROC          _I2C_WRITE
+  D:0005H         SYMBOL        byte
+  -------         DO            
+  D:0004H         SYMBOL        bt
+  D:0005H         SYMBOL        reply
+  -------         ENDDO         
+  C:08E1H         LINE#         58
+  C:08E3H         LINE#         61
+  C:08F6H         LINE#         62
+  C:08FAH         LINE#         63
+  C:08FCH         LINE#         64
+  C:08FEH         LINE#         65
+  C:0900H         LINE#         66
+  C:0900H         LINE#         67
+  C:0900H         LINE#         68
+  C:0900H         LINE#         69
+  C:0903H         LINE#         70
+  C:0905H         LINE#         71
+  C:0908H         LINE#         72
+  C:090CH         LINE#         73
+  C:090FH         LINE#         74
+  C:0911H         LINE#         75
+  C:0914H         LINE#         76
+  C:0919H         LINE#         77
+  C:091BH         LINE#         78
+  C:091EH         LINE#         79
+  C:0920H         LINE#         80
+  -------         ENDPROC       _I2C_WRITE
+  -------         PROC          _I2C_READ
+  D:0005H         SYMBOL        condition
+  -------         DO            
+  D:0003H         SYMBOL        bt
+  D:0004H         SYMBOL        byte
+  -------         ENDDO         
+  C:088CH         LINE#         85
+  C:088EH         LINE#         86
+  C:0890H         LINE#         88
+  C:08A2H         LINE#         89
+  C:08A4H         LINE#         90
+  C:08A4H         LINE#         91
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/14/2022  19:34:51  PAGE 4
+
+
+  C:08A4H         LINE#         92
+  C:08A7H         LINE#         93
+  C:08AAH         LINE#         94
+  C:08B4H         LINE#         95
+  C:08B6H         LINE#         96
+  C:08B9H         LINE#         97
+  C:08C6H         LINE#         98
+  C:08C8H         LINE#         99
+  C:08CAH         LINE#         100
+  C:08CCH         LINE#         101
+  C:08CCH         LINE#         102
+  C:08CCH         LINE#         103
+  C:08CCH         LINE#         104
+  C:08CFH         LINE#         105
+  C:08D2H         LINE#         106
+  C:08D4H         LINE#         107
+  C:08D7H         LINE#         108
+  C:08D9H         LINE#         109
+  -------         ENDPROC       _I2C_READ
+  -------         PROC          QUERY_RTC
+  C:0921H         LINE#         16
+  C:0921H         LINE#         17
+  C:0924H         LINE#         18
+  C:0929H         LINE#         19
+  C:092EH         LINE#         20
+  C:0931H         LINE#         22
+  C:0934H         LINE#         24
+  C:0937H         LINE#         25
+  C:093CH         LINE#         26
+  C:0941H         LINE#         27
+  C:0946H         LINE#         28
+  C:094BH         LINE#         29
+  -------         ENDPROC       QUERY_RTC
+  -------         PROC          WRITE_RTC
+  C:0967H         LINE#         36
+  C:0967H         LINE#         37
+  C:096AH         LINE#         38
+  C:096FH         LINE#         39
+  C:0971H         LINE#         40
+  C:0974H         LINE#         41
+  C:0978H         LINE#         42
+  C:097BH         LINE#         43
+  -------         ENDPROC       WRITE_RTC
+  -------         PROC          FREE_WAIT
+  C:09A2H         LINE#         50
+  C:09A2H         LINE#         51
+  C:09A4H         LINE#         52
+  C:09A6H         LINE#         53
+  -------         ENDPROC       FREE_WAIT
+  -------         PROC          MAIN
+  C:094EH         LINE#         58
+  C:094EH         LINE#         59
+  C:0951H         LINE#         60
+  C:0954H         LINE#         61
+  C:0954H         LINE#         62
+  C:0957H         LINE#         63
+  C:095AH         LINE#         64
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/14/2022  19:34:51  PAGE 5
+
+
+  C:095DH         LINE#         65
+  C:095FH         LINE#         66
+  C:0962H         LINE#         67
+  C:0962H         LINE#         68
+  C:0965H         LINE#         69
+  C:0965H         LINE#         70
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        CLOCK
+
+******************************************************************************
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 011EH BYTE (13%) *
+******************************************************************************
+
+Program Size: data=10.0 xdata=0 code=430
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

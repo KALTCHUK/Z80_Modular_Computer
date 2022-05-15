@@ -1,0 +1,97 @@
+C51 COMPILER V9.60.0.0   CLOCK                                                             05/14/2022 18:58:15 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE CLOCK
+OBJECT MODULE PLACED IN .\Objects\clock.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE clock.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\clo
+                    -ck.lst) TABS(2) OBJECT(.\Objects\clock.obj)
+
+line level    source
+
+   1          // read time from RTC once.
+   2          
+   3          #include "i2c.h"
+   4          
+   5          // RTC (slave) addresses definitions
+   6          #define RTC_addr        0x68
+   7          #define RTC_write       RTC_addr<<1
+   8          #define RTC_read        (RTC_write)|0x01
+   9          
+  10          char  counter=0;
+  11          
+  12          /*------------------------------------------------
+  13          query_RTC Function
+  14          Read 3 bytes from RTC
+  15          ------------------------------------------------*/
+  16          void query_RTC(void) {
+  17   1        I2C_start();
+  18   1        I2C_write(RTC_write);
+  19   1        I2C_write(0x8);
+  20   1        I2C_stop();
+  21   1      
+  22   1        I2C_delay();
+  23   1        
+  24   1        I2C_start();
+  25   1        I2C_write(RTC_read);
+  26   1        I2C_read(ACK);
+  27   1        I2C_read(ACK);
+  28   1        I2C_read(NAK);
+  29   1        I2C_stop();
+  30   1      }
+  31          
+  32          /*------------------------------------------------
+  33          write_RTC Function
+  34          Write 3 bytes to RTC
+  35          ------------------------------------------------*/
+  36          void write_RTC(void) {
+  37   1        I2C_start();
+  38   1        I2C_write(RTC_write);
+  39   1        I2C_write(0x8);
+  40   1        I2C_write(counter++);
+  41   1        I2C_write(counter++);
+  42   1        I2C_write(counter++);
+  43   1        I2C_stop();
+  44   1      }
+  45          
+  46          /*------------------------------------------------
+  47          free_wait Function
+  48          Release the wait line
+  49          ------------------------------------------------*/
+  50          void free_wait(void) {
+  51   1        _release = 0;
+  52   1        _release = 1;
+  53   1      }
+  54          
+C51 COMPILER V9.60.0.0   CLOCK                                                             05/14/2022 18:58:15 PAGE 2   
+
+  55          /*------------------------------------------------
+  56          MAIN C Function
+  57          ------------------------------------------------*/
+  58          void main (void) {
+  59   1        free_wait();
+  60   1        query_RTC();
+  61   1        while (1) {
+  62   2          if (_CS==0) {
+  63   3            if (_A00==0) {
+  64   4              query_RTC();
+  65   4            } else {
+  66   4              write_RTC();
+  67   4            }
+  68   3          free_wait();
+  69   3          }
+  70   2        }
+  71   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    283    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

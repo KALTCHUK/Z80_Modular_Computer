@@ -1,17 +1,16 @@
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    05/05/2022  11:07:36  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    05/12/2022  17:47:01  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
-C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\sw10.obj TO .\Objects\square wave PRINT (.\Listings\square wave.m51) CODE (0X0000-
->> 0X07FF)
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\sw10.obj TO .\Objects\square wave PRINT (.\Listings\square wave.m51)
 
 
-MEMORY MODEL: LARGE
+MEMORY MODEL: SMALL
 
 
 INPUT MODULES INCLUDED:
   .\Objects\sw10.obj (SW10)
-  C:\KEIL_V5\C51\LIB\C51L.LIB (?C_STARTUP)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
 
 
 LINK MAP OF MODULE:  .\Objects\square wave (SW10)
@@ -26,6 +25,9 @@ LINK MAP OF MODULE:  .\Objects\square wave (SW10)
 
             * * * * * * *   C O D E   M E M O R Y   * * * * * * *
             CODE    0000H     0003H     ABSOLUTE     
+                    0003H     07FDH                  *** GAP ***
+            CODE    0800H     000CH     UNIT         ?C_C51STARTUP
+            CODE    080CH     0009H     INBLOCK      ?PR?MAIN?SW10
 
 
 
@@ -40,18 +42,6 @@ SEGMENT
 
 
 
-IGNORED SEGMENTS:
-   ?PR?MAIN?SW10
-   ?C_C51STARTUP
-
-
-
-IGNORED SYMBOLS:
-   ?C_START
-   MAIN
-
-
-
 SYMBOL TABLE OF MODULE:  .\Objects\square wave (SW10)
 
   VALUE           TYPE          NAME
@@ -59,70 +49,30 @@ SYMBOL TABLE OF MODULE:  .\Objects\square wave (SW10)
 
   -------         MODULE        SW10
   C:0000H         SYMBOL        _ICE_DUMMY_
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/05/2022  11:07:36  PAGE 2
-
-
   D:00B0H         PUBLIC        P3
   B:0090H.7       PUBLIC        P1_7
-  C:0000H         PUBLIC        main
+  C:080CH         PUBLIC        main
   -------         PROC          MAIN
   -------         DO            
   D:0007H         SYMBOL        pval
   -------         ENDDO         
-  C:0000H         LINE#         7
-  C:0000H         LINE#         8
-  C:0000H         LINE#         11
-  C:0002H         LINE#         13
-  C:0002H         LINE#         14
-  C:0004H         LINE#         15
-  C:0005H         LINE#         17
-  C:0007H         LINE#         18
+  C:080CH         LINE#         7
+  C:080CH         LINE#         8
+  C:080CH         LINE#         11
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/12/2022  17:47:01  PAGE 2
+
+
+  C:080EH         LINE#         13
+  C:080EH         LINE#         14
+  C:0810H         LINE#         15
+  C:0812H         LINE#         16
+  C:0813H         LINE#         17
   -------         ENDPROC       MAIN
   -------         ENDMOD        SW10
 
-*** ERROR L107: ADDRESS SPACE OVERFLOW
-    SPACE:   CODE    
-    SEGMENT: ?C_C51STARTUP
-    LENGTH:  000CH
-
-*** ERROR L107: ADDRESS SPACE OVERFLOW
-    SPACE:   CODE    
-    SEGMENT: ?C_C51STARTUP
-    LENGTH:  000CH
-
-*** ERROR L107: ADDRESS SPACE OVERFLOW
-    SPACE:   CODE    
-    SEGMENT: ?PR?MAIN?SW10
-    LENGTH:  0009H
-
-*** ERROR L107: ADDRESS SPACE OVERFLOW
-    SPACE:   CODE    
-    SEGMENT: ?PR?MAIN?SW10
-    LENGTH:  0009H
-
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  MAIN
-    SEGMENT: ?PR?MAIN?SW10
-
-*** ERROR L120: CONTENT BELONGS TO ERRONEOUS SEGMENT
-    SEGMENT: ?PR?MAIN?SW10
-    MODULE:  .\Objects\sw10.obj (SW10)
-
-*** ERROR L120: CONTENT BELONGS TO ERRONEOUS SEGMENT
-    SEGMENT: ?C_C51STARTUP
-    MODULE:  C:\KEIL_V5\C51\LIB\C51L.LIB (?C_STARTUP)
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  ?C_START
-    MODULE:  C:\KEIL_V5\C51\LIB\C51L.LIB (?C_STARTUP)
-    ADDRESS: 000AH
-
 ******************************************************************************
 * RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 0009H BYTE ( 0%) *
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/05/2022  11:07:36  PAGE 3
-
-
 ******************************************************************************
 
 Program Size: data=9.0 xdata=0 code=24
-LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  8 ERROR(S)
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

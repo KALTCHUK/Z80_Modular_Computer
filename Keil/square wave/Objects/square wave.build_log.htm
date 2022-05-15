@@ -19,44 +19,18 @@ CPU DLL:         S8051.DLL V3.122.0.0
 Dialog DLL:      DP51.DLL V2.67.0.0 
 <h2>Project:</h2>
 C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Keil\square wave\square wave.uvproj
-Project File Date:  05/05/2022
+Project File Date:  05/12/2022
 
 <h2>Output:</h2>
 Build target 'Target 1'
 compiling sw10.c...
 linking...
-*** ERROR L107: ADDRESS SPACE OVERFLOW
-    SPACE:   CODE    
-    SEGMENT: ?C_C51STARTUP
-    LENGTH:  000CH
-*** ERROR L107: ADDRESS SPACE OVERFLOW
-    SPACE:   CODE    
-    SEGMENT: ?C_C51STARTUP
-    LENGTH:  000CH
-*** ERROR L107: ADDRESS SPACE OVERFLOW
-    SPACE:   CODE    
-    SEGMENT: ?PR?MAIN?SW10
-    LENGTH:  0009H
-*** ERROR L107: ADDRESS SPACE OVERFLOW
-    SPACE:   CODE    
-    SEGMENT: ?PR?MAIN?SW10
-    LENGTH:  0009H
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  MAIN
-    SEGMENT: ?PR?MAIN?SW10
-*** ERROR L120: CONTENT BELONGS TO ERRONEOUS SEGMENT
-    SEGMENT: ?PR?MAIN?SW10
-    MODULE:  .\Objects\sw10.obj (SW10)
-*** ERROR L120: CONTENT BELONGS TO ERRONEOUS SEGMENT
-    SEGMENT: ?C_C51STARTUP
-    MODULE:  C:\KEIL_V5\C51\LIB\C51L.LIB (?C_STARTUP)
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  ?C_START
-    MODULE:  C:\KEIL_V5\C51\LIB\C51L.LIB (?C_STARTUP)
-    ADDRESS: 000AH
 Program Size: data=9.0 xdata=0 code=24
-Target not created.
-Build Time Elapsed:  00:00:00
+creating hex file from ".\Objects\square wave"...
+User command #1: srec_cat C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Keil\square wave\Objects\square wave.HEX -Intel -fill 0xFF 0x0000 0x0800 -o C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Keil\square wave\Objects\square wave.bin -Binary
+*** Error: CreateProcess failed, Command: 'srec_cat C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Keil\square wave\Objects\square wave.HEX -Intel -fill 0xFF 0x0000 0x0800 -o C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Keil\square wave\Objects\square wave.bin -Binary'
+".\Objects\square wave" - 1 Error(s), 0 Warning(s).
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>

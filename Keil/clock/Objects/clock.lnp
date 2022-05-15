@@ -1,0 +1,3 @@
+".\Objects\clock.obj" 
+TO ".\Objects\clock" 
+PRINT(".\Listings\clock.m51")
