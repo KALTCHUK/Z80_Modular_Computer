@@ -1,6 +1,7 @@
-- I2C card.
-	- check I2C.H
-	- simulate I2CMGR 1.6
+- Design PCBs for:
+	- PSU.
+	- I2C.
+	- top/bottom panel.
 
 - Finish Proton enclosure.
 	- cut & drill top/bottom PCBs.
