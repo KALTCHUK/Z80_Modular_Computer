@@ -1,0 +1,1 @@
+"i2c_manager_2.c" OPTIMIZE (8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\i2c_manager_2.lst) TABS (2) OBJECT(.\Objects\i2c_manager_2.obj)
