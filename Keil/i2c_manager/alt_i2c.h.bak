@@ -22,6 +22,11 @@
 void I2C_delay(void);
 bool read_SCL(void);  // Return current level of SCL line, 0 or 1
 bool read_SDA(void);  // Return current level of SDA line, 0 or 1
+void set_SCL(void);   // Do not drive SCL (set pin high-impedance)
+void clear_SCL(void); // Actively drive SCL signal low
+void set_SDA(void);   // Do not drive SDA (set pin high-impedance)
+void clear_SDA(void); // Actively drive SDA signal low
+void arbitration_lost(void);
 
 bool started = false; // global data
 
