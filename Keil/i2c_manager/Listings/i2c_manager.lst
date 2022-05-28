@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   I2C_MANAGER                                                       05/20/2022 10:30:26 PAGE 1   
+C51 COMPILER V9.60.0.0   I2C_MANAGER                                                       05/28/2022 19:23:23 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE I2C_MANAGER
@@ -62,7 +62,7 @@ line level    source
   52   3            free_wait();
   53   3            return;
   54   3          }
-C51 COMPILER V9.60.0.0   I2C_MANAGER                                                       05/20/2022 10:30:26 PAGE 2   
+C51 COMPILER V9.60.0.0   I2C_MANAGER                                                       05/28/2022 19:23:23 PAGE 2   
 
   55   2        }
   56   1      }
@@ -126,14 +126,14 @@ line level    source
  114   5              }
  115   4            }
  116   3          }
-C51 COMPILER V9.60.0.0   I2C_MANAGER                                                       05/20/2022 10:30:26 PAGE 3   
+C51 COMPILER V9.60.0.0   I2C_MANAGER                                                       05/28/2022 19:23:23 PAGE 3   
 
  117   2        }
  118   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    503    ----
+   CODE SIZE        =    478    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

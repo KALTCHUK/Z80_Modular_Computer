@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   I2C_MANAGER_2                                                     05/20/2022 10:27:51 PAGE 1   
+C51 COMPILER V9.60.0.0   I2C_MANAGER_2                                                     05/28/2022 18:25:30 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE I2C_MANAGER_2
@@ -62,7 +62,7 @@ line level    source
   52   3            P1 = Data;
   53   3            free_wait();
   54   3            return;
-C51 COMPILER V9.60.0.0   I2C_MANAGER_2                                                     05/20/2022 10:27:51 PAGE 2   
+C51 COMPILER V9.60.0.0   I2C_MANAGER_2                                                     05/28/2022 18:25:30 PAGE 2   
 
   55   3          }
   56   2        }
@@ -126,7 +126,7 @@ line level    source
  114   5                    buf[i] = I2C_read(NAK);
  115   5                  else
  116   5                    buf[i] = I2C_read(ACK);
-C51 COMPILER V9.60.0.0   I2C_MANAGER_2                                                     05/20/2022 10:27:51 PAGE 3   
+C51 COMPILER V9.60.0.0   I2C_MANAGER_2                                                     05/28/2022 18:25:30 PAGE 3   
 
  117   5                }
  118   4                I2C_stop();

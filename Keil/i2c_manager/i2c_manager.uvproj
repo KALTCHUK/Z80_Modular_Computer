@@ -383,16 +383,6 @@
             </File>
           </Files>
         </Group>
-        <Group>
-          <GroupName>New header group</GroupName>
-          <Files>
-            <File>
-              <FileName>i2c_manager_2.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\i2c_manager_2.c</FilePath>
-            </File>
-          </Files>
-        </Group>
       </Groups>
     </Target>
   </Targets>

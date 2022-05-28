@@ -190,7 +190,7 @@
 
   (footprint "MountingHole:MountingHole_3mm_Pad_TopBottom" (layer "F.Cu")
     (tedit 56D1B4CB) (tstamp cbdd084c-3cde-4340-9de6-6f6ca3f79e91)
-    (at 123.19 41.91)
+    (at 116.84 41.91)
     (descr "Mounting Hole 3mm")
     (tags "mounting hole 3mm")
     (property "Sheetfile" "TopBottomLateral.kicad_sch")
@@ -302,7 +302,7 @@
 
   (footprint "MountingHole:MountingHole_3mm_Pad_TopBottom" (layer "F.Cu")
     (tedit 56D1B4CB) (tstamp e44dd86d-8737-430e-a0f5-f7ecf3fa5a6b)
-    (at 63.5 139.065)
+    (at 72.39 139.065)
     (descr "Mounting Hole 3mm")
     (tags "mounting hole 3mm")
     (property "Sheetfile" "TopBottomLateral.kicad_sch")
@@ -330,7 +330,7 @@
 
   (footprint "MountingHole:MountingHole_3mm_Pad_TopBottom" (layer "F.Cu")
     (tedit 56D1B4CB) (tstamp eb8da7b1-c954-4f96-b636-28a01b4ed609)
-    (at 123.19 139.065)
+    (at 114.3 139.065)
     (descr "Mounting Hole 3mm")
     (tags "mounting hole 3mm")
     (property "Sheetfile" "TopBottomLateral.kicad_sch")

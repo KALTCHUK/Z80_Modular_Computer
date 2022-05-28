@@ -29,9 +29,9 @@ I2C_delay Function
 Propagation delay
 ------------------------------------------------*/
 void I2C_delay(void) {
-	int	i;
+/*	int	i;
 	
-	for(i=0; i<2; i++) {}
+	for(i=0; i<2; i++) {} */
 }
 
 /*------------------------------------------------
@@ -68,7 +68,6 @@ char I2C_write(char byte) {
 		SCL_HI;
 		I2C_delay();
 		SCL_LO;
-		I2C_delay();
 		byte <<= 1;
 	}
 	SCL_HI;
