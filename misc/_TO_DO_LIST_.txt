@@ -1,7 +1,7 @@
 - Design PCBs for:
 	- PSU.
 	- I2C.
-	- top/bottom panel.
+	- extension board.
 
 - Finish Proton enclosure.
 	- cut & drill top/bottom PCBs.
