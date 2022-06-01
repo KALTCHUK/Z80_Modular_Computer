@@ -1,11 +1,8 @@
 - Design PCBs for:
 	- PSU.
 	- I2C.
-	- extension board.
 
 - Finish Proton enclosure.
-	- cut & drill top/bottom PCBs.
-	- trim slots.
 	- cut aluminium profiles.
 	- assemble.
 
