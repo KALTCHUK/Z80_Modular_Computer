@@ -364,8 +364,8 @@
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "schematic_color": "rgba(0, 0, 0, 0.000)",
         "track_width": 1.016,
-        "via_diameter": 2.54,
-        "via_drill": 0.4,
+        "via_diameter": 1.016,
+        "via_drill": 0.508,
         "wire_width": 6.0
       }
     ],
@@ -379,7 +379,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "specctra_dsn": "",
+      "specctra_dsn": "PSU2.dsn",
       "step": "",
       "vrml": ""
     },

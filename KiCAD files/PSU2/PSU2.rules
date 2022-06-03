@@ -1,0 +1,79 @@
+
+(rules PCB PSU2
+  (snap_angle 
+    fortyfive_degree
+  )
+  (autoroute_settings
+    (fanout off)
+    (autoroute on)
+    (postroute on)
+    (vias on)
+    (via_costs 50)
+    (plane_via_costs 5)
+    (start_ripup_costs 100)
+    (start_pass_no 330)
+    (layer_rule F.Cu
+      (active on)
+      (preferred_direction horizontal)
+      (preferred_direction_trace_costs 1.0)
+      (against_preferred_direction_trace_costs 2.4)
+    )
+    (layer_rule B.Cu
+      (active on)
+      (preferred_direction vertical)
+      (preferred_direction_trace_costs 1.0)
+      (against_preferred_direction_trace_costs 1.7)
+    )
+  )
+  (rule
+    (width 1016.0)
+    (clear 508.2)
+    (clear 508.0 (type smd_to_turn_gap))
+    (clear 127.0 (type smd_smd))
+  )
+  (padstack "Via[0-1]_1016:508_um"
+    (shape
+      (circle F.Cu 1016.0 0.0 0.0)
+    )
+    (shape
+      (circle B.Cu 1016.0 0.0 0.0)
+    )
+    (attach off)
+  )
+  (via 
+    "Via[0-1]_1016:508_um" "Via[0-1]_1016:508_um" default
+  )
+  (via 
+    "Via[0-1]_1016:508_um-kicad_default" "Via[0-1]_1016:508_um" "kicad_default"
+  )
+  (via_rule
+    default "Via[0-1]_1016:508_um"
+  )
+  (via_rule
+    "kicad_default" "Via[0-1]_1016:508_um-kicad_default"
+  )
+  (class default
+    "Net-(D1-Pad1)" /+12V "Net-(D2-Pad1)" /+5V "Net-(D3-Pad1)" /+3.3V "Net-(J1-Pad2)" "Net-(J2-Pad1)"
+    LINE NEUT GND "Net-(J4-Pad1)" "unconnected-(K1-Pad2)" "Net-(J1-Pad1)" "unconnected-(J6-Pad1)" "unconnected-(J6-Pad2)"
+    "unconnected-(J6-Pad3)" "unconnected-(J6-Pad4)" "unconnected-(J6-Pad5)" "unconnected-(J6-Pad6)" "unconnected-(J6-Pad7)" "unconnected-(J6-Pad8)" "unconnected-(J6-Pad9)" "unconnected-(J6-Pad10)"
+    "Net-(J4-Pad3)" "Net-(R2-Pad1)"
+    (clearance_class default)
+    (via_rule default)
+    (rule
+      (width 1016.0)
+    )
+    (circuit 
+      (use_layer F.Cu B.Cu)
+    )
+  )
+  (class "kicad_default"
+    (clearance_class "kicad_default")
+    (via_rule kicad_default)
+    (rule
+      (width 1016.0)
+    )
+    (circuit 
+      (use_layer F.Cu B.Cu)
+    )
+  )
+)
