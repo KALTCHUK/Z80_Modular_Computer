@@ -41,43 +41,43 @@
       (place H2 197739.000000 -146685.000000 front 0.000000 (PN MountingHole))
     )
     (component Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal
-      (place R2 111506.000000 -106821.000000 front 0.000000 (PN 390))
+      (place R2 119126.000000 -107315.000000 front 180.000000 (PN 390))
     )
-    (component Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Vertical
+    (component Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical
       (place J1 195834.000000 -109982.000000 front 0.000000 (PN "Ext switch"))
     )
     (component "MyStuff:Relay_SPDT_Songel-15x19mm"
-      (place K1 168656.000000 -85979.000000 front 180.000000 (PN "SRD-05VDC-SL-C"))
+      (place K1 171323.000000 -99314.000000 front 90.000000 (PN "SRD-05VDC-SL-C"))
     )
     (component Connector_PinHeader_2.54mm:PinHeader_2x02_P2.54mm_Vertical
       (place J4 125095.000000 -107696.000000 front 0.000000 (PN "Vo enable"))
     )
     (component "Package_TO_SOT_THT:TO-220-3_Vertical"
-      (place U1 112212.000000 -119888.000000 front -90.000000 (PN "LM317_TO-220"))
+      (place U1 110871.000000 -125349.000000 front 90.000000 (PN "LM317_TO-220"))
     )
     (component Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal::1
-      (place R4 111506.000000 -110871.000000 front 0.000000 (PN 240))
+      (place R4 111506.000000 -110617.000000 front 0.000000 (PN 240))
     )
     (component LED_THT:LED_D3.0mm
-      (place D2 200533.000000 -96769.000000 front -90.000000 (PN LED))
+      (place D2 197866.000000 -96261.000000 front -90.000000 (PN LED))
     )
     (component "MyStuff:Converter_ACDC_5V_10W_XPJ-01B"
-      (place "PS2 (5V)" 183995.000000 -149892.000000 front 90.000000 (PN "XPJ-01B_5V_10W"))
+      (place PS2 183995.000000 -149892.000000 front 90.000000 (PN "XPJ-01B_5V_10W"))
     )
-    (component Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical
+    (component Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical::1
       (place J2 168783.000000 -111511.000000 front 180.000000 (PN "To switch"))
     )
     (component LED_THT:LED_D3.0mm::1
-      (place D3 200533.000000 -101976.000000 front -90.000000 (PN LED))
+      (place D3 197866.000000 -100960.000000 front -90.000000 (PN LED))
     )
     (component Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal::2
-      (place R3 195326.000000 -97663.000000 front 180.000000 (PN 330))
+      (place R3 192659.000000 -97536.000000 front 180.000000 (PN 330))
     )
     (component LED_THT:LED_D3.0mm::2
-      (place D1 200533.000000 -91567.000000 front -90.000000 (PN LED))
+      (place D1 197866.000000 -91567.000000 front -90.000000 (PN LED))
     )
     (component Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal::3
-      (place R1 195326.000000 -92583.000000 front 180.000000 (PN 1k2))
+      (place R1 192659.000000 -92710.000000 front 180.000000 (PN 1k2))
     )
     (component Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_Vertical
       (place J5 107569.000000 -85090.000000 front 0.000000 (PN "Power bus"))
@@ -86,10 +86,10 @@
       (place J6 107564.000000 -138435.000000 front 0.000000 (PN "Mech support"))
     )
     (component Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal::4
-      (place R5 195453.000000 -102743.000000 front 180.000000 (PN 150))
+      (place R5 192659.000000 -102235.000000 front 180.000000 (PN 150))
     )
     (component "MyStuff:MT3608_2-24V_2A"
-      (place "PS1 (12V)" 150876.000000 -83566.000000 front 180.000000 (PN "MT3608_2-24V_2A"))
+      (place PS1 150876.000000 -83566.000000 front 180.000000 (PN "MT3608_2-24V_2A"))
     )
   )
   (library
@@ -133,22 +133,22 @@
       (pin Round[A]Pad_1600_um 1 0 0)
       (pin Oval[A]Pad_1600x1600_um 2 7620 0)
     )
-    (image Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Vertical
-      (outline (path signal 120  -1330 -1270  1330 -1270))
+    (image Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical
+      (outline (path signal 120  -1330 0  -1330 1330))
       (outline (path signal 120  1330 -1270  1330 -3870))
-      (outline (path signal 120  1330 1330  1330 0))
       (outline (path signal 120  -1330 -3870  1330 -3870))
-      (outline (path signal 120  0 1330  1330 1330))
+      (outline (path signal 120  -1330 1330  0 1330))
+      (outline (path signal 120  -1330 -1270  1330 -1270))
       (outline (path signal 120  -1330 -1270  -1330 -3870))
-      (outline (path signal 50  1750 1800  1750 -4300))
-      (outline (path signal 50  -1800 -4300  -1800 1800))
-      (outline (path signal 50  -1800 1800  1750 1800))
-      (outline (path signal 50  1750 -4300  -1800 -4300))
-      (outline (path signal 100  -1270 -3810  -1270 1270))
+      (outline (path signal 50  1800 1800  -1800 1800))
+      (outline (path signal 50  -1800 1800  -1800 -4350))
+      (outline (path signal 50  -1800 -4350  1800 -4350))
+      (outline (path signal 50  1800 -4350  1800 1800))
       (outline (path signal 100  1270 -3810  -1270 -3810))
-      (outline (path signal 100  1270 635  1270 -3810))
-      (outline (path signal 100  -1270 1270  635 1270))
-      (outline (path signal 100  635 1270  1270 635))
+      (outline (path signal 100  1270 1270  1270 -3810))
+      (outline (path signal 100  -1270 635  -635 1270))
+      (outline (path signal 100  -1270 -3810  -1270 635))
+      (outline (path signal 100  -635 1270  1270 1270))
       (pin Rect[A]Pad_1700x1700_um 1 0 0)
       (pin Oval[A]Pad_1700x1700_um 2 0 -2540)
     )
@@ -337,7 +337,7 @@
       (pin Round[A]Pad_2000_um 3 13200 59700)
       (pin Round[A]Pad_2000_um 4 15700 59700)
     )
-    (image Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical
+    (image Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical::1
       (outline (path signal 120  -1330 -1270  -1330 -3870))
       (outline (path signal 120  -1330 -3870  1330 -3870))
       (outline (path signal 120  -1330 -1270  1330 -1270))
@@ -752,13 +752,13 @@
       (pins D1-1 R1-1)
     )
     (net /+12V
-      (pins D1-2 J5-5 J5-6 "PS1 (12V)"-4)
+      (pins D1-2 J5-5 J5-6 PS1-4)
     )
     (net "Net-(D2-Pad1)"
       (pins D2-1 R3-1)
     )
     (net /+5V
-      (pins J4-2 J4-4 D2-2 "PS2 (5V)"-4 J5-3 J5-4)
+      (pins J4-2 J4-4 D2-2 PS2-4 J5-3 J5-4)
     )
     (net "Net-(D3-Pad1)"
       (pins D3-1 R5-1)
@@ -770,19 +770,19 @@
       (pins J1-2 K1-3)
     )
     (net "Net-(J2-Pad1)"
-      (pins K1-5 "PS2 (5V)"-2 J2-1)
+      (pins K1-5 PS2-2 J2-1)
     )
     (net LINE
       (pins J3-1 K1-1 J2-2)
     )
     (net NEUT
-      (pins J3-2 "PS2 (5V)"-1)
+      (pins J3-2 PS2-1)
     )
     (net GND
-      (pins R2-2 "PS2 (5V)"-3 R3-2 R1-2 J5-1 J5-2 J5-9 J5-10 R5-2 "PS1 (12V)"-1 "PS1 (12V)"-3)
+      (pins R2-2 PS2-3 R3-2 R1-2 J5-1 J5-2 J5-9 J5-10 R5-2 PS1-1 PS1-3)
     )
     (net "Net-(J4-Pad1)"
-      (pins J4-1 "PS1 (12V)"-2)
+      (pins J4-1 PS1-2)
     )
     (net "unconnected-(K1-Pad2)"
       (pins K1-2)
@@ -837,17 +837,24 @@
     )
   )
   (wiring
-    (wire (path F.Cu 1016  200533 -94107  200241 -94399.4)(net /+12V)(type protect))
-    (wire (path F.Cu 1016  107569 -90170  110109 -90170)(net /+12V)(type protect))
-    (wire (path B.Cu 1016  200241 -94398.5  200533 -94107)(net /+12V)(type protect))
-    (wire (path F.Cu 1016  110109 -87630  107569 -87630)(net /+5V)(type protect))
-    (wire (path F.Cu 1016  199782 -100060  200533 -99309)(net /+5V)(type protect))
-    (wire (path F.Cu 1016  107569 -92710  110109 -92710)(net /+3.3V)(type protect))
-    (wire (path B.Cu 1016  200324 -104725  200533 -104516)(net /+3.3V)(type protect))
-    (wire (path F.Cu 1016  107569 -95250  110109 -95250)(net GND)(type protect))
-    (wire (path F.Cu 1016  107569 -85090  110109 -85090)(net GND)(type protect))
-    (wire (path F.Cu 1016  123889 -136692  124295 -136692)(net GND)(type protect))
-    (wire (path B.Cu 1016  107569 -85090  107471 -85090)(net GND)(type protect))
-    (wire (path B.Cu 1016  107471 -95250  107569 -95250)(net GND)(type protect))
+    (wire (path F.Cu 1016  168685 -111511  168783 -111511)(net "Net-(J2-Pad1)")(type protect))
+    (wire (path F.Cu 1016  166917 -102031  166917 -109744  168685 -111511)(net "Net-(J2-Pad1)")(type protect))
+    (wire (path F.Cu 1016  156718 -93599  158486 -93599  166917 -102031)(net "Net-(J2-Pad1)")(type protect))
+    (wire (path F.Cu 1016  171323 -108595  171699 -108971  168783 -108971)(net LINE)(type protect))
+    (wire (path F.Cu 1016  171323 -99314  171323 -108595)(net LINE)(type protect))
+    (wire (path F.Cu 1016  172598 -108971  171699 -108971)(net LINE)(type protect))
+    (wire (path F.Cu 1016  168860 -148808  167679 -147627)(net "Net-(J2-Pad1)")(type protect))
+    (wire (path F.Cu 1016  172679 -148808  168860 -148808)(net "Net-(J2-Pad1)")(type protect))
+    (wire (path F.Cu 1016  167679 -147627  167679 -112615)(net "Net-(J2-Pad1)")(type protect))
+    (wire (path F.Cu 1016  174695 -146792  172679 -148808)(net "Net-(J2-Pad1)")(type protect))
+    (wire (path F.Cu 1016  167679 -112615  168783 -111511)(net "Net-(J2-Pad1)")(type protect))
+    (wire (path F.Cu 1016  176149 -112522  172598 -108971)(net LINE)(type protect))
+    (wire (path F.Cu 1016  176149 -119811  176149 -112522)(net LINE)(type protect))
+    (wire (path F.Cu 1016  180798 -124460  176149 -119811)(net LINE)(type protect))
+    (wire (path F.Cu 1016  188087 -124460  180798 -124460)(net LINE)(type protect))
+    (wire (path F.Cu 1016  169695 -135659  169695 -146792)(net NEUT)(type protect))
+    (wire (path F.Cu 1016  169672 -135636  169695 -135659)(net NEUT)(type protect))
+    (wire (path F.Cu 1016  172212 -133096  169672 -135636)(net NEUT)(type protect))
+    (wire (path F.Cu 1016  188087 -133096  172212 -133096)(net NEUT)(type protect))
   )
 )
