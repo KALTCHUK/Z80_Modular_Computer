@@ -10,17 +10,17 @@
   #include "HTTPClient.h"
 #endif
 
-#include <EasyDDNS.h>
+//#include <EasyDDNS.h>
 #include <algorithm> // std::min
 
 #ifndef STASSID
-#define STASSID "EZOMmobile"
-#define STAPSK  "$thx1138"
-//#define STASSID "Ariela"
-//#define STAPSK  "XFONE123"
+//#define STASSID "EZOMmobile"
+//#define STAPSK  "$thx1138"
+#define STASSID "Ariela"
+#define STAPSK  "Thx11380"
 #endif
 
-#define BAUD_SERIAL 38400
+#define BAUD_SERIAL 250000
 #define RXBUFFERSIZE 1024
 #define STACK_PROTECTOR  512 // bytes
 #define MAX_SRV_CLIENTS 2
@@ -56,8 +56,8 @@ void setup() {
   server.begin();
   server.setNoDelay(true);
 
-  EasyDDNS.service("duckdns");
-  EasyDDNS.client("z80mc.duckdns.org", "7ee256ad-99c4-4c0f-b8a4-c6b4b46d3fbb");
+//  EasyDDNS.service("duckdns");
+//  EasyDDNS.client("z80mc.duckdns.org", "7ee256ad-99c4-4c0f-b8a4-c6b4b46d3fbb");
 }
 
 void loop() {
