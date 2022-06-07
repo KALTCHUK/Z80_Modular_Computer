@@ -177,7 +177,7 @@
   (gr_line (start 190.871974 96.637974) (end 190.871974 91.576026) (layer "Edge.Cuts") (width 0.05) (tstamp d23b3975-dd9c-4076-8be1-c595d3fb5bfb))
   (gr_arc (start 190.871974 96.637974) (mid 190.5 97.536) (end 189.601974 97.907974) (layer "Edge.Cuts") (width 0.05) (tstamp e0779aec-3cee-4d44-8148-5ffaa4f4b7d5))
   (gr_line (start 171.323 48.641) (end 171.323 128.651) (layer "Edge.Cuts") (width 0.1) (tstamp fd009861-d7e2-4a13-9734-25b5bed48e35))
-  (gr_text "I2C\nBus" (at 184.912 85.852) (layer "F.SilkS") (tstamp 139b771d-3f1d-4961-8023-8a04be7303f3)
+  (gr_text "I2C\nBus" (at 175.387 93.853) (layer "F.SilkS") (tstamp 139b771d-3f1d-4961-8023-8a04be7303f3)
     (effects (font (size 2.0828 2.0828) (thickness 0.3302)) (justify left))
   )
   (gr_text "ADDR" (at 177.546 125.476) (layer "F.SilkS") (tstamp 59684306-e24b-4f73-972e-50714e4527e8)

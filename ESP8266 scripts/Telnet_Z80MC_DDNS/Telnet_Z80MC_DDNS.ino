@@ -10,7 +10,7 @@
   #include "HTTPClient.h"
 #endif
 
-//#include <EasyDDNS.h>
+#include <EasyDDNS.h>
 #include <algorithm> // std::min
 
 #ifndef STASSID
@@ -56,8 +56,8 @@ void setup() {
   server.begin();
   server.setNoDelay(true);
 
-//  EasyDDNS.service("duckdns");
-//  EasyDDNS.client("z80mc.duckdns.org", "7ee256ad-99c4-4c0f-b8a4-c6b4b46d3fbb");
+  EasyDDNS.service("duckdns");
+  EasyDDNS.client("protonz80.duckdns.org", "7ee256ad-99c4-4c0f-b8a4-c6b4b46d3fbb");
 }
 
 void loop() {
@@ -87,30 +87,23 @@ void loop() {
   if (serverClients[1].available()) {
     j = 0;
     while (serverClients[1].available()) {
-      serviceString[j++] = serverClients[1].read();
+      serviceString[j] = serverClients[1].read();
+      serverClients[1].write(serviceString[j++]);
     }
-    serviceString[5] = 0;
-    if ((strcmp("reset", serviceString) == 0) || (strcmp("RESET", serviceString) == 0)) {
-      digitalWrite(RESET_RELAY,HIGH);
-      delay(500);
-      digitalWrite(RESET_RELAY,LOW);
-      serverClients[1].println("\n\rOK");
+
+    switch (serviceString[0]) {
+      case '0':
+        digitalWrite(POWER_RELAY,LOW);
+        serverClients[1].println("\n\rPOWER OFF");
+        break;
+      case '1':
+        digitalWrite(POWER_RELAY,HIGH);
+        serverClients[1].println("\n\rPOWER ON");
+        break;
+      default:
+        serverClients[1].println("\n\rUse: 1   to turn power on");
+        serverClients[1].println(    "     0   to turn power off");
     }
-    serviceString[3] = 0;
-    if ((strcmp("off", serviceString) == 0) || (strcmp("OFF", serviceString) == 0)) {
-      digitalWrite(POWER_RELAY,LOW);
-      serverClients[1].println("\n\rPOWER OFF");
-    }
-    serviceString[2] = 0;
-    if ((strcmp("on", serviceString) == 0) || (strcmp("ON", serviceString) == 0)) {
-      digitalWrite(POWER_RELAY,HIGH);
-      serverClients[1].println("\n\rPOWER ON");
-    } else {
-      serverClients[1].println("\n\rUse: on    (to turn power on)");
-      serverClients[1].println(    "     off   (to turn power off)");
-      serverClients[1].println(    "     reset (to reset Z80)");
-    }
-    serviceString[0] = 0;
   }
 
   // determine maximum output size "fair TCP use"
