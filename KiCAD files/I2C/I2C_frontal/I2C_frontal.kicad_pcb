@@ -77,7 +77,7 @@
   (net 0 "")
 
   (footprint "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical" (layer "F.Cu")
-    (tedit 61F0F3ED) (tstamp 91b75a54-d1ec-4866-b522-889216308131)
+    (tedit 629DEA11) (tstamp 91b75a54-d1ec-4866-b522-889216308131)
     (at 185.801 118.491)
     (descr "Through hole straight pin header, 1x01, 2.54mm pitch, single row")
     (tags "Through hole pin header THT 1x01 2.54mm single row")
@@ -109,7 +109,7 @@
     (fp_line (start -0.635 -1.27) (end 1.27 -1.27) (layer "F.Fab") (width 0.1) (tstamp afb8e687-4a13-41a1-b8c0-89a749e897fe))
     (fp_line (start -1.27 1.27) (end -1.27 -0.635) (layer "F.Fab") (width 0.1) (tstamp bb7f0588-d4d8-44bf-9ebf-3c533fe4d6ae))
     (fp_line (start -1.27 -0.635) (end -0.635 -1.27) (layer "F.Fab") (width 0.1) (tstamp f1830a1b-f0cc-47ae-a2c9-679c82032f14))
-    (pad "1" thru_hole circle locked (at 0 0) (size 5.08 5.08) (drill 3.048) (layers *.Cu *.Mask) (tstamp e615f7aa-337e-474d-9615-2ad82b1c44ca))
+    (pad "" thru_hole circle locked (at 0 0) (size 5.08 5.08) (drill 3.048) (layers *.Cu *.Mask) (tstamp e615f7aa-337e-474d-9615-2ad82b1c44ca))
     (model "${KISYS3DMOD}/Connector_PinHeader_2.54mm.3dshapes/PinHeader_1x01_P2.54mm_Vertical.wrl"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
@@ -118,7 +118,7 @@
   )
 
   (footprint "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical" (layer "F.Cu")
-    (tedit 61F0F3A4) (tstamp bea563eb-c0f3-4a50-99fa-15306460f654)
+    (tedit 629DEA05) (tstamp bea563eb-c0f3-4a50-99fa-15306460f654)
     (at 185.801 58.801)
     (descr "Through hole straight pin header, 1x01, 2.54mm pitch, single row")
     (tags "Through hole pin header THT 1x01 2.54mm single row")
@@ -150,7 +150,7 @@
     (fp_line (start 1.27 -1.27) (end 1.27 1.27) (layer "F.Fab") (width 0.1) (tstamp 9ccf03e8-755a-4cd9-96fc-30e1d08fa253))
     (fp_line (start -1.27 -0.635) (end -0.635 -1.27) (layer "F.Fab") (width 0.1) (tstamp a7520ad3-0f8b-4788-92d4-8ffb277041e6))
     (fp_line (start -1.27 1.27) (end -1.27 -0.635) (layer "F.Fab") (width 0.1) (tstamp a795f1ba-cdd5-4cc5-9a52-08586e982934))
-    (pad "1" thru_hole circle locked (at 0 0) (size 5.08 5.08) (drill 3.048) (layers *.Cu *.Mask) (tstamp 23bb2798-d93a-4696-a962-c305c4298a0c))
+    (pad "" thru_hole circle locked (at 0 0) (size 5.08 5.08) (drill 3.048) (layers *.Cu *.Mask) (tstamp 23bb2798-d93a-4696-a962-c305c4298a0c))
     (model "${KISYS3DMOD}/Connector_PinHeader_2.54mm.3dshapes/PinHeader_1x01_P2.54mm_Vertical.wrl"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
