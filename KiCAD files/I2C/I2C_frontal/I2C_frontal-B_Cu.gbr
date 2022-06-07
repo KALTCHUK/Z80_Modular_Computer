@@ -1,12 +1,12 @@
 %TF.GenerationSoftware,KiCad,Pcbnew,(6.0.4)*%
-%TF.CreationDate,2022-06-04T07:24:44+03:00*%
+%TF.CreationDate,2022-06-06T18:32:31+03:00*%
 %TF.ProjectId,I2C_frontal,4932435f-6672-46f6-9e74-616c2e6b6963,rev?*%
 %TF.SameCoordinates,Original*%
 %TF.FileFunction,Copper,L2,Bot*%
 %TF.FilePolarity,Positive*%
 %FSLAX46Y46*%
 G04 Gerber Fmt 4.6, Leading zero omitted, Abs format (unit mm)*
-G04 Created by KiCad (PCBNEW (6.0.4)) date 2022-06-04 07:24:44*
+G04 Created by KiCad (PCBNEW (6.0.4)) date 2022-06-06 18:32:31*
 %MOMM*%
 %LPD*%
 G01*
@@ -16,12 +16,12 @@ G04 APERTURE LIST*
 %TD*%
 G04 APERTURE END LIST*
 D10*
-%TO.P,J8,1*%
-%TO.N,N/C*%
+%TO.P,J8,*%
+%TO.N,*%
 X185801000Y-118491000D03*
 %TD*%
-%TO.P,J7,1*%
-%TO.N,N/C*%
+%TO.P,J7,*%
+%TO.N,*%
 X185801000Y-58801000D03*
 %TD*%
 %TA.AperFunction,NonConductor*%
