@@ -88,34 +88,22 @@ void loop() {
     j = 0;
     while (serverClients[1].available()) {
       serviceString[j] = serverClients[1].read();
-      serverClients[1].printf("\c", serviceString[j++]);
+      serverClients[1].write(serviceString[j++]);
+    }
 
+    switch (serviceString[0]) {
+      case '0':
+        digitalWrite(POWER_RELAY,LOW);
+        serverClients[1].println("\n\rPOWER OFF");
+        break;
+      case '1':
+        digitalWrite(POWER_RELAY,HIGH);
+        serverClients[1].println("\n\rPOWER ON");
+        break;
+      default:
+        serverClients[1].println("\n\rUse: 1   to turn power on");
+        serverClients[1].println(    "     0   to turn power off");
     }
-    serviceString[5] = 0;
-//    if ((strcmp("reset", serviceString) == 0) || (strcmp("RESET", serviceString) == 0)) {
-    if ((serviceString[0] == 'r') || (serviceString[0] == 'R')) {
-      digitalWrite(RESET_RELAY,HIGH);
-      delay(500);
-      digitalWrite(RESET_RELAY,LOW);
-      serverClients[1].println("\n\rOK");
-    }
-    serviceString[3] = 0;
-//    if ((strcmp("off", serviceString) == 0) || (strcmp("OFF", serviceString) == 0)) {
-    if (serviceString[0] == '0') {
-      digitalWrite(POWER_RELAY,LOW);
-      serverClients[1].println("\n\rPOWER OFF");
-    }
-    serviceString[2] = 0;
-//    if ((strcmp("on", serviceString) == 0) || (strcmp("ON", serviceString) == 0)) {
-    if (serviceString[0] == '1') {
-      digitalWrite(POWER_RELAY,HIGH);
-      serverClients[1].println("\n\rPOWER ON");
-    } else {
-      serverClients[1].println("\n\rUse: 1   to turn power on");
-      serverClients[1].println(    "     0   to turn power off");
-      serverClients[1].println(    "     r   to reset Z80");
-    }
-    serviceString[0] = 0;
   }
 
   // determine maximum output size "fair TCP use"
