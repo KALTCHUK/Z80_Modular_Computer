@@ -1,10 +1,4 @@
-- Design PCBs for:
-	- PSU.
-	- I2C.
-
 - Finish Proton enclosure.
-	- cut aluminium profiles.
-	- assemble.
 
 - Finish Proton Manual. 
 	- BOM,
@@ -15,6 +9,8 @@
 - Study Linux.
 	- serial port device
 	- crontab
+
+- Design PCB for ESP8266 Telnet server
 
 - Build RP-100.
 
