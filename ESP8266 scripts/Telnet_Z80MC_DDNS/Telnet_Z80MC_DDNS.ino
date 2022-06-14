@@ -37,9 +37,9 @@ WiFiClient serverClients[MAX_SRV_CLIENTS];
 
 void setup() {
   pinMode(POWER_RELAY,OUTPUT);
-  digitalWrite(POWER_RELAY,LOW);
+  digitalWrite(POWER_RELAY,HIGH);
   pinMode(READY_LED,OUTPUT);
-  digitalWrite(READY_LED,HIGH);
+  digitalWrite(READY_LED,LOW);
   
   Serial.begin(BAUD_SERIAL);
   Serial.setRxBufferSize(RXBUFFERSIZE);
@@ -59,7 +59,7 @@ void setup() {
   EasyDDNS.service("duckdns");
   EasyDDNS.client("protonz80.duckdns.org", "7ee256ad-99c4-4c0f-b8a4-c6b4b46d3fbb");
 
-  digitalWrite(READY_LED,LOW);
+  digitalWrite(READY_LED,HIGH);
 }
 
 void loop() {
@@ -95,11 +95,11 @@ void loop() {
 
     switch (serviceString[0]) {
       case '0':
-        digitalWrite(POWER_RELAY,LOW);
+        digitalWrite(POWER_RELAY,HIGH);
         serverClients[1].println("\n\rPOWER OFF");
         break;
       case '1':
-        digitalWrite(POWER_RELAY,HIGH);
+        digitalWrite(POWER_RELAY,LOW);
         serverClients[1].println("\n\rPOWER ON");
         break;
       default:
