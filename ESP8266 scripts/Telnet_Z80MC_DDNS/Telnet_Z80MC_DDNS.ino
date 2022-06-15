@@ -14,10 +14,8 @@
 #include <algorithm> // std::min
 
 #ifndef STASSID
-//#define STASSID "EZOMmobile"
-//#define STAPSK  "$thx1138"
-#define STASSID "Ariela"
-#define STAPSK  "Thx11380"
+#define STASSID "Axxxxx"
+#define STAPSK  "Txxxxxxx"
 #endif
 
 #define BAUD_SERIAL 250000
