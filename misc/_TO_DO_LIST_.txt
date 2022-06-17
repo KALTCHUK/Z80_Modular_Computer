@@ -1,16 +1,10 @@
 - Finish Proton enclosure.
 
 - Finish Proton Manual. 
-	- BOM,
-	- front panel, 
-	- include USART, LCD, PX051 and I2C cards.
+	- BOMs,
+	- front panels, 
+	- include USART, LCD, PX051, PSU2 and I2C cards.
 	- review building procedure.
-
-- Study Linux.
-	- serial port device
-	- crontab
-
-- Design PCB for ESP8266 Telnet server
 
 - Build RP-100.
 
