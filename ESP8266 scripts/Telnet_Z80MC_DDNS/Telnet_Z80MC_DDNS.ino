@@ -14,8 +14,8 @@
 #include <algorithm> // std::min
 
 #ifndef STASSID
-#define STASSID "Axxxxx"
-#define STAPSK  "Txxxxxxx"
+#define STASSID "Ariela"
+#define STAPSK  "Thx11380"
 #endif
 
 #define BAUD_SERIAL 250000
@@ -37,7 +37,7 @@ void setup() {
   pinMode(POWER_RELAY,OUTPUT);
   digitalWrite(POWER_RELAY,HIGH);
   pinMode(READY_LED,OUTPUT);
-  digitalWrite(READY_LED,LOW);
+  digitalWrite(READY_LED,HIGH);
   
   Serial.begin(BAUD_SERIAL);
   Serial.setRxBufferSize(RXBUFFERSIZE);
@@ -57,7 +57,7 @@ void setup() {
   EasyDDNS.service("duckdns");
   EasyDDNS.client("protonz80.duckdns.org", "7ee256ad-99c4-4c0f-b8a4-c6b4b46d3fbb");
 
-  digitalWrite(READY_LED,HIGH);
+  digitalWrite(READY_LED,LOW);
 }
 
 void loop() {
