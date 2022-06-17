@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <export version="E">
   <design>
-    <source>C:\Users\kaltchuk\Documents\GitHub\Z80_Modular_Computer\KiCAD files\CPU\CPU.sch</source>
-    <date>19/02/2022 16:53:54</date>
-    <tool>Eeschema (6.0.2)</tool>
+    <source>C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\KiCAD files\CPU\CPU.kicad_sch</source>
+    <date>17/06/2022 4:12:31</date>
+    <tool>Eeschema (6.0.4)</tool>
     <sheet number="1" name="/" tstamps="/">
       <title_block>
         <title>CPU Card for Z80 Modular Computer</title>
         <company/>
         <rev/>
         <date/>
-        <source>CPU.sch</source>
+        <source>CPU.kicad_sch</source>
         <comment number="1" value="Z80 CPU + clock + reset"/>
         <comment number="2" value=""/>
         <comment number="3" value=""/>
@@ -29,7 +29,7 @@
       <footprint>Capacitor_THT:C_Disc_D3.8mm_W2.6mm_P2.50mm</footprint>
       <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-000060ee2aa3</tstamps>
     </comp>
@@ -38,7 +38,7 @@
       <footprint>Capacitor_THT:C_Disc_D3.8mm_W2.6mm_P2.50mm</footprint>
       <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-000060ee3893</tstamps>
     </comp>
@@ -47,7 +47,7 @@
       <footprint>Capacitor_THT:C_Disc_D3.8mm_W2.6mm_P2.50mm</footprint>
       <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-000060ee41b7</tstamps>
     </comp>
@@ -56,7 +56,7 @@
       <footprint>Capacitor_THT:CP_Radial_D5.0mm_P2.50mm</footprint>
       <libsource lib="Device" part="CP" description=""/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-00005efe3fda</tstamps>
     </comp>
@@ -65,7 +65,7 @@
       <footprint>Capacitor_THT:C_Disc_D3.8mm_W2.6mm_P2.50mm</footprint>
       <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-00005e35f358</tstamps>
     </comp>
@@ -74,7 +74,7 @@
       <footprint>Capacitor_THT:C_Disc_D3.8mm_W2.6mm_P2.50mm</footprint>
       <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-00005e35e6e4</tstamps>
     </comp>
@@ -83,7 +83,7 @@
       <footprint>Capacitor_THT:CP_Radial_D5.0mm_P2.50mm</footprint>
       <libsource lib="Device" part="CP" description=""/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-00005f38f7a8</tstamps>
     </comp>
@@ -92,7 +92,7 @@
       <footprint>LED_THT:LED_D3.0mm</footprint>
       <libsource lib="Device" part="LED" description="Light emitting diode"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-000060cbc165</tstamps>
     </comp>
@@ -102,7 +102,7 @@
       <datasheet>https://assets.nexperia.com/documents/d-sheet/1N4148_1N4448.pdf</datasheet>
       <libsource lib="Diode" part="1N4148" description="100V 0.15A standard switching diode, DO-35"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-00005e39ea66</tstamps>
     </comp>
@@ -111,7 +111,7 @@
       <footprint>LED_THT:LED_D3.0mm</footprint>
       <libsource lib="Device" part="LED" description="Light emitting diode"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-00005f31708f</tstamps>
     </comp>
@@ -120,7 +120,7 @@
       <footprint>Connector_PinHeader_2.54mm:PinHeader_2x20_P2.54mm_Vertical</footprint>
       <libsource lib="Connector_Generic" part="Conn_02x20_Odd_Even" description="Generic connector, double row, 02x20, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-00005de11a6d</tstamps>
     </comp>
@@ -129,7 +129,7 @@
       <footprint>Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_Vertical</footprint>
       <libsource lib="Connector_Generic" part="Conn_02x05_Odd_Even" description="Generic connector, double row, 02x05, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-00005de110bd</tstamps>
     </comp>
@@ -138,7 +138,7 @@
       <footprint>Connector_PinHeader_2.54mm:PinHeader_2x01_P2.54mm_Vertical</footprint>
       <libsource lib="Connector_Generic" part="Conn_02x01" description="Generic connector, double row, 02x01, this symbol is compatible with counter-clockwise, top-bottom and odd-even numbering schemes., script generated (kicad-library-utils/schlib/autogen/connector/)"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-000060da8272</tstamps>
     </comp>
@@ -147,7 +147,7 @@
       <footprint>Connector_PinHeader_2.54mm:PinHeader_2x02_P2.54mm_Vertical</footprint>
       <libsource lib="Connector_Generic" part="Conn_02x02_Odd_Even" description="Generic connector, double row, 02x02, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-000060e17a37</tstamps>
     </comp>
@@ -156,7 +156,7 @@
       <footprint>Connector_PinHeader_2.54mm:PinHeader_2x01_P2.54mm_Vertical</footprint>
       <libsource lib="Connector_Generic" part="Conn_02x01" description="Generic connector, double row, 02x01, this symbol is compatible with counter-clockwise, top-bottom and odd-even numbering schemes., script generated (kicad-library-utils/schlib/autogen/connector/)"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-000060da7471</tstamps>
     </comp>
@@ -165,7 +165,7 @@
       <footprint>Connector_PinHeader_2.54mm:PinHeader_2x03_P2.54mm_Vertical</footprint>
       <libsource lib="Connector_Generic" part="Conn_02x03_Odd_Even" description="Generic connector, double row, 02x03, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-000060d99554</tstamps>
     </comp>
@@ -175,7 +175,7 @@
       <datasheet>http://www.redrok.com/PNP_BC327_-45V_-800mA_0.625W_Hfe100_TO-92.pdf</datasheet>
       <libsource lib="Transistor_BJT" part="BC328" description="0.8A Ic, 25V Vce, PNP Transistor, TO-92"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-00005f30ebe9</tstamps>
     </comp>
@@ -184,7 +184,7 @@
       <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
       <libsource lib="Device" part="R" description="Resistor"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-00005e3559ca</tstamps>
     </comp>
@@ -193,7 +193,7 @@
       <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
       <libsource lib="Device" part="R" description="Resistor"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-00005e354e74</tstamps>
     </comp>
@@ -202,7 +202,7 @@
       <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
       <libsource lib="Device" part="R" description="Resistor"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-000060cc4f5f</tstamps>
     </comp>
@@ -211,7 +211,7 @@
       <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
       <libsource lib="Device" part="R" description="Resistor"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-00005e399f34</tstamps>
     </comp>
@@ -220,7 +220,7 @@
       <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
       <libsource lib="Device" part="R" description="Resistor"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-00005e399443</tstamps>
     </comp>
@@ -229,7 +229,7 @@
       <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
       <libsource lib="Device" part="R" description="Resistor"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-00005f316219</tstamps>
     </comp>
@@ -238,7 +238,7 @@
       <footprint>Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal</footprint>
       <libsource lib="Device" part="R" description="Resistor"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-00005f318e5e</tstamps>
     </comp>
@@ -248,7 +248,7 @@
       <datasheet>http://www.vishay.com/docs/31509/csc.pdf</datasheet>
       <libsource lib="Device" part="R_Network04" description="4 resistor network, star topology, bussed resistors, small symbol"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-000060e51537</tstamps>
     </comp>
@@ -258,7 +258,7 @@
       <datasheet>http://www.ti.com/lit/gpn/sn74ls00</datasheet>
       <libsource lib="74xx" part="74LS00" description="quad 2-input NAND gate"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-00005f33b6e6 00000000-0000-0000-0000-00005e80d8f7 00000000-0000-0000-0000-00005e351a86 00000000-0000-0000-0000-00005e65ac95 00000000-0000-0000-0000-00005e3503c0</tstamps>
     </comp>
@@ -268,7 +268,7 @@
       <datasheet>74xx/74hc_hct74.pdf</datasheet>
       <libsource lib="74xx" part="74LS74" description="Dual D Flip-flop, Set &amp; Reset"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-00005e632acd 00000000-0000-0000-0000-00005e65de93 00000000-0000-0000-0000-00005e5a7bf0</tstamps>
     </comp>
@@ -278,7 +278,7 @@
       <datasheet>www.zilog.com/manage_directlink.php?filepath=docs/z80/um0080</datasheet>
       <libsource lib="CPU" part="Z80CPU" description="8-bit General Purpose Microprocessor, DIP-40"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-00005de101b7</tstamps>
     </comp>
@@ -287,25 +287,12 @@
       <footprint>Crystal:Crystal_HC49-U_Vertical</footprint>
       <libsource lib="Device" part="Crystal_Small" description="Two pin crystal, small symbol"/>
       <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="C:/Users/kaltchuk/Documents/GitHub/Z80_Modular_Computer/KiCAD files/CPU/CPU.sch"/>
+      <property name="Sheetfile" value="CPU.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>00000000-0000-0000-0000-00005e35dd18</tstamps>
     </comp>
   </components>
   <libparts>
-    <libpart lib="" part="Device_CP">
-      <footprints>
-        <fp>CP_*</fp>
-      </footprints>
-      <fields>
-        <field name="Reference">C</field>
-        <field name="Value">Device_CP</field>
-      </fields>
-      <pins>
-        <pin num="1" name="" type="passive"/>
-        <pin num="2" name="" type="passive"/>
-      </pins>
-    </libpart>
     <libpart lib="74xx" part="74LS00">
       <description>quad 2-input NAND gate</description>
       <docs>http://www.ti.com/lit/gpn/sn74ls00</docs>
@@ -560,6 +547,19 @@
         <field name="Reference">C</field>
         <field name="Value">C</field>
         <field name="Datasheet">~</field>
+      </fields>
+      <pins>
+        <pin num="1" name="" type="passive"/>
+        <pin num="2" name="" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="CP">
+      <footprints>
+        <fp>CP_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">C</field>
+        <field name="Value">Device_CP</field>
       </fields>
       <pins>
         <pin num="1" name="" type="passive"/>
