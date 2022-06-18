@@ -1,24 +1,24 @@
-"Id";"Designator";"Package";"Quantity";"Designation";"Supplier and ref";
-1;"C1,C2,C7,C8";"C_Disc_D3.8mm_W2.6mm_P2.50mm";4;"22pF";;;
-2;"C3";"CP_Radial_D5.0mm_P2.50mm";1;"10uF";;;
-3;"C4,C5,C6,C9,C10,C11,C12,C13";"C_Disc_D3.8mm_W2.6mm_P2.50mm";8;"10nF";;;
-4;"C14,C15,C16,C17,C18";"CP_Radial_D5.0mm_P2.50mm";5;"1uF";;;
-5;"D1,D2,D3,D4";"LED_D3.0mm";4;"LED";;;
-6;"J1";"PinHeader_2x05_P2.54mm_Vertical";1;"Power Bus";;;
-7;"J2";"PinHeader_2x20_P2.54mm_Vertical";1;"Signal Buss";;;
-8;"J3,J5";"PinHeader_1x03_P2.54mm_Vertical";2;"TTL/RS232";;;
-9;"J4";"PinHeader_2x04_P2.54mm_Vertical";1;"Card addr";;;
-10;"J6";"PinHeader_2x03_P2.54mm_Vertical";1;"TTY1";;;
-11;"J7";"PinHeader_2x02_P2.54mm_Vertical";1;"TTY0";;;
-12;"J8";"DSUB-9_Male_Horizontal_P2.77x2.84mm_EdgePinOffset4.94mm_Housed_MountingHolesOffset7.48mm";1;"DB9";;;
-13;"RN1,RN2";"R_Array_SIP5";2;"4x10k";;;
-14;"RN3";"R_Array_SIP5";1;"4x220";;;
-15;"U1";"DIP-14_W7.62mm_Socket_LongPads";1;"74LS07";;;
-16;"U2";"DIP-14_W7.62mm_Socket_LongPads";1;"74LS74";;;
-17;"U3,U4";"DIP-28_W7.62mm_Socket_LongPads";2;"ATmega328P-PU";;;
-18;"U5";"DIP-14_W7.62mm_Socket_LongPads";1;"74LS08";;;
-19;"U6";"DIP-16_W7.62mm_Socket_LongPads";1;"74LS85";;;
-20;"U7";"DIP-14_W7.62mm_Socket_LongPads";1;"74LS00";;;
-21;"U8";"DIP-20_W7.62mm_Socket_LongPads";1;"74LS245";;;
-22;"U9";"DIP-16_W7.62mm_Socket_LongPads";1;"MAX232";;;
-23;"Y1,Y2";"Crystal_HC49-U_Vertical";2;"20MHz";;;
+"Item","Qty","Reference(s)","Value","LibPart","Footprint","Datasheet"
+"1","4","C1, C2, C7, C8","22pF","Device:C","Capacitor_THT:C_Disc_D3.8mm_W2.6mm_P2.50mm","~"
+"2","1","C3","10uF","Device:C_Polarized","","~"
+"3","8","C4, C5, C6, C9, C10, C11, C12, C13","10nF","Device:C","Capacitor_THT:C_Disc_D3.8mm_W2.6mm_P2.50mm","~"
+"4","5","C14, C15, C16, C17, C18","1uF","Device:C_Polarized","","~"
+"5","4","D1, D2, D3, D4","LED","Device:LED","LED_THT:LED_D3.0mm","~"
+"6","1","J1","Power Bus","Connector_Generic:Conn_02x05_Odd_Even","Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_Vertical","~"
+"7","1","J2","Signal Buss","Connector_Generic:Conn_02x20_Odd_Even","Connector_PinHeader_2.54mm:PinHeader_2x20_P2.54mm_Vertical","~"
+"8","2","J3, J5","TTL/RS232","Connector_Generic:Conn_01x03","Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical","~"
+"9","1","J4","Card addr","Connector_Generic:Conn_02x04_Odd_Even","Connector_PinHeader_2.54mm:PinHeader_2x04_P2.54mm_Vertical","~"
+"10","1","J6","TTY1","Connector_Generic:Conn_02x03_Odd_Even","Connector_PinHeader_2.54mm:PinHeader_2x03_P2.54mm_Vertical","~"
+"11","1","J7","TTY0","Connector_Generic:Conn_02x02_Odd_Even","Connector_PinHeader_2.54mm:PinHeader_2x02_P2.54mm_Vertical","~"
+"12","1","J8","DB9","Connector:DB9_Male_MountingHoles","Connector_Dsub:DSUB-9_Male_Horizontal_P2.77x2.84mm_EdgePinOffset4.94mm_Housed_MountingHolesOffset7.48mm"," ~"
+"13","2","RN1, RN2","4x10k","Device:R_Network04","Resistor_THT:R_Array_SIP5","http://www.vishay.com/docs/31509/csc.pdf"
+"14","1","RN3","4x220","Device:R_Network04","Resistor_THT:R_Array_SIP5","http://www.vishay.com/docs/31509/csc.pdf"
+"15","1","U1","74LS07","74xx:74LS07","Package_DIP:DIP-14_W7.62mm_Socket_LongPads","www.ti.com/lit/ds/symlink/sn74ls07.pdf"
+"16","1","U2","74LS74","74xx:74LS74","Package_DIP:DIP-14_W7.62mm_Socket_LongPads","74xx/74hc_hct74.pdf"
+"17","2","U3, U4","ATmega328P-PU","TTY-rescue:ATmega328P-PU-MCU_Microchip_ATmega","Package_DIP:DIP-28_W7.62mm_Socket_LongPads","http://ww1.microchip.com/downloads/en/DeviceDoc/ATmega328_P%20AVR%20MCU%20with%20picoPower%20Technology%20Data%20Sheet%2040001984A.pdf"
+"18","1","U5","74LS08","74xx:74LS08","Package_DIP:DIP-14_W7.62mm_Socket_LongPads","http://www.ti.com/lit/gpn/sn74LS08"
+"19","1","U6","74LS85","74xx:74LS85","Package_DIP:DIP-16_W7.62mm_Socket_LongPads","http://www.ti.com/lit/gpn/sn74LS85"
+"20","1","U7","74LS00","74xx:74LS00","Package_DIP:DIP-14_W7.62mm_Socket_LongPads","http://www.ti.com/lit/gpn/sn74ls00"
+"21","1","U8","74LS245","74xx:74LS245","Package_DIP:DIP-20_W7.62mm_Socket_LongPads","http://www.ti.com/lit/gpn/sn74LS245"
+"22","1","U9","MAX232","Interface_UART:MAX232","Package_DIP:DIP-16_W7.62mm_Socket_LongPads","http://www.ti.com/lit/ds/symlink/max232.pdf"
+"23","2","Y1, Y2","20MHz","Device:Crystal","Crystal:Crystal_HC49-U_Vertical","~"

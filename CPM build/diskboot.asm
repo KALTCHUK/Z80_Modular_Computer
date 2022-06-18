@@ -11,14 +11,14 @@
 ; If the above don't work, please perform an Internet search to see if I have
 ; updated the web page hosting service.
 ;
-; Customized by Kaltchuk for use with Z80 Modular Computer, december/2020
+; Customized by Kaltchuk for use with Z80 Modular Computer, june/2022
 ;
 ;==================================================================================
 BIOS			.EQU	0E620H
-WBOOT			.EQU	BIOS+03H		; Entry point for BIOS function WBOOT
-CONST			.EQU	BIOS+06H		; Entry point for BIOS function CONST
-CONIN			.EQU	BIOS+09H		; Entry point for BIOS function CONIN
-CONOUT			.EQU	BIOS+0CH		; Entry point for BIOS function CONOUT
+WBOOT			.EQU	+03H		; Entry point for  function WBOOT
+CONST			.EQU	+06H		; Entry point for  function CONST
+CONIN			.EQU	+09H		; Entry point for  function CONIN
+CONOUT			.EQU	+0CH		; Entry point for  function CONOUT
 
 loadAddr		.EQU	0D000h
 numSecs			.EQU	24	; Number of 512 sectors to be loaded
@@ -58,32 +58,14 @@ CR				.EQU	0DH		;carriage RETurn
 
 ;================================================================================================
 
-		.ORG	0100H		; TPA origin.
+		.ORG	0
 
-		CALL	PRINTSEQ
-		.DB CR,LF
-		.TEXT "CP/M System Transfer by G. Searle 2012"
-		.DB CR,LF
-		.TEXT "Customized by Kaltchuk for use with Proton Z80 Modular Computer, 2020"
-		.DB CR,LF,CR,LF
-		.TEXT "THIS PROGRAM WILL COPY CP/M AND BIOS FROM RAM TO DISK. CONTINUE (Y/N)? "
-		.DB 0
-
-		CALL CONIN
-		LD	C,A
-		CALL CONOUT
-		CP	'Y'
-		JR	Z,PROCEDE
-		CP	'y'
-		JR	Z,PROCEDE
-		JP	WBOOT
-		
-PROCEDE:
 		CALL	cfWait
 		LD 	A,CF_8BIT	; Set IDE to be 8bit
 		OUT	(CF_FEATURES),A
 		LD	A,CF_SET_FEAT
 		OUT	(CF_COMMAND),A
+
 
 		CALL	cfWait
 		LD 	A,CF_NOCACHE	; No write cache
@@ -111,7 +93,7 @@ processSectors:
 		LD 	A,1
 		OUT 	(CF_SECCOUNT),A
 
-		call	write
+		call	read
 
 		LD	DE,0200H
 		LD	HL,(dmaAddr)
@@ -123,44 +105,38 @@ processSectors:
 
 		djnz	processSectors
 
-		CALL	PRINTSEQ
-		.DB CR,LF
-		.TEXT "System transfer complete"
-		.DB CR,LF,0
 
-		RET				
+		jp	BIOS
 
+;------------------------------------------------------------------------------
+; Read physical sector from host
 
-;================================================================================================
-; Write physical sector to host
-;================================================================================================
-write:
+read:
 		PUSH 	AF
 		PUSH 	BC
 		PUSH 	HL
 
-
 		CALL 	cfWait
 
-		LD 	A,CF_WRITE_SEC
+		LD 	A,CF_READ_SEC
 		OUT 	(CF_COMMAND),A
 
 		CALL 	cfWait
 
 		LD 	c,4
 		LD 	HL,(dmaAddr)
-wr4secs:
+rd4secs:
 		LD 	b,128
-wrByte:		LD 	A,(HL)
+rdByte:
 		nop
 		nop
-		OUT 	(CF_DATA),A
+		in 	A,(CF_DATA)
+		LD 	(HL),A
 		iNC 	HL
 		dec 	b
-		JR 	NZ, wrByte
-
+		JR 	NZ, rdByte
 		dec 	c
-		JR 	NZ,wr4secs
+		JR 	NZ,rd4secs
 
 		POP 	HL
 		POP 	BC
@@ -168,9 +144,8 @@ wrByte:		LD 	A,(HL)
 
 		RET
 
-;================================================================================================
+
 ; Wait for disk to be ready (busy=0,ready=1)
-;================================================================================================
 cfWait:
 		PUSH 	AF
 cfWait1:
@@ -181,29 +156,10 @@ cfWait1:
 		POP 	AF
 		RET
 
-;================================================================================================
-; Print (on console) a sequence of characters ending with zero
-;================================================================================================
-PRINTSEQ:
-		EX 	(SP),HL 		; Push HL and put RET address into HL
-		PUSH 	AF
-		PUSH 	BC
-NEXTCHAR:
-		LD 	A,(HL)
-		CP	0
-		JR	Z,ENDOFPRINT
-		LD  	C,A
-		CALL 	CONOUT		; Print to console
-		INC 	HL
-		JR	NEXTCHAR
-ENDOFPRINT:
-		INC 	HL 			; Get past "null" terminator
-		POP 	BC
-		POP 	AF
-		EX 	(SP),HL 		; Push new RET address on stack and restore HL
-		RET
+;------------------------------------------------------------------------------
+		.ORG	4000H
 
-dmaAddr		.dw	0
-secNo		.db	0
+secNo		.ds	1
+dmaAddr		.ds	2
 
-	.END
+		.END
