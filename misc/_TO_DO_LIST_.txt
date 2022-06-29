@@ -4,7 +4,6 @@
 	- BOMs,
 	- front panels, 
 	- include USART, LCD, PX051, PSU2 and I2C cards.
-	- review building procedure.
 
 - Build RP-100.
 
@@ -15,4 +14,4 @@ Some ideas for new cards:
 - DIO - digital I/O for automation (8255)
 - analog I/O for automation (4-20mA, RTD, TC?)
 - audio card for .WAV play
-- VGA and keyboard (FPGA, STM32?)
+- VGA and PS2 keyboard (FPGA, STM32?)
