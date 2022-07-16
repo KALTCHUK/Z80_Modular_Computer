@@ -1,0 +1,21 @@
+"Source:","C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\KiCAD files\Extension\Extension.kicad_sch"
+"Date:","16/07/2022 6:46:03"
+"Tool:","Eeschema (6.0.4)"
+"Generator:","C:\Program Files\KiCad\6.0\bin\scripting\plugins/bom_csv_grouped_by_value.py"
+"Component Count:","4"
+
+"Individual Components:"
+
+"Item","Qty","Reference(s)","Value","LibPart","Footprint","Datasheet"
+"","","J1","Conn_02x05_Odd_Even","Connector_Generic:Conn_02x05_Odd_Even","Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_Vertical","~"
+"","","J2","Conn_02x20_Odd_Even","Connector_Generic:Conn_02x20_Odd_Even","Connector_PinHeader_2.54mm:PinHeader_2x20_P2.54mm_Vertical","~"
+"","","J3","Conn_02x05_Odd_Even","Connector_Generic:Conn_02x05_Odd_Even","Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_Vertical","~"
+"","","J4","Conn_02x20_Odd_Even","Connector_Generic:Conn_02x20_Odd_Even","Connector_PinHeader_2.54mm:PinHeader_2x20_P2.54mm_Vertical","~"
+
+
+
+"Collated Components:"
+
+"Item","Qty","Reference(s)","Value","LibPart","Footprint","Datasheet"
+"1","2","J1, J3","Conn_02x05_Odd_Even","Connector_Generic:Conn_02x05_Odd_Even","Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_Vertical","~"
+"2","2","J2, J4","Conn_02x20_Odd_Even","Connector_Generic:Conn_02x20_Odd_Even","Connector_PinHeader_2.54mm:PinHeader_2x20_P2.54mm_Vertical","~"

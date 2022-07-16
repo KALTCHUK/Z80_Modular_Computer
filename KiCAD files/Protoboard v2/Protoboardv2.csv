@@ -1,0 +1,33 @@
+"Source:","C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\KiCAD files\Protoboard v2\Protoboardv2.kicad_sch"
+"Date:","16/07/2022 7:05:16"
+"Tool:","Eeschema (6.0.4)"
+"Generator:","C:\Program Files\KiCad\6.0\bin\scripting\plugins/bom_csv_grouped_by_value.py"
+"Component Count:","9"
+
+"Individual Components:"
+
+"Item","Qty","Reference(s)","Value","LibPart","Footprint","Datasheet"
+"","","J1","Power Bus","Connector_Generic:Conn_02x05_Odd_Even","Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_Vertical","~"
+"","","J2","Signal Bus","Connector_Generic:Conn_02x20_Odd_Even","Connector_PinHeader_2.54mm:PinHeader_2x20_P2.54mm_Vertical","~"
+"","","J3","Power","Connector:Conn_01x04_Male","Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical","~"
+"","","J4","ADDR LO","Connector:Conn_01x08_Male","Connector_PinHeader_2.54mm:PinHeader_1x08_P2.54mm_Vertical","~"
+"","","J5","ADDR HI","Connector:Conn_01x08_Male","Connector_PinHeader_2.54mm:PinHeader_1x08_P2.54mm_Vertical","~"
+"","","J6","DATA","Connector:Conn_01x08_Male","Connector_PinHeader_2.54mm:PinHeader_1x08_P2.54mm_Vertical","~"
+"","","J7","BUS CTRL","Connector:Conn_01x06_Male","Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical","~"
+"","","J8","TIME CTRL","Connector:Conn_01x04_Male","Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical","~"
+"","","J9","AUX SIGNAL","Connector:Conn_01x06_Male","Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical","~"
+
+
+
+"Collated Components:"
+
+"Item","Qty","Reference(s)","Value","LibPart","Footprint","Datasheet"
+"1","1","J1","Power Bus","Connector_Generic:Conn_02x05_Odd_Even","Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_Vertical","~"
+"2","1","J2","Signal Bus","Connector_Generic:Conn_02x20_Odd_Even","Connector_PinHeader_2.54mm:PinHeader_2x20_P2.54mm_Vertical","~"
+"3","1","J3","Power","Connector:Conn_01x04_Male","Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical","~"
+"4","1","J4","ADDR LO","Connector:Conn_01x08_Male","Connector_PinHeader_2.54mm:PinHeader_1x08_P2.54mm_Vertical","~"
+"5","1","J5","ADDR HI","Connector:Conn_01x08_Male","Connector_PinHeader_2.54mm:PinHeader_1x08_P2.54mm_Vertical","~"
+"6","1","J6","DATA","Connector:Conn_01x08_Male","Connector_PinHeader_2.54mm:PinHeader_1x08_P2.54mm_Vertical","~"
+"7","1","J7","BUS CTRL","Connector:Conn_01x06_Male","Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical","~"
+"8","1","J8","TIME CTRL","Connector:Conn_01x04_Male","Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical","~"
+"9","1","J9","AUX SIGNAL","Connector:Conn_01x06_Male","Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical","~"
