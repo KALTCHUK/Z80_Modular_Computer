@@ -6,8 +6,8 @@
 #include <algorithm> // std::min
 
 #ifndef STASSID
-#define STASSID "EZOMmobile"
-#define STAPSK  "$thx1138"
+#define STASSID ""
+#define STAPSK  ""
 #endif
 
 /*
