@@ -14,8 +14,8 @@
 #include <algorithm> // std::min
 
 #ifndef STASSID
-#define STASSID ""
-#define STAPSK  ""
+#define STASSID "      "
+#define STAPSK  "        "
 #endif
 
 #define BAUD_SERIAL 250000
@@ -54,8 +54,9 @@ void setup() {
   server.begin();
   server.setNoDelay(true);
 
-  EasyDDNS.service("duckdns");
-  EasyDDNS.client("", "");	// domain and token
+  EasyDDNS.service("       ");
+  EasyDDNS.client("                     ", "                                    ");	// domain and token
+  String old_ip = "0.0.0.0";
 
   digitalWrite(READY_LED,LOW);
 }
@@ -63,6 +64,9 @@ void setup() {
 void loop() {
   char  serviceString[80];
   int   j;
+
+  // Check for new public IP every 10 seconds
+  EasyDDNS.update(10000);
 
   //check if there are any new clients
   if (server.hasClient()) {
