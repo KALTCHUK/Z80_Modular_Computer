@@ -55,7 +55,7 @@ void setup() {
   server.setNoDelay(true);
 
   EasyDDNS.service("duckdns");
-  EasyDDNS.client("protonz80.duckdns.org", "");
+  EasyDDNS.client("", "");	// domain and token
 
   digitalWrite(READY_LED,LOW);
 }
