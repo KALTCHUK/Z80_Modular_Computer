@@ -1,2 +1,2 @@
 ## What you'll find in this directory ##
-Each subdirectory contains the KiCAD files for a specific Proton card. (Except "/AVRisp 328p adapter", "/EProg", "/generic grid" and "/stickers"). They all contain the circuit diagrams. Most of them also have the PCB layouts and some even have the Gerber files I sent to the PCB manufacturers (PCBway and JLC PCB)).
+The most important here are the two directories called "Proton cards" and "PLC cards", which contain respectively all the cards used in the Proton projects and, all the I/O cards mounted on DIN rail, which communicate with the Proton via Modbus protocol over RS485.
