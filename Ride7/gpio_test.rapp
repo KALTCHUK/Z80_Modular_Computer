@@ -1,0 +1,20 @@
+
+<ApplicationBuild Header="gpio_test" Extern=".\gpio_test.rapp" Path=".\gpio_test.rapp" OutputFile=".\gpio_test.aof" sate="2" >
+	<Options>
+		<Config Header="Standard" >
+			<Set Header="ApplicationBuild" >
+				<Section Header="General" >
+					<Property Header="TargetFamily" Value="80C51" />
+				</Section>
+			</Set>
+			<Set Header="Target" >
+				<Section Header="Processor80C51" >
+					<Property Header="Processor" Value="AT89C4051" Removable="1" />
+				</Section>
+				<Section Header="ToolSet80C51" >
+					<Property Header="BuildToolSet80C51" Value="80C51\RaisonanceTools.config" Removable="1" />
+				</Section>
+			</Set>
+		</Config>
+	</Options>
+</ApplicationBuild>
