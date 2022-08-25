@@ -1,10 +1,8 @@
 
-<ApplicationBuild Header="gpio_test" Extern=".\gpio_test.rapp" Path=".\gpio_test.rapp" OutputFile=".\gpio_test.aof" sate="98" >
-	<NodeH Path=".\REG51.h" Header="REG51.h" Marker="-1" OutputFile="" sate="0" />
-	<NodeC Path=".\flicker.c" Header="flicker.c" Marker="-1" OutputFile=".\flicker.obj" sate="0" />
+<ApplicationDebug Header="GPIO_TEST.BIN" Extern=".\GPIO_TEST.BIN.rapp" Path=".\GPIO_TEST.BIN.rapp" OutputFile="" sate="2" >
 	<Options>
 		<Config Header="Standard" >
-			<Set Header="ApplicationBuild" >
+			<Set Header="ApplicationDebug" >
 				<Section Header="General" >
 					<Property Header="TargetFamily" Value="80C51" />
 				</Section>
@@ -15,9 +13,8 @@
 				</Section>
 				<Section Header="ToolSet80C51" >
 					<Property Header="BuildToolSet80C51" Value="80C51\RaisonanceTools.config" Removable="1" />
-					<Property Header="ArelocInfo" Value="" Removable="1" />
 				</Section>
 			</Set>
 		</Config>
 	</Options>
-</ApplicationBuild>
+</ApplicationDebug>

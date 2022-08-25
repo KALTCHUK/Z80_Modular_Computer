@@ -1,0 +1,4 @@
+
+<Project Header="Project 'GPIO_TEST.BIN'" Path=".\GPIO_TEST.BIN.rprj" Project="Yes" OutputFile="" sate="96" >
+	<ApplicationDebug Header="GPIO_TEST.BIN" Extern=".\GPIO_TEST.BIN.rapp" Path=".\GPIO_TEST.BIN.rapp" OutputFile="" sate="2" />
+</Project>

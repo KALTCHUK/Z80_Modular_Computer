@@ -1,4 +1,4 @@
 
-<Project Header="Project 'gpio_test'" Path=".\gpio_test.rprj" Project="Yes" OutputFile="" sate="96" >
-	<ApplicationBuild Header="gpio_test" Extern=".\gpio_test.rapp" Path=".\gpio_test.rapp" OutputFile=".\gpio_test.aof" sate="2" />
+<Project Header="Project 'gpio_test'" Path=".\gpio_test.rprj" Project="Yes" OutputFile="" sate="96" ActiveApp="gpio_test" >
+	<ApplicationBuild Header="gpio_test" Extern=".\gpio_test.rapp" Path=".\gpio_test.rapp" OutputFile=".\gpio_test.aof" sate="98" />
 </Project>

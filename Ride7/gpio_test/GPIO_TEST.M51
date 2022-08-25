@@ -1,0 +1,150 @@
+LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263                                 08/25/22  19:14:25
+MS-DOS LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263,  INVOKED BY:
+C:\Users\ricardo\Documents\Raisonance\Ride\Bin\LX51.EXE C:\Users\ricardo\Documents\GitHub\Z80_Mod&
+ular_Computer\Ride7\gpio_test\flicker.obj TO(C:\Users\ricardo\Documents\GitHub\Z80_Modular_Comput&
+er\Ride7\gpio_test\gpio_test.aof) LIBPATH(C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51) GENE&
+RATEDEPFILE MAP IX RS(256) RSI(128) CSIZE(65536) XSIZE(65536) DEFN(XSTACKLEN,256) DEFN(TIM1_INIT,&
+E8h) CO(0) DT(0) ID(0) XD(0) BI(0) ABSCODEOFFS(0) XMLM(No,C:\Users\ricardo\Documents\GitHub\Z80_M&
+odular_Computer\Ride7\gpio_test\gpio_test-modules.Standard.xml) XMLF(No,8000,C:\Users\ricardo\Doc&
+uments\GitHub\Z80_Modular_Computer\Ride7\gpio_test\gpio_test-flash.Standard.xml) 
+
+
+MEMORY MODEL: SMALL WITHOUT ANY FLOATING POINT ARITHMETIC
+
+
+INPUT MODULES INCLUDED
+  C:\USERS\RICARDO\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\GPIO_TEST\FLICKER.OBJ(FLICKER)
+  C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(C3S)
+  C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(HPD)
+  C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(_C_IDATALEN)
+
+
+LINK MAP OF MODULE: C:\USERS\RICARDO\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\GPIO_TEST\GPIO_T&
+EST.AOF (GPIO_TEST)
+
+    TYPE     BASE       LENGTH    RELOCATION     SEGMENT NAME
+    ----     ----       ------    ----------     ------------
+
+    * * * * * * *   DATA/IDATA    M E M O R Y   * * * * * * *
+    REG      0000H      0008H     ABSOLUTE       "REG BANK 0"
+    IDATA    0008H      0001H     * * STACK * *  _STACK
+
+    * * * * * * *   CODE          M E M O R Y   * * * * * * *
+    CODE     0000H      0003H     ABSOLUTE       
+    CODE     0003H      000FH     UNIT           ?PR?C51_STARTUP?
+    CODE     0012H      0012H     UNIT           ?PR?main?FLICKER
+
+EXECUTABLE SUMMARY:
+-------------------
+    Total INTERNAL RAM storage requirement:  0008H (8)
+    Total EXTERNAL RAM storage requirement:  0000H (0)
+    Total     CODE     storage requirement:  0024H (36)
+Note:  Summary does not include dynamic stack requirements
+
+
+REFERENCE MAP OF MODULE: C:\USERS\RICARDO\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\GPIO_TEST\GPIO_TEST.AOF (GPI&
+O_TEST)
+
+SEGMENT                           BI_GROUP            DT_GROUP             ID_GROUP             XD_GROUP
+  +--> CALLED SEGMENT          START    LENGTH     START    LENGTH     START    LENGTH     START    LENGTH
+--------------------------------------------------------------------------------------
+
+?PR?main?FLICKER               ---------------     ---------------     ---------------     ---------------
+
+SYMBOL TABLE FOR C:\USERS\RICARDO\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\GPIO_TEST\GPIO_TEST&
+.AOF(FLICKER)
+-------------------------------------------------------------------------------------------------&
+--------------
+
+    VALUE              TYPE               NAME
+    -----              ----               ----
+
+	-------            MODULE             flicker
+	C:0000H            SYMBOL             _ICE_DUMMY_
+	C:0012H            PUBLIC             main
+	D:0081H            SYMBOL             __SP__
+	B:0098H            SYMBOL             RI
+	B:0099H            SYMBOL             TI
+	B:009AH            SYMBOL             RB8
+	B:009BH            SYMBOL             TB8
+	B:009CH            SYMBOL             REN
+	B:009DH            SYMBOL             SM2
+	B:009EH            SYMBOL             SM1
+	B:009FH            SYMBOL             SM0
+	B:00B0H            SYMBOL             RXD
+	B:00B1H            SYMBOL             TXD
+	B:00B2H            SYMBOL             INT0
+	B:00B3H            SYMBOL             INT1
+	B:00B4H            SYMBOL             T0
+	B:00B5H            SYMBOL             T1
+	B:00B6H            SYMBOL             WR
+	B:00B7H            SYMBOL             RD
+	B:00B8H            SYMBOL             PX0
+	B:00B9H            SYMBOL             PT0
+	B:00BAH            SYMBOL             PX1
+	B:00BBH            SYMBOL             PT1
+	B:00BCH            SYMBOL             PS
+	B:00A8H            SYMBOL             EX0
+	B:00A9H            SYMBOL             ET0
+	B:00AAH            SYMBOL             EX1
+	B:00ABH            SYMBOL             ET1
+	B:00ACH            SYMBOL             ES
+	B:00AFH            SYMBOL             EA
+	B:0088H            SYMBOL             IT0
+	B:0089H            SYMBOL             IE0
+	B:008AH            SYMBOL             IT1
+	B:008BH            SYMBOL             IE1
+	B:008CH            SYMBOL             TR0
+	B:008DH            SYMBOL             TF0
+	B:008EH            SYMBOL             TR1
+	B:008FH            SYMBOL             TF1
+	B:00D0H            SYMBOL             P
+	B:00D2H            SYMBOL             OV
+	B:00D3H            SYMBOL             RS0
+	B:00D4H            SYMBOL             RS1
+	B:00D5H            SYMBOL             F0
+	B:00D6H            SYMBOL             AC
+	B:00D7H            SYMBOL             CY
+	D:0099H            SYMBOL             SBUF
+	D:0098H            SYMBOL             SCON
+	D:00B8H            SYMBOL             IP
+	D:00A8H            SYMBOL             IE
+	D:008DH            SYMBOL             TH1
+	D:008CH            SYMBOL             TH0
+	D:008BH            SYMBOL             TL1
+	D:008AH            SYMBOL             TL0
+	D:0089H            SYMBOL             TMOD
+	D:0088H            SYMBOL             TCON
+	D:0087H            SYMBOL             PCON
+	D:0083H            SYMBOL             DPH
+	D:0082H            SYMBOL             DPL
+	D:0081H            SYMBOL             SP
+	D:00F0H            SYMBOL             B
+	D:00E0H            SYMBOL             ACC
+	D:00D0H            SYMBOL             PSW
+	D:00B0H            SYMBOL             P3
+	D:00A0H            SYMBOL             P2
+	D:0090H            SYMBOL             P1
+	D:0080H            SYMBOL             P0
+	-------            PROC               main
+	C:0012H            LINE#              6
+	C:0012H            LINE#              10
+	C:0015H            LINE#              11
+	C:0017H            LINE#              10
+	C:0022H            LINE#              14
+	-------            ENDPROC            main
+	-------            ENDMOD             flicker
+	C:0003H            PUBLIC             ?C_START3
+	D:00A0H            PUBLIC             HPD_ADDR
+	N:007FH            PUBLIC             IDATALEN
+	N:00FFH            PUBLIC             _INITP2?
+
+----------------------
+SUGGESTED OPTIMIZATION
+----------------------
+Warning: 120 (78H) data bytes in the range [00H-80H] are available for storage.
+         Consider using some of these for 'data' variables in your source files.
+
+
+LINK/LOCATE RUN COMPLETE,  NO ERROR FOUND.
+

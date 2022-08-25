@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<Table>
+  <Row>
+    <Column>--</Column>
+    <Column>FLICKER</Column>
+    <Column>C:\USERS\RICARDO\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\GPIO_TEST\FLICKER.OBJ</Column>
+  </Row>
+  <Row>
+    <Column>--</Column>
+    <Column>C3S</Column>
+    <Column>C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB</Column>
+  </Row>
+  <Row>
+    <Column>--</Column>
+    <Column>HPD</Column>
+    <Column>C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB</Column>
+  </Row>
+  <Row>
+    <Column>--</Column>
+    <Column>_C_IDATALEN</Column>
+    <Column>C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB</Column>
+  </Row>
+</Table>
