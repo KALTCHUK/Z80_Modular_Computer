@@ -1,0 +1,169 @@
+LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263                                 08/27/22  10:15:26
+MS-DOS LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263,  INVOKED BY:
+C:\Users\kaltc\Documents\Raisonance\Ride\Bin\LX51.EXE C:\Users\kaltc\Documents\GitHub\Z80_Modular&
+_Computer\Ride7\timer-counter_test\timer-counter_test.obj TO(C:\Users\kaltc\Documents\GitHub\Z80_&
+Modular_Computer\Ride7\timer-counter_test\timer-counter_test.aof) LIBPATH(C:\Users\kaltc\Document&
+s\Raisonance\Ride\Lib\51) GENERATEDEPFILE MAP IX RS(256) RSI(128) CSIZE(65536) XSIZE(65536) DEFN(&
+XSTACKLEN,256) DEFN(TIM1_INIT,E8h) CO(0) DT(0) ID(0) XD(0) BI(0) ABSCODEOFFS(0) XMLM(No,C:\Users\&
+kaltc\Documents\GitHub\Z80_Modular_Computer\Ride7\timer-counter_test\timer-counter_test-modules.S&
+tandard.xml) XMLF(No,8000,C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Ride7\timer-counte&
+r_test\timer-counter_test-flash.Standard.xml) 
+
+
+MEMORY MODEL: SMALL WITHOUT ANY FLOATING POINT ARITHMETIC
+
+
+INPUT MODULES INCLUDED
+  C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\TIMER-COUNTER_TEST\TIMER-COUNTER_TES&
+T.OBJ(TIMER-COUNTER_TEST)
+  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(C3S)
+  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(HPD)
+  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(_C_IDATALEN)
+
+
+LINK MAP OF MODULE: C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\TIMER-COUNTER_TEST&
+\TIMER-COUNTER_TEST.AOF (TIMER-COUNTER_TEST)
+
+    TYPE     BASE       LENGTH    RELOCATION     SEGMENT NAME
+    ----     ----       ------    ----------     ------------
+
+    * * * * * * *   DATA/IDATA    M E M O R Y   * * * * * * *
+    REG      0000H      0008H     ABSOLUTE       "REG BANK 0"
+    IDATA    0008H      0001H     * * STACK * *  _STACK
+
+    * * * * * * *   CODE          M E M O R Y   * * * * * * *
+    CODE     0000H      0003H     ABSOLUTE       
+    CODE     0003H      000FH     UNIT           ?PR?C51_STARTUP?
+    CODE     0012H      000EH     UNIT           ?PR?main?TIMER_COUNTER_TEST
+    CODE     0020H      0010H     UNIT           ?PR?T0delay?TIMER_COUNTER_TEST
+
+EXECUTABLE SUMMARY:
+-------------------
+    Total INTERNAL RAM storage requirement:  0008H (8)
+    Total EXTERNAL RAM storage requirement:  0000H (0)
+    Total     CODE     storage requirement:  0030H (48)
+Note:  Summary does not include dynamic stack requirements
+
+
+REFERENCE MAP OF MODULE: C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\TIMER-COUNTER_TEST\TIMER-COUNT&
+ER_TEST.AOF (TIMER-COUNTER_TEST)
+
+SEGMENT                           BI_GROUP            DT_GROUP             ID_GROUP             XD_GROUP
+  +--> CALLED SEGMENT          START    LENGTH     START    LENGTH     START    LENGTH     START    LENGTH
+--------------------------------------------------------------------------------------
+
+?PR?main?TIMER_COUNTER_TEST    ---------------     ---------------     ---------------     ---------------
+  +--> ?PR?T0delay?TIMER_COUNTER_TEST
+
+?PR?T0delay?TIMER_COUNTER_TEST ---------------     ---------------     ---------------     ---------------
+
+SYMBOL TABLE FOR C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\TIMER-COUNTER_TEST\TI&
+MER-COUNTER_TEST.AOF(TIMER-COUNTER_TEST)
+-------------------------------------------------------------------------------------------------&
+-----------------------------------------
+
+    VALUE              TYPE               NAME
+    -----              ----               ----
+
+	-------            MODULE             timer-counter_test
+	C:0000H            SYMBOL             _ICE_DUMMY_
+	C:0012H            PUBLIC             main
+	C:0020H            PUBLIC             T0delay
+	D:0081H            SYMBOL             __SP__
+	B:0098H            SYMBOL             RI
+	B:0099H            SYMBOL             TI
+	B:009AH            SYMBOL             RB8
+	B:009BH            SYMBOL             TB8
+	B:009CH            SYMBOL             REN
+	B:009DH            SYMBOL             SM2
+	B:009EH            SYMBOL             SM1
+	B:009FH            SYMBOL             SM0
+	B:00B0H            SYMBOL             RXD
+	B:00B1H            SYMBOL             TXD
+	B:00B2H            SYMBOL             INT0
+	B:00B3H            SYMBOL             INT1
+	B:00B4H            SYMBOL             T0
+	B:00B5H            SYMBOL             T1
+	B:00B6H            SYMBOL             WR
+	B:00B7H            SYMBOL             RD
+	B:00B8H            SYMBOL             PX0
+	B:00B9H            SYMBOL             PT0
+	B:00BAH            SYMBOL             PX1
+	B:00BBH            SYMBOL             PT1
+	B:00BCH            SYMBOL             PS
+	B:00A8H            SYMBOL             EX0
+	B:00A9H            SYMBOL             ET0
+	B:00AAH            SYMBOL             EX1
+	B:00ABH            SYMBOL             ET1
+	B:00ACH            SYMBOL             ES
+	B:00AFH            SYMBOL             EA
+	B:0088H            SYMBOL             IT0
+	B:0089H            SYMBOL             IE0
+	B:008AH            SYMBOL             IT1
+	B:008BH            SYMBOL             IE1
+	B:008CH            SYMBOL             TR0
+	B:008DH            SYMBOL             TF0
+	B:008EH            SYMBOL             TR1
+	B:008FH            SYMBOL             TF1
+	B:00D0H            SYMBOL             P
+	B:00D2H            SYMBOL             OV
+	B:00D3H            SYMBOL             RS0
+	B:00D4H            SYMBOL             RS1
+	B:00D5H            SYMBOL             F0
+	B:00D6H            SYMBOL             AC
+	B:00D7H            SYMBOL             CY
+	D:0099H            SYMBOL             SBUF
+	D:0098H            SYMBOL             SCON
+	D:00B8H            SYMBOL             IP
+	D:00A8H            SYMBOL             IE
+	D:008DH            SYMBOL             TH1
+	D:008CH            SYMBOL             TH0
+	D:008BH            SYMBOL             TL1
+	D:008AH            SYMBOL             TL0
+	D:0089H            SYMBOL             TMOD
+	D:0088H            SYMBOL             TCON
+	D:0087H            SYMBOL             PCON
+	D:0083H            SYMBOL             DPH
+	D:0082H            SYMBOL             DPL
+	D:0081H            SYMBOL             SP
+	D:00F0H            SYMBOL             B
+	D:00E0H            SYMBOL             ACC
+	D:00D0H            SYMBOL             PSW
+	D:00B0H            SYMBOL             P3
+	D:00A0H            SYMBOL             P2
+	D:0090H            SYMBOL             P1
+	D:0080H            SYMBOL             P0
+	-------            PROC               main
+	C:0012H            LINE#              11
+	C:0012H            LINE#              13
+	C:0015H            LINE#              14
+	C:0018H            LINE#              15
+	C:001BH            LINE#              16
+	C:001EH            LINE#              18
+	-------            ENDPROC            main
+	-------            PROC               T0delay
+	C:0020H            LINE#              20
+	C:0020H            LINE#              21
+	C:0023H            LINE#              22
+	C:0026H            LINE#              23
+	C:0028H            LINE#              24
+	C:002BH            LINE#              25
+	C:002DH            LINE#              26
+	C:002FH            LINE#              27
+	C:002FH            LINE#              27
+	-------            ENDPROC            T0delay
+	-------            ENDMOD             timer-counter_test
+	C:0003H            PUBLIC             ?C_START3
+	D:00A0H            PUBLIC             HPD_ADDR
+	N:007FH            PUBLIC             IDATALEN
+	N:00FFH            PUBLIC             _INITP2?
+
+----------------------
+SUGGESTED OPTIMIZATION
+----------------------
+Warning: 120 (78H) data bytes in the range [00H-80H] are available for storage.
+         Consider using some of these for 'data' variables in your source files.
+
+
+LINK/LOCATE RUN COMPLETE,  NO ERROR FOUND.
+

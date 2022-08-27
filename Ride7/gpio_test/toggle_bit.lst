@@ -1,0 +1,90 @@
+RC51 COMPILER V06.20.17.263,  TOGGLE_BIT         08/26/22  16:23:40  PAGE  1
+
+QCW(0x00002F32)
+
+DOS RC51 COMPILER V06.20.17.263, COMPILATION OF MODULE TOGGLE_BIT
+OBJECT MODULE PLACED IN C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Rid
+            -e7\gpio_test\toggle_bit.obj
+COMPILER INVOKED BY: QUIET GENERATEDEPFILE OJ(C:\Users\kaltc\Documents\GitHub\Z8
+            -0_Modular_Computer\Ride7\gpio_test\toggle_bit.obj) PIN(C:\Users\kal
+            -tc\Documents\Raisonance\Ride\Inc;C:\Users\kaltc\Documents\Raisonanc
+            -e\Ride\Inc\51) PIN(C:\Users\kaltc\Documents\Raisonance\Ride\\inc\51
+            -) NOAM CD PR(C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\R
+            -ide7\gpio_test\toggle_bit.lst) FP(NOFLOAT) IP NOIS UNSIGNEDCHAR ET(
+            -CHAR) PR PL(60) PW(80) OE(1) OT(7,SPEED) RB(0) MAXERR(25) MAXWAR(25
+            -) SM MOD517(NODP8,NOAU) 
+
+stmt level    source
+   1          // Toggle P1_0 pin every cycle and RD with half the frequency
+   2          
+   3          #include "REG51.h" 
+   4          #include <stdio.h> 
+   5          #include <stdlib.h>
+   6          
+   7          #define Sbit(x, y, z)   sbit x = y^z
+   8          
+   9          /*  P1  */
+  10          Sbit (P1_0   , P1, 0);
+  11          
+  12          void main(void) {
+  13   1          int i=0;
+  14   1      
+  15   1          while(1) {
+  16   2              P1_0 = !P1_0;
+  17   2              i++;
+  18   2              if (i==2) {
+  19   3                  RD = !RD;
+  20   3                  i = 0;
+  21   3              }
+  22   2          }
+  23   1      }
+  24          
+RC51 COMPILER V06.20.17.263,  TOGGLE_BIT         08/26/22  16:23:40  PAGE  2
+
+ASSEMBLY LISTING OF GENERATED OBJECT CODE
+
+            ; FUNCTION main (BEGIN)
+              ; R2R3 is assigned to i
+                                           ; SOURCE LINE # 13 
+0000 E4             CLR    A
+0001 FA             MOV    R2,A
+0002 FB             MOV    R3,A
+0003         ?WHILE1:
+                                           ; SOURCE LINE # 16 
+0003 B290           CPL    P1_0
+                                           ; SOURCE LINE # 17 
+0005 0B             INC    R3
+0006 EB             MOV    A,R3
+0007 7001           JNZ    ?LAB2
+0009 0A             INC    R2
+000A         ?LAB2:
+                                           ; SOURCE LINE # 18 
+000A EB             MOV    A,R3
+000B 6402           XRL    A,#002H
+000D 4A             ORL    A,R2
+000E 70F3           JNZ    ?WHILE1
+                                           ; SOURCE LINE # 19 
+0010 B2B7           CPL    RD
+                                           ; SOURCE LINE # 20 
+0012 E4             CLR    A
+0013 FA             MOV    R2,A
+0014 FB             MOV    R3,A
+0015 80EC           SJMP   ?WHILE1
+
+            ; FUNCTION main (END)
+
+RC51 COMPILER V06.20.17.263,  TOGGLE_BIT         08/26/22  16:23:40  PAGE  3
+
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     23    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+RC51 COMPILATION COMPLETE.  0 WARNING,  0 ERROR

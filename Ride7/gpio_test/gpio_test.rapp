@@ -1,7 +1,7 @@
 
 <ApplicationBuild Header="gpio_test" Extern=".\gpio_test.rapp" Path=".\gpio_test.rapp" OutputFile=".\gpio_test.aof" sate="98" >
+	<NodeC Path=".\toggle_bit.c" Header="toggle_bit.c" Marker="-1" OutputFile=".\toggle_bit.obj" sate="0" />
 	<NodeH Path=".\REG51.h" Header="REG51.h" Marker="-1" OutputFile="" sate="0" />
-	<NodeC Path=".\flicker.c" Header="flicker.c" Marker="-1" OutputFile=".\flicker.obj" sate="0" />
 	<Options>
 		<Config Header="Standard" >
 			<Set Header="ApplicationBuild" >

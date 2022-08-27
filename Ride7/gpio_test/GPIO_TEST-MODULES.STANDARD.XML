@@ -2,22 +2,22 @@
 <Table>
   <Row>
     <Column>--</Column>
-    <Column>FLICKER</Column>
-    <Column>C:\USERS\RICARDO\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\GPIO_TEST\FLICKER.OBJ</Column>
+    <Column>TOGGLE_BIT</Column>
+    <Column>C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\GPIO_TEST\TOGGLE_BIT.OBJ</Column>
   </Row>
   <Row>
     <Column>--</Column>
     <Column>C3S</Column>
-    <Column>C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB</Column>
+    <Column>C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB</Column>
   </Row>
   <Row>
     <Column>--</Column>
     <Column>HPD</Column>
-    <Column>C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB</Column>
+    <Column>C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB</Column>
   </Row>
   <Row>
     <Column>--</Column>
     <Column>_C_IDATALEN</Column>
-    <Column>C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB</Column>
+    <Column>C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB</Column>
   </Row>
 </Table>

@@ -1,26 +1,27 @@
-LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263                                 08/25/22  19:14:25
+LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263                                 08/26/22  16:23:41
 MS-DOS LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263,  INVOKED BY:
-C:\Users\ricardo\Documents\Raisonance\Ride\Bin\LX51.EXE C:\Users\ricardo\Documents\GitHub\Z80_Mod&
-ular_Computer\Ride7\gpio_test\flicker.obj TO(C:\Users\ricardo\Documents\GitHub\Z80_Modular_Comput&
-er\Ride7\gpio_test\gpio_test.aof) LIBPATH(C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51) GENE&
-RATEDEPFILE MAP IX RS(256) RSI(128) CSIZE(65536) XSIZE(65536) DEFN(XSTACKLEN,256) DEFN(TIM1_INIT,&
-E8h) CO(0) DT(0) ID(0) XD(0) BI(0) ABSCODEOFFS(0) XMLM(No,C:\Users\ricardo\Documents\GitHub\Z80_M&
-odular_Computer\Ride7\gpio_test\gpio_test-modules.Standard.xml) XMLF(No,8000,C:\Users\ricardo\Doc&
-uments\GitHub\Z80_Modular_Computer\Ride7\gpio_test\gpio_test-flash.Standard.xml) 
+C:\Users\kaltc\Documents\Raisonance\Ride\Bin\LX51.EXE C:\Users\kaltc\Documents\GitHub\Z80_Modular&
+_Computer\Ride7\gpio_test\toggle_bit.obj TO(C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\&
+Ride7\gpio_test\gpio_test.aof) LIBPATH(C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51) GENERATED&
+EPFILE MAP IX RS(256) RSI(128) CSIZE(65536) XSIZE(65536) DEFN(XSTACKLEN,256) DEFN(TIM1_INIT,E8h) &
+CO(0) DT(0) ID(0) XD(0) BI(0) ABSCODEOFFS(0) XMLM(No,C:\Users\kaltc\Documents\GitHub\Z80_Modular_&
+Computer\Ride7\gpio_test\gpio_test-modules.Standard.xml) XMLF(No,8000,C:\Users\kaltc\Documents\Gi&
+tHub\Z80_Modular_Computer\Ride7\gpio_test\gpio_test-flash.Standard.xml) 
 
 
 MEMORY MODEL: SMALL WITHOUT ANY FLOATING POINT ARITHMETIC
 
 
 INPUT MODULES INCLUDED
-  C:\USERS\RICARDO\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\GPIO_TEST\FLICKER.OBJ(FLICKER)
-  C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(C3S)
-  C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(HPD)
-  C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(_C_IDATALEN)
+  C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\GPIO_TEST\TOGGLE_BIT.OBJ(TOGGLE_BIT)&
+
+  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(C3S)
+  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(HPD)
+  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(_C_IDATALEN)
 
 
-LINK MAP OF MODULE: C:\USERS\RICARDO\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\GPIO_TEST\GPIO_T&
-EST.AOF (GPIO_TEST)
+LINK MAP OF MODULE: C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\GPIO_TEST\GPIO_TES&
+T.AOF (GPIO_TEST)
 
     TYPE     BASE       LENGTH    RELOCATION     SEGMENT NAME
     ----     ----       ------    ----------     ------------
@@ -32,36 +33,37 @@ EST.AOF (GPIO_TEST)
     * * * * * * *   CODE          M E M O R Y   * * * * * * *
     CODE     0000H      0003H     ABSOLUTE       
     CODE     0003H      000FH     UNIT           ?PR?C51_STARTUP?
-    CODE     0012H      0012H     UNIT           ?PR?main?FLICKER
+    CODE     0012H      0017H     UNIT           ?PR?main?TOGGLE_BIT
 
 EXECUTABLE SUMMARY:
 -------------------
     Total INTERNAL RAM storage requirement:  0008H (8)
     Total EXTERNAL RAM storage requirement:  0000H (0)
-    Total     CODE     storage requirement:  0024H (36)
+    Total     CODE     storage requirement:  0029H (41)
 Note:  Summary does not include dynamic stack requirements
 
 
-REFERENCE MAP OF MODULE: C:\USERS\RICARDO\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\GPIO_TEST\GPIO_TEST.AOF (GPI&
-O_TEST)
+REFERENCE MAP OF MODULE: C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\GPIO_TEST\GPIO_TEST.AOF (GPIO_&
+TEST)
 
 SEGMENT                           BI_GROUP            DT_GROUP             ID_GROUP             XD_GROUP
   +--> CALLED SEGMENT          START    LENGTH     START    LENGTH     START    LENGTH     START    LENGTH
 --------------------------------------------------------------------------------------
 
-?PR?main?FLICKER               ---------------     ---------------     ---------------     ---------------
+?PR?main?TOGGLE_BIT            ---------------     ---------------     ---------------     ---------------
 
-SYMBOL TABLE FOR C:\USERS\RICARDO\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\GPIO_TEST\GPIO_TEST&
-.AOF(FLICKER)
+SYMBOL TABLE FOR C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\GPIO_TEST\GPIO_TEST.A&
+OF(TOGGLE_BIT)
 -------------------------------------------------------------------------------------------------&
---------------
+---------------
 
     VALUE              TYPE               NAME
     -----              ----               ----
 
-	-------            MODULE             flicker
+	-------            MODULE             toggle_bit
 	C:0000H            SYMBOL             _ICE_DUMMY_
 	C:0012H            PUBLIC             main
+	B:0090H            SYMBOL             P1_0
 	D:0081H            SYMBOL             __SP__
 	B:0098H            SYMBOL             RI
 	B:0099H            SYMBOL             TI
@@ -127,13 +129,16 @@ SYMBOL TABLE FOR C:\USERS\RICARDO\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\GP
 	D:0090H            SYMBOL             P1
 	D:0080H            SYMBOL             P0
 	-------            PROC               main
-	C:0012H            LINE#              6
-	C:0012H            LINE#              10
-	C:0015H            LINE#              11
-	C:0017H            LINE#              10
-	C:0022H            LINE#              14
+	C:0012H            LINE#              12
+	C:0012H            LINE#              13
+	C:0015H            LINE#              16
+	C:0017H            LINE#              17
+	C:001CH            LINE#              18
+	C:0022H            LINE#              19
+	C:0024H            LINE#              20
+	C:0027H            LINE#              23
 	-------            ENDPROC            main
-	-------            ENDMOD             flicker
+	-------            ENDMOD             toggle_bit
 	C:0003H            PUBLIC             ?C_START3
 	D:00A0H            PUBLIC             HPD_ADDR
 	N:007FH            PUBLIC             IDATALEN

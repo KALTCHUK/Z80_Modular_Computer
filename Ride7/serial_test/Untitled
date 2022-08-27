@@ -1,0 +1,39 @@
+// Serial communication test.
+
+
+#include "REG51.h" 
+#include <stdio.h> 
+#include <stdlib.h>
+
+#define Sbit(x, y, z)   sbit x = y^z
+
+void serialInit(void);
+void serialTX(unsigned char x);
+void delay(int t);
+
+void main(void) {
+    while(1) {
+        serialTX('A');
+        delay(1000);
+    }
+}
+
+void serialInit() {
+    TMOD = 0x20;
+    TH1 = 0xfd;
+    SCON = 0x50;
+    TR1 = 1;
+    IE = 0x90;
+}
+
+void serialTX(unsigned char x) {
+    SBUF = x;
+    while(TI == 0);
+    TI = 0;
+}
+
+void delay (int t) {
+    int x;
+
+    for(x = 0; x < t; x++);
+}

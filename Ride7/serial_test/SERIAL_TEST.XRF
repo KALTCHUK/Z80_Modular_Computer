@@ -1,0 +1,19 @@
+MS-DOS LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263
+
+
+INTER-MODULE CROSS-REFERENCE LISTING
+------------------------------------
+
+          NAME. . . . . . . . USAGE   MODULE NAMES
+          ----------------------------------------
+          ?C_START3 . . . . . CODE    [C3S]:  SERIAL_TEST
+          HPD_ADDR  . . . . . DATA    [HPD]:  C3S
+          IDATALEN  . . . . . NUMBER  [_C_IDATALEN]:  C3S
+          main  . . . . . . . CODE    [SERIAL_TEST]:  C3S
+          serialInit  . . . . CODE    [SERIAL_TEST]:  SERIAL_TEST
+          TIM1_INIT . . . . . NUMBER  [** UNRESOLVED **]:
+          XSTACKLEN . . . . . NUMBER  [** UNRESOLVED **]:
+          _delay  . . . . . . CODE    [SERIAL_TEST]: 
+          _INITP2?  . . . . . NUMBER  [_C_IDATALEN]:  C3S
+          _serialTX . . . . . CODE    [SERIAL_TEST]:  SERIAL_TEST
+          _STACK  . . . . . . IDATA   [SERIAL_TEST]:  C3S

@@ -1,0 +1,23 @@
+
+<ApplicationBuild Header="timer-counter_test" Extern=".\timer-counter_test.rapp" Path=".\timer-counter_test.rapp" OutputFile=".\timer-counter_test.aof" sate="98" >
+	<NodeC Path=".\timer-counter_test.c" Header="timer-counter_test.c" Marker="-1" OutputFile=".\timer-counter_test.obj" sate="0" />
+	<NodeH Path="..\gpio_test\REG51.h" Header="REG51.h" Marker="-1" OutputFile="" sate="0" />
+	<Options>
+		<Config Header="Standard" >
+			<Set Header="ApplicationBuild" >
+				<Section Header="General" >
+					<Property Header="TargetFamily" Value="80C51" />
+				</Section>
+			</Set>
+			<Set Header="Target" >
+				<Section Header="Processor80C51" >
+					<Property Header="Processor" Value="AT89S4051" Removable="1" />
+				</Section>
+				<Section Header="ToolSet80C51" >
+					<Property Header="BuildToolSet80C51" Value="80C51\RaisonanceTools.config" Removable="1" />
+					<Property Header="ArelocInfo" Value="" Removable="1" />
+				</Section>
+			</Set>
+		</Config>
+	</Options>
+</ApplicationBuild>

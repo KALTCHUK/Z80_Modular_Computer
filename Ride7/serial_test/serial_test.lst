@@ -1,0 +1,155 @@
+RC51 COMPILER V06.20.17.263,  SERIAL_TEST        08/27/22  20:43:16  PAGE  1
+
+QCW(0x00002F32)
+
+DOS RC51 COMPILER V06.20.17.263, COMPILATION OF MODULE SERIAL_TEST
+OBJECT MODULE PLACED IN C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Rid
+            -e7\serial_test\serial_test.obj
+COMPILER INVOKED BY: QUIET GENERATEDEPFILE OJ(C:\Users\kaltc\Documents\GitHub\Z8
+            -0_Modular_Computer\Ride7\serial_test\serial_test.obj) PIN(C:\Users\
+            -kaltc\Documents\Raisonance\Ride\Inc;C:\Users\kaltc\Documents\Raison
+            -ance\Ride\Inc\51) PIN(C:\Users\kaltc\Documents\Raisonance\Ride\\inc
+            -\51\Atmel) NOAM CD PR(C:\Users\kaltc\Documents\GitHub\Z80_Modular_C
+            -omputer\Ride7\serial_test\serial_test.lst) FP(NOFLOAT) IP NOIS UNSI
+            -GNEDCHAR ET(CHAR) PR PL(60) PW(80) OE(1) OT(7,SPEED) RB(0) MAXERR(2
+            -5) MAXWAR(25) SM MOD517(NODP8,NOAU) 
+
+stmt level    source
+   1          // Serial communication test.
+   2          
+   3          
+   4          #include "REG51.h" 
+   5          #include <stdio.h> 
+   6          #include <stdlib.h>
+   7          
+   8          #define Sbit(x, y, z)   sbit x = y^z
+   9          
+  10          void serialInit(void);
+  11          void serialTX(unsigned char x);
+  12          void delay(int t);
+  13          
+  14          void main(void) {
+  15   1          serialInit();
+  16   1      
+  17   1          while(1) {
+  18   2              serialTX('A');
+  19   2              serialTX('B');
+  20   2              serialTX('C');
+  21   2          }
+  22   1      }
+  23          
+  24          void serialInit() {
+  25   1          TMOD = 0x20;
+  26   1          TH1 = 0xfd;         // 0xf4 => 2400bps, 0xfa => 4800bps, 0xfd 
+            -=> 9600bps, @ 11.0592MHz
+  27   1          SCON = 0x50;
+  28   1          TR1 = 1;
+  29   1      }
+  30          
+  31          void serialTX(unsigned char x) {
+  32   1          SBUF = x;
+  33   1          while(TI == 0);
+  34   1          TI = 0;
+  35   1      }
+  36          
+  37          void delay (int t) {
+  38   1          int x;
+  39   1      
+  40   1          for(x = 0; x < t; x++);
+  41   1      }
+RC51 COMPILER V06.20.17.263,  SERIAL_TEST        08/27/22  20:43:16  PAGE  3
+
+RC51 COMPILER V06.20.17.263,  SERIAL_TEST        08/27/22  20:43:16  PAGE  4
+
+ASSEMBLY LISTING OF GENERATED OBJECT CODE
+
+            ; FUNCTION main (BEGIN)
+                                           ; SOURCE LINE # 15 
+0000 120000  R      LCALL  serialInit
+0003         ?WHILE1:
+                                           ; SOURCE LINE # 18 
+0003 7F41           MOV    R7,#041H
+0005 120000  R      LCALL  _serialTX
+                                           ; SOURCE LINE # 19 
+0008 7F42           MOV    R7,#042H
+000A 120000  R      LCALL  _serialTX
+                                           ; SOURCE LINE # 20 
+000D 7F43           MOV    R7,#043H
+000F 120000  R      LCALL  _serialTX
+0012 80EF           SJMP   ?WHILE1
+
+            ; FUNCTION main (END)
+
+            ; FUNCTION serialInit (BEGIN)
+                                           ; SOURCE LINE # 25 
+0000 758920         MOV    TMOD,#020H
+                                           ; SOURCE LINE # 26 
+0003 758DFD         MOV    TH1,#0FDH
+                                           ; SOURCE LINE # 27 
+0006 759850         MOV    SCON,#050H
+                                           ; SOURCE LINE # 28 
+0009 D28E           SETB   TR1
+                                           ; SOURCE LINE # 29 
+000B 22             RET    
+
+            ; FUNCTION serialInit (END)
+
+            ; FUNCTION _serialTX (BEGIN)
+              ; Register R7 is assigned to parameter x
+                                           ; SOURCE LINE # 32 
+0000 8F99           MOV    SBUF,R7
+0002         ?WHILE3:
+                                           ; SOURCE LINE # 33 
+0002 3099FD         JNB    TI,?WHILE3
+                                           ; SOURCE LINE # 34 
+0005 C299           CLR    TI
+                                           ; SOURCE LINE # 35 
+0007 22             RET    
+
+            ; FUNCTION _serialTX (END)
+
+            ; FUNCTION _delay (BEGIN)
+              ; Register R6R7 is assigned to parameter t
+              ; R4R5 is assigned to x
+                                           ; SOURCE LINE # 40 
+0000 E4             CLR    A
+0001 FC             MOV    R4,A
+0002 FD             MOV    R5,A
+0003         ?FOR1:
+0003 8EF0           MOV    B,R6
+0005 B2F7           CPL    B.7
+0007 EC             MOV    A,R4
+0008 6480           XRL    A,#080H
+000A B5F004         CJNE   A,B,?LAB10
+RC51 COMPILER V06.20.17.263,  SERIAL_TEST        08/27/22  20:43:16  PAGE  2
+
+000D ED             MOV    A,R5
+000E B50700         CJNE   A,AR7,?LAB10
+0011         ?LAB10:
+0011 5007           JNC    ?NXT6
+0013 0D             INC    R5
+0014 ED             MOV    A,R5
+0015 70EC           JNZ    ?FOR1
+0017 0C             INC    R4
+0018 80E9           SJMP   ?FOR1
+001A         ?NXT6:
+                                           ; SOURCE LINE # 41 
+001A 22             RET    
+
+            ; FUNCTION _delay (END)
+
+RC51 COMPILER V06.20.17.263,  SERIAL_TEST        08/27/22  20:43:16  PAGE  5
+
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     67    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+RC51 COMPILATION COMPLETE.  0 WARNING,  0 ERROR

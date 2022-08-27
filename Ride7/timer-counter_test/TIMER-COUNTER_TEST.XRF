@@ -1,0 +1,17 @@
+MS-DOS LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263
+
+
+INTER-MODULE CROSS-REFERENCE LISTING
+------------------------------------
+
+          NAME. . . . . . . . USAGE   MODULE NAMES
+          ----------------------------------------
+          ?C_START3 . . . . . CODE    [C3S]:  TIMER-COUNTER_TEST
+          HPD_ADDR  . . . . . DATA    [HPD]:  C3S
+          IDATALEN  . . . . . NUMBER  [_C_IDATALEN]:  C3S
+          main  . . . . . . . CODE    [TIMER-COUNTER_TEST]:  C3S
+          T0delay . . . . . . CODE    [TIMER-COUNTER_TEST]:  TIMER-COUNTER_TEST
+          TIM1_INIT . . . . . NUMBER  [** UNRESOLVED **]:
+          XSTACKLEN . . . . . NUMBER  [** UNRESOLVED **]:
+          _INITP2?  . . . . . NUMBER  [_C_IDATALEN]:  C3S
+          _STACK  . . . . . . IDATA   [TIMER-COUNTER_TEST]:  C3S

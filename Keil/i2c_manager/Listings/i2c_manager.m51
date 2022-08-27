@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    06/25/2022  06:37:17  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    08/26/2022  20:30:03  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
@@ -59,7 +59,7 @@ SEGMENT                               DATA_GROUP
   +--> ?PR?I2C_START?I2C_MANAGER
   +--> ?PR?_I2C_READ?I2C_MANAGER
   +--> ?PR?_PUT_DATA?I2C_MANAGER
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  06/25/2022  06:37:17  PAGE 2
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  08/26/2022  20:30:03  PAGE 2
 
 
 
@@ -119,7 +119,7 @@ SYMBOL TABLE OF MODULE:  .\Objects\i2c_manager (I2C_MANAGER)
   C:09E4H         LINE#         31
   C:09E4H         LINE#         35
   -------         ENDPROC       I2C_DELAY
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  06/25/2022  06:37:17  PAGE 3
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  08/26/2022  20:30:03  PAGE 3
 
 
   -------         PROC          I2C_START
@@ -179,7 +179,7 @@ SYMBOL TABLE OF MODULE:  .\Objects\i2c_manager (I2C_MANAGER)
   C:090CH         LINE#         92
   C:090FH         LINE#         93
   C:0919H         LINE#         94
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  06/25/2022  06:37:17  PAGE 4
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  08/26/2022  20:30:03  PAGE 4
 
 
   C:091BH         LINE#         95
@@ -239,7 +239,7 @@ SYMBOL TABLE OF MODULE:  .\Objects\i2c_manager (I2C_MANAGER)
   C:09B5H         LINE#         50
   C:09BEH         LINE#         51
   C:09C0H         LINE#         52
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  06/25/2022  06:37:17  PAGE 5
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  08/26/2022  20:30:03  PAGE 5
 
 
   -------         ENDPROC       _PUT_DATA
@@ -299,7 +299,7 @@ SYMBOL TABLE OF MODULE:  .\Objects\i2c_manager (I2C_MANAGER)
   C:08D5H         LINE#         110
   C:08D8H         LINE#         112
   C:08E5H         LINE#         113
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  06/25/2022  06:37:17  PAGE 6
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  08/26/2022  20:30:03  PAGE 6
 
 
   C:08EFH         LINE#         114

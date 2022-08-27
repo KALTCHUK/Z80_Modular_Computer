@@ -1,0 +1,101 @@
+RC51 COMPILER V06.20.17.263,  TIMER_COUNTER_TEST    08/27/22  10:15:26  PAGE  1
+            -
+
+QCW(0x00002F32)
+
+DOS RC51 COMPILER V06.20.17.263, COMPILATION OF MODULE TIMER_COUNTER_TEST
+OBJECT MODULE PLACED IN C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Rid
+            -e7\timer-counter_test\timer-counter_test.obj
+COMPILER INVOKED BY: QUIET GENERATEDEPFILE OJ(C:\Users\kaltc\Documents\GitHub\Z8
+            -0_Modular_Computer\Ride7\timer-counter_test\timer-counter_test.obj)
+            - PIN(C:\Users\kaltc\Documents\Raisonance\Ride\Inc;C:\Users\kaltc\Do
+            -cuments\Raisonance\Ride\Inc\51) PIN(C:\Users\kaltc\Documents\Raison
+            -ance\Ride\\inc\51\Atmel) NOAM CD PR(C:\Users\kaltc\Documents\GitHub
+            -\Z80_Modular_Computer\Ride7\timer-counter_test\timer-counter_test.l
+            -st) FP(NOFLOAT) IP NOIS UNSIGNEDCHAR ET(CHAR) PR PL(60) PW(80) OE(1
+            -) OT(7,SPEED) RB(0) MAXERR(25) MAXWAR(25) SM MOD517(NODP8,NOAU) 
+
+stmt level    source
+   1          //  Toggle all the bits of port P1 continuously with some delay in
+            - between. Use Timer 0, mode 2 (8-bit auto-reload), to generate the 
+            -delay.
+   2          
+   3          #include "REG51.h" 
+   4          #include <stdio.h> 
+   5          #include <stdlib.h>
+   6          
+   7          #define Sbit(x, y, z)   sbit x = y^z
+   8          
+   9          void T0delay(void);
+  10          
+  11          void main(void) {
+  12   1          while(1) {
+  13   2              P1 = 0x55;
+  14   2              T0delay();
+  15   2              P1 = 0xAA;
+  16   2              T0delay();
+  17   2          }
+  18   1      }
+  19          
+  20          void T0delay() {
+  21   1          TMOD = 0x02;
+  22   1          TH0 = 58;
+  23   1          TR0 = 1;
+  24   1          while(TF0 == 0);
+  25   1          TR0 = 0;
+  26   1          TF0 = 0;
+  27   1      }
+RC51 COMPILER V06.20.17.263,  TIMER_COUNTER_TEST    08/27/22  10:15:26  PAGE  2
+            -
+
+ASSEMBLY LISTING OF GENERATED OBJECT CODE
+
+            ; FUNCTION main (BEGIN)
+0000         ?WHILE1:
+                                           ; SOURCE LINE # 13 
+0000 759055         MOV    P1,#055H
+                                           ; SOURCE LINE # 14 
+0003 120000  R      LCALL  T0delay
+                                           ; SOURCE LINE # 15 
+0006 7590AA         MOV    P1,#0AAH
+                                           ; SOURCE LINE # 16 
+0009 120000  R      LCALL  T0delay
+000C 80F2           SJMP   ?WHILE1
+
+            ; FUNCTION main (END)
+
+            ; FUNCTION T0delay (BEGIN)
+                                           ; SOURCE LINE # 21 
+0000 758902         MOV    TMOD,#002H
+                                           ; SOURCE LINE # 22 
+0003 758C3A         MOV    TH0,#03AH
+                                           ; SOURCE LINE # 23 
+0006 D28C           SETB   TR0
+0008         ?WHILE3:
+                                           ; SOURCE LINE # 24 
+0008 308DFD         JNB    TF0,?WHILE3
+                                           ; SOURCE LINE # 25 
+000B C28C           CLR    TR0
+                                           ; SOURCE LINE # 26 
+000D C28D           CLR    TF0
+                                           ; SOURCE LINE # 27 
+000F 22             RET    
+
+            ; FUNCTION T0delay (END)
+
+RC51 COMPILER V06.20.17.263,  TIMER_COUNTER_TEST    08/27/22  10:15:26  PAGE  3
+            -
+
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     30    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+RC51 COMPILATION COMPLETE.  0 WARNING,  0 ERROR

@@ -1,8 +1,55 @@
 
 <Debug>
-	<Views>
-		<View File=".\flicker.c" Line="5" Index="0" focus="1" />
+	<gpio_test>
+		<CodeView TopRow="12" Focus="18" Selected="yes" >
+			<DisplayOptions ShowSourceLines="1" CodeCoverageHex="0" ColoredJmp="0" />
+			<CodeReport>
+				<0>112</0>
+				<1>82</1>
+				<2>44</2>
+				<3>247</3>
+				<4>45</4>
+				<5>94</5>
+																																																								
+			</CodeReport>
+																																								
+		</CodeView>
+		<Peripheral PaneID="1430344276" />
+		<SfrView Focus="18" TopRow="128" NbPerLine="8" PaneID="84875095" />
+		<BitView Focus="18" TopRow="0" NbPerLine="8" PaneID="335548759" />
+		<Peripheral PaneID="1920233566" />
+		<DataView Focus="18" TopRow="0" NbPerLine="8" PaneID="924648467" />
+																								
+	</gpio_test>
+	<Flags>
+		<Report>
+			<Def Header="FlagReport" NbCol="9" >
+				<Col Type="PT_BOOL" Header="Check" sizeCache="18" AutoSize="0" Edit="1" Sortable="1" Icon="C:\Users\kaltc\Documents\Raisonance\Ride\Config\Resources\check.bmp" />
+				<Col Type="PT_STRING" Header="Kind" sizeCache="DDDDDDDDDDD" AutoSize="1" Edit="0" Sortable="1" />
+				<Col Type="PT_STRING" Header="KindID" sizeCache="DD" AutoSize="1" Edit="0" Sortable="1" Visible="0" />
+				<Col Type="PT_STRING" Header="Space" sizeCache="DDDDDD" AutoSize="1" Edit="0" Sortable="1" />
+				<Col Type="PT_STRING" Header="SpaceID" sizeCache="DD" AutoSize="0" Edit="0" Sortable="0" Visible="0" />
+				<Col Type="PT_STRING" Header="Line" sizeCache="DDDDDDDDD" AutoSize="1" Edit="0" Sortable="1" Visible="1" />
+				<Col Type="PT_STRING" Header="File" sizeCache="DDDDDDDDDDDDDDDDDDDD" AutoSize="1" Edit="0" Sortable="1" Visible="1" />
+				<Col Type="PT_STRING" Header="Path" sizeCache="DDDDDDDDDDDDDDDDDDDD" AutoSize="1" Edit="0" Sortable="0" Visible="0" />
+				<Col Type="PT_STRING" Header="Condition" sizeCache="DDDDDDDDDDDDDDDDDDDDDDDD" AutoSize="1" Edit="0" Sortable="0" />
+				<Col Type="PT_STRING" Header="Condexpr" sizeCache="DD" AutoSize="1" Edit="0" Sortable="0" Visible="0" />
+				<Col Type="PT_STRING" Header="Condcount" sizeCache="DD" AutoSize="1" Edit="0" Sortable="0" Visible="0" />
+							
+			</Def>
+			<Rows>
+				<Row Check="True" Kind="Breakpoint" KindID="0" Space="code" SpaceID="0" Condition="" Line="L:9" File="flicker.c" Path="C:\Users\ricardo\Documents\GitHub\Z80_Modular_Computer\Ride7\gpio_test\flicker.c" />
+				<Row Check="True" Kind="Breakpoint" KindID="0" Space="code" SpaceID="0" Condition="" Line="L:10" File="flicker.c" Path="C:\Users\ricardo\Documents\GitHub\Z80_Modular_Computer\Ride7\gpio_test\flicker.c" />
+							
+			</Rows>
+					
+		</Report>
 			
+	</Flags>
+	<Views>
+		<View File=".\flicker.c" Line="1" Index="0" />
+		<View File=".\toggle_bit.c" Line="12" Index="1" focus="1" />
+		<View File=".\REG51.h" Line="70" Index="2" />
 	</Views>
 	<BookMarks>
 		<BookMark File="" Line="0" />
@@ -15,7 +62,6 @@
 		<BookMark File="" Line="0" />
 		<BookMark File="" Line="0" />
 		<BookMark File="" Line="0" />
-			
 	</BookMarks>
 	<Grep>
 		<GrepIncludeSub>yes</GrepIncludeSub>
@@ -26,64 +72,20 @@
 		<GrepFileTypes>
 			<GrepFileTypesValue>*.c;*.h</GrepFileTypesValue>
 			<GrepFileType>*.c;*.h</GrepFileType>
-					
 		</GrepFileTypes>
 		<GrepFindWhat>
 			<GrepFindWhatValue/>
-					
 		</GrepFindWhat>
 		<GrepFindWhere>
 			<GrepFindWhereValue>Application Files</GrepFindWhereValue>
 			<GrepPathStr>Application Files</GrepPathStr>
 			<GrepPathStr>Application Path</GrepPathStr>
 			<GrepPathStr>Project Files</GrepPathStr>
-					
 		</GrepFindWhere>
 		<GrepReplaceWhat>
 			<GrepReplaceWhatValue/>
-					
 		</GrepReplaceWhat>
-			
 	</Grep>
 	<FindStrings/>
 	<ReplaceStrings/>
-	<gpio_test>
-		<CodeView TopRow="12" Focus="18" Selected="yes" >
-			<DisplayOptions ShowSourceLines="1" CodeCoverageHex="0" ColoredJmp="0" />
-			<CodeReport>
-				<0>112</0>
-				<1>82</1>
-				<2>44</2>
-				<3>247</3>
-				<4>45</4>
-				<5>94</5>
-			</CodeReport>
-		</CodeView>
-		<Peripheral PaneID="1430344276" />
-		<SfrView Focus="18" TopRow="128" NbPerLine="8" PaneID="84875095" />
-		<BitView Focus="18" TopRow="0" NbPerLine="8" PaneID="335548759" />
-		<Peripheral PaneID="1920233566" />
-		<DataView Focus="18" TopRow="0" NbPerLine="8" PaneID="924648467" />
-	</gpio_test>
-	<Flags>
-		<Report>
-			<Def Header="FlagReport" NbCol="9" >
-				<Col Type="PT_BOOL" Header="Check" sizeCache="18" AutoSize="0" Edit="1" Sortable="1" Icon="C:\Users\ricardo\Documents\Raisonance\Ride\Config\Resources\check.bmp" />
-				<Col Type="PT_STRING" Header="Kind" sizeCache="DDDDDDDDDDD" AutoSize="1" Edit="0" Sortable="1" />
-				<Col Type="PT_STRING" Header="KindID" sizeCache="DD" AutoSize="1" Edit="0" Sortable="1" Visible="0" />
-				<Col Type="PT_STRING" Header="Space" sizeCache="DDDDDD" AutoSize="1" Edit="0" Sortable="1" />
-				<Col Type="PT_STRING" Header="SpaceID" sizeCache="DD" AutoSize="0" Edit="0" Sortable="0" Visible="0" />
-				<Col Type="PT_STRING" Header="Line" sizeCache="DDDDDDDDD" AutoSize="1" Edit="0" Sortable="1" Visible="1" />
-				<Col Type="PT_STRING" Header="File" sizeCache="DDDDDDDDDDDDDDDDDDDD" AutoSize="1" Edit="0" Sortable="1" Visible="1" />
-				<Col Type="PT_STRING" Header="Path" sizeCache="DDDDDDDDDDDDDDDDDDDD" AutoSize="1" Edit="0" Sortable="0" Visible="0" />
-				<Col Type="PT_STRING" Header="Condition" sizeCache="DDDDDDDDDDDDDDDDDDDDDDDD" AutoSize="1" Edit="0" Sortable="0" />
-				<Col Type="PT_STRING" Header="Condexpr" sizeCache="DD" AutoSize="1" Edit="0" Sortable="0" Visible="0" />
-				<Col Type="PT_STRING" Header="Condcount" sizeCache="DD" AutoSize="1" Edit="0" Sortable="0" Visible="0" />
-			</Def>
-			<Rows>
-				<Row Check="True" Kind="Breakpoint" KindID="0" Space="CODE" SpaceID="0" Condition="" Line="L:9" File="flicker.c" Path="C:\Users\ricardo\Documents\GitHub\Z80_Modular_Computer\Ride7\gpio_test\flicker.c" />
-				<Row Check="True" Kind="Breakpoint" KindID="0" Space="CODE" SpaceID="0" Condition="" Line="L:10" File="flicker.c" Path="C:\Users\ricardo\Documents\GitHub\Z80_Modular_Computer\Ride7\gpio_test\flicker.c" />
-			</Rows>
-		</Report>
-	</Flags>
 </Debug>

@@ -1,0 +1,4 @@
+
+<Project Header="Project 'timer-counter_test'" Path=".\timer-counter_test.rprj" Project="Yes" OutputFile="" sate="96" ActiveApp="timer-counter_test" >
+	<ApplicationBuild Header="timer-counter_test" Extern=".\timer-counter_test.rapp" Path=".\timer-counter_test.rapp" OutputFile=".\timer-counter_test.aof" sate="98" />
+</Project>

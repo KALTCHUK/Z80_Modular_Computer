@@ -6,11 +6,11 @@ INTER-MODULE CROSS-REFERENCE LISTING
 
           NAME. . . . . . . . USAGE   MODULE NAMES
           ----------------------------------------
-          ?C_START3 . . . . . CODE    [C3S]:  FLICKER
+          ?C_START3 . . . . . CODE    [C3S]:  TOGGLE_BIT
           HPD_ADDR  . . . . . DATA    [HPD]:  C3S
           IDATALEN  . . . . . NUMBER  [_C_IDATALEN]:  C3S
-          main  . . . . . . . CODE    [FLICKER]:  C3S
+          main  . . . . . . . CODE    [TOGGLE_BIT]:  C3S
           TIM1_INIT . . . . . NUMBER  [** UNRESOLVED **]:
           XSTACKLEN . . . . . NUMBER  [** UNRESOLVED **]:
           _INITP2?  . . . . . NUMBER  [_C_IDATALEN]:  C3S
-          _STACK  . . . . . . IDATA   [FLICKER]:  C3S
+          _STACK  . . . . . . IDATA   [TOGGLE_BIT]:  C3S
