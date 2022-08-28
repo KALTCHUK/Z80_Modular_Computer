@@ -1,7 +1,7 @@
 /*
- * preTTY.c v1.0
+ * MB_RTU_slave.c v1.0
  *
- * Created: 29/08/2021 17:29:23
+ * Created: 28/08/2022
  * Author : kaltchuk
  */ 
 
