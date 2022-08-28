@@ -1,0 +1,96 @@
+/*
+ * preTTY.c v1.0
+ *
+ * Created: 29/08/2021 17:29:23
+ * Author : kaltchuk
+ */ 
+
+
+#define F_CPU	20000000UL
+
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <util/delay.h>
+
+#define BAUD		19200
+#define MYUBRR		((F_CPU/8/BAUD)-1)
+
+#define CS			(PIND&(1<<INT0))
+#define RSM			3
+#define RSM_LO		(PORTC &= ~(1<<RSM))
+#define RSM_HI		(PORTC |= (1<<RSM))
+
+#define asInput		1
+#define asOutput	2
+
+#define CR			0x0d
+#define LF			0x0a
+
+#define MAXBUFF		256
+
+char			uBuffRX[MAXBUFF]; 					// Buffer for chars that arrived through serial port.
+
+unsigned int long	baud[] = {1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 57600, 125000, 250000};
+
+void setDataBus(int modus)				// MODIFY
+{
+	if (modus == asInput)	// Write zeros to PORTs
+	{
+		DDRB &= ~0x07;
+		DDRD &= ~0xf8;
+	}
+	else					// Write ones to PORTs
+	{
+		DDRB |= 0x07;
+		DDRD |= 0xf8;
+	}
+}
+
+void xmit(char toSend)					// MODIFY
+{
+	while ( !( UCSR0A & (1<<UDRE0)) );
+	UDR0 = toSend;
+}
+
+void USART_Init(unsigned int ubrr)
+{
+	/* Set baud rate */
+	UBRR0H = (unsigned char)(ubrr>>8);
+	UBRR0L = (unsigned char)ubrr;
+
+	/* Enable double speed */
+	UCSR0A |= (1<<U2X0);
+
+	/* Enable receiver, transmitter and also RX_complete_interrupt */
+	UCSR0B = (1<<RXCIE0)|(1<<RXEN0)|(1<<TXEN0);
+
+	/* Set frame format: 8N1 */
+	UCSR0C = (3<<UCSZ00);
+}
+
+ISR(USART_RX_vect)						// MODIFY
+{
+	uBuffRX[uBuffRX_inPtr++] = UDR0;
+	if (uBuffRX_inPtr == MAXBUFF)
+		uBuffRX_inPtr = 0;
+}
+
+int main(void)
+{
+	USART_Init(MYUBRR);		// Initialize USART
+
+	while (1);
+}
+
+
+
+/*
+
+
+main
+	init serial
+	while(1) process modbus request
+	
+RX interrupt
+
+*/
