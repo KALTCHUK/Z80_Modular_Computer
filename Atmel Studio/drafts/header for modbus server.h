@@ -1,6 +1,39 @@
+
+void serialInit(unsigned int baud);
 byte serialAvailable(void);
 byte serialRead(void);
 void serialWrite(unsigned byte);
+
+void modbusInit(uint8_t id, uint32_t baud, uint8_t config) {
+  _id = id;
+  uint32_t startTime = micros();
+  if (baud > 19200) {
+    _charTimeout = 750;
+    _frameTimeout = 1750;
+  }
+  else if (config == 0x2E || config == 0x3E) {
+    _charTimeout = 18000000/baud;
+    _frameTimeout = 42000000/baud;
+  }
+  else if (config == 0x0E || config == 0x26 || config == 0x36) {
+    _charTimeout = 16500000/baud;
+    _frameTimeout = 38500000/baud;
+  }
+  else {
+    _charTimeout = 15000000/baud;
+    _frameTimeout = 35000000/baud;
+  }
+  if (_dePin != 255) {
+    digitalWrite(_dePin, LOW);
+    pinMode(_dePin, OUTPUT);
+  }
+  do {
+    if (_serial->available() > 0) {
+      startTime = micros();
+      _serial->read();
+    }
+  } while (micros() - startTime < _frameTimeout);
+}
 
 
 void modbusPoll() {

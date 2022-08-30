@@ -27,7 +27,7 @@ void main(void) {
 	// Initilize serial port and Modbus.
 	// Get baudrate from EEPROM (input register 40001).
 	// Get slave ID from EEPROM (input register 40000).
-	// If forcePin=0, use baud=9600.
+	// If forcePin=0, use predefined baud and slaveID.
 	if(!forcePin) {
 		serialInit(forceBaud);
 		modbusInit(forceSlaveID, responseDelay);
