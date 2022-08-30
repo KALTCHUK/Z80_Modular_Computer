@@ -1,0 +1,27 @@
+
+
+
+
+
+uint16_t ModbusRTUSlave::_crc(uint8_t len) {
+  uint16_t crc = 0xFFFF;
+  for (uint8_t i = 0; i < len; i++) {
+    crc ^= (uint16_t)_buf[i];
+    for (uint8_t j = 0; j < 8; j++) {
+      bool lsb = crc & 1;
+      crc >>= 1;
+      if (lsb == true) {
+        crc ^= 0xA001;
+      }
+    }
+  }
+  return crc;
+}
+
+uint16_t ModbusRTUSlave::_div8RndUp(uint16_t value) {
+  return (value + 7) >> 3;
+}
+
+uint16_t ModbusRTUSlave::_bytesToWord(uint8_t high, uint8_t low) {
+  return (high << 8) | low;
+}

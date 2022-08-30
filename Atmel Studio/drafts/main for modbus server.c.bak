@@ -24,19 +24,17 @@ void EEPROMwrite(unsigned int a, byte b);
 byte EEPROMread(unsigned int a);
 
 void main(void) {
-	// Initilize serial port and Modbus.
-	// Get baudrate from EEPROM (input register 40001).
-	// Get slave ID from EEPROM (input register 40000).
+	// Initilize serial port.
+	// Get baudrate from EEPROM (input register 40001 (EEPROM addresses 1 and 2).
 	// If forcePin=0, use baud=9600.
 	if(!forcePin) {
 		serialInit(forceBaud);
 		modbusInit(forceSlaveID, responseDelay);
 	}
-	else {
-		serialInit(_bytesToWord(EEPROMread(baudAddr), EEPROMread(baudAddr+1)));
-		modbusInit(_bytesToWord(EEPROMread(slaveIDaddr), EEPROMread(slaveIDaddr+1)), responseDelay);
-	}
+	else			serialInit(_bytesToWord(EEPROMread(baudAddr), EEPROMread(baudAddr+1)));
+
 	// Initilize a ModbusRTUSlave with DE pin and response delay.
+	// Get slave ID from EEPROM (input register 40000).
 	
 
 	while(1) {
