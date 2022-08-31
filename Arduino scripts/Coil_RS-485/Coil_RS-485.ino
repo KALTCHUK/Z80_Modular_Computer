@@ -21,24 +21,22 @@
 
 // ModbusRTUSlave is not dependant on SoftwareSerial.
 // It is included here so that the Serial port can be kept free for debugging.
-#include <SoftwareSerial.h>
+//#include <SoftwareSerial.h>
 #include <ModbusRTUSlave.h>
 
 // Here are some constants used elsewhere in the program.
-const byte ledPin = 13, rxPin = 10, txPin = 11, dePin = 12, id = 1;
+const byte ledPin = 13, dePin = 12, id = 10;
 const word bufSize = 256, numCoils = 1, ledAddress = 0;
-const unsigned long baud = 38400, responseDelay = 10;
+const unsigned long baud = 19200, responseDelay = 10;
 
 // This is the buffer for the ModbusRTUSlave object.
 // It is used to store the Modbus messages.
 // A size of 256 bytes is recommended, but sizes as low as 8 bytes can be used.
 byte buf[bufSize];
 
-// Initilize a SoftwareSerial port.
-SoftwareSerial mySerial(rxPin, txPin);
 
 // Initilize a ModbusRTUSlave with DE pin and response delay.
-ModbusRTUSlave modbus(mySerial, buf, bufSize, dePin, responseDelay);
+ModbusRTUSlave modbus(Serial, buf, bufSize, dePin, responseDelay);
 
 // This is a funciton that will be passed to the ModbusRTUSlave for reading coils.
 char coilRead(word address) {
@@ -57,13 +55,13 @@ void setup() {
   pinMode(ledPin, OUTPUT);
 
   // Setup the SoftwareSerial port.
-  mySerial.begin(baud);
+  Serial.begin(baud);
 
   // Setup the ModbusRTUSlave
   modbus.begin(id, baud);
 
   // Configure the coil(s).
-  //modbus.configureCoils(numCoils, coilRead, coilWrite);
+  modbus.configureCoils(numCoils, coilRead, coilWrite);
 }
 
 void loop() {
