@@ -14,23 +14,27 @@
 
   Note: On most Arduino boards there is already an LED attached to pin 13.
 
-  Created: 2020-02-13
-  By: C. M. Bulliner
-  Modified: 2020-02-19
+  Created: 2022-06-25
   By: C. M. Bulliner
 
+  Adapted by P.R.Kaltchuk to use only Serial instead of SoftwareSerial.
+  01/09/22.
 */
+#define F_CPU  20000000UL
+#include <ModbusRTUSlave.h>
 
-// ModbusRTUSlave is not dependant on SoftwareSerial.
-// It is included here so that the Serial port can be kept free for debugging.
-
+// Here are some constants used elsewhere in the program.
+const byte ledPin = 13, dePin = 12, id = 7;
+const word bufSize = 256, numCoils = 1, ledAddress = 0;
+const unsigned long baud = 38400, responseDelay = 10;
 
 // This is the buffer for the ModbusRTUSlave object.
 // It is used to store the Modbus messages.
 // A size of 256 bytes is recommended, but sizes as low as 8 bytes can be used.
 byte buf[bufSize];
 
-
+// Initilize a ModbusRTUSlave with DE pin and response delay.
+ModbusRTUSlave modbus(buf, bufSize, dePin, responseDelay);
 
 // This is a funciton that will be passed to the ModbusRTUSlave for reading coils.
 char coilRead(word address) {
@@ -48,7 +52,7 @@ void setup() {
   // Setup the LED pin.
   pinMode(ledPin, OUTPUT);
 
-  // Setup the SoftwareSerial port.
+  // Setup the Serial port.
   Serial.begin(baud);
 
   // Setup the ModbusRTUSlave
