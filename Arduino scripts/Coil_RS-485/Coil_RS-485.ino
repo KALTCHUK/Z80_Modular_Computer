@@ -20,13 +20,12 @@
   Adapted by P.R.Kaltchuk to use only Serial instead of SoftwareSerial.
   01/09/22.
 */
-#define F_CPU  20000000UL
 #include <ModbusRTUSlave.h>
 
 // Here are some constants used elsewhere in the program.
 const byte ledPin = 13, dePin = 12, id = 7;
 const word bufSize = 256, numCoils = 1, ledAddress = 0;
-const unsigned long baud = 38400, responseDelay = 10;
+const unsigned long baud = 9600, responseDelay = 10;
 
 // This is the buffer for the ModbusRTUSlave object.
 // It is used to store the Modbus messages.
