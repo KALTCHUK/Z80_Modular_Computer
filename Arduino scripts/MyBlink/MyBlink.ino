@@ -4,7 +4,6 @@
  * Created: 24/07/2021 11:51:55
  * Author : kaltchuk
  */ 
-#define F_CPU  20000000UL
 
 #define LED         PORTB5
 #define LED_ON      PORTB |= (1<<LED)
@@ -12,7 +11,6 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
-
 
 int main(void)
 {
