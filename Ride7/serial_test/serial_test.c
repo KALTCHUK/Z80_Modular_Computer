@@ -1,5 +1,15 @@
-// Serial communication test.
+/* Serial communication test.
 
+With crystal = 11.059MHz
+Baud    TH1
+ 1200   0xD0
+ 2400   0xE8
+ 4800   0xF4
+ 9600   0xFA
+19200   0xFD
+38400   0xFE
+57600   0xFF
+*/
 
 #include "REG51.h" 
 #include <stdio.h> 
@@ -21,8 +31,8 @@ void main(void) {
 
 void serialInit() {
     TMOD = 0x20;        // TIMER1 = mode 2
-    TH1 = 0xfd;         // 0xf4 => 2400bps, 0xfa => 4800bps, 0xfd => 9600bps, @ 11.0592MHz
     PCON |= 0x80;       // SMOD=1 => double baud rate;
+    TH1 = 0xfd;         // see table in the header
     SCON = 0x50;        // Serial port = mode 1 (8 bits, clocked by TIMER1)
     TR1 = 1;            // Turn on TIMER1
 }
