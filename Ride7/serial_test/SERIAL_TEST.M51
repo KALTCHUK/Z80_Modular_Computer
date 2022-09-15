@@ -1,27 +1,28 @@
-LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263                                 08/27/22  20:43:16
+LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263                                 09/15/22  07:42:21
 MS-DOS LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263,  INVOKED BY:
-C:\Users\kaltc\Documents\Raisonance\Ride\Bin\LX51.EXE C:\Users\kaltc\Documents\GitHub\Z80_Modular&
-_Computer\Ride7\serial_test\serial_test.obj TO(C:\Users\kaltc\Documents\GitHub\Z80_Modular_Comput&
-er\Ride7\serial_test\serial_test.aof) LIBPATH(C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51) GE&
-NERATEDEPFILE MAP IX RS(256) RSI(128) CSIZE(65536) XSIZE(65536) DEFN(XSTACKLEN,256) DEFN(TIM1_INI&
-T,E8h) CO(0) DT(0) ID(0) XD(0) BI(0) ABSCODEOFFS(0) XMLM(No,C:\Users\kaltc\Documents\GitHub\Z80_M&
-odular_Computer\Ride7\serial_test\serial_test-modules.Standard.xml) XMLF(No,8000,C:\Users\kaltc\D&
-ocuments\GitHub\Z80_Modular_Computer\Ride7\serial_test\serial_test-flash.Standard.xml) 
+C:\Users\ricardo\Documents\Raisonance\Ride\Bin\LX51.EXE C:\Users\ricardo\Documents\GitHub\Z80_Mod&
+ular_Computer\Ride7\serial_test\serial_test.obj TO(C:\Users\ricardo\Documents\GitHub\Z80_Modular_&
+Computer\Ride7\serial_test\serial_test.aof) LIBPATH(C:\Users\ricardo\Documents\Raisonance\Ride\Li&
+b\51) GENERATEDEPFILE MAP IX RS(256) RSI(128) CSIZE(65536) XSIZE(65536) DEFN(XSTACKLEN,256) DEFN(&
+TIM1_INIT,E8h) CO(0) DT(0) ID(0) XD(0) BI(0) ABSCODEOFFS(0) XMLM(No,C:\Users\ricardo\Documents\Gi&
+tHub\Z80_Modular_Computer\Ride7\serial_test\serial_test-modules.Standard.xml) XMLF(No,8000,C:\Use&
+rs\ricardo\Documents\GitHub\Z80_Modular_Computer\Ride7\serial_test\serial_test-flash.Standard.xml&
+) 
 
 
 MEMORY MODEL: SMALL WITHOUT ANY FLOATING POINT ARITHMETIC
 
 
 INPUT MODULES INCLUDED
-  C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\SERIAL_TEST\SERIAL_TEST.OBJ(SERIAL_T&
-EST)
-  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(C3S)
-  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(HPD)
-  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(_C_IDATALEN)
+  C:\USERS\RICARDO\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\SERIAL_TEST\SERIAL_TEST.OBJ(SERIAL&
+_TEST)
+  C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(C3S)
+  C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(HPD)
+  C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(_C_IDATALEN)
 
 
-LINK MAP OF MODULE: C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\SERIAL_TEST\SERIAL&
-_TEST.AOF (SERIAL_TEST)
+LINK MAP OF MODULE: C:\USERS\RICARDO\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\SERIAL_TEST\SERI&
+AL_TEST.AOF (SERIAL_TEST)
 
     TYPE     BASE       LENGTH    RELOCATION     SEGMENT NAME
     ----     ----       ------    ----------     ------------
@@ -34,20 +35,19 @@ _TEST.AOF (SERIAL_TEST)
     CODE     0000H      0003H     ABSOLUTE       
     CODE     0003H      000FH     UNIT           ?PR?C51_STARTUP?
     CODE     0012H      0014H     UNIT           ?PR?main?SERIAL_TEST
-    CODE     0026H      000CH     UNIT           ?PR?serialInit?SERIAL_TEST
-    CODE     0032H      0008H     UNIT           ?PR?_serialTX?SERIAL_TEST
-    CODE     003AH      001BH     UNIT           ?PR?_delay?SERIAL_TEST
+    CODE     0026H      000FH     UNIT           ?PR?serialInit?SERIAL_TEST
+    CODE     0035H      0008H     UNIT           ?PR?_serialTX?SERIAL_TEST
 
 EXECUTABLE SUMMARY:
 -------------------
     Total INTERNAL RAM storage requirement:  0008H (8)
     Total EXTERNAL RAM storage requirement:  0000H (0)
-    Total     CODE     storage requirement:  0055H (85)
+    Total     CODE     storage requirement:  003DH (61)
 Note:  Summary does not include dynamic stack requirements
 
 
-REFERENCE MAP OF MODULE: C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\SERIAL_TEST\SERIAL_TEST.AOF (S&
-ERIAL_TEST)
+REFERENCE MAP OF MODULE: C:\USERS\RICARDO\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\SERIAL_TEST\SERIAL_TEST.AOF &
+(SERIAL_TEST)
 
 SEGMENT                           BI_GROUP            DT_GROUP             ID_GROUP             XD_GROUP
   +--> CALLED SEGMENT          START    LENGTH     START    LENGTH     START    LENGTH     START    LENGTH
@@ -61,12 +61,10 @@ SEGMENT                           BI_GROUP            DT_GROUP             ID_GR
 
 ?PR?_serialTX?SERIAL_TEST      ---------------     ---------------     ---------------     ---------------
 
-?PR?_delay?SERIAL_TEST         ---------------     ---------------     ---------------     ---------------
-
-SYMBOL TABLE FOR C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\SERIAL_TEST\SERIAL_TE&
-ST.AOF(SERIAL_TEST)
+SYMBOL TABLE FOR C:\USERS\RICARDO\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\SERIAL_TEST\SERIAL_&
+TEST.AOF(SERIAL_TEST)
 -------------------------------------------------------------------------------------------------&
---------------------
+----------------------
 
     VALUE              TYPE               NAME
     -----              ----               ----
@@ -74,8 +72,7 @@ ST.AOF(SERIAL_TEST)
 	-------            MODULE             serial_test
 	C:0000H            SYMBOL             _ICE_DUMMY_
 	C:0012H            PUBLIC             main
-	C:003AH            PUBLIC             _delay
-	C:0032H            PUBLIC             _serialTX
+	C:0035H            PUBLIC             _serialTX
 	C:0026H            PUBLIC             serialInit
 	D:0081H            SYMBOL             __SP__
 	B:0098H            SYMBOL             RI
@@ -142,46 +139,36 @@ ST.AOF(SERIAL_TEST)
 	D:0090H            SYMBOL             P1
 	D:0080H            SYMBOL             P0
 	-------            PROC               main
-	C:0012H            LINE#              14
-	C:0012H            LINE#              15
-	C:0015H            LINE#              18
-	C:001AH            LINE#              19
-	C:001FH            LINE#              20
-	C:0024H            LINE#              22
+	C:0012H            LINE#              12
+	C:0012H            LINE#              13
+	C:0015H            LINE#              16
+	C:001AH            LINE#              17
+	C:001FH            LINE#              18
+	C:0024H            LINE#              20
 	-------            ENDPROC            main
 	-------            PROC               serialInit
-	C:0026H            LINE#              24
-	C:0026H            LINE#              25
-	C:0029H            LINE#              26
-	C:002CH            LINE#              27
-	C:002FH            LINE#              28
-	C:0031H            LINE#              29
-	C:0031H            LINE#              29
+	C:0026H            LINE#              22
+	C:0026H            LINE#              23
+	C:0029H            LINE#              24
+	C:002CH            LINE#              25
+	C:002FH            LINE#              26
+	C:0032H            LINE#              27
+	C:0034H            LINE#              28
+	C:0034H            LINE#              28
 	-------            ENDPROC            serialInit
 	-------            PROC               _serialTX
-	C:0032H            LINE#              31
-	C:0032H            LINE#              32
-	C:0034H            LINE#              33
-	C:0037H            LINE#              34
-	C:0039H            LINE#              35
-	C:0039H            LINE#              35
+	C:0035H            LINE#              30
+	C:0035H            LINE#              31
+	C:0037H            LINE#              32
+	C:003AH            LINE#              33
+	C:003CH            LINE#              34
+	C:003CH            LINE#              34
 	-------            ENDPROC            _serialTX
-	-------            PROC               _delay
-	C:003AH            LINE#              37
-	C:003AH            LINE#              40
-	C:0054H            LINE#              41
-	C:0054H            LINE#              41
-	-------            ENDPROC            _delay
 	-------            ENDMOD             serial_test
 	C:0003H            PUBLIC             ?C_START3
 	D:00A0H            PUBLIC             HPD_ADDR
 	N:007FH            PUBLIC             IDATALEN
 	N:00FFH            PUBLIC             _INITP2?
-
-UNCALLED SEGMENTS:
-------------------
-    ?PR?_delay?SERIAL_TEST: Function _delay in file C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_C&
-OMPUTER\RIDE7\SERIAL_TEST\SERIAL_TEST.OBJ was not called
 
 ----------------------
 SUGGESTED OPTIMIZATION

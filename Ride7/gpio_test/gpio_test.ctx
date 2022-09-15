@@ -10,21 +10,21 @@
 				<3>247</3>
 				<4>45</4>
 				<5>94</5>
-																																																								
+																																																																						
 			</CodeReport>
-																																								
+																																																		
 		</CodeView>
 		<Peripheral PaneID="1430344276" />
 		<SfrView Focus="18" TopRow="128" NbPerLine="8" PaneID="84875095" />
 		<BitView Focus="18" TopRow="0" NbPerLine="8" PaneID="335548759" />
 		<Peripheral PaneID="1920233566" />
 		<DataView Focus="18" TopRow="0" NbPerLine="8" PaneID="924648467" />
-																								
+																														
 	</gpio_test>
 	<Flags>
 		<Report>
 			<Def Header="FlagReport" NbCol="9" >
-				<Col Type="PT_BOOL" Header="Check" sizeCache="18" AutoSize="0" Edit="1" Sortable="1" Icon="C:\Users\kaltc\Documents\Raisonance\Ride\Config\Resources\check.bmp" />
+				<Col Type="PT_BOOL" Header="Check" sizeCache="18" AutoSize="0" Edit="1" Sortable="1" Icon="C:\Users\ricardo\Documents\Raisonance\Ride\Config\Resources\check.bmp" />
 				<Col Type="PT_STRING" Header="Kind" sizeCache="DDDDDDDDDDD" AutoSize="1" Edit="0" Sortable="1" />
 				<Col Type="PT_STRING" Header="KindID" sizeCache="DD" AutoSize="1" Edit="0" Sortable="1" Visible="0" />
 				<Col Type="PT_STRING" Header="Space" sizeCache="DDDDDD" AutoSize="1" Edit="0" Sortable="1" />
@@ -48,8 +48,8 @@
 	</Flags>
 	<Views>
 		<View File=".\flicker.c" Line="1" Index="0" />
-		<View File=".\toggle_bit.c" Line="12" Index="1" focus="1" />
-		<View File=".\REG51.h" Line="70" Index="2" />
+		<View File=".\toggle_bit.c" Line="12" Index="1" />
+		<View File=".\REG51.h" Line="70" Index="2" focus="1" />
 	</Views>
 	<BookMarks>
 		<BookMark File="" Line="0" />
