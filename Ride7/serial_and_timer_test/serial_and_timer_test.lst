@@ -1,0 +1,252 @@
+RC51 COMPILER V06.20.17.263,  SERIAL_AND_TIMER_TEST    09/16/22  19:21:41  PAGE
+            -  1
+
+QCW(0x00002F32)
+
+DOS RC51 COMPILER V06.20.17.263, COMPILATION OF MODULE SERIAL_AND_TIMER_TEST
+OBJECT MODULE PLACED IN C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Rid
+            -e7\serial_and_timer_test\serial_and_timer_test.obj
+COMPILER INVOKED BY: QUIET GENERATEDEPFILE OJ(C:\Users\kaltc\Documents\GitHub\Z8
+            -0_Modular_Computer\Ride7\serial_and_timer_test\serial_and_timer_tes
+            -t.obj) PIN(C:\Users\kaltc\Documents\Raisonance\Ride\Inc;C:\Users\ka
+            -ltc\Documents\Raisonance\Ride\Inc\51) PIN(C:\Users\kaltc\Documents\
+            -Raisonance\Ride\\inc\51\Atmel) NOAM CD PR(C:\Users\kaltc\Documents\
+            -GitHub\Z80_Modular_Computer\Ride7\serial_and_timer_test\serial_and_
+            -timer_test.lst) FP(NOFLOAT) IP NOIS UNSIGNEDCHAR ET(CHAR) PR PL(60)
+            - PW(80) OE(1) OT(7,SPEED) RB(0) MAXERR(25) MAXWAR(25) SM MOD517(NOD
+            -P8,NOAU) 
+
+stmt level    source
+   1          /* Serial communication test.
+   2          
+   3          With crystal = 11.059MHz
+   4          -------------
+   5          Baud    TH1
+   6          -------------
+   7           1200   0xD0
+   8           2400   0xE8
+   9           4800   0xF4
+  10           9600   0xFA
+  11          19200   0xFD
+  12          28800   0xFE
+  13          57600   0xFF
+  14          -------------
+  15          */
+  16          
+  17          #include "REG51.h" 
+  18          #include <stdio.h> 
+  19          #include <stdlib.h>
+  20          
+  21          void Inits(void);
+  22          unsigned char serialRX(void);
+  23          void serialTX(unsigned char x);
+  24          
+  25          int milli;
+  26          
+  27          void timer0_isr() interrupt 1
+  28          {
+  29   1          TH0 = 0xfc;        //ReLoad the timer value
+  30   1          TL0 = 0x66;
+  31   1      
+  32   1          milli++;
+  33   1      }
+
+*** WARNING C233 IN LINE 33 OF C:\Users\kaltc\Documents\GitHub\Z80_Modular_Comp
+            -uter\Ride7\serial_and_timer_test\serial_and_timer_test.c : using ab
+            -solute registers together with interrupts can cause register corrup
+            -tions (mixup of register banks)
+  34          
+  35          void main(void) {
+  36   1          int tempo = 0;
+  37   1      
+  38   1          Inits();
+  39   1      
+RC51 COMPILER V06.20.17.263,  SERIAL_AND_TIMER_TEST    09/16/22  19:21:41  PAGE
+            -  2
+
+  40   1          while(1) {
+  41   2              serialTX(0x30 + tempo++);
+  42   2              if(tempo > 9)   tempo = 0;
+  43   2          
+  44   2              milli = 0;
+  45   2              while(milli < 1000);
+  46   2          }
+  47   1      }
+  48          
+  49          void Inits() {     // Initialize UART and TIMER0
+  50   1          TMOD = 0x21;        // TIMER0 = mode_1 and TIMER1 = mode_2
+  51   1          PCON |= 0x80;       // SMOD=1 => double baud rate;
+  52   1          TH1 = 0xFD;         // 19200bps (see table in the header)
+  53   1          SCON = 0x50;        // Serial port = mode 1 (8 bits, clocked b
+            -y TIMER1)
+  54   1          TR1 = 1;            // Turn on TIMER1
+  55   1      
+  56   1          TH0 = 0xfc;        //ReLoad the timer value
+  57   1          TL0 = 0x66;
+  58   1          TR0 = 1;           //turn ON Timer zero
+  59   1          ET0 = 1;           //Enable TImer0 Interrupt
+  60   1          EA = 1;            //Enable Global Interrupt bit
+  61   1      }
+  62          
+  63          unsigned char serialRX(void) {
+  64   1          while(RI == 0);
+  65   1          RI = 0;
+  66   1          return SBUF;
+  67   1      }
+  68          
+  69          void serialTX(unsigned char x) {
+  70   1          SBUF = x;
+  71   1          while(TI == 0);
+  72   1          TI = 0;
+  73   1      }
+  74          
+  75          
+RC51 COMPILER V06.20.17.263,  SERIAL_AND_TIMER_TEST    09/16/22  19:21:41  PAGE
+            -  5
+
+ASSEMBLY LISTING OF GENERATED OBJECT CODE
+
+            ; FUNCTION timer0_isr (BEGIN)
+                                           ; SOURCE LINE # 27 
+0000 C0E0           PUSH   ACC
+0002 C0D0           PUSH   PSW
+                                           ; SOURCE LINE # 29 
+0004 758CFC         MOV    TH0,#0FCH
+                                           ; SOURCE LINE # 30 
+0007 758A66         MOV    TL0,#066H
+                                           ; SOURCE LINE # 32 
+000A 0500    R      INC    milli+01H
+000C E500    R      MOV    A,milli+01H
+000E 7002           JNZ    ?NXT1
+0010 0500    R      INC    milli
+0012         ?NXT1:
+0012 D0D0           POP    PSW
+0014 D0E0           POP    ACC
+                                           ; SOURCE LINE # 33 
+0016 32             RETI   
+
+            ; FUNCTION timer0_isr (END)
+
+            ; FUNCTION main (BEGIN)
+                                           ; SOURCE LINE # 36 
+0000 E4             CLR    A
+0001 F500    R      MOV    tempo,A
+0003 F500    R      MOV    tempo+01H,A
+                                           ; SOURCE LINE # 38 
+0005 120000  R      LCALL  Inits
+0008         ?WHILE2:
+                                           ; SOURCE LINE # 41 
+0008 AB00    R      MOV    R3,tempo+01H
+000A 0500    R      INC    tempo+01H
+000C E500    R      MOV    A,tempo+01H
+000E 7002           JNZ    ?LAB10
+0010 0500    R      INC    tempo
+0012         ?LAB10:
+0012 EB             MOV    A,R3
+0013 2430           ADD    A,#030H
+0015 FF             MOV    R7,A
+0016 120000  R      LCALL  _serialTX
+                                           ; SOURCE LINE # 42 
+0019 E500    R      MOV    A,tempo
+001B 6480           XRL    A,#080H
+001D B48006         CJNE   A,#080H,?LAB11
+0020 E500    R      MOV    A,tempo+01H
+0022 B40901         CJNE   A,#009H,?LAB11
+0025 D3             SETB   C
+0026         ?LAB11:
+0026 E4             CLR    A
+0027 4004           JC     ?NXT6
+0029 F500    R      MOV    tempo,A
+002B F500    R      MOV    tempo+01H,A
+002D         ?NXT6:
+                                           ; SOURCE LINE # 44 
+002D F500    R      MOV    milli,A
+002F F500    R      MOV    milli+01H,A
+0031         ?WHILE3:
+                                           ; SOURCE LINE # 45 
+RC51 COMPILER V06.20.17.263,  SERIAL_AND_TIMER_TEST    09/16/22  19:21:41  PAGE
+            -  3
+
+0031 E500    R      MOV    A,milli
+0033 6480           XRL    A,#080H
+0035 B48305         CJNE   A,#083H,?LAB13
+0038 E500    R      MOV    A,milli+01H
+003A B4E800         CJNE   A,#0E8H,?LAB13
+003D         ?LAB13:
+003D 40F2           JC     ?WHILE3
+003F 80C7           SJMP   ?WHILE2
+
+            ; FUNCTION main (END)
+
+            ; FUNCTION Inits (BEGIN)
+                                           ; SOURCE LINE # 50 
+0000 758921         MOV    TMOD,#021H
+                                           ; SOURCE LINE # 51 
+0003 438780         ORL    PCON,#080H
+                                           ; SOURCE LINE # 52 
+0006 758DFD         MOV    TH1,#0FDH
+                                           ; SOURCE LINE # 53 
+0009 759850         MOV    SCON,#050H
+                                           ; SOURCE LINE # 54 
+000C D28E           SETB   TR1
+                                           ; SOURCE LINE # 56 
+000E 758CFC         MOV    TH0,#0FCH
+                                           ; SOURCE LINE # 57 
+0011 758A66         MOV    TL0,#066H
+                                           ; SOURCE LINE # 58 
+0014 D28C           SETB   TR0
+                                           ; SOURCE LINE # 59 
+0016 D2A9           SETB   ET0
+                                           ; SOURCE LINE # 60 
+0018 D2AF           SETB   EA
+                                           ; SOURCE LINE # 61 
+001A 22             RET    
+
+            ; FUNCTION Inits (END)
+
+            ; FUNCTION serialRX (BEGIN)
+0000         ?WHILE5:
+                                           ; SOURCE LINE # 64 
+0000 3098FD         JNB    RI,?WHILE5
+                                           ; SOURCE LINE # 65 
+0003 C298           CLR    RI
+                                           ; SOURCE LINE # 66 
+0005 AF99           MOV    R7,SBUF
+                                           ; SOURCE LINE # 67 
+0007 22             RET    
+
+            ; FUNCTION serialRX (END)
+
+            ; FUNCTION _serialTX (BEGIN)
+              ; Register R7 is assigned to parameter x
+                                           ; SOURCE LINE # 70 
+0000 8F99           MOV    SBUF,R7
+0002         ?WHILE7:
+                                           ; SOURCE LINE # 71 
+0002 3099FD         JNB    TI,?WHILE7
+                                           ; SOURCE LINE # 72 
+RC51 COMPILER V06.20.17.263,  SERIAL_AND_TIMER_TEST    09/16/22  19:21:41  PAGE
+            -  4
+
+0005 C299           CLR    TI
+                                           ; SOURCE LINE # 73 
+0007 22             RET    
+
+            ; FUNCTION _serialTX (END)
+
+RC51 COMPILER V06.20.17.263,  SERIAL_AND_TIMER_TEST    09/16/22  19:21:41  PAGE
+            -  6
+
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    131    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+RC51 COMPILATION COMPLETE.  1 WARNING,  0 ERROR

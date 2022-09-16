@@ -1,0 +1,4 @@
+
+<Project Header="Project 'serial_and_timer_test'" Path=".\serial_and_timer_test.rprj" Project="Yes" OutputFile="" sate="96" ActiveApp="serial_and_timer_test" >
+	<ApplicationBuild Header="serial_and_timer_test" Extern=".\serial_and_timer_test.rapp" Path=".\serial_and_timer_test.rapp" OutputFile=".\serial_and_timer_test.aof" sate="96" />
+</Project>

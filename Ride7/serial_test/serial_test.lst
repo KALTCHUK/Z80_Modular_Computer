@@ -1,126 +1,174 @@
-RC51 COMPILER V06.20.17.263,  SERIAL_TEST        09/15/22  07:42:21  PAGE  1
+RC51 COMPILER V06.20.17.263,  SERIAL_TEST        09/15/22  21:48:32  PAGE  1
 
 QCW(0x00002F32)
 
 DOS RC51 COMPILER V06.20.17.263, COMPILATION OF MODULE SERIAL_TEST
-OBJECT MODULE PLACED IN C:\Users\ricardo\Documents\GitHub\Z80_Modular_Computer\R
-            -ide7\serial_test\serial_test.obj
-COMPILER INVOKED BY: QUIET GENERATEDEPFILE OJ(C:\Users\ricardo\Documents\GitHub\
-            -Z80_Modular_Computer\Ride7\serial_test\serial_test.obj) PIN(C:\User
-            -s\ricardo\Documents\Raisonance\Ride\Inc;C:\Users\ricardo\Documents\
-            -Raisonance\Ride\Inc\51) PIN(C:\Users\ricardo\Documents\Raisonance\R
-            -ide\\inc\51\Atmel) NOAM CD PR(C:\Users\ricardo\Documents\GitHub\Z80
-            -_Modular_Computer\Ride7\serial_test\serial_test.lst) FP(NOFLOAT) IP
-            - NOIS UNSIGNEDCHAR ET(CHAR) PR PL(60) PW(80) OE(1) OT(7,SPEED) RB(0
-            -) MAXERR(25) MAXWAR(25) SM MOD517(NODP8,NOAU) 
+OBJECT MODULE PLACED IN C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Rid
+            -e7\serial_test\serial_test.obj
+COMPILER INVOKED BY: QUIET GENERATEDEPFILE OJ(C:\Users\kaltc\Documents\GitHub\Z8
+            -0_Modular_Computer\Ride7\serial_test\serial_test.obj) PIN(C:\Users\
+            -kaltc\Documents\Raisonance\Ride\Inc;C:\Users\kaltc\Documents\Raison
+            -ance\Ride\Inc\51) PIN(C:\Users\kaltc\Documents\Raisonance\Ride\\inc
+            -\51\Atmel) NOAM CD PR(C:\Users\kaltc\Documents\GitHub\Z80_Modular_C
+            -omputer\Ride7\serial_test\serial_test.lst) FP(NOFLOAT) IP NOIS UNSI
+            -GNEDCHAR ET(CHAR) PR PL(60) PW(80) OE(1) OT(7,SPEED) RB(0) MAXERR(2
+            -5) MAXWAR(25) SM MOD517(NODP8,NOAU) 
 
 stmt level    source
-   1          // Serial communication test.
+   1          /* Serial communication test.
    2          
-   3          
-   4          #include "REG51.h" 
-   5          #include <stdio.h> 
-   6          #include <stdlib.h>
-   7          
-   8          void serialInit(void);
-   9          void serialTX(unsigned char x);
-  10          void delay(int t);
-  11          
-  12          void main(void) {
-  13   1          serialInit();
-  14   1      
-  15   1          while(1) {
-  16   2              serialTX('A');
-  17   2              serialTX('B');
-  18   2              serialTX('C');
-  19   2          }
-  20   1      }
-  21          
-  22          void serialInit() {
-  23   1          TMOD = 0x20;        // TIMER1 = mode 2
-  24   1          TH1 = 0xfd;         // 0xf4 => 2400bps, 0xfa => 4800bps, 0xfd 
-            -=> 9600bps, @ 11.0592MHz
-  25   1          PCON |= 0x80;       // SMOD=1 => double baud rate;
-  26   1          SCON = 0x50;        // Serial port = mode 1 (8 bits, clocked b
+   3          With crystal = 11.059MHz
+   4          --------------------
+   5          Baud    TH1     Test
+   6          --------------------
+   7           1200   0xD0    OK
+   8           2400   0xE8    OK
+   9           4800   0xF4    OK
+  10           9600   0xFA    OK
+  11          19200   0xFD    OK
+  12          28800   0xFE    OK
+  13          57600   0xFF    OK
+  14          ---------------------
+  15          */
+  16          
+  17          #include "REG51.h" 
+  18          #include <stdio.h> 
+  19          #include <stdlib.h>
+  20          
+  21          void serialInit(void);
+  22          void serialTX(unsigned char x);
+  23          void delay(int t);
+  24          
+  25          void main(void) {
+  26   1          serialInit();
+  27   1      
+  28   1          while(1) {
+  29   2              serialTX('A');
+  30   2              serialTX('B');
+  31   2              serialTX('C');
+  32   2          
+  33   2              delay(500);
+  34   2          }
+  35   1      }
+  36          
+  37          void serialInit() {
+  38   1          TMOD = 0x20;        // TIMER1 = mode 2
+  39   1          PCON |= 0x80;       // SMOD=1 => double baud rate;
+  40   1          TH1 = 0xe8;         // see table in the header
+  41   1          SCON = 0x50;        // Serial port = mode 1 (8 bits, clocked b
             -y TIMER1)
-  27   1          TR1 = 1;            // Turn on TIMER1
-  28   1      }
-  29          
-  30          void serialTX(unsigned char x) {
-  31   1          SBUF = x;
-  32   1          while(TI == 0);
-  33   1          TI = 0;
-  34   1      }
-  35          /*
-  36          void delay (int t) {
-  37              int x;
-  38          
-  39              for(x = 0; x < t; x++);
-  40          }
-  41          */
-RC51 COMPILER V06.20.17.263,  SERIAL_TEST        09/15/22  07:42:21  PAGE  2
-RC51 COMPILER V06.20.17.263,  SERIAL_TEST        09/15/22  07:42:21  PAGE  3
+  42   1          TR1 = 1;            // Turn on TIMER1
+  43   1      }
+RC51 COMPILER V06.20.17.263,  SERIAL_TEST        09/15/22  21:48:32  PAGE  2
 
+  44          
+  45          void serialTX(unsigned char x) {
+  46   1          SBUF = x;
+  47   1          while(TI == 0);
+  48   1          TI = 0;
+  49   1      }
+  50          
+  51          void delay (int t) {
+  52   1          int x;
+  53   1      
+  54   1          for(x = 0; x < t; x++);
+  55   1      }
+  56          
+RC51 COMPILER V06.20.17.263,  SERIAL_TEST        09/15/22  21:48:32  PAGE  4
 
 ASSEMBLY LISTING OF GENERATED OBJECT CODE
 
             ; FUNCTION main (BEGIN)
-                                           ; SOURCE LINE # 13 
+                                           ; SOURCE LINE # 26 
 0000 120000  R      LCALL  serialInit
 0003         ?WHILE1:
-                                           ; SOURCE LINE # 16 
+                                           ; SOURCE LINE # 29 
 0003 7F41           MOV    R7,#041H
 0005 120000  R      LCALL  _serialTX
-                                           ; SOURCE LINE # 17 
+                                           ; SOURCE LINE # 30 
 0008 7F42           MOV    R7,#042H
 000A 120000  R      LCALL  _serialTX
-                                           ; SOURCE LINE # 18 
+                                           ; SOURCE LINE # 31 
 000D 7F43           MOV    R7,#043H
 000F 120000  R      LCALL  _serialTX
-0012 80EF           SJMP   ?WHILE1
+                                           ; SOURCE LINE # 33 
+0012 7E01           MOV    R6,#001H
+0014 7FF4           MOV    R7,#0F4H
+0016 120000  R      LCALL  _delay
+0019 80E8           SJMP   ?WHILE1
 
             ; FUNCTION main (END)
 
             ; FUNCTION serialInit (BEGIN)
-                                           ; SOURCE LINE # 23 
+                                           ; SOURCE LINE # 38 
 0000 758920         MOV    TMOD,#020H
-                                           ; SOURCE LINE # 24 
-0003 758DFD         MOV    TH1,#0FDH
-                                           ; SOURCE LINE # 25 
-0006 438780         ORL    PCON,#080H
-                                           ; SOURCE LINE # 26 
+                                           ; SOURCE LINE # 39 
+0003 438780         ORL    PCON,#080H
+                                           ; SOURCE LINE # 40 
+0006 758DE8         MOV    TH1,#0E8H
+                                           ; SOURCE LINE # 41 
 0009 759850         MOV    SCON,#050H
-                                           ; SOURCE LINE # 27 
+                                           ; SOURCE LINE # 42 
 000C D28E           SETB   TR1
-                                           ; SOURCE LINE # 28 
+                                           ; SOURCE LINE # 43 
 000E 22             RET    
 
             ; FUNCTION serialInit (END)
 
             ; FUNCTION _serialTX (BEGIN)
               ; Register R7 is assigned to parameter x
-                                           ; SOURCE LINE # 31 
+                                           ; SOURCE LINE # 46 
 0000 8F99           MOV    SBUF,R7
 0002         ?WHILE3:
-                                           ; SOURCE LINE # 32 
+                                           ; SOURCE LINE # 47 
 0002 3099FD         JNB    TI,?WHILE3
-                                           ; SOURCE LINE # 33 
+                                           ; SOURCE LINE # 48 
 0005 C299           CLR    TI
-                                           ; SOURCE LINE # 34 
+                                           ; SOURCE LINE # 49 
 0007 22             RET    
 
             ; FUNCTION _serialTX (END)
 
-RC51 COMPILER V06.20.17.263,  SERIAL_TEST        09/15/22  07:42:21  PAGE  4
+            ; FUNCTION _delay (BEGIN)
+              ; Register R6R7 is assigned to parameter t
+              ; R4R5 is assigned to x
+                                           ; SOURCE LINE # 54 
+0000 E4             CLR    A
+0001 FC             MOV    R4,A
+0002 FD             MOV    R5,A
+RC51 COMPILER V06.20.17.263,  SERIAL_TEST        09/15/22  21:48:32  PAGE  3
+
+0003         ?FOR1:
+0003 8EF0           MOV    B,R6
+0005 B2F7           CPL    B.7
+0007 EC             MOV    A,R4
+0008 6480           XRL    A,#080H
+000A B5F004         CJNE   A,B,?LAB10
+000D ED             MOV    A,R5
+000E B50700         CJNE   A,AR7,?LAB10
+0011         ?LAB10:
+0011 5007           JNC    ?NXT6
+0013 0D             INC    R5
+0014 ED             MOV    A,R5
+0015 70EC           JNZ    ?FOR1
+0017 0C             INC    R4
+0018 80E9           SJMP   ?FOR1
+001A         ?NXT6:
+                                           ; SOURCE LINE # 55 
+001A 22             RET    
+
+            ; FUNCTION _delay (END)
+
+RC51 COMPILER V06.20.17.263,  SERIAL_TEST        09/15/22  21:48:32  PAGE  5
 
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     43    ----
+   CODE SIZE        =     77    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----    ----
+   DATA SIZE        =   ----       2
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

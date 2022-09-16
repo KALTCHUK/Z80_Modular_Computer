@@ -1,7 +1,7 @@
 
-<ApplicationBuild Header="serial_test" Extern=".\serial_test.rapp" Path=".\serial_test.rapp" OutputFile=".\serial_test.aof" sate="98" >
+<ApplicationBuild Header="serial_and_timer_test" Extern=".\serial_and_timer_test.rapp" Path=".\serial_and_timer_test.rapp" OutputFile=".\serial_and_timer_test.aof" sate="96" >
+	<NodeC Path=".\serial_and_timer_test.c" Header="serial_and_timer_test.c" Marker="-1" OutputFile=".\serial_and_timer_test.obj" sate="2" />
 	<NodeH Path=".\REG51.h" Header="REG51.h" Marker="-1" OutputFile="" sate="0" />
-	<NodeC Path=".\serial_test.c" Header="serial_test.c" Marker="-1" OutputFile=".\serial_test.obj" sate="0" />
 	<Options>
 		<Config Header="Standard" >
 			<Set Header="ApplicationBuild" >

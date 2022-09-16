@@ -1,7 +1,5 @@
 - AT89C4051 tests:
-	- serial comm baud rate from 2400 to 19200 bps, with 11.0592 MHz xtal.
-	- retry serial comm with 24.0 MHz xtal.
-	- calibrate TIMER0 for millis() and micros().
+	- Convert Arduino Modbus RTU Slave to 8051 architecture.
 
 ------------------------------------------------------------------
 Some ideas for new cards:

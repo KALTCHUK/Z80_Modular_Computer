@@ -1,0 +1,6 @@
+;NOTE - DO NOT EDIT this block of code!
+;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+mov A,?B_CURRENTBANK
+anl P1,#0f8h
+orl P1,A
+;>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

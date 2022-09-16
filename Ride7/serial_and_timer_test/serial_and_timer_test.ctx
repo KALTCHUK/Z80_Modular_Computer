@@ -1,25 +1,5 @@
 
 <Debug>
-	<serial_test>
-		<CodeView TopRow="41" Focus="47" Selected="yes" >
-			<DisplayOptions ShowSourceLines="1" CodeCoverageHex="0" ColoredJmp="0" />
-			<CodeReport>
-				<0>112</0>
-				<1>249</1>
-				<2>135</2>
-				<3>747</3>
-				<4>136</4>
-				<5>284</5>
-														
-			</CodeReport>
-										
-		</CodeView>
-		<SfrView Focus="47" TopRow="128" NbPerLine="8" PaneID="84875094" />
-		<SfrView Focus="128" TopRow="128" NbPerLine="8" PaneID="84875095" />
-		<BitView Focus="24" TopRow="0" NbPerLine="8" PaneID="335548759" />
-		<Peripheral PaneID="1920233566" />
-						
-	</serial_test>
 	<Flags>
 		<Report>
 			<Def Header="FlagReport" NbCol="9" >
@@ -36,22 +16,12 @@
 				<Col Type="PT_STRING" Header="Condcount" sizeCache="DD" AutoSize="1" Edit="0" Sortable="0" Visible="0" />
 							
 			</Def>
-			<Rows>
-				<Row Check="True" Kind="Breakpoint" KindID="0" Space="code" SpaceID="0" Condition="" Line="L:22" File="serial_test.c" Path="C:\Users\ricardo\Documents\GitHub\Z80_Modular_Computer\Ride7\serial_test\serial_test.c" />
-				<Row Check="True" Kind="Breakpoint" KindID="0" Space="code" SpaceID="0" Condition="" Line="L:23" File="serial_test.c" Path="C:\Users\ricardo\Documents\GitHub\Z80_Modular_Computer\Ride7\serial_test\serial_test.c" />
-				<Row Check="True" Kind="Breakpoint" KindID="0" Space="code" SpaceID="0" Condition="" Line="L:24" File="serial_test.c" Path="C:\Users\ricardo\Documents\GitHub\Z80_Modular_Computer\Ride7\serial_test\serial_test.c" />
-				<Row Check="True" Kind="Breakpoint" KindID="0" Space="code" SpaceID="0" Condition="" Line="L:25" File="serial_test.c" Path="C:\Users\ricardo\Documents\GitHub\Z80_Modular_Computer\Ride7\serial_test\serial_test.c" />
-				<Row Check="True" Kind="Breakpoint" KindID="0" Space="code" SpaceID="0" Condition="" Line="L:26" File="serial_test.c" Path="C:\Users\ricardo\Documents\GitHub\Z80_Modular_Computer\Ride7\serial_test\serial_test.c" />
-				<Row Check="True" Kind="Breakpoint" KindID="0" Space="code" SpaceID="0" Condition="" Line="L:27" File="serial_test.c" Path="C:\Users\ricardo\Documents\GitHub\Z80_Modular_Computer\Ride7\serial_test\serial_test.c" />
-							
-			</Rows>
+			<Rows/>
 					
 		</Report>
 			
 	</Flags>
-	<Views>
-		<View File=".\serial_test.c" Line="9" Index="0" focus="1" />
-	</Views>
+	<Views/>
 	<BookMarks>
 		<BookMark File="" Line="0" />
 		<BookMark File="" Line="0" />

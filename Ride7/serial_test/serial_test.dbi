@@ -1,5 +1,5 @@
 [Application]
-ApplicationPath=C:\Users\ricardo\Documents\GitHub\Z80_Modular_Computer\Ride7\serial_test\serial_test.aof
+ApplicationPath=C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Ride7\serial_test\serial_test.aof
 DebugTool=SIM-51
 CodeSize=0x10000
 XDataSize=0x10000
@@ -8,7 +8,7 @@ Format=AOF
 CodeOffset=0x0
 LoaderTool=80C51
 Target=80C51
-MakeApplicationPath=C:\Users\ricardo\Documents\GitHub\Z80_Modular_Computer\Ride7\serial_test\serial_test.aof
+MakeApplicationPath=C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Ride7\serial_test\serial_test.aof
 ApplicationComponents=
 [Device]
 Name=AT89S4051

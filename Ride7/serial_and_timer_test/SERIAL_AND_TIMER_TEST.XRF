@@ -1,0 +1,21 @@
+MS-DOS LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263
+
+
+INTER-MODULE CROSS-REFERENCE LISTING
+------------------------------------
+
+          NAME. . . . . . . . USAGE   MODULE NAMES
+          ----------------------------------------
+          ?C_START3 . . . . . CODE    [C3S]:  SERIAL_AND_TIMER_TEST
+          HPD_ADDR  . . . . . DATA    [HPD]:  C3S
+          IDATALEN  . . . . . NUMBER  [_C_IDATALEN]:  C3S
+          Inits . . . . . . . CODE    [SERIAL_AND_TIMER_TEST]:  SERIAL_AND_TIMER_TEST
+          main  . . . . . . . CODE    [SERIAL_AND_TIMER_TEST]:  C3S
+          milli . . . . . . . DATA    [SERIAL_AND_TIMER_TEST]: 
+          serialRX  . . . . . CODE    [SERIAL_AND_TIMER_TEST]: 
+          TIM1_INIT . . . . . NUMBER  [** UNRESOLVED **]:
+          timer0_isr  . . . . CODE    [SERIAL_AND_TIMER_TEST]: 
+          XSTACKLEN . . . . . NUMBER  [** UNRESOLVED **]:
+          _INITP2?  . . . . . NUMBER  [_C_IDATALEN]:  C3S
+          _serialTX . . . . . CODE    [SERIAL_AND_TIMER_TEST]:  SERIAL_AND_TIMER_TEST
+          _STACK  . . . . . . IDATA   [SERIAL_AND_TIMER_TEST]:  C3S

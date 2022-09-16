@@ -1,0 +1,223 @@
+LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263                                 09/16/22  19:21:42
+MS-DOS LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263,  INVOKED BY:
+C:\Users\kaltc\Documents\Raisonance\Ride\Bin\LX51.EXE C:\Users\kaltc\Documents\GitHub\Z80_Modular&
+_Computer\Ride7\serial_and_timer_test\serial_and_timer_test.obj TO(C:\Users\kaltc\Documents\GitHu&
+b\Z80_Modular_Computer\Ride7\serial_and_timer_test\serial_and_timer_test.aof) LIBPATH(C:\Users\ka&
+ltc\Documents\Raisonance\Ride\Lib\51) GENERATEDEPFILE MAP IX RS(256) RSI(128) CSIZE(65536) XSIZE(&
+65536) DEFN(XSTACKLEN,256) DEFN(TIM1_INIT,E8h) CO(0) DT(0) ID(0) XD(0) BI(0) ABSCODEOFFS(0) XMLM(&
+No,C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Ride7\serial_and_timer_test\serial_and_ti&
+mer_test-modules.Standard.xml) XMLF(No,8000,C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\&
+Ride7\serial_and_timer_test\serial_and_timer_test-flash.Standard.xml) 
+
+
+MEMORY MODEL: SMALL WITHOUT ANY FLOATING POINT ARITHMETIC
+
+
+INPUT MODULES INCLUDED
+  C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\SERIAL_AND_TIMER_TEST\SERIAL_AND_TIM&
+ER_TEST.OBJ(SERIAL_AND_TIMER_TEST)
+  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(C3S)
+  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(HPD)
+  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(_C_IDATALEN)
+
+
+LINK MAP OF MODULE: C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\SERIAL_AND_TIMER_T&
+EST\SERIAL_AND_TIMER_TEST.AOF (SERIAL_AND_TIMER_TEST)
+
+    TYPE     BASE       LENGTH    RELOCATION     SEGMENT NAME
+    ----     ----       ------    ----------     ------------
+
+    * * * * * * *   DATA/IDATA    M E M O R Y   * * * * * * *
+    REG      0000H      0008H     ABSOLUTE       "REG BANK 0"
+    DATA     0008H      0002H     UNIT           ?DT?SERIAL_AND_TIMER_TEST
+    DATA     000AH      0002H     OVERLAID UNIT  _DGROUP01_
+             000AH      0002H     -------------  ?DT?main?SERIAL_AND_TIMER_TEST
+    IDATA    000CH      0001H     * * STACK * *  _STACK
+
+    * * * * * * *   CODE          M E M O R Y   * * * * * * *
+    CODE     0000H      0003H     ABSOLUTE       
+    CODE     0003H      0008H     UNIT           ?PR?serialRX?SERIAL_AND_TIMER_TEST
+    CODE     000BH      0003H     ABSOLUTE       
+    CODE     000EH      000FH     UNIT           ?PR?C51_STARTUP?
+    CODE     001DH      0017H     UNIT           ?PR?timer0_isr?SERIAL_AND_TIMER_TEST
+    CODE     0034H      0041H     UNIT           ?PR?main?SERIAL_AND_TIMER_TEST
+    CODE     0075H      001BH     UNIT           ?PR?Inits?SERIAL_AND_TIMER_TEST
+    CODE     0090H      0008H     UNIT           ?PR?_serialTX?SERIAL_AND_TIMER_TEST
+
+EXECUTABLE SUMMARY:
+-------------------
+    Total INTERNAL RAM storage requirement:  000CH (12)
+    Total EXTERNAL RAM storage requirement:  0000H (0)
+    Total     CODE     storage requirement:  0098H (152)
+Note:  Summary does not include dynamic stack requirements
+
+
+REFERENCE MAP OF MODULE: C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\SERIAL_AND_TIMER_TEST\SERIAL_A&
+ND_TIMER_TEST.AOF (SERIAL_AND_TIMER_TEST)
+
+SEGMENT                           BI_GROUP            DT_GROUP             ID_GROUP             XD_GROUP
+  +--> CALLED SEGMENT          START    LENGTH     START    LENGTH     START    LENGTH     START    LENGTH
+--------------------------------------------------------------------------------------
+
+?PR?timer0_isr?SERIAL_AND_TIMER_TEST------------------------------     ---------------     ---------------
+
+?PR?main?SERIAL_AND_TIMER_TEST ---------------     000AH    0002H      ---------------     ---------------
+  +--> ?PR?Inits?SERIAL_AND_TIMER_TEST
+  +--> ?PR?_serialTX?SERIAL_AND_TIMER_TEST
+
+?PR?Inits?SERIAL_AND_TIMER_TEST---------------     ---------------     ---------------     ---------------
+
+?PR?_serialTX?SERIAL_AND_TIMER_TEST---------------     ---------------     ---------------     ---------------
+
+?PR?serialRX?SERIAL_AND_TIMER_TEST---------------  ---------------     ---------------     ---------------
+
+SYMBOL TABLE FOR C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\SERIAL_AND_TIMER_TEST&
+\SERIAL_AND_TIMER_TEST.AOF(SERIAL_AND_TIMER_TEST)
+-------------------------------------------------------------------------------------------------&
+--------------------------------------------------
+
+    VALUE              TYPE               NAME
+    -----              ----               ----
+
+	-------            MODULE             serial_and_timer_test
+	C:0000H            SYMBOL             _ICE_DUMMY_
+	C:0034H            PUBLIC             main
+	C:001DH            PUBLIC             timer0_isr
+	D:0008H            PUBLIC             milli
+	C:0090H            PUBLIC             _serialTX
+	C:0003H            PUBLIC             serialRX
+	C:0075H            PUBLIC             Inits
+	D:0081H            SYMBOL             __SP__
+	B:0098H            SYMBOL             RI
+	B:0099H            SYMBOL             TI
+	B:009AH            SYMBOL             RB8
+	B:009BH            SYMBOL             TB8
+	B:009CH            SYMBOL             REN
+	B:009DH            SYMBOL             SM2
+	B:009EH            SYMBOL             SM1
+	B:009FH            SYMBOL             SM0
+	B:00B0H            SYMBOL             RXD
+	B:00B1H            SYMBOL             TXD
+	B:00B2H            SYMBOL             INT0
+	B:00B3H            SYMBOL             INT1
+	B:00B4H            SYMBOL             T0
+	B:00B5H            SYMBOL             T1
+	B:00B6H            SYMBOL             WR
+	B:00B7H            SYMBOL             RD
+	B:00B8H            SYMBOL             PX0
+	B:00B9H            SYMBOL             PT0
+	B:00BAH            SYMBOL             PX1
+	B:00BBH            SYMBOL             PT1
+	B:00BCH            SYMBOL             PS
+	B:00A8H            SYMBOL             EX0
+	B:00A9H            SYMBOL             ET0
+	B:00AAH            SYMBOL             EX1
+	B:00ABH            SYMBOL             ET1
+	B:00ACH            SYMBOL             ES
+	B:00AFH            SYMBOL             EA
+	B:0088H            SYMBOL             IT0
+	B:0089H            SYMBOL             IE0
+	B:008AH            SYMBOL             IT1
+	B:008BH            SYMBOL             IE1
+	B:008CH            SYMBOL             TR0
+	B:008DH            SYMBOL             TF0
+	B:008EH            SYMBOL             TR1
+	B:008FH            SYMBOL             TF1
+	B:00D0H            SYMBOL             P
+	B:00D2H            SYMBOL             OV
+	B:00D3H            SYMBOL             RS0
+	B:00D4H            SYMBOL             RS1
+	B:00D5H            SYMBOL             F0
+	B:00D6H            SYMBOL             AC
+	B:00D7H            SYMBOL             CY
+	D:0099H            SYMBOL             SBUF
+	D:0098H            SYMBOL             SCON
+	D:00B8H            SYMBOL             IP
+	D:00A8H            SYMBOL             IE
+	D:008DH            SYMBOL             TH1
+	D:008CH            SYMBOL             TH0
+	D:008BH            SYMBOL             TL1
+	D:008AH            SYMBOL             TL0
+	D:0089H            SYMBOL             TMOD
+	D:0088H            SYMBOL             TCON
+	D:0087H            SYMBOL             PCON
+	D:0083H            SYMBOL             DPH
+	D:0082H            SYMBOL             DPL
+	D:0081H            SYMBOL             SP
+	D:00F0H            SYMBOL             B
+	D:00E0H            SYMBOL             ACC
+	D:00D0H            SYMBOL             PSW
+	D:00B0H            SYMBOL             P3
+	D:00A0H            SYMBOL             P2
+	D:0090H            SYMBOL             P1
+	D:0080H            SYMBOL             P0
+	-------            PROC               timer0_isr
+	C:001DH            LINE#              27
+	C:0021H            LINE#              29
+	C:0024H            LINE#              30
+	C:0027H            LINE#              32
+	C:0033H            LINE#              33
+	C:0033H            LINE#              33
+	-------            ENDPROC            timer0_isr
+	-------            PROC               main
+	D:000AH            SYMBOL             tempo
+	C:0034H            LINE#              35
+	C:0034H            LINE#              36
+	C:0039H            LINE#              38
+	C:003CH            LINE#              41
+	C:004DH            LINE#              42
+	C:0061H            LINE#              44
+	C:0065H            LINE#              45
+	C:0073H            LINE#              47
+	-------            ENDPROC            main
+	-------            PROC               Inits
+	C:0075H            LINE#              49
+	C:0075H            LINE#              50
+	C:0078H            LINE#              51
+	C:007BH            LINE#              52
+	C:007EH            LINE#              53
+	C:0081H            LINE#              54
+	C:0083H            LINE#              56
+	C:0086H            LINE#              57
+	C:0089H            LINE#              58
+	C:008BH            LINE#              59
+	C:008DH            LINE#              60
+	C:008FH            LINE#              61
+	C:008FH            LINE#              61
+	-------            ENDPROC            Inits
+	-------            PROC               serialRX
+	C:0003H            LINE#              63
+	C:0003H            LINE#              64
+	C:0006H            LINE#              65
+	C:0008H            LINE#              66
+	C:000AH            LINE#              67
+	C:000AH            LINE#              67
+	-------            ENDPROC            serialRX
+	-------            PROC               _serialTX
+	C:0090H            LINE#              69
+	C:0090H            LINE#              70
+	C:0092H            LINE#              71
+	C:0095H            LINE#              72
+	C:0097H            LINE#              73
+	C:0097H            LINE#              73
+	-------            ENDPROC            _serialTX
+	-------            ENDMOD             serial_and_timer_test
+	C:000EH            PUBLIC             ?C_START3
+	D:00A0H            PUBLIC             HPD_ADDR
+	N:007FH            PUBLIC             IDATALEN
+	N:00FFH            PUBLIC             _INITP2?
+
+UNCALLED SEGMENTS:
+------------------
+    ?PR?serialRX?SERIAL_AND_TIMER_TEST: Function serialRX in file C:\USERS\KALTC\DOCUMENTS\GITHUB&
+\Z80_MODULAR_COMPUTER\RIDE7\SERIAL_AND_TIMER_TEST\SERIAL_AND_TIMER_TEST.OBJ was not called
+
+----------------------
+SUGGESTED OPTIMIZATION
+----------------------
+Warning: 116 (74H) data bytes in the range [00H-80H] are available for storage.
+         Consider using some of these for 'data' variables in your source files.
+
+
+LINK/LOCATE RUN COMPLETE,  NO ERROR FOUND.
+
