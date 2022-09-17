@@ -21,9 +21,7 @@
 		</Report>
 			
 	</Flags>
-	<Views>
-		<View File=".\serial_and_timer_test.c" Line="4" Index="0" focus="1" />
-	</Views>
+	<Views/>
 	<BookMarks>
 		<BookMark File="" Line="0" />
 		<BookMark File="" Line="0" />

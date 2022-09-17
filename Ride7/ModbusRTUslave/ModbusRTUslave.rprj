@@ -1,0 +1,4 @@
+
+<Project Header="Project 'ModbusRTUslave'" Path=".\ModbusRTUslave.rprj" Project="Yes" OutputFile="" sate="96" ActiveApp="ModbusRTUslave" >
+	<ApplicationBuild Header="ModbusRTUslave" Extern=".\ModbusRTUslave.rapp" Path=".\ModbusRTUslave.rapp" OutputFile=".\ModbusRTUslave.aof" sate="96" />
+</Project>
