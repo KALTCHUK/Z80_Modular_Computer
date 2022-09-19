@@ -1,0 +1,45 @@
+RC51 COMPILER V06.20.17.263,  MODBUSRTUSLAVE     09/18/22  07:03:01  PAGE  1
+
+QCW(0x00002F32)
+
+DOS RC51 COMPILER V06.20.17.263, COMPILATION OF MODULE MODBUSRTUSLAVE
+OBJECT MODULE PLACED IN C:\Users\ricardo\Documents\GitHub\Z80_Modular_Computer\R
+            -ide7\ModbusRTUslave\ModbusRTUSlave.obj
+COMPILER INVOKED BY: QUIET GENERATEDEPFILE OJ(C:\Users\ricardo\Documents\GitHub\
+            -Z80_Modular_Computer\Ride7\ModbusRTUslave\ModbusRTUSlave.obj) PIN(C
+            -:\Users\ricardo\Documents\Raisonance\Ride\Inc;C:\Users\ricardo\Docu
+            -ments\Raisonance\Ride\Inc\51) PIN(C:\Users\ricardo\Documents\Raison
+            -ance\Ride\\inc\51\Atmel) NOAM CD PR(C:\Users\ricardo\Documents\GitH
+            -ub\Z80_Modular_Computer\Ride7\ModbusRTUslave\ModbusRTUSlave.lst) FP
+            -(NOFLOAT) IP NOIS UNSIGNEDCHAR ET(CHAR) PR PL(60) PW(80) OE(1) OT(7
+            -,SPEED) RB(0) MAXERR(25) MAXWAR(25) SM MOD517(NODP8,NOAU) 
+
+stmt level    source
+   1          #include "ModbusRTUSlave.h"
+
+*** ERROR C162 IN LINE 8 OF ModbusRTUSlave.h : Syntax error near 'ModbusRTUSlav
+            -e'
+
+*** ERROR C162 IN LINE 9 OF ModbusRTUSlave.h : Syntax error near ':'
+
+*** ERROR C091 IN LINE 10 OF ModbusRTUSlave.h : Invalid parameter declaration
+
+RC51 COMPILER V06.20.17.263,  MODBUSRTUSLAVE     09/18/22  07:03:01  PAGE  2
+
+ASSEMBLY LISTING OF GENERATED OBJECT CODE
+
+RC51 COMPILER V06.20.17.263,  MODBUSRTUSLAVE     09/18/22  07:03:01  PAGE  3
+
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   ----    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+RC51 COMPILATION COMPLETE.  0 WARNING,  3 ERRORS

@@ -1,5 +1,5 @@
 [Application]
-ApplicationPath=C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Ride7\serial_test\serial_test.aof
+ApplicationPath=C:\Users\ricardo\Documents\GitHub\Z80_Modular_Computer\Ride7\serial_test\serial_test.aof
 DebugTool=SIM-51
 CodeSize=0x10000
 XDataSize=0x10000

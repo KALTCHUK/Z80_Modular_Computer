@@ -10,20 +10,20 @@
 				<3>747</3>
 				<4>136</4>
 				<5>284</5>
-														
+																												
 			</CodeReport>
-										
+																				
 		</CodeView>
 		<SfrView Focus="47" TopRow="128" NbPerLine="8" PaneID="84875094" />
 		<SfrView Focus="128" TopRow="128" NbPerLine="8" PaneID="84875095" />
 		<BitView Focus="24" TopRow="0" NbPerLine="8" PaneID="335548759" />
 		<Peripheral PaneID="1920233566" />
-						
+												
 	</serial_test>
 	<Flags>
 		<Report>
 			<Def Header="FlagReport" NbCol="9" >
-				<Col Type="PT_BOOL" Header="Check" sizeCache="18" AutoSize="0" Edit="1" Sortable="1" Icon="C:\Users\kaltc\Documents\Raisonance\Ride\Config\Resources\check.bmp" />
+				<Col Type="PT_BOOL" Header="Check" sizeCache="18" AutoSize="0" Edit="1" Sortable="1" Icon="C:\Users\ricardo\Documents\Raisonance\Ride\Config\Resources\check.bmp" />
 				<Col Type="PT_STRING" Header="Kind" sizeCache="DDDDDDDDDDD" AutoSize="1" Edit="0" Sortable="1" />
 				<Col Type="PT_STRING" Header="KindID" sizeCache="DD" AutoSize="1" Edit="0" Sortable="1" Visible="0" />
 				<Col Type="PT_STRING" Header="Space" sizeCache="DDDDDD" AutoSize="1" Edit="0" Sortable="1" />

@@ -191,23 +191,23 @@ void exceptionResponse(uint8_t code) {
 }
 
 void write(uint8_t len) {
-  delay(responseDelay);
-  if (buf[0] != 0) {
+  delay(_responseDelay);
+  if (_buf[0] != 0) {
     uint16_t crc = _crc(len);
-    buf[len] = lowByte(crc);
-    buf[len + 1] = highByte(crc);
-    digitalWrite(_dePin, HIGH);
+    _buf[len] = lowByte(crc);
+    _buf[len + 1] = highByte(crc);
+    if (_dePin != 255) digitalWrite(_dePin, HIGH);
     Serial.write(_buf, len + 2);
     Serial.flush();
-    digitalWrite(_dePin, LOW);
+    if (_dePin != 255) digitalWrite(_dePin, LOW);
   }
 }
 
-unsigned int crc(char len) {
-  unsigned int crc = 0xFFFF;
-  for (char i = 0; i < len; i++) {
-    crc ^= (unsigned int)buf[i];
-    for (char j = 0; j < 8; j++) {
+uint16_t crc(uint8_t len) {
+  uint16_t crc = 0xFFFF;
+  for (uint8_t i = 0; i < len; i++) {
+    crc ^= (uint16_t)_buf[i];
+    for (uint8_t j = 0; j < 8; j++) {
       bool lsb = crc & 1;
       crc >>= 1;
       if (lsb == true) {
@@ -218,10 +218,10 @@ unsigned int crc(char len) {
   return crc;
 }
 
-unsigned int div8RndUp(unsigned int value) {
+uint16_t div8RndUp(uint16_t value) {
   return (value + 7) >> 3;
 }
 
-unsigned int bytesToWord(char high, char low) {
+uint16_t bytesToWord(uint8_t high, uint8_t low) {
   return (high << 8) | low;
 }
