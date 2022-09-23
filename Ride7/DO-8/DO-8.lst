@@ -1,0 +1,1444 @@
+RC51 COMPILER V06.20.17.263,  DO_8               09/22/22  19:16:45  PAGE  1
+
+QCW(0x00002F32)
+
+DOS RC51 COMPILER V06.20.17.263, COMPILATION OF MODULE DO_8      
+OBJECT MODULE PLACED IN C:\Users\ricardo\Documents\GitHub\Z80_Modular_Computer\R
+            -ide7\DO-8\DO-8.obj
+COMPILER INVOKED BY: QUIET GENERATEDEPFILE OJ(C:\Users\ricardo\Documents\GitHub\
+            -Z80_Modular_Computer\Ride7\DO-8\DO-8.obj) PIN(C:\Users\ricardo\Docu
+            -ments\Raisonance\Ride\Inc;C:\Users\ricardo\Documents\Raisonance\Rid
+            -e\Inc\51) PIN(C:\Users\ricardo\Documents\Raisonance\Ride\\inc\51) N
+            -OAM CD PR(C:\Users\ricardo\Documents\GitHub\Z80_Modular_Computer\Ri
+            -de7\DO-8\DO-8.lst) FP(NOFLOAT) IP NOIS UNSIGNEDCHAR ET(CHAR) PR PL(
+            -60) PW(80) OE(1) OT(7,SPEED) RB(0) MAXERR(25) MAXWAR(25) SM MOD517(
+            -NODP8,NOAU) 
+
+stmt level    source
+   1          /*
+   2           DO-8.c - Modbus RTU Slave controller (AT89C4051) for DO-8 Card. B
+            -y Kaltchuk, Sep/2022.
+   3          */
+   4          
+   5          #include <REG51.h>
+   6          #include "Serial.h"
+   7          #include "EEPROM.h"
+
+*** WARNING C176 IN LINE 110 OF EEPROM.h : '|' : only one operand have bit type
+            -
+   8          #include "ModbusSlave.h"
+
+*** WARNING C233 IN LINE 56 OF ModbusSlave.h : using absolute registers togethe
+            -r with interrupts can cause register corruptions (mixup of register
+            - banks)
+
+*** WARNING C092 IN LINE 70 OF ModbusSlave.h : 'id' is declared but not used
+
+*** WARNING C191 IN LINE 137 OF ModbusSlave.h : Inconsistent comparison with 'u
+            -nsigned'
+
+*** WARNING C090 IN LINE 169 OF ModbusSlave.h : Call to function '_bytesToWord'
+            - without prototype
+
+*** WARNING C183 IN LINE 169 OF ModbusSlave.h : '_bytesToWord': function defini
+            -tion requires ANSI style parameter list
+
+*** WARNING C092 IN LINE 194 OF ModbusSlave.h : 'startAddress' is declared but 
+            -not used
+
+*** WARNING C096 IN LINE 196 OF ModbusSlave.h : Function 'boolRead' should retu
+            -rn a value
+
+*** WARNING C092 IN LINE 198 OF ModbusSlave.h : 'startAddress' is declared but 
+            -not used
+
+*** WARNING C096 IN LINE 200 OF ModbusSlave.h : Function 'wordRead' should retu
+            -rn a value
+
+*** WARNING C092 IN LINE 202 OF ModbusSlave.h : 'startAddress' is declared but 
+            -not used
+
+*** WARNING C092 IN LINE 202 OF ModbusSlave.h : 'value' is declared but not use
+            -d
+
+*** WARNING C096 IN LINE 204 OF ModbusSlave.h : Function 'coilWrite' should ret
+            -urn a value
+
+*** WARNING C092 IN LINE 206 OF ModbusSlave.h : 'startAddress' is declared but 
+            -not used
+
+*** WARNING C092 IN LINE 206 OF ModbusSlave.h : 'value' is declared but not use
+            -d
+
+*** WARNING C096 IN LINE 208 OF ModbusSlave.h : Function 'holdingRegisterWrite'
+            - should return a value
+   9          
+  10          // Definitions
+  11          #define baudEEaddr		0	// Baud rate address in EEPROM (register 1).
+RC51 COMPILER V06.20.17.263,  DO_8               09/22/22  19:16:45  PAGE 23
+
+            -
+  12          #define idEEaddr		2	// ID address in EEPROM (register 2).
+  13          
+  14          void main() {
+  15   1      	unsigned int id;
+  16   1      	
+  17   1      	numCoils = 8;
+  18   1      	numDiscreteInputs = 0;
+  19   1      	numHoldingRegisters = 2;
+  20   1      	
+  21   1      	baud = 9600;	// factory set baud rate.
+  22   1      	id = 7;			// factory set modbus slave id.
+  23   1      
+  24   1      	if (_FS == 1) {
+  25   2      		baud = EEPROMread(baudEEaddr);
+  26   2      		id =  EEPROMread(idEEaddr);
+  27   2      	}
+  28   1      	serialInit(baud);
+  29   1      	modbusBegin(id, baud);
+  30   1      	
+  31   1      	while (1) {
+  32   2      		modbusPoll();
+  33   2      	}
+  34   1      }
+  35          
+RC51 COMPILER V06.20.17.263,  DO_8               09/22/22  19:16:45  PAGE 25
+
+ASSEMBLY LISTING OF GENERATED OBJECT CODE
+
+            ; FUNCTION _serialInit (BEGIN)
+              ; Register R6R7 is assigned to parameter baud
+                                           ; SOURCE LINE # 25 
+0000 438920         ORL    TMOD,#020H
+                                           ; SOURCE LINE # 26 
+0003 438780         ORL    PCON,#080H
+                                           ; SOURCE LINE # 27 
+0006 759850         MOV    SCON,#050H
+                                           ; SOURCE LINE # 28 
+0009 BE2507         CJNE   R6,#025H,?LAB9
+000C EF             MOV    A,R7
+000D 2480           ADD    A,#080H
+000F 6051           JZ     ?CASE10
+0011 8061           SJMP   ?NXT1
+0013         ?LAB9:
+0013 5021           JNC    ?LAB10
+0015 EE             MOV    A,R6
+0016 B40407         CJNE   A,#004H,?LAB11
+0019 EF             MOV    A,R7
+001A 2450           ADD    A,#050H
+001C 6035           JZ     ?CASE7
+001E 8054           SJMP   ?NXT1
+0020         ?LAB11:
+0020 EE             MOV    A,R6
+0021 B40907         CJNE   A,#009H,?LAB12
+0024 EF             MOV    A,R7
+0025 24A0           ADD    A,#0A0H
+0027 602F           JZ     ?CASE8
+0029 8049           SJMP   ?NXT1
+002B         ?LAB12:
+002B EE             MOV    A,R6
+002C B41245         CJNE   A,#012H,?NXT1
+002F EF             MOV    A,R7
+0030 2440           ADD    A,#040H
+0032 6029           JZ     ?CASE9
+0034 803E           SJMP   ?NXT1
+0036         ?LAB10:
+0036 EE             MOV    A,R6
+0037 B44B05         CJNE   A,#04BH,?LAB13
+003A EF             MOV    A,R7
+003B 602A           JZ     ?CASE11
+003D 8035           SJMP   ?NXT1
+003F         ?LAB13:
+003F EE             MOV    A,R6
+0040 B47007         CJNE   A,#070H,?LAB14
+0043 EF             MOV    A,R7
+0044 2480           ADD    A,#080H
+0046 6024           JZ     ?CASE12
+0048 802A           SJMP   ?NXT1
+004A         ?LAB14:
+004A EE             MOV    A,R6
+004B B4E126         CJNE   A,#0E1H,?NXT1
+004E EF             MOV    A,R7
+004F 6020           JZ     ?CASE13
+0051 8021           SJMP   ?NXT1
+0053         ?CASE7:
+                                           ; SOURCE LINE # 30 
+0053 758DD0         MOV    TH1,#0D0H
+RC51 COMPILER V06.20.17.263,  DO_8               09/22/22  19:16:45  PAGE  2
+
+                                           ; SOURCE LINE # 31 
+0056 801C           SJMP   ?NXT1
+0058         ?CASE8:
+                                           ; SOURCE LINE # 33 
+0058 758DE8         MOV    TH1,#0E8H
+                                           ; SOURCE LINE # 34 
+005B 8017           SJMP   ?NXT1
+005D         ?CASE9:
+                                           ; SOURCE LINE # 36 
+005D 758DF4         MOV    TH1,#0F4H
+                                           ; SOURCE LINE # 37 
+0060 8012           SJMP   ?NXT1
+0062         ?CASE10:
+                                           ; SOURCE LINE # 39 
+0062 758DFA         MOV    TH1,#0FAH
+                                           ; SOURCE LINE # 40 
+0065 800D           SJMP   ?NXT1
+0067         ?CASE11:
+                                           ; SOURCE LINE # 42 
+0067 758DFD         MOV    TH1,#0FDH
+                                           ; SOURCE LINE # 43 
+006A 8008           SJMP   ?NXT1
+006C         ?CASE12:
+                                           ; SOURCE LINE # 45 
+006C 758DFE         MOV    TH1,#0FEH
+                                           ; SOURCE LINE # 46 
+006F 8003           SJMP   ?NXT1
+0071         ?CASE13:
+                                           ; SOURCE LINE # 48 
+0071 758DFF         MOV    TH1,#0FFH
+0074         ?NXT1:
+                                           ; SOURCE LINE # 51 
+0074 D28E           SETB   TR1
+                                           ; SOURCE LINE # 52 
+0076 22             RET    
+
+            ; FUNCTION _serialInit (END)
+
+            ; FUNCTION _serialTX (BEGIN)
+              ; Register R7 is assigned to parameter x
+                                           ; SOURCE LINE # 55 
+0000 8F99           MOV    SBUF,R7
+0002         ?WHILE1:
+                                           ; SOURCE LINE # 56 
+0002 3099FD         JNB    TI,?WHILE1
+                                           ; SOURCE LINE # 57 
+0005 C299           CLR    TI
+                                           ; SOURCE LINE # 58 
+0007 22             RET    
+
+            ; FUNCTION _serialTX (END)
+
+            ; FUNCTION serialRX (BEGIN)
+0000         ?WHILE3:
+                                           ; SOURCE LINE # 61 
+0000 3098FD         JNB    RI,?WHILE3
+                                           ; SOURCE LINE # 62 
+0003 C298           CLR    RI
+RC51 COMPILER V06.20.17.263,  DO_8               09/22/22  19:16:45  PAGE  3
+
+                                           ; SOURCE LINE # 63 
+0005 AF99           MOV    R7,SBUF
+                                           ; SOURCE LINE # 64 
+0007 22             RET    
+
+            ; FUNCTION serialRX (END)
+
+            ; FUNCTION I2C_delay (BEGIN)
+                                           ; SOURCE LINE # 52 
+0000 22             RET    
+
+            ; FUNCTION I2C_delay (END)
+
+            ; FUNCTION I2C_start (BEGIN)
+                                           ; SOURCE LINE # 58 
+0000 C2B2           CLR    INT0
+                                           ; SOURCE LINE # 59 
+0002 120000  R      LCALL  I2C_delay
+                                           ; SOURCE LINE # 60 
+0005 C2B3           CLR    INT1
+                                           ; SOURCE LINE # 61 
+0007 22             RET    
+
+            ; FUNCTION I2C_start (END)
+
+            ; FUNCTION I2C_stop (BEGIN)
+                                           ; SOURCE LINE # 67 
+0000 D2B3           SETB   INT1
+                                           ; SOURCE LINE # 68 
+0002 120000  R      LCALL  I2C_delay
+                                           ; SOURCE LINE # 69 
+0005 D2B2           SETB   INT0
+                                           ; SOURCE LINE # 70 
+0007 22             RET    
+
+            ; FUNCTION I2C_stop (END)
+
+            ; FUNCTION _I2C_write (BEGIN)
+              ; Register R7 is assigned to parameter byte
+              ; R6 is assigned to bt
+                                           ; SOURCE LINE # 78 
+0000 7E00           MOV    R6,#000H
+0002         ?FOR1:
+                                           ; SOURCE LINE # 79 
+0002 EF             MOV    A,R7
+0003 30E704         JNB    ACC.7,?ELSE1
+                                           ; SOURCE LINE # 80 
+0006 D2B2           SETB   INT0
+0008 8002           SJMP   ?NXT11
+000A         ?ELSE1:
+                                           ; SOURCE LINE # 82 
+000A C2B2           CLR    INT0
+000C         ?NXT11:
+                                           ; SOURCE LINE # 84 
+000C 120000  R      LCALL  I2C_delay
+                                           ; SOURCE LINE # 85 
+000F D2B3           SETB   INT1
+                                           ; SOURCE LINE # 86 
+RC51 COMPILER V06.20.17.263,  DO_8               09/22/22  19:16:45  PAGE  4
+
+0011 120000  R      LCALL  I2C_delay
+                                           ; SOURCE LINE # 87 
+0014 C2B3           CLR    INT1
+                                           ; SOURCE LINE # 88 
+0016 EF             MOV    A,R7
+0017 C3             CLR    C
+0018 33             RLC    A
+0019 FF             MOV    R7,A
+                                           ; SOURCE LINE # 78 
+001A 0E             INC    R6
+001B BE08E4         CJNE   R6,#008H,?FOR1
+                                           ; SOURCE LINE # 90 
+001E D2B3           SETB   INT1
+                                           ; SOURCE LINE # 91 
+0020 120000  R      LCALL  I2C_delay
+              ; R3 is assigned to reply
+                                           ; SOURCE LINE # 92 
+0023 7B00           MOV    R3,#000H
+0025 30B201         JNB    INT0,?LAB29
+0028 0B             INC    R3
+0029         ?LAB29:
+                                           ; SOURCE LINE # 93 
+0029 C2B3           CLR    INT1
+                                           ; SOURCE LINE # 94 
+002B 120000  R      LCALL  I2C_delay
+                                           ; SOURCE LINE # 95 
+002E 8B07           MOV    AR7,R3
+                                           ; SOURCE LINE # 96 
+0030 22             RET    
+
+            ; FUNCTION _I2C_write (END)
+
+            ; FUNCTION _I2C_read (BEGIN)
+              ; Register R7 is assigned to parameter condition
+              ; R6 is assigned to byte
+                                           ; SOURCE LINE # 102 
+0000 7E00           MOV    R6,#000H
+              ; R5 is assigned to bt
+                                           ; SOURCE LINE # 104 
+0002 7D00           MOV    R5,#000H
+0004         ?FOR3:
+                                           ; SOURCE LINE # 105 
+0004 D2B2           SETB   INT0
+                                           ; SOURCE LINE # 106 
+0006 120000  R      LCALL  I2C_delay
+                                           ; SOURCE LINE # 107 
+0009 D2B3           SETB   INT1
+                                           ; SOURCE LINE # 108 
+000B 120000  R      LCALL  I2C_delay
+000E         ?WHILE6:
+                                           ; SOURCE LINE # 109 
+000E 20B302         JB     INT1,?NXT19
+0011 80FB           SJMP   ?WHILE6
+0013         ?NXT19:
+                                           ; SOURCE LINE # 110 
+0013 EE             MOV    A,R6
+0014 C3             CLR    C
+0015 33             RLC    A
+RC51 COMPILER V06.20.17.263,  DO_8               09/22/22  19:16:45  PAGE  5
+
+0016 FE             MOV    R6,A
+0017 A2B2           MOV    C,INT0
+0019 E4             CLR    A
+001A 33             RLC    A
+001B FC             MOV    R4,A
+001C EE             MOV    A,R6
+001D 4C             ORL    A,R4
+001E FE             MOV    R6,A
+                                           ; SOURCE LINE # 111 
+001F C2B3           CLR    INT1
+                                           ; SOURCE LINE # 104 
+0021 0D             INC    R5
+0022 BD08DF         CJNE   R5,#008H,?FOR3
+                                           ; SOURCE LINE # 113 
+0025 EF             MOV    A,R7
+0026 B40104         CJNE   A,#001H,?ELSE3
+                                           ; SOURCE LINE # 114 
+0029 C2B2           CLR    INT0
+002B 8002           SJMP   ?NXT20
+002D         ?ELSE3:
+                                           ; SOURCE LINE # 116 
+002D D2B2           SETB   INT0
+002F         ?NXT20:
+                                           ; SOURCE LINE # 118 
+002F 120000  R      LCALL  I2C_delay
+                                           ; SOURCE LINE # 119 
+0032 D2B3           SETB   INT1
+                                           ; SOURCE LINE # 120 
+0034 120000  R      LCALL  I2C_delay
+0037         ?WHILE7:
+                                           ; SOURCE LINE # 121 
+0037 20B302         JB     INT1,?NXT21
+003A 80FB           SJMP   ?WHILE7
+003C         ?NXT21:
+                                           ; SOURCE LINE # 122 
+003C C2B3           CLR    INT1
+                                           ; SOURCE LINE # 123 
+003E 120000  R      LCALL  I2C_delay
+                                           ; SOURCE LINE # 124 
+0041 8E07           MOV    AR7,R6
+                                           ; SOURCE LINE # 125 
+0043 22             RET    
+
+            ; FUNCTION _I2C_read (END)
+
+            ; FUNCTION _EEPROMread (BEGIN)
+              ; Register R4R5 is assigned to parameter address
+                                           ; SOURCE LINE # 133 
+0000 120000  R      LCALL  _EEPROMcommon
+                                           ; SOURCE LINE # 134 
+0003 120000  R      LCALL  I2C_stop
+                                           ; SOURCE LINE # 136 
+0006 120000  R      LCALL  I2C_start
+                                           ; SOURCE LINE # 137 
+0009 7FA1           MOV    R7,#0A1H
+000B 120000  R      LCALL  _I2C_write
+                                           ; SOURCE LINE # 138 
+000E E4             CLR    A
+RC51 COMPILER V06.20.17.263,  DO_8               09/22/22  19:16:45  PAGE  6
+
+000F FF             MOV    R7,A
+0010 120000  R      LCALL  _I2C_read
+0013 EF             MOV    A,R7
+0014 FA             MOV    R2,A
+0015 750000  R      MOV    word,#000H
+0018 8F00    R      MOV    word+01H,R7
+                                           ; SOURCE LINE # 139 
+001A 7F01           MOV    R7,#001H
+001C 120000  R      LCALL  _I2C_read
+001F 8F00    R      MOV    word+01H,R7
+0021 8A00    R      MOV    word,R2
+                                           ; SOURCE LINE # 140 
+0023 120000  R      LCALL  I2C_stop
+                                           ; SOURCE LINE # 142 
+0026 AE00    R      MOV    R6,word
+0028 AF00    R      MOV    R7,word+01H
+                                           ; SOURCE LINE # 143 
+002A 22             RET    
+
+            ; FUNCTION _EEPROMread (END)
+
+            ; FUNCTION _EEPROMwrite (BEGIN)
+              ; Register R2R3 is assigned to parameter address
+                                           ; SOURCE LINE # 148 
+0000 8C00    R      MOV    word,R4
+0002 8D00    R      MOV    word+01H,R5
+                                           ; SOURCE LINE # 149 
+0004 120000  R      LCALL  _EEPROMcommon
+                                           ; SOURCE LINE # 150 
+0007 AF00    R      MOV    R7,word
+0009 120000  R      LCALL  _I2C_write
+                                           ; SOURCE LINE # 151 
+000C AF00    R      MOV    R7,word+01H
+000E 120000  R      LCALL  _I2C_write
+                                           ; SOURCE LINE # 152 
+0011 020000  R      LJMP   I2C_stop
+
+            ; FUNCTION _EEPROMwrite (END)
+
+            ; FUNCTION _EEPROMcommon (BEGIN)
+              ; Register R4R5 is assigned to parameter address
+                                           ; SOURCE LINE # 158 
+0000 8E04           MOV    AR4,R6
+0002 8F05           MOV    AR5,R7
+                                           ; SOURCE LINE # 159 
+0004 120000  R      LCALL  I2C_start
+                                           ; SOURCE LINE # 160 
+0007 7FA0           MOV    R7,#0A0H
+0009 120000  R      LCALL  _I2C_write
+                                           ; SOURCE LINE # 161 
+000C 8C07           MOV    AR7,R4
+000E 120000  R      LCALL  _I2C_write
+                                           ; SOURCE LINE # 162 
+0011 8D07           MOV    AR7,R5
+0013 020000  R      LJMP   _I2C_write
+
+            ; FUNCTION _EEPROMcommon (END)
+
+RC51 COMPILER V06.20.17.263,  DO_8               09/22/22  19:16:45  PAGE  7
+
+            ; FUNCTION timer0_isr (BEGIN)
+                                           ; SOURCE LINE # 50 
+0000 C0E0           PUSH   ACC
+0002 C0D0           PUSH   PSW
+                                           ; SOURCE LINE # 52 
+0004 758CFC         MOV    TH0,#0FCH
+                                           ; SOURCE LINE # 53 
+0007 758A66         MOV    TL0,#066H
+                                           ; SOURCE LINE # 55 
+000A 0500    R      INC    milli+01H
+000C E500    R      MOV    A,milli+01H
+000E 7002           JNZ    ?NXT23
+0010 0500    R      INC    milli
+0012         ?NXT23:
+0012 D0D0           POP    PSW
+0014 D0E0           POP    ACC
+                                           ; SOURCE LINE # 56 
+0016 32             RETI   
+
+            ; FUNCTION timer0_isr (END)
+
+            ; FUNCTION milliStart (BEGIN)
+                                           ; SOURCE LINE # 59 
+0000 C2A9           CLR    ET0
+                                           ; SOURCE LINE # 60 
+0002 438901         ORL    TMOD,#001H
+                                           ; SOURCE LINE # 61 
+0005 758CFC         MOV    TH0,#0FCH
+                                           ; SOURCE LINE # 62 
+0008 758A66         MOV    TL0,#066H
+                                           ; SOURCE LINE # 63 
+000B D28C           SETB   TR0
+                                           ; SOURCE LINE # 64 
+000D D2A9           SETB   ET0
+                                           ; SOURCE LINE # 65 
+000F D2AF           SETB   EA
+                                           ; SOURCE LINE # 67 
+0011 E4             CLR    A
+0012 F500    R      MOV    milli,A
+0014 F500    R      MOV    milli+01H,A
+                                           ; SOURCE LINE # 68 
+0016 22             RET    
+
+            ; FUNCTION milliStart (END)
+
+            ; FUNCTION _modbusBegin (BEGIN)
+                                           ; SOURCE LINE # 70 
+0000 8C00    R      MOV    baud,R4
+0002 8D00    R      MOV    baud+01H,R5
+                                           ; SOURCE LINE # 71 
+0004 120000  R      LCALL  milliStart
+                                           ; SOURCE LINE # 73 
+0007 EC             MOV    A,R4
+0008 B44B00         CJNE   A,#04BH,?LAB52
+000B         ?LAB52:
+000B 400D           JC     ?ELSE6
+                                           ; SOURCE LINE # 74 
+000D E4             CLR    A
+RC51 COMPILER V06.20.17.263,  DO_8               09/22/22  19:16:45  PAGE  8
+
+000E F500    R      MOV    charTimeout,A
+0010 750001  R      MOV    charTimeout+01H,#001H
+                                           ; SOURCE LINE # 75 
+0013 F500    R      MOV    frameTimeout,A
+0015 750002  R      MOV    frameTimeout+01H,#002H
+0018 802A           SJMP   ?DO1
+001A         ?ELSE6:
+                                           ; SOURCE LINE # 78 
+001A 7E3A           MOV    R6,#03AH
+001C 7F98           MOV    R7,#098H
+001E AC00    R      MOV    R4,baud
+0020 AD00    R      MOV    R5,baud+01H
+0022 120000  R      LCALL  ?C_UIDIV
+0025 8E00    R      MOV    charTimeout,R6
+0027 8F00    R      MOV    charTimeout+01H,R7
+                                           ; SOURCE LINE # 79 
+0029 E4             CLR    A
+002A C0E0           PUSH   ACC
+002C C0E0           PUSH   ACC
+002E 7488           MOV    A,#088H
+0030 C0E0           PUSH   ACC
+0032 74B8           MOV    A,#0B8H
+0034 C0E0           PUSH   ACC
+0036 E4             CLR    A
+0037 FC             MOV    R4,A
+0038 FD             MOV    R5,A
+0039 AE00    R      MOV    R6,baud
+003B AF00    R      MOV    R7,baud+01H
+003D 120000  R      LCALL  ?C_SLDIV_SP
+0040 8E00    R      MOV    frameTimeout,R6
+0042 8F00    R      MOV    frameTimeout+01H,R7
+0044         ?DO1:
+                                           ; SOURCE LINE # 83 
+0044 309805         JNB    RI,?TEST1
+                                           ; SOURCE LINE # 84 
+0047 120000  R      LCALL  milliStart
+                                           ; SOURCE LINE # 85 
+004A C298           CLR    RI
+004C         ?TEST1:
+004C E500    R      MOV    A,milli
+004E B50005  R      CJNE   A,frameTimeout,?LAB54
+0051 E500    R      MOV    A,milli+01H
+0053 B50000  R      CJNE   A,frameTimeout+01H,?LAB54
+0056         ?LAB54:
+0056 40EC           JC     ?DO1
+                                           ; SOURCE LINE # 88 
+0058 22             RET    
+
+            ; FUNCTION _modbusBegin (END)
+
+            ; FUNCTION modbusPoll (BEGIN)
+                                           ; SOURCE LINE # 91 
+0000 750000  R      MOV    i,#000H
+                                           ; SOURCE LINE # 94 
+0003 209803         JB     RI,$ + 6
+0006 020000  R      LJMP   ?NXT60
+                                           ; SOURCE LINE # 95 
+0009 120000  R      LCALL  milliStart
+RC51 COMPILER V06.20.17.263,  DO_8               09/22/22  19:16:45  PAGE  9
+
+000C         ?DO3:
+                                           ; SOURCE LINE # 97 
+000C 30981A         JNB    RI,?TEST3
+                                           ; SOURCE LINE # 98 
+000F 120000  R      LCALL  milliStart
+                                           ; SOURCE LINE # 99 
+0012 E500    R      MOV    A,i
+0014 B40C00         CJNE   A,#00CH,?LAB116
+0017         ?LAB116:
+0017 500C           JNC    ?ELSE31
+0019 120000  R      LCALL  serialRX
+001C E500    R      MOV    A,i
+001E 2400    R      ADD    A,#buf
+0020 F8             MOV    R0,A
+0021 A607           MOV    @R0,AR7
+0023 8002           SJMP   ?NXT63
+0025         ?ELSE31:
+                                           ; SOURCE LINE # 100 
+0025 C298           CLR    RI
+0027         ?NXT63:
+                                           ; SOURCE LINE # 101 
+0027 0500    R      INC    i
+0029         ?TEST3:
+0029 E500    R      MOV    A,milli
+002B B50005  R      CJNE   A,charTimeout,?LAB119
+002E E500    R      MOV    A,milli+01H
+0030 B50000  R      CJNE   A,charTimeout+01H,?LAB119
+0033         ?LAB119:
+0033 5007           JNC    ?WHILE9
+0035 E500    R      MOV    A,i
+0037 B40C00         CJNE   A,#00CH,?LAB121
+003A         ?LAB121:
+003A 40D0           JC     ?DO3
+003C         ?WHILE9:
+                                           ; SOURCE LINE # 105 
+003C E500    R      MOV    A,milli
+003E B50005  R      CJNE   A,frameTimeout,?LAB123
+0041 E500    R      MOV    A,milli+01H
+0043 B50000  R      CJNE   A,frameTimeout+01H,?LAB123
+0046         ?LAB123:
+0046 40F4           JC     ?WHILE9
+                                           ; SOURCE LINE # 107 
+0048 309803         JNB    RI,$ + 6
+004B 020000  R      LJMP   ?NXT60
+004E E500    R      MOV    A,buf
+0050 6500    R      XRL    A,id
+0052 600A           JZ     ?LAB126
+0054 E500    R      MOV    A,buf
+0056 B40002         CJNE   A,#000H,$ + 5
+0059 8003           SJMP   $ + 5
+005B 020000  R      LJMP   ?NXT60
+005E         ?LAB126:
+005E E500    R      MOV    A,i
+0060 B40C00         CJNE   A,#00CH,?LAB129
+0063         ?LAB129:
+0063 4003           JC     $ + 5
+0065 020000  R      LJMP   ?NXT60
+                                           ; SOURCE LINE # 108 
+RC51 COMPILER V06.20.17.263,  DO_8               09/22/22  19:16:45  PAGE 10
+
+0068 E500    R      MOV    A,i
+006A 2400    R      ADD    A,#buf+0FFH
+006C F8             MOV    R0,A
+006D 8607           MOV    AR7,@R0
+006F E500    R      MOV    A,i
+0071 2400    R      ADD    A,#buf+0FEH
+0073 F8             MOV    R0,A
+0074 8605           MOV    AR5,@R0
+0076 120000  R      LCALL  _bytesToWord
+0079 C006           PUSH   AR6
+007B C007           PUSH   AR7
+007D E500    R      MOV    A,i
+007F 24FE           ADD    A,#0FEH
+0081 FF             MOV    R7,A
+0082 120000  R      LCALL  _crc
+0085 D005           POP    AR5
+0087 D0F0           POP    B
+0089 EE             MOV    A,R6
+008A B5F004         CJNE   A,B,?LAB131
+008D EF             MOV    A,R7
+008E 6D             XRL    A,R5
+008F 6001           JZ     ?NXT66
+0091         ?LAB131:
+                                           ; SOURCE LINE # 192 
+0091 22             RET    
+0092         ?NXT66:
+                                           ; SOURCE LINE # 109 
+0092 E500    R      MOV    A,buf+01H
+0094 14             DEC    A
+0095 601E           JZ     ?CASE19
+0097 24FE           ADD    A,#0FEH
+0099 7003           JNZ    $ + 5
+009B 020000  R      LJMP   ?CASE20
+009E 24FE           ADD    A,#0FEH
+00A0 7003           JNZ    $ + 5
+00A2 020000  R      LJMP   ?CASE21
+00A5 14             DEC    A
+00A6 7003           JNZ    $ + 5
+00A8 020000  R      LJMP   ?CASE22
+00AB 24F7           ADD    A,#0F7H
+00AD 7003           JNZ    $ + 5
+00AF 020000  R      LJMP   ?CASE23
+00B2 020000  R      LJMP   ?DEFAULT1
+00B5         ?CASE19:
+                                           ; SOURCE LINE # 111 
+00B5 AF00    R      MOV    R7,buf+02H
+00B7 AD00    R      MOV    R5,buf+03H
+00B9 120000  R      LCALL  _bytesToWord
+00BC 8E00    R      MOV    startAddress,R6
+00BE 8F00    R      MOV    startAddress+01H,R7
+                                           ; SOURCE LINE # 112 
+00C0 AF00    R      MOV    R7,buf+04H
+00C2 AD00    R      MOV    R5,buf+05H
+00C4 120000  R      LCALL  _bytesToWord
+00C7 8E00    R      MOV    quantity,R6
+00C9 8F00    R      MOV    quantity+01H,R7
+                                           ; SOURCE LINE # 113 
+00CB E500    R      MOV    A,quantity
+RC51 COMPILER V06.20.17.263,  DO_8               09/22/22  19:16:45  PAGE 11
+
+00CD 4500    R      ORL    A,quantity+01H
+00CF 600D           JZ     ?LAB134
+00D1 E500    R      MOV    A,quantity
+00D3 B40006         CJNE   A,#000H,?LAB135
+00D6 E500    R      MOV    A,quantity+01H
+00D8 B43001         CJNE   A,#030H,?LAB135
+00DB D3             SETB   C
+00DC         ?LAB135:
+00DC 4008           JC     ?ELSE34
+00DE         ?LAB134:
+00DE 7F03           MOV    R7,#003H
+00E0 120000  R      LCALL  _exceptionResponse
+00E3 020000  R      LJMP   ?NXT67
+00E6         ?ELSE34:
+                                           ; SOURCE LINE # 114 
+00E6 E500    R      MOV    A,quantity+01H
+00E8 2500    R      ADD    A,startAddress+01H
+00EA FE             MOV    R6,A
+00EB E500    R      MOV    A,quantity
+00ED 3500    R      ADDC   A,startAddress
+00EF B40005         CJNE   A,#000H,?LAB137
+00F2 EE             MOV    A,R6
+00F3 B50001  R      CJNE   A,numCoils,?LAB137
+00F6 D3             SETB   C
+00F7         ?LAB137:
+00F7 4008           JC     ?ELSE35
+00F9 7F02           MOV    R7,#002H
+00FB 120000  R      LCALL  _exceptionResponse
+00FE 020000  R      LJMP   ?NXT67
+0101         ?ELSE35:
+                                           ; SOURCE LINE # 116 
+0101 750000  R      MOV    j,#000H
+0104         ?FOR7:
+0104 E4             CLR    A
+0105 B50005  R      CJNE   A,quantity,?LAB139
+0108 E500    R      MOV    A,j
+010A B50000  R      CJNE   A,quantity+01H,?LAB139
+010D         ?LAB139:
+010D 506A           JNC    ?NXT70
+                                           ; SOURCE LINE # 117 
+010F E500    R      MOV    A,startAddress+01H
+0111 2500    R      ADD    A,j
+0113 FF             MOV    R7,A
+0114 E4             CLR    A
+0115 3500    R      ADDC   A,startAddress
+0117 FE             MOV    R6,A
+0118 120000  R      LCALL  _boolRead
+011B 750000  R      MOV    value,#000H
+011E 8F00    R      MOV    value+01H,R7
+                                           ; SOURCE LINE # 118 
+0120 E500    R      MOV    A,value
+0122 B40006         CJNE   A,#000H,?LAB141
+0125 E500    R      MOV    A,value+01H
+0127 B40101         CJNE   A,#001H,?LAB141
+012A D3             SETB   C
+012B         ?LAB141:
+012B 4005           JC     ?NXT72
+                                           ; SOURCE LINE # 119 
+RC51 COMPILER V06.20.17.263,  DO_8               09/22/22  19:16:45  PAGE 12
+
+012D 7F04           MOV    R7,#004H
+012F 020000  R      LJMP   _exceptionResponse
+0132         ?NXT72:
+                                           ; SOURCE LINE # 122 
+0132 E500    R      MOV    A,value+01H
+0134 6401           XRL    A,#001H
+0136 4500    R      ORL    A,value
+0138 701E           JNZ    ?ELSE37
+013A E500    R      MOV    A,j
+013C 03             RR     A
+013D 03             RR     A
+013E 03             RR     A
+013F 541F           ANL    A,#01FH
+0141 2400    R      ADD    A,#buf+03H
+0143 F8             MOV    R0,A
+0144 E500    R      MOV    A,j
+0146 5407           ANL    A,#007H
+0148 FB             MOV    R3,A
+0149 0B             INC    R3
+014A 7401           MOV    A,#001H
+014C 8002           SJMP   ?LAB144
+014E         ?LAB145:
+014E C3             CLR    C
+014F 33             RLC    A
+0150         ?LAB144:
+0150 DBFC           DJNZ   R3,?LAB145
+0152 FA             MOV    R2,A
+0153 E6             MOV    A,@R0
+0154 4A             ORL    A,R2
+0155 F6             MOV    @R0,A
+0156 801D           SJMP   ?NXT71
+0158         ?ELSE37:
+                                           ; SOURCE LINE # 123 
+0158 E500    R      MOV    A,j
+015A 03             RR     A
+015B 03             RR     A
+015C 03             RR     A
+015D 541F           ANL    A,#01FH
+015F 2400    R      ADD    A,#buf+03H
+0161 F8             MOV    R0,A
+0162 E500    R      MOV    A,j
+0164 5407           ANL    A,#007H
+0166 FC             MOV    R4,A
+0167 0C             INC    R4
+0168 7401           MOV    A,#001H
+016A 8002           SJMP   ?LAB146
+016C         ?LAB147:
+016C C3             CLR    C
+016D 33             RLC    A
+016E         ?LAB146:
+016E DCFC           DJNZ   R4,?LAB147
+0170 F4             CPL    A
+0171 FA             MOV    R2,A
+0172 E6             MOV    A,@R0
+0173 5A             ANL    A,R2
+0174 F6             MOV    @R0,A
+0175         ?NXT71:
+                                           ; SOURCE LINE # 116 
+RC51 COMPILER V06.20.17.263,  DO_8               09/22/22  19:16:45  PAGE 13
+
+0175 0500    R      INC    j
+0177 808B           SJMP   ?FOR7
+0179         ?NXT70:
+                                           ; SOURCE LINE # 125 
+0179 AE00    R      MOV    R6,quantity
+017B AF00    R      MOV    R7,quantity+01H
+017D 120000  R      LCALL  _div8RndUp
+                                           ; SOURCE LINE # 126 
+0180 EF             MOV    A,R7
+                                           ; SOURCE LINE # 125 
+0181 8F00    R      MOV    buf+02H,R7
+                                           ; SOURCE LINE # 126 
+0183 2403           ADD    A,#003H
+0185 FF             MOV    R7,A
+0186 020000  R      LJMP   _write
+0189         ?CASE20:
+                                           ; SOURCE LINE # 130 
+0189 AF00    R      MOV    R7,buf+02H
+018B AD00    R      MOV    R5,buf+03H
+018D 120000  R      LCALL  _bytesToWord
+0190 8E00    R      MOV    startAddress,R6
+0192 8F00    R      MOV    startAddress+01H,R7
+                                           ; SOURCE LINE # 131 
+0194 AF00    R      MOV    R7,buf+04H
+0196 AD00    R      MOV    R5,buf+05H
+0198 120000  R      LCALL  _bytesToWord
+019B 8E00    R      MOV    quantity,R6
+019D 8F00    R      MOV    quantity+01H,R7
+                                           ; SOURCE LINE # 132 
+019F E500    R      MOV    A,quantity
+01A1 4500    R      ORL    A,quantity+01H
+01A3 600D           JZ     ?LAB148
+01A5 E500    R      MOV    A,quantity
+01A7 B40006         CJNE   A,#000H,?LAB149
+01AA E500    R      MOV    A,quantity+01H
+01AC B40301         CJNE   A,#003H,?LAB149
+01AF D3             SETB   C
+01B0         ?LAB149:
+01B0 4008           JC     ?ELSE38
+01B2         ?LAB148:
+01B2 7F03           MOV    R7,#003H
+01B4 120000  R      LCALL  _exceptionResponse
+01B7 020000  R      LJMP   ?NXT67
+01BA         ?ELSE38:
+                                           ; SOURCE LINE # 133 
+01BA E500    R      MOV    A,quantity+01H
+01BC 2500    R      ADD    A,startAddress+01H
+01BE FE             MOV    R6,A
+01BF E500    R      MOV    A,quantity
+01C1 3500    R      ADDC   A,startAddress
+01C3 B40005         CJNE   A,#000H,?LAB151
+01C6 EE             MOV    A,R6
+01C7 B50001  R      CJNE   A,numHoldingRegisters,?LAB151
+01CA D3             SETB   C
+01CB         ?LAB151:
+01CB 4008           JC     ?ELSE39
+01CD 7F02           MOV    R7,#002H
+01CF 120000  R      LCALL  _exceptionResponse
+RC51 COMPILER V06.20.17.263,  DO_8               09/22/22  19:16:45  PAGE 14
+
+01D2 020000  R      LJMP   ?NXT67
+01D5         ?ELSE39:
+                                           ; SOURCE LINE # 135 
+01D5 750000  R      MOV    j,#000H
+01D8         ?FOR8:
+01D8 E4             CLR    A
+01D9 B50005  R      CJNE   A,quantity,?LAB153
+01DC E500    R      MOV    A,j
+01DE B50000  R      CJNE   A,quantity+01H,?LAB153
+01E1         ?LAB153:
+01E1 502D           JNC    ?NXT76
+                                           ; SOURCE LINE # 136 
+01E3 E500    R      MOV    A,startAddress+01H
+01E5 2500    R      ADD    A,j
+01E7 FF             MOV    R7,A
+01E8 E4             CLR    A
+01E9 3500    R      ADDC   A,startAddress
+01EB FE             MOV    R6,A
+01EC 120000  R      LCALL  _wordRead
+01EF 8E00    R      MOV    value,R6
+01F1 8F00    R      MOV    value+01H,R7
+                                           ; SOURCE LINE # 137 
+01F3 8005           SJMP   ?NXT78
+                                           ; SOURCE LINE # 138 
+01F5 7F04           MOV    R7,#004H
+01F7 020000  R      LJMP   _exceptionResponse
+01FA         ?NXT78:
+                                           ; SOURCE LINE # 141 
+01FA 75F002         MOV    B,#002H
+01FD E500    R      MOV    A,j
+01FF A4             MUL    AB
+0200 FF             MOV    R7,A
+0201 2400    R      ADD    A,#buf+03H
+0203 F8             MOV    R0,A
+0204 A600    R      MOV    @R0,value
+                                           ; SOURCE LINE # 142 
+0206 EF             MOV    A,R7
+0207 2400    R      ADD    A,#buf+04H
+0209 F8             MOV    R0,A
+020A A600    R      MOV    @R0,value+01H
+                                           ; SOURCE LINE # 135 
+020C 0500    R      INC    j
+020E 80C8           SJMP   ?FOR8
+0210         ?NXT76:
+                                           ; SOURCE LINE # 144 
+0210 E500    R      MOV    A,quantity+01H
+0212 C3             CLR    C
+0213 33             RLC    A
+0214 F500    R      MOV    buf+02H,A
+                                           ; SOURCE LINE # 145 
+0216 2403           ADD    A,#003H
+0218 FF             MOV    R7,A
+0219 020000  R      LJMP   _write
+021C         ?CASE21:
+                                           ; SOURCE LINE # 150 
+021C AF00    R      MOV    R7,buf+02H
+021E AD00    R      MOV    R5,buf+03H
+0220 120000  R      LCALL  _bytesToWord
+RC51 COMPILER V06.20.17.263,  DO_8               09/22/22  19:16:45  PAGE 15
+
+0223 8E00    R      MOV    startAddress,R6
+0225 8F00    R      MOV    startAddress+01H,R7
+                                           ; SOURCE LINE # 151 
+0227 AF00    R      MOV    R7,buf+04H
+0229 AD00    R      MOV    R5,buf+05H
+022B 120000  R      LCALL  _bytesToWord
+022E 8E00    R      MOV    value,R6
+0230 8F00    R      MOV    value+01H,R7
+                                           ; SOURCE LINE # 152 
+0232 E500    R      MOV    A,value
+0234 4500    R      ORL    A,value+01H
+0236 6011           JZ     ?ELSE41
+0238 E500    R      MOV    A,value
+023A B4FF04         CJNE   A,#0FFH,?LAB156
+023D E500    R      MOV    A,value+01H
+023F 6008           JZ     ?ELSE41
+0241         ?LAB156:
+0241 7F03           MOV    R7,#003H
+0243 120000  R      LCALL  _exceptionResponse
+0246 020000  R      LJMP   ?NXT67
+0249         ?ELSE41:
+                                           ; SOURCE LINE # 153 
+0249 E500    R      MOV    A,startAddress
+024B B40005         CJNE   A,#000H,?LAB158
+024E E500    R      MOV    A,startAddress+01H
+0250 B50000  R      CJNE   A,numCoils,?LAB158
+0253         ?LAB158:
+0253 4008           JC     ?ELSE42
+0255 7F02           MOV    R7,#002H
+0257 120000  R      LCALL  _exceptionResponse
+025A 020000  R      LJMP   ?NXT67
+025D         ?ELSE42:
+                                           ; SOURCE LINE # 154 
+025D AE00    R      MOV    R6,startAddress
+025F AF00    R      MOV    R7,startAddress+01H
+0261 AC00    R      MOV    R4,value
+0263 AD00    R      MOV    R5,value+01H
+0265 120000  R      LCALL  _coilWrite
+0268 4008           JC     ?ELSE43
+026A 7F04           MOV    R7,#004H
+026C 120000  R      LCALL  _exceptionResponse
+026F 020000  R      LJMP   ?NXT67
+0272         ?ELSE43:
+                                           ; SOURCE LINE # 155 
+0272 7F06           MOV    R7,#006H
+0274 020000  R      LJMP   _write
+0277         ?CASE22:
+                                           ; SOURCE LINE # 160 
+0277 AF00    R      MOV    R7,buf+02H
+0279 AD00    R      MOV    R5,buf+03H
+027B 120000  R      LCALL  _bytesToWord
+027E 8E00    R      MOV    startAddress,R6
+0280 8F00    R      MOV    startAddress+01H,R7
+                                           ; SOURCE LINE # 161 
+0282 AF00    R      MOV    R7,buf+04H
+0284 AD00    R      MOV    R5,buf+05H
+0286 120000  R      LCALL  _bytesToWord
+0289 8E00    R      MOV    value,R6
+RC51 COMPILER V06.20.17.263,  DO_8               09/22/22  19:16:45  PAGE 16
+
+028B 8F00    R      MOV    value+01H,R7
+                                           ; SOURCE LINE # 162 
+028D E500    R      MOV    A,startAddress
+028F B40005         CJNE   A,#000H,?LAB160
+0292 E500    R      MOV    A,startAddress+01H
+0294 B50000  R      CJNE   A,numHoldingRegisters,?LAB160
+0297         ?LAB160:
+0297 4008           JC     ?ELSE44
+0299 7F02           MOV    R7,#002H
+029B 120000  R      LCALL  _exceptionResponse
+029E 020000  R      LJMP   ?NXT67
+02A1         ?ELSE44:
+                                           ; SOURCE LINE # 163 
+02A1 AE00    R      MOV    R6,startAddress
+02A3 AF00    R      MOV    R7,startAddress+01H
+02A5 AC00    R      MOV    R4,value
+02A7 AD00    R      MOV    R5,value+01H
+02A9 120000  R      LCALL  _holdingRegisterWrite
+02AC 4008           JC     ?ELSE45
+02AE 7F04           MOV    R7,#004H
+02B0 120000  R      LCALL  _exceptionResponse
+02B3 020000  R      LJMP   ?NXT67
+02B6         ?ELSE45:
+                                           ; SOURCE LINE # 164 
+02B6 7F06           MOV    R7,#006H
+02B8 020000  R      LJMP   _write
+02BB         ?CASE23:
+                                           ; SOURCE LINE # 169 
+02BB AF00    R      MOV    R7,buf+02H
+02BD 7E00           MOV    R6,#000H
+02BF AD00    R      MOV    R5,buf+03H
+02C1 7C00           MOV    R4,#000H
+02C3 120000  R      LCALL  _bytesToWord
+02C6 8E00    R      MOV    startAddress,R6
+02C8 8F00    R      MOV    startAddress+01H,R7
+                                           ; SOURCE LINE # 170 
+02CA AF00    R      MOV    R7,buf+04H
+02CC 7E00           MOV    R6,#000H
+02CE AD00    R      MOV    R5,buf+05H
+02D0 7C00           MOV    R4,#000H
+02D2 120000  R      LCALL  _bytesToWord
+02D5 8E00    R      MOV    quantity,R6
+02D7 8F00    R      MOV    quantity+01H,R7
+                                           ; SOURCE LINE # 171 
+02D9 E500    R      MOV    A,quantity
+02DB 4500    R      ORL    A,quantity+01H
+02DD 601D           JZ     ?LAB162
+02DF E500    R      MOV    A,quantity
+02E1 B40006         CJNE   A,#000H,?LAB164
+02E4 E500    R      MOV    A,quantity+01H
+02E6 B41001         CJNE   A,#010H,?LAB164
+02E9 D3             SETB   C
+02EA         ?LAB164:
+02EA 5010           JNC    ?LAB162
+02EC AE00    R      MOV    R6,quantity
+02EE AF00    R      MOV    R7,quantity+01H
+02F0 120000  R      LCALL  _div8RndUp
+02F3 E4             CLR    A
+RC51 COMPILER V06.20.17.263,  DO_8               09/22/22  19:16:45  PAGE 17
+
+02F4 B50605         CJNE   A,AR6,?LAB162
+02F7 E500    R      MOV    A,buf+06H
+02F9 6F             XRL    A,R7
+02FA 6008           JZ     ?ELSE46
+02FC         ?LAB162:
+02FC 7F03           MOV    R7,#003H
+02FE 120000  R      LCALL  _exceptionResponse
+0301 020000  R      LJMP   ?NXT67
+0304         ?ELSE46:
+                                           ; SOURCE LINE # 172 
+0304 E500    R      MOV    A,quantity+01H
+0306 2500    R      ADD    A,startAddress+01H
+0308 FE             MOV    R6,A
+0309 E500    R      MOV    A,quantity
+030B 3500    R      ADDC   A,startAddress
+030D B40005         CJNE   A,#000H,?LAB167
+0310 EE             MOV    A,R6
+0311 B50001  R      CJNE   A,numCoils,?LAB167
+0314 D3             SETB   C
+0315         ?LAB167:
+0315 4007           JC     ?ELSE47
+0317 7F02           MOV    R7,#002H
+0319 120000  R      LCALL  _exceptionResponse
+031C 806E           SJMP   ?NXT67
+031E         ?ELSE47:
+                                           ; SOURCE LINE # 174 
+031E 750000  R      MOV    j,#000H
+0321         ?FOR9:
+0321 E4             CLR    A
+0322 B50005  R      CJNE   A,quantity,?LAB169
+0325 E500    R      MOV    A,j
+0327 B50000  R      CJNE   A,quantity+01H,?LAB169
+032A         ?LAB169:
+032A 5056           JNC    ?NXT86
+                                           ; SOURCE LINE # 175 
+032C E500    R      MOV    A,j
+032E 5407           ANL    A,#007H
+0330 7A00           MOV    R2,#000H
+0332 F8             MOV    R0,A
+0333 08             INC    R0
+0334 7401           MOV    A,#001H
+0336 8005           SJMP   ?LAB171
+0338         ?LAB172:
+0338 C3             CLR    C
+0339 33             RLC    A
+033A CA             XCH    A,R2
+033B 33             RLC    A
+033C CA             XCH    A,R2
+033D         ?LAB171:
+033D D8F9           DJNZ   R0,?LAB172
+033F FE             MOV    R6,A
+0340 E500    R      MOV    A,j
+0342 03             RR     A
+0343 03             RR     A
+0344 03             RR     A
+0345 541F           ANL    A,#01FH
+0347 2400    R      ADD    A,#buf+07H
+0349 F9             MOV    R1,A
+RC51 COMPILER V06.20.17.263,  DO_8               09/22/22  19:16:45  PAGE 18
+
+034A E7             MOV    A,@R1
+034B FF             MOV    R7,A
+034C EE             MOV    A,R6
+034D 5207           ANL    AR7,A
+034F 750000  R      MOV    value,#000H
+0352 8F00    R      MOV    value+01H,R7
+                                           ; SOURCE LINE # 176 
+0354 E500    R      MOV    A,value
+0356 4500    R      ORL    A,value+01H
+0358 6006           JZ     ?NXT88
+035A E4             CLR    A
+035B F500    R      MOV    value,A
+035D 750001  R      MOV    value+01H,#001H
+0360         ?NXT88:
+                                           ; SOURCE LINE # 177 
+0360 E500    R      MOV    A,startAddress+01H
+0362 2500    R      ADD    A,j
+0364 FF             MOV    R7,A
+0365 E4             CLR    A
+0366 3500    R      ADDC   A,startAddress
+0368 FE             MOV    R6,A
+0369 E500    R      MOV    A,value
+036B 4500    R      ORL    A,value+01H
+036D 24FF           ADD    A,#0FFH
+036F E4             CLR    A
+0370 33             RLC    A
+0371 7C00           MOV    R4,#000H
+0373 FD             MOV    R5,A
+0374 120000  R      LCALL  _coilWrite
+0377 4005           JC     ?NXT87
+                                           ; SOURCE LINE # 178 
+0379 7F04           MOV    R7,#004H
+037B 020000  R      LJMP   _exceptionResponse
+037E         ?NXT87:
+                                           ; SOURCE LINE # 174 
+037E 0500    R      INC    j
+0380 809F           SJMP   ?FOR9
+0382         ?NXT86:
+                                           ; SOURCE LINE # 182 
+0382 7F06           MOV    R7,#006H
+0384 020000  R      LJMP   _write
+0387         ?DEFAULT1:
+                                           ; SOURCE LINE # 187 
+0387 7F01           MOV    R7,#001H
+0389 120000  R      LCALL  _exceptionResponse
+038C         ?NXT67:
+
+038C         ?NXT60:
+                                           ; SOURCE LINE # 192 
+038C 22             RET    
+
+            ; FUNCTION modbusPoll (END)
+
+            ; FUNCTION _boolRead (BEGIN)
+                                           ; SOURCE LINE # 196 
+0000 22             RET    
+
+            ; FUNCTION _boolRead (END)
+RC51 COMPILER V06.20.17.263,  DO_8               09/22/22  19:16:45  PAGE 19
+
+
+            ; FUNCTION _wordRead (BEGIN)
+                                           ; SOURCE LINE # 200 
+0000 22             RET    
+
+            ; FUNCTION _wordRead (END)
+
+            ; FUNCTION _coilWrite (BEGIN)
+                                           ; SOURCE LINE # 204 
+0000 22             RET    
+
+            ; FUNCTION _coilWrite (END)
+
+            ; FUNCTION _holdingRegisterWrite (BEGIN)
+                                           ; SOURCE LINE # 208 
+0000 22             RET    
+
+            ; FUNCTION _holdingRegisterWrite (END)
+
+            ; FUNCTION _write (BEGIN)
+                                           ; SOURCE LINE # 216 
+0000 8F00    R      MOV    len,R7
+                                           ; SOURCE LINE # 220 
+0002 E500    R      MOV    A,buf
+0004 6044           JZ     ?NXT93
+                                           ; SOURCE LINE # 221 
+0006 120000  R      LCALL  _crc
+                                           ; SOURCE LINE # 223 
+0009 EF             MOV    A,R7
+000A FB             MOV    R3,A
+                                           ; SOURCE LINE # 221 
+000B 8E00    R      MOV    CRC,R6
+000D 8F00    R      MOV    CRC+01H,R7
+                                           ; SOURCE LINE # 223 
+000F E500    R      MOV    A,len
+0011 2400    R      ADD    A,#buf
+0013 F8             MOV    R0,A
+0014 A603           MOV    @R0,AR3
+                                           ; SOURCE LINE # 224 
+0016 E500    R      MOV    A,len
+0018 2400    R      ADD    A,#buf+01H
+001A F8             MOV    R0,A
+001B A600    R      MOV    @R0,CRC
+                                           ; SOURCE LINE # 226 
+001D D2B5           SETB   T1
+                                           ; SOURCE LINE # 227 
+001F 750000  R      MOV    i,#000H
+0022         ?FOR11:
+0022 E500    R      MOV    A,len
+0024 2402           ADD    A,#002H
+0026 FB             MOV    R3,A
+0027 E4             CLR    A
+0028 33             RLC    A
+0029 F5F0           MOV    B,A
+002B B2F7           CPL    B.7
+002D 7480           MOV    A,#080H
+002F B5F006         CJNE   A,B,?LAB186
+0032 E500    R      MOV    A,i
+RC51 COMPILER V06.20.17.263,  DO_8               09/22/22  19:16:45  PAGE 20
+
+0034 B50301         CJNE   A,AR3,?LAB186
+0037 D3             SETB   C
+0038         ?LAB186:
+0038 500E           JNC    ?NXT94
+003A E500    R      MOV    A,i
+003C 2400    R      ADD    A,#buf
+003E F8             MOV    R0,A
+003F 8607           MOV    AR7,@R0
+0041 120000  R      LCALL  _serialTX
+0044 0500    R      INC    i
+0046 80DA           SJMP   ?FOR11
+0048         ?NXT94:
+                                           ; SOURCE LINE # 228 
+0048 C2B5           CLR    T1
+004A         ?NXT93:
+                                           ; SOURCE LINE # 230 
+004A 22             RET    
+
+            ; FUNCTION _write (END)
+
+            ; FUNCTION _crc (BEGIN)
+              ; Register R7 is assigned to parameter len
+              ; R4R5 is assigned to crc
+                                           ; SOURCE LINE # 235 
+0000 74FF           MOV    A,#0FFH
+0002 FC             MOV    R4,A
+0003 FD             MOV    R5,A
+              ; R6 is assigned to i
+                                           ; SOURCE LINE # 237 
+0004 7E00           MOV    R6,#000H
+0006         ?FOR14:
+0006 EE             MOV    A,R6
+0007 B50700         CJNE   A,AR7,?LAB195
+000A         ?LAB195:
+000A 5032           JNC    ?NXT101
+                                           ; SOURCE LINE # 238 
+000C 2400    R      ADD    A,#buf
+000E F8             MOV    R0,A
+000F E6             MOV    A,@R0
+0010 FB             MOV    R3,A
+0011 ED             MOV    A,R5
+0012 6B             XRL    A,R3
+0013 FD             MOV    R5,A
+                                           ; SOURCE LINE # 239 
+0014 750000  R      MOV    j,#000H
+0017         ?FOR15:
+                                           ; SOURCE LINE # 240 
+0017 ED             MOV    A,R5
+0018 5401           ANL    A,#001H
+001A 24FF           ADD    A,#0FFH
+001C 9200    R      MOV    lsb,C
+                                           ; SOURCE LINE # 241 
+001E 8D03           MOV    AR3,R5
+0020 EC             MOV    A,R4
+0021 C3             CLR    C
+0022 13             RRC    A
+0023 CB             XCH    A,R3
+0024 13             RRC    A
+RC51 COMPILER V06.20.17.263,  DO_8               09/22/22  19:16:45  PAGE 21
+
+0025 CB             XCH    A,R3
+0026 FC             MOV    R4,A
+0027 8B05           MOV    AR5,R3
+                                           ; SOURCE LINE # 242 
+0029 300008  R      JNB    lsb,?NXT104
+                                           ; SOURCE LINE # 243 
+002C EB             MOV    A,R3
+002D 6401           XRL    A,#001H
+002F FD             MOV    R5,A
+0030 EC             MOV    A,R4
+0031 64A0           XRL    A,#0A0H
+0033 FC             MOV    R4,A
+0034         ?NXT104:
+                                           ; SOURCE LINE # 239 
+0034 0500    R      INC    j
+0036 E500    R      MOV    A,j
+0038 B408DC         CJNE   A,#008H,?FOR15
+                                           ; SOURCE LINE # 237 
+003B 0E             INC    R6
+003C 80C8           SJMP   ?FOR14
+003E         ?NXT101:
+                                           ; SOURCE LINE # 247 
+003E 8C06           MOV    AR6,R4
+0040 8D07           MOV    AR7,R5
+                                           ; SOURCE LINE # 248 
+0042 22             RET    
+
+            ; FUNCTION _crc (END)
+
+            ; FUNCTION _div8RndUp (BEGIN)
+              ; Register R6R7 is assigned to parameter value
+                                           ; SOURCE LINE # 251 
+0000 EF             MOV    A,R7
+0001 2407           ADD    A,#007H
+0003 FF             MOV    R7,A
+0004 E4             CLR    A
+0005 3E             ADDC   A,R6
+0006 75F003         MOV    B,#003H
+0009         ?LAB201:
+0009 C3             CLR    C
+000A 13             RRC    A
+000B CF             XCH    A,R7
+000C 13             RRC    A
+000D CF             XCH    A,R7
+000E D5F0F8         DJNZ   B,?LAB201
+0011 FE             MOV    R6,A
+                                           ; SOURCE LINE # 252 
+0012 22             RET    
+
+            ; FUNCTION _div8RndUp (END)
+
+            ; FUNCTION _bytesToWord (BEGIN)
+              ; Register R7 is assigned to parameter high
+              ; Register R5 is assigned to parameter low
+                                           ; SOURCE LINE # 255 
+0000 ED             MOV    A,R5
+0001 FB             MOV    R3,A
+0002 7A00           MOV    R2,#000H
+RC51 COMPILER V06.20.17.263,  DO_8               09/22/22  19:16:45  PAGE 22
+
+0004 C002           PUSH   AR2
+0006 C003           PUSH   AR3
+0008 EF             MOV    A,R7
+0009 FA             MOV    R2,A
+000A D007           POP    AR7
+000C D0E0           POP    ACC
+000E 4A             ORL    A,R2
+000F FE             MOV    R6,A
+                                           ; SOURCE LINE # 256 
+0010 22             RET    
+
+            ; FUNCTION _bytesToWord (END)
+
+            ; FUNCTION main (BEGIN)
+                                           ; SOURCE LINE # 17 
+0000 750008  R      MOV    numCoils,#008H
+                                           ; SOURCE LINE # 18 
+0003 E4             CLR    A
+0004 F500    R      MOV    numDiscreteInputs,A
+                                           ; SOURCE LINE # 19 
+0006 750002  R      MOV    numHoldingRegisters,#002H
+                                           ; SOURCE LINE # 21 
+0009 750025  R      MOV    baud,#025H
+000C 750080  R      MOV    baud+01H,#080H
+                                           ; SOURCE LINE # 22 
+000F F500    R      MOV    id,A
+0011 750007  R      MOV    id+01H,#007H
+                                           ; SOURCE LINE # 24 
+0014 30B414         JNB    T0,?NXT108
+                                           ; SOURCE LINE # 25 
+0017 FE             MOV    R6,A
+0018 FF             MOV    R7,A
+0019 120000  R      LCALL  _EEPROMread
+001C 8E00    R      MOV    baud,R6
+001E 8F00    R      MOV    baud+01H,R7
+                                           ; SOURCE LINE # 26 
+0020 E4             CLR    A
+0021 FE             MOV    R6,A
+0022 7F02           MOV    R7,#002H
+0024 120000  R      LCALL  _EEPROMread
+0027 8E00    R      MOV    id,R6
+0029 8F00    R      MOV    id+01H,R7
+002B         ?NXT108:
+                                           ; SOURCE LINE # 28 
+002B AE00    R      MOV    R6,baud
+002D AF00    R      MOV    R7,baud+01H
+002F 120000  R      LCALL  _serialInit
+                                           ; SOURCE LINE # 29 
+0032 AF00    R      MOV    R7,id+01H
+0034 AC00    R      MOV    R4,baud
+0036 AD00    R      MOV    R5,baud+01H
+0038 120000  R      LCALL  _modbusBegin
+003B         ?WHILE11:
+                                           ; SOURCE LINE # 32 
+003B 120000  R      LCALL  modbusPoll
+003E 80FB           SJMP   ?WHILE11
+
+            ; FUNCTION main (END)
+RC51 COMPILER V06.20.17.263,  DO_8               09/22/22  19:16:45  PAGE 24
+
+
+RC51 COMPILER V06.20.17.263,  DO_8               09/22/22  19:16:45  PAGE 26
+
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1644    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     24      23
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----       1
+END OF MODULE INFORMATION.
+
+RC51 COMPILATION COMPLETE. 16 WARNINGS,  0 ERROR

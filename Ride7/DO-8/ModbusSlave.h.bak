@@ -36,8 +36,6 @@ char id;
 void milliStart(void);
 void modbusBegin(char id, unsigned int baud);
 void modbusPoll(void);
-void processBoolRead(unsigned int numBools);
-void processWordRead(unsigned int numWords);
 void exceptionResponse(char code);
 void write(char len);
 unsigned int crc(char len);
@@ -112,12 +110,13 @@ void modbusPoll() {
 		  else if ((startAddress + quantity) > numCoils) exceptionResponse(2);
 		  else {
 			for (j = 0; j < quantity; j++) {
-			  value = boolRead(startAddress + j);			//<<<<<<<<<<<<<<<<<implement boolRead()
-			  if (value < 0) {
+			  value = boolRead(startAddress + j);
+			  if (value > 1) {
 				exceptionResponse(4);
 				return;
 			  }
-			  bitWrite(buf[3 + (j >> 3)], j & 7, value);	//<<<<<<<<<<<<<<<<<implement bitWrite()
+			  if (value == 1)	buf[3 + (j >> 3)] |= 1<<(j & 7);
+			  else				buf[3 + (j >> 3)] &= ~(1<<(j & 7));
 			}
 			buf[2] = div8RndUp(quantity);
 			write(3 + buf[2]);
@@ -130,7 +129,7 @@ void modbusPoll() {
 		  else if ((startAddress + quantity) > numWords) exceptionResponse(2);
 		  else {
 			for (j = 0; j < quantity; j++) {
-			  value = wordRead(startAddress + j);			//<<<<<<<<<<<<<<<<<implement wordRead()
+			  value = wordRead(startAddress + j);
 			  if (value < 0) {
 				exceptionResponse(4);
 				return;
@@ -148,7 +147,7 @@ void modbusPoll() {
             value = bytesToWord(buf[4], buf[5]);
             if (value != 0 && value != 0xFF00) exceptionResponse(3);
             else if (startAddress >= numCoils) exceptionResponse(2);
-            else if (!coilWrite(startAddress, value)) exceptionResponse(4);	//<<<<<<<<<<<<<<<<<implement coilWrite()
+            else if (!coilWrite(startAddress, value)) exceptionResponse(4);
             else write(6);
           }
           break;
@@ -169,7 +168,9 @@ void modbusPoll() {
             else if ((startAddress + quantity) > numCoils) exceptionResponse(2);
             else {
               for (j = 0; j < quantity; j++) {
-                if (!coilWrite(startAddress + j, bitRead(buf[7 + (j >> 3)], j & 7))) {	//<<<<<<<<<<<<<<<<<implement bitRead()
+				value = buf[7 + (j >> 3)] & (1<<(j & 7));
+				if (value != 0)	value = 1;
+                if (!coilWrite(startAddress + j, (bool)value)) {
                   exceptionResponse(4);
                   return;
                 }
@@ -184,6 +185,22 @@ void modbusPoll() {
       }
     }
   }
+}
+
+char boolRead(unsigned int startAddress) {
+	
+}
+
+long wordRead(unsigned int startAddress) {
+	
+}
+
+bool coilWrite(unsigned int startAddress, unsigned int value) {
+	
+}
+
+bool holdingRegisterWrite(unsigned int startAddress, unsigned int value) {
+	
 }
 
 void exceptionResponse(char code) {

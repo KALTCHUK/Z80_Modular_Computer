@@ -1,0 +1,188 @@
+LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263                                 09/22/22  19:16:46
+MS-DOS LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263,  INVOKED BY:
+C:\Users\ricardo\Documents\Raisonance\Ride\Bin\LX51.EXE C:\Users\ricardo\Documents\GitHub\Z80_Mod&
+ular_Computer\Ride7\DO-8\DO-8.obj TO(C:\Users\ricardo\Documents\GitHub\Z80_Modular_Computer\Ride7&
+\DO-8\DO-8.aof) LIBPATH(C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51) GENERATEDEPFILE MAP IX&
+ RS(256) RSI(128) CSIZE(65536) XSIZE(65536) DEFN(XSTACKLEN,256) DEFN(TIM1_INIT,E8h) CO(0) DT(0) I&
+D(0) XD(0) BI(0) ABSCODEOFFS(0) XMLM(No,C:\Users\ricardo\Documents\GitHub\Z80_Modular_Computer\Ri&
+de7\DO-8\DO-8-modules.Standard.xml) XMLF(No,8000,C:\Users\ricardo\Documents\GitHub\Z80_Modular_Co&
+mputer\Ride7\DO-8\DO-8-flash.Standard.xml) 
+
+
+MEMORY MODEL: SMALL WITHOUT ANY FLOATING POINT ARITHMETIC
+
+
+INPUT MODULES INCLUDED
+  C:\USERS\RICARDO\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\DO-8\DO-8.OBJ(DO-8)
+  C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(C3S)
+  C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(LONG_SIGNED_DIV_SPEED_OPTIMIZED)
+  C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(DIVS)
+  C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(HPD)
+  C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(_C_IDATALEN)
+  C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(LONG_UNSIGNED_DIV_SPEED_OPTIMIZED)
+  C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(GESI)
+  C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(LONG_UNSIGNED_DIV)
+  C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(RSTSTK4)
+
+
+LINK MAP OF MODULE: C:\USERS\RICARDO\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\DO-8\DO-8.AOF (D&
+O-8)
+
+    TYPE     BASE       LENGTH    RELOCATION     SEGMENT NAME
+    ----     ----       ------    ----------     ------------
+
+    * * * * * * *   DATA/IDATA    M E M O R Y   * * * * * * *
+    REG      0000H      0008H     ABSOLUTE       "REG BANK 0"
+    DATA     0008H      0018H     UNIT           ?DT?DO_8
+    BIT      0020H.0    0000H.1   OVERLAID UNIT  _BGROUP02_
+             0100H      0001H     -------------  ?BI?_crc?DO_8
+             0020H.1    0000H.7                  *** GAP ***
+    DATA     0021H      000FH     OVERLAID UNIT  _DGROUP02_
+             0021H      0002H     -------------  ?DT?main?DO_8
+             0023H      0002H     -------------  ?DT?_EEPROMread?DO_8
+             0023H      0002H     -------------  ?DT?_modbusBegin?DO_8
+             0023H      0008H     -------------  ?DT?modbusPoll?DO_8
+             002BH      0004H     -------------  ?DT?_write?DO_8
+             002FH      0001H     -------------  ?DT?_crc?DO_8
+    DATA     0030H      0002H     OVERLAID UNIT  _DGROUP00_
+             0030H      0002H     -------------  ?DT?_EEPROMwrite?DO_8
+    IDATA    0032H      0001H     * * STACK * *  _STACK
+
+    * * * * * * *   CODE          M E M O R Y   * * * * * * *
+    CODE     0000H      0003H     ABSOLUTE       
+    CODE     0003H      0008H     UNIT           ?PR?_serialTX?DO_8
+    CODE     000BH      0003H     ABSOLUTE       
+    CODE     000EH      01E9H     UNIT           ?PR?LIB51
+    CODE     01F7H      000FH     UNIT           ?PR?C51_STARTUP?
+    CODE     0206H      0077H     UNIT           ?PR?_serialInit?DO_8
+    CODE     027DH      0008H     UNIT           ?PR?serialRX?DO_8
+    CODE     0285H      0001H     UNIT           ?PR?I2C_delay?DO_8
+    CODE     0286H      0008H     UNIT           ?PR?I2C_start?DO_8
+    CODE     028EH      0008H     UNIT           ?PR?I2C_stop?DO_8
+    CODE     0296H      0031H     UNIT           ?PR?_I2C_write?DO_8
+    CODE     02C7H      0044H     UNIT           ?PR?_I2C_read?DO_8
+    CODE     030BH      002BH     UNIT           ?PR?_EEPROMread?DO_8
+    CODE     0336H      0014H     UNIT           ?PR?_EEPROMwrite?DO_8
+    CODE     034AH      0016H     UNIT           ?PR?_EEPROMcommon?DO_8
+    CODE     0360H      0017H     UNIT           ?PR?timer0_isr?DO_8
+    CODE     0377H      0017H     UNIT           ?PR?milliStart?DO_8
+    CODE     038EH      0059H     UNIT           ?PR?_modbusBegin?DO_8
+    CODE     03E7H      038DH     UNIT           ?PR?modbusPoll?DO_8
+    CODE     0774H      0001H     UNIT           ?PR?_boolRead?DO_8
+    CODE     0775H      0001H     UNIT           ?PR?_wordRead?DO_8
+    CODE     0776H      0001H     UNIT           ?PR?_coilWrite?DO_8
+    CODE     0777H      0001H     UNIT           ?PR?_holdingRegisterWrite?DO_8
+    CODE     0778H      004BH     UNIT           ?PR?_write?DO_8
+    CODE     07C3H      0043H     UNIT           ?PR?_crc?DO_8
+    CODE     0806H      0013H     UNIT           ?PR?_div8RndUp?DO_8
+    CODE     0819H      0011H     UNIT           ?PR?_bytesToWord?DO_8
+    CODE     082AH      0040H     UNIT           ?PR?main?DO_8
+
+UNRESOLVED EXTERNAL SYMBOLS
+
+***ERROR 100: UNRESOLVED EXTERNAL
+   SYMBOL : _exceptionResponse(DO-8)
+
+EXECUTABLE SUMMARY:
+-------------------
+    Total INTERNAL RAM storage requirement:  0031H.1 (49.1)
+    Total EXTERNAL RAM storage requirement:  0000H (0)
+    Total     CODE     storage requirement:  086AH (2154)
+Note:  Summary does not include dynamic stack requirements
+
+
+REFERENCE MAP OF MODULE: C:\USERS\RICARDO\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\DO-8\DO-8.AOF (DO-8)
+
+SEGMENT                           BI_GROUP            DT_GROUP             ID_GROUP             XD_GROUP
+  +--> CALLED SEGMENT          START    LENGTH     START    LENGTH     START    LENGTH     START    LENGTH
+--------------------------------------------------------------------------------------
+
+?PR?_EEPROMwrite?DO_8          ---------------     0030H    0002H      ---------------     ---------------
+  +--> ?PR?_EEPROMcommon?DO_8
+  +--> ?PR?_I2C_write?DO_8
+  +--> ?PR?I2C_stop?DO_8
+
+?PR?_EEPROMcommon?DO_8         ---------------     ---------------     ---------------     ---------------
+  +--> ?PR?I2C_start?DO_8
+  +--> ?PR?_I2C_write?DO_8
+
+?PR?I2C_start?DO_8             ---------------     ---------------     ---------------     ---------------
+  +--> ?PR?I2C_delay?DO_8
+
+?PR?I2C_delay?DO_8             ---------------     ---------------     ---------------     ---------------
+
+?PR?_I2C_write?DO_8            ---------------     ---------------     ---------------     ---------------
+  +--> ?PR?I2C_delay?DO_8
+
+?PR?I2C_stop?DO_8              ---------------     ---------------     ---------------     ---------------
+  +--> ?PR?I2C_delay?DO_8
+
+?PR?timer0_isr?DO_8            ---------------     ---------------     ---------------     ---------------
+
+?PR?main?DO_8                  ---------------     0021H    0002H      ---------------     ---------------
+  +--> ?PR?_EEPROMread?DO_8
+  +--> ?PR?_serialInit?DO_8
+  +--> ?PR?_modbusBegin?DO_8
+  +--> ?PR?modbusPoll?DO_8
+
+?PR?_EEPROMread?DO_8           ---------------     0023H    0002H     ---------------     ---------------
+  +--> ?PR?_EEPROMcommon?DO_8
+  +--> ?PR?I2C_stop?DO_8
+  +--> ?PR?_I2C_read?DO_8
+  +--> ?PR?I2C_start?DO_8
+  +--> ?PR?_I2C_write?DO_8
+
+?PR?_I2C_read?DO_8             ---------------     ---------------     ---------------     ---------------
+  +--> ?PR?I2C_delay?DO_8
+
+?PR?_serialInit?DO_8           ---------------     ---------------     ---------------     ---------------
+
+?PR?_modbusBegin?DO_8          ---------------     0023H    0002H     ---------------     ---------------
+  +--> ?PR?milliStart?DO_8
+
+?PR?milliStart?DO_8            ---------------     ---------------     ---------------     ---------------
+
+?PR?modbusPoll?DO_8            ---------------     0023H    0008H     ---------------     ---------------
+  +--> ?PR?serialRX?DO_8
+  +--> ?PR?_bytesToWord?DO_8
+  +--> ?PR?_boolRead?DO_8
+  +--> ?PR?_div8RndUp?DO_8
+  +--> ?PR?_write?DO_8
+  +--> ?PR?_wordRead?DO_8
+  +--> ?PR?_coilWrite?DO_8
+  +--> ?PR?_holdingRegisterWrite?DO_8
+  +--> ?PR?milliStart?DO_8
+  +--> ?PR?_crc?DO_8
+
+?PR?serialRX?DO_8              ---------------     ---------------     ---------------     ---------------
+
+?PR?_bytesToWord?DO_8          ---------------     ---------------     ---------------     ---------------
+
+?PR?_boolRead?DO_8             ---------------     ---------------     ---------------     ---------------
+
+?PR?_div8RndUp?DO_8            ---------------     ---------------     ---------------     ---------------
+
+?PR?_write?DO_8                ---------------     002BH    0004H     ---------------     ---------------
+  +--> ?PR?_crc?DO_8
+  +--> ?PR?_serialTX?DO_8
+
+?PR?_crc?DO_8                  0020H.0  0000H.1     002FH    0001H     ---------------     ---------------
+
+?PR?_serialTX?DO_8             ---------------     ---------------     ---------------     ---------------
+
+?PR?_wordRead?DO_8             ---------------     ---------------     ---------------     ---------------
+
+?PR?_coilWrite?DO_8            ---------------     ---------------     ---------------     ---------------
+
+?PR?_holdingRegisterWrite?DO_8 ---------------     ---------------     ---------------     ---------------
+
+SYMBOL TABLE FOR C:\USERS\RICARDO\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\DO-8\DO-8.AOF(DO-8)
+-------------------------------------------------------------------------------------------------&
+-
+
+    VALUE              TYPE               NAME
+    -----              ----               ----
+
+
+LINK/LOCATE RUN COMPLETE, 1 ERROR  FOUND.
+

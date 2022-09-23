@@ -17,7 +17,7 @@ unsigned int baud;
 
 // Function Prototyping
 void serialInit(unsigned int baud);
-void serialTX(char x)
+void serialTX(char x);
 unsigned char serialRX(void);
 
 // Functions

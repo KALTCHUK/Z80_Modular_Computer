@@ -17,11 +17,10 @@
 
 */
 
-// Bit Addresses
-at 0xB3 sbit _SCL							// SCL pin (P3.3)
-at 0xB2 sbit _SDA							// SDA pin (P3.2)
-
 // Definitions
+#define _SCL						INT1	// SCL pin (P3.3)
+#define _SDA						INT0	// SDA pin (P3.2)
+
 #define ACK							1
 #define NAK							0
 #define slaveWrite					0xA0	// 24C64 address with write bit

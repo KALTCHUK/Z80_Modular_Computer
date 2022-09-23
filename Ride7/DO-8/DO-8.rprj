@@ -1,0 +1,4 @@
+
+<Project Header="Project 'DO-8'" Path=".\DO-8.rprj" Project="Yes" OutputFile="" sate="96" ActiveApp="DO-8" >
+	<ApplicationBuild Header="DO-8" Extern=".\DO-8.rapp" Path=".\DO-8.rapp" OutputFile=".\DO-8.aof" sate="96" />
+</Project>
