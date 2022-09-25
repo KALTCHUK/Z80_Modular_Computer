@@ -101,7 +101,7 @@ I2C_read Function
 char I2C_read(char condition) {
 	char	bt, byte=0;
 
-  for (bt = 0; bt < 8; bt++) {
+    for (bt = 0; bt < 8; bt++) {
 		SDA_HI;
 		I2C_delay();
 		SCL_HI;
@@ -121,15 +121,17 @@ char I2C_read(char condition) {
 	while(_SCL == 0) {}		// clock stretching
 	SCL_LO;
 	I2C_delay();
-  return byte;
+    return byte;
 }
 
 /*------------------------------------------------
 EEPROMread Function
+Read 2 bytes, MSB first.
 ------------------------------------------------*/
 unsigned int EEPROMread(unsigned int address) {
 	unsigned int word;
-	
+
+    address *= 2;
 	EEPROMcommon(address);
 	I2C_stop();
 
@@ -144,11 +146,13 @@ unsigned int EEPROMread(unsigned int address) {
 
 /*------------------------------------------------
 EEPROMwrite Function
+Write 2 bytes, MSB first.
 ------------------------------------------------*/
 void EEPROMwrite(unsigned int address, unsigned int word) {
+    address *= 2;
 	EEPROMcommon(address);
 	I2C_write((char)(word>>8));
-	I2C_write((char)word);
+	I2C_write((char)(word & 0x00ff));
 	I2C_stop();
 }
 

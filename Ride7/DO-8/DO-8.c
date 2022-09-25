@@ -12,11 +12,13 @@
 #define idEEaddr		2	// ID address in EEPROM (register 2).
 
 void main() {
-	unsigned int id;
-	
+    blink(5);
+
 	numCoils = 8;
 	numDiscreteInputs = 0;
 	numHoldingRegisters = 2;
+
+    P1 = 0;         // turn off all outputs.
 	
 	baud = 9600;	// factory set baud rate.
 	id = 7;			// factory set modbus slave id.
@@ -24,11 +26,12 @@ void main() {
 	if (_FS == 1) {
 		baud = EEPROMread(baudEEaddr);
 		id =  EEPROMread(idEEaddr);
+        blink(2);
 	}
 	serialInit(baud);
-	modbusBegin(id, baud);
+	modbusBegin(baud);
 	
 	while (1) {
-		modbusPoll();
+        modbusPoll();
 	}
 }

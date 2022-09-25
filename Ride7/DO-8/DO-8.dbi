@@ -1,5 +1,5 @@
 [Application]
-ApplicationPath=C:\Users\ricardo\Documents\GitHub\Z80_Modular_Computer\Ride7\DO-8\DO-8.aof
+ApplicationPath=C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Ride7\DO-8\DO-8.aof
 DebugTool=SIM-51
 CodeSize=0x10000
 XDataSize=0x10000
@@ -8,7 +8,8 @@ Format=AOF
 CodeOffset=0x0
 LoaderTool=80C51
 Target=80C51
-MakeApplicationPath=C:\Users\ricardo\Documents\GitHub\Z80_Modular_Computer\Ride7\DO-8\DO-8.aof
+MakeApplicationPath=C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Ride7\DO-8\DO-8.aof
+ApplicationComponents=
 [Device]
 Name=AT89C4051
 Architecture=1
@@ -22,5 +23,17 @@ StartupSymb=main
 Path=
 [SIM-51]
 Crystal=12.000
+NoFast=1
+isHex=1
 [General]
 FreqXTal=12.000
+[Monitoring]
+Expressions=
+NbExpr=0
+State=0
+[AT89C4051\UART]
+fEnable-1=0
+ParityCOM-1=-1
+AsciiHex-1=1
+SpyTrm-1=1
+SpyRec-1=0

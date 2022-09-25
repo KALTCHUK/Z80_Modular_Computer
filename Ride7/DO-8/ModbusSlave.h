@@ -18,7 +18,7 @@
 #define _DE         T1      // DE pin (P3.5)
 #define _FS         T0      // FS pin (P3.4)
 
-#define MAXBUF	12
+#define MAXBUF	24
 
 // Global Variables
 char buf[MAXBUF];
@@ -30,22 +30,22 @@ unsigned int charTimeout;
 unsigned int frameTimeout;
 
 unsigned int milli;
-char id;
+unsigned int id;
 
 // Function Prototyping
 void milliStart(void);
-void modbusBegin(char id, unsigned int baud);
+void modbusBegin(unsigned int baud);
 void modbusPoll(void);
 char boolRead(unsigned int startAddress);
 long wordRead(unsigned int startAddress);
 bit coilWrite(unsigned int startAddress, unsigned int value);
 bit holdingRegisterWrite(unsigned int startAddress, unsigned int value);
-void exceptionResponse(char code);
+void oops(int errCode);
 void write(char len);
 unsigned int crc(char len);
 unsigned int div8RndUp(unsigned int value);
 unsigned int bytesToWord(char high, char low);
-
+void blink(char X);
 
 void timer0_isr() interrupt 1
 {
@@ -67,166 +67,179 @@ void milliStart(void) {
 	milli = 0;
 }
 
-void modbusBegin(char id, unsigned int baud) {
-  milliStart();
+void modbusBegin(unsigned int baud) {
+    milliStart();
 
-  if (baud >= 19200) {
-    charTimeout = 1;
-    frameTimeout = 2;
-  }
-  else {
-    charTimeout = 15000/baud;		// in the range [1; 13]
-    frameTimeout = 35000/baud;		// in the range [2; 30]
-  }
-  
-  do {
-    if (RI != 0) {
-		milliStart();
-		RI = 0;
+    if (baud >= 19200) {
+        charTimeout = 1;
+        frameTimeout = 2;
     }
-  } while (milli < frameTimeout);
+    else {
+        charTimeout = 15000/baud;		// in the range [1; 13]
+        frameTimeout = 35000/baud;		// in the range [2; 30]
+    }
+  
+    do {
+        if (RI != 0) {
+            milliStart();
+            RI = 0;
+        }
+    } while (milli < frameTimeout);
 }
 
 void modbusPoll() {
-  char i = 0, j;
-  unsigned int startAddress, quantity, value;
+    char i = 0, j;
+    unsigned int startAddress, quantity, value;
 
-  if (RI != 0) {
-    milliStart();
-    do {
-      if (RI != 0) {
-        milliStart();
-        if(i < MAXBUF)	buf[i] = serialRX();
-		else			RI = 0;
-        i++;
-      }
-    } while (milli < charTimeout && i < MAXBUF);
-	
-    while (milli < frameTimeout);
-	
-    if (RI == 0 && (buf[0] == id || buf[0] == 0) && i < MAXBUF) {
-	  if (crc(i - 2) != bytesToWord(buf[i - 1], buf[i - 2])) return;
-      switch (buf[1]) {
-        case 1: /* Read Coils */
-		  startAddress = bytesToWord(buf[2], buf[3]);
-		  quantity = bytesToWord(buf[4], buf[5]);
-		  if (quantity == 0 || quantity > ((MAXBUF - 6) * 8)) exceptionResponse(3);
-		  else if ((startAddress + quantity) > numCoils) exceptionResponse(2);
-		  else {
-			for (j = 0; j < quantity; j++) {
-			  value = boolRead(startAddress + j);
-			  if (value > 1) {
-				exceptionResponse(4);
-				return;
-			  }
-			  if (value == 1)	buf[3 + (j >> 3)] |= 1<<(j & 7);
-			  else				buf[3 + (j >> 3)] &= ~(1<<(j & 7));
-			}
-			buf[2] = div8RndUp(quantity);
-			write(3 + buf[2]);
-		  }
-          break;
-        case 3: /* Read Holding Registers */
-		  startAddress = bytesToWord(buf[2], buf[3]);
-		  quantity = bytesToWord(buf[4], buf[5]);
-		  if (quantity == 0 || quantity > ((MAXBUF - 6) >> 1)) exceptionResponse(3);
-		  else if ((startAddress + quantity) > numHoldingRegisters) exceptionResponse(2);
-		  else {
-			for (j = 0; j < quantity; j++) {
-			  value = wordRead(startAddress + j);
-			  if (value < 0) {
-				exceptionResponse(4);
-				return;
-			  }
-			  buf[3 + (j * 2)] = (char)(value >> 8);
-			  buf[4 + (j * 2)] = (char)(value & 0x00ff);
-			}
-			buf[2] = quantity * 2;
-			write(3 + buf[2]);
-		  }
-          break;
-        case 5: /* Write Single Coil */
-          {
-            startAddress = bytesToWord(buf[2], buf[3]);
-            value = bytesToWord(buf[4], buf[5]);
-            if (value != 0 && value != 0xFF00) exceptionResponse(3);
-            else if (startAddress >= numCoils) exceptionResponse(2);
-            else if (!coilWrite(startAddress, value)) exceptionResponse(4);
-            else write(6);
-          }
-          break;
-        case 6: /* Write Single Holding Register */
-          {
-            startAddress = bytesToWord(buf[2], buf[3]);
-            value = bytesToWord(buf[4], buf[5]);
-            if (startAddress >= numHoldingRegisters) exceptionResponse(2);
-            else if (!holdingRegisterWrite(startAddress, value)) exceptionResponse(4);	//<<<<<<<<<<<<<<<<<implement holdingRegisterWrite()
-            else write(6);
-          }
-          break;
-        case 15: /* Write Multiple Coils */
-          {
-            startAddress = _bytesToWord(buf[2], buf[3]);
-            quantity = _bytesToWord(buf[4], buf[5]);
-            if (quantity == 0 || quantity > ((MAXBUF - 10) << 3) || buf[6] != div8RndUp(quantity)) exceptionResponse(3);
-            else if ((startAddress + quantity) > numCoils) exceptionResponse(2);
-            else {
-              for (j = 0; j < quantity; j++) {
-				value = buf[7 + (j >> 3)] & (1<<(j & 7));
-				if (value != 0)	value = 1;
-                if (!coilWrite(startAddress + j, (bit)value)) {
-                  exceptionResponse(4);
-                  return;
-                }
-              }
-              write(6);
+    if (RI != 0) {
+        do {
+            if (RI != 0) {
+                milliStart();
+                if(i < MAXBUF)	buf[i] = serialRX();
+                else			RI = 0 ;
+                i++;
             }
-          }
-          break;
-        default:
-          exceptionResponse(1);
-          break;
-      }
+        } while (milli < charTimeout && i < MAXBUF);
+	
+        while (milli < frameTimeout)    RI = 0;
+
+        if (RI == 0 && (buf[0] == id || buf[0] == 0) && i < MAXBUF) {
+            if (crc(i - 2) != bytesToWord(buf[i - 1], buf[i - 2])) return;
+        
+            //for (j = 0; j < i; j++)    serialTX(buf[j]);
+            //return;
+    
+            switch (buf[1]) {
+            case 1: /* Read Coils */
+                startAddress = bytesToWord(buf[2], buf[3]);
+                quantity = bytesToWord(buf[4], buf[5]);
+                if (quantity == 0 || quantity > ((MAXBUF - 6) * 8))   oops(3);
+                else if ((startAddress + quantity) > numCoils)        oops(2);
+                else {
+                    for (j = 0; j < quantity; j++) {
+                        value = boolRead(startAddress + j);
+                        if (value > 1) {
+                            oops(4);
+                            return;
+                        }
+                        if (value == 1)	buf[3 + (j >> 3)] |= 1<<(j & 7);
+                        else				buf[3 + (j >> 3)] &= ~(1<<(j & 7));
+                    }
+                    buf[2] = div8RndUp(quantity);
+                    write(3 + buf[2]);
+                }
+                break;
+        
+            case 3: /* Read Holding Registers */
+                startAddress = bytesToWord(buf[2], buf[3]);
+                quantity = bytesToWord(buf[4], buf[5]);
+                if (quantity == 0 || quantity > ((MAXBUF - 6) >> 1))          oops(3);
+                else if ((startAddress + quantity) > numHoldingRegisters)     oops(2);
+                else {
+                    for (j = 0; j < quantity; j++) {
+                        value = wordRead(startAddress + j);
+                        if (value < 0) {
+                            oops(4);
+                            return;
+                        }
+                        buf[3 + (j * 2)] = (char)(value >> 8);
+                        buf[4 + (j * 2)] = (char)(value & 0x00ff);
+                    }
+                    buf[2] = quantity * 2;
+                    write(3 + buf[2]);
+                }
+                break;
+
+            case 5: /* Write Single Coil */
+                startAddress = bytesToWord(buf[2], buf[3]);
+                value = bytesToWord(buf[4], buf[5]);
+                if (value != 0 && value != 0xff00)          oops(3);
+                else if (startAddress >= numCoils)          oops(2);
+                else if (!coilWrite(startAddress, value))   oops(4);
+                else write(6);
+                break;
+ 
+            case 6: /* Write Single Holding Register */
+                startAddress = bytesToWord(buf[2], buf[3]);
+                value = bytesToWord(buf[4], buf[5]);
+                if (startAddress >= numHoldingRegisters)                oops(2);
+                else if (!holdingRegisterWrite(startAddress, value))    oops(4);
+                else write(6);
+                break;
+            
+            case 15: /* Write Multiple Coils */
+                startAddress = bytesToWord(buf[2], buf[3]);
+                quantity = bytesToWord(buf[4], buf[5]);
+                if (quantity == 0 || quantity > ((MAXBUF - 10) << 3) || buf[6] != div8RndUp(quantity))  oops(3);
+                else if ((startAddress + quantity) > numCoils)                                          oops(2);
+                else {
+                    for (j = 0; j < quantity; j++) {
+                        value = buf[7 + (j >> 3)] & (1<<(j & 7));
+                        if (value != 0)	value = 0xff00;
+                        if (!coilWrite(startAddress + j, value)) {
+                            oops(4);
+                            return;
+                        }
+                    }
+                    write(6);
+                }
+                break;
+        
+            default:
+                oops(1);
+                break;
+            }
+        }
     }
-  }
 }
 
-char boolRead(unsigned int startAddress) {
-	
+char boolRead(unsigned int startAddress) {  // 1=ON, 0=OFF, 2=error.
+    char boolStatus;
+
+    if (startAddress > 7)   return 2;
+    boolStatus = P1 & (1 << startAddress);
+    if (boolStatus != 0)    boolStatus = 1;
+    return boolStatus;
 }
 
 long wordRead(unsigned int startAddress) {
-	
+    if (startAddress < 2)   return EEPROMread(startAddress);
+    return -1;
 }
 
 bit coilWrite(unsigned int startAddress, unsigned int value) {
-	
+    if (startAddress > 7)   return 0;
+    if (value == 0)     P1 &= ~(1 << startAddress);
+    else                P1 |= (1 << startAddress);
+    return 1;
 }
 
 bit holdingRegisterWrite(unsigned int startAddress, unsigned int value) {
-	
+	if (startAddress > 1)   return 0;
+    EEPROMwrite(startAddress, value);
+    return 1;
 }
-/*
-void exceptionResponse(char code) {
-  buf[1] |= 0x80;
-  buf[2] = code;
-  write(3);
+
+void oops(int errCode) {
+    buf[1] |= 0x80;
+    buf[2] = (char)errCode;
+    write(3);
 }
-*/
+
 void write(char len) {
-  char i;
-  unsigned int CRC;
+    char i;
+    unsigned int CRC;
 
-  if (buf[0] != 0) {
-    CRC = crc(len);
+    if (buf[0] != 0) {
+        CRC = crc(len);
 	
-    buf[len] = (char)(CRC & 0x00ff);
-    buf[len + 1] = (char)(CRC >> 8);
+        buf[len] = (char)(CRC & 0x00ff);
+        buf[len + 1] = (char)(CRC >> 8);
 
-    _DE = 1;
-    for(i=0; i<= len+2; i++)	serialTX(buf[i]);
-    _DE = 0;
-  }
+        _DE = 1;
+        for(i=0; i<= len+2; i++)	serialTX(buf[i]);
+        _DE = 0;
+    }
 }
 
 unsigned int crc(char len) {
@@ -255,3 +268,21 @@ unsigned int bytesToWord(char high, char low) {
   return (high << 8) | low;
 }
 
+
+void blink(char X) {
+    char i;
+
+    _DE = 0;
+    milliStart();
+    while (milli < 250);
+
+    for (i = 0; i < X; i++) {
+        _DE = 1;
+        milliStart();
+        while (milli < 250);
+        _DE = 0;
+        milliStart();
+        while (milli < 250);
+    }
+
+}
