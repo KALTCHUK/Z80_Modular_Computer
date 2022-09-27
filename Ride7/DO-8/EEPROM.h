@@ -2,8 +2,8 @@
  EEPROM.H - Header file for I2C EEPROM read/write - Specifically for use with Modbus.
 
  Functions:
-		unsigned int EEPROMread(unsigned int address) - Read 1 register (2 consecutive memory positions).
-		void EEPROMwrite(unsigned int address, unsigned int word) - Write 1 register (2 consecutive memory positions).
+		char EEPROMread(unsigned int address) - Read 1 byte.
+		void EEPROMwrite(unsigned int address, char word) - Write 1 byte.
 
  Primitives:
  		void I2C_start(void)
@@ -18,13 +18,13 @@
 */
 
 // Definitions
-#define _SCL						INT1	// SCL pin (P3.3)
-#define _SDA						INT0	// SDA pin (P3.2)
+#define _SCL					INT1	// SCL pin (P3.3)
+#define _SDA					INT0	// SDA pin (P3.2)
 
-#define ACK							1
-#define NAK							0
-#define slaveWrite					0xA0	// 24C64 address with write bit
-#define slaveRead					0xA1	// 24C64 address with read bit
+#define ACK						1
+#define NAK						0
+#define slaveWrite              0xa0
+#define slaveRead               0xa1
 
 #define SDA_HI					_SDA = 1
 #define SDA_LO					_SDA = 0
@@ -37,9 +37,9 @@ void I2C_start(void);
 void I2C_stop(void);
 char I2C_write(char byte);
 char I2C_read(char condition);
+
 unsigned int EEPROMread(unsigned int address);
 void EEPROMwrite(unsigned int address, unsigned int word);
-void EEPROMcommon(unsigned int address);
 
 /*------------------------------------------------
 I2C_delay Function
@@ -48,7 +48,7 @@ Propagation delay
 void I2C_delay(void) {
 /*	int	i;
 	
-	for(i=0; i<2; i++) {} */
+	for(i=0; i<2; i++);*/
 }
 
 /*------------------------------------------------
@@ -118,7 +118,7 @@ char I2C_read(char condition) {
 	I2C_delay();
 	SCL_HI;
 	I2C_delay();
-	while(_SCL == 0) {}		// clock stretching
+	while(_SCL == 0);		// clock stretching
 	SCL_LO;
 	I2C_delay();
     return byte;
@@ -126,19 +126,20 @@ char I2C_read(char condition) {
 
 /*------------------------------------------------
 EEPROMread Function
-Read 2 bytes, MSB first.
 ------------------------------------------------*/
 unsigned int EEPROMread(unsigned int address) {
 	unsigned int word;
 
     address *= 2;
-	EEPROMcommon(address);
+	I2C_start();
+	I2C_write(slaveWrite);
+	I2C_write((char)(address>>8));      // Address HI
+	I2C_write((char)address);           // Address LO
 	I2C_stop();
-
+	I2C_delay();
 	I2C_start();
 	I2C_write(slaveRead);
-	word = I2C_read(NAK);
-	word = (word<<8) | I2C_read(ACK);
+	word = (I2C_read(ACK)<<8) | I2C_read(NAK);
 	I2C_stop();
 	
 	return word;
@@ -146,22 +147,15 @@ unsigned int EEPROMread(unsigned int address) {
 
 /*------------------------------------------------
 EEPROMwrite Function
-Write 2 bytes, MSB first.
 ------------------------------------------------*/
 void EEPROMwrite(unsigned int address, unsigned int word) {
     address *= 2;
-	EEPROMcommon(address);
-	I2C_write((char)(word>>8));
-	I2C_write((char)(word & 0x00ff));
+	I2C_start();
+	I2C_write(slaveWrite);
+	I2C_write((char)(address>>8));      // Address HI
+	I2C_write((char)address);           // Address LO
+	I2C_write((char)(word>>8));         // Word HI
+	I2C_write((char)word);              // Word LO
 	I2C_stop();
 }
 
-/*------------------------------------------------
-EEPROMcommon Function
-------------------------------------------------*/
-void EEPROMcommon(unsigned int address) {
-	I2C_start();
-	I2C_write(slaveWrite);
-	I2C_write((char)(address>>8));
-	I2C_write((char)address);
-}

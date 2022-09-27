@@ -22,6 +22,7 @@ INTER-MODULE CROSS-REFERENCE LISTING
           DIVL?C_1  . . . . . CODE    [LONG_UNSIGNED_DIV]:  LONG_UNSIGNED_DIV_SPEED_OPTIMIZED
           DIVL?C_1_SP . . . . CODE    [LONG_UNSIGNED_DIV_SPEED_OPTIMIZED]:  LONG_SIGNED_DIV_SPEED_OPTIMIZED
           DIV_2 . . . . . . . CODE    [DIVS]: 
+          fakeP1  . . . . . . DATA    [DO-8]: 
           frameTimeout  . . . DATA    [DO-8]: 
           GESI?C  . . . . . . CODE    [GESI]:  LONG_UNSIGNED_DIV, LONG_SIGNED_DIV_SPEED_OPTIMIZED
           HPD_ADDR  . . . . . DATA    [HPD]:  C3S
@@ -48,7 +49,6 @@ INTER-MODULE CROSS-REFERENCE LISTING
           _coilWrite  . . . . CODE    [DO-8]:  DO-8
           _crc  . . . . . . . CODE    [DO-8]:  DO-8
           _div8RndUp  . . . . CODE    [DO-8]:  DO-8
-          _EEPROMcommon . . . CODE    [DO-8]:  DO-8
           _EEPROMread . . . . CODE    [DO-8]: 
           _EEPROMwrite  . . . CODE    [DO-8]: 
           _holdingRegisterWritCODE    [DO-8]:  DO-8

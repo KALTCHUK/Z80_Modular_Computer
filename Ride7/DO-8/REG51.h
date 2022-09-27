@@ -31,7 +31,6 @@ at 0xB8 sfr IP   ;
 at 0x98 sfr SCON ;
 at 0x99 sfr SBUF ;
 
-
 /*  BIT Register  */
 /*  PSW   */
 at 0xD7 sbit CY   ;

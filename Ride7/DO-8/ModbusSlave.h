@@ -32,6 +32,8 @@ unsigned int frameTimeout;
 unsigned int milli;
 unsigned int id;
 
+char fakeP1=0;
+
 // Function Prototyping
 void milliStart(void);
 void modbusBegin(unsigned int baud);
@@ -113,7 +115,7 @@ void modbusPoll() {
             case 1: /* Read Coils */
                 startAddress = bytesToWord(buf[2], buf[3]);
                 quantity = bytesToWord(buf[4], buf[5]);
-                if (quantity == 0 || quantity > ((MAXBUF - 6) * 8))   oops(3);
+                if (quantity == 0 || quantity > 8)                    oops(3);
                 else if ((startAddress + quantity) > numCoils)        oops(2);
                 else {
                     for (j = 0; j < quantity; j++) {
@@ -122,7 +124,7 @@ void modbusPoll() {
                             oops(4);
                             return;
                         }
-                        if (value == 1)	buf[3 + (j >> 3)] |= 1<<(j & 7);
+                        if (value == 1)     buf[3 + (j >> 3)] |= 1<<(j & 7);
                         else				buf[3 + (j >> 3)] &= ~(1<<(j & 7));
                     }
                     buf[2] = div8RndUp(quantity);
@@ -133,7 +135,7 @@ void modbusPoll() {
             case 3: /* Read Holding Registers */
                 startAddress = bytesToWord(buf[2], buf[3]);
                 quantity = bytesToWord(buf[4], buf[5]);
-                if (quantity == 0 || quantity > ((MAXBUF - 6) >> 1))          oops(3);
+                if (quantity == 0 || quantity > 2)                            oops(3);
                 else if ((startAddress + quantity) > numHoldingRegisters)     oops(2);
                 else {
                     for (j = 0; j < quantity; j++) {
@@ -184,7 +186,23 @@ void modbusPoll() {
                     write(6);
                 }
                 break;
-        
+
+            case 16: /* Write Multiple Holding Registers */
+                startAddress = bytesToWord(buf[2], buf[3]);
+                quantity = bytesToWord(buf[4], buf[5]);
+                if (quantity == 0 || quantity > ((MAXBUF - 10) >> 1) || buf[6] != (quantity * 2))   oops(3);
+                else if (startAddress + quantity > numHoldingRegisters)                             oops(2);
+                else {
+                    for (j = 0; j < quantity; j++) {
+                        if (!holdingRegisterWrite(startAddress + j, bytesToWord(buf[j * 2 + 7], buf[j * 2 + 8]))) {
+                        oops(4);
+                        return;
+                        }
+                    }
+                    write(6);
+                }
+                break;
+
             default:
                 oops(1);
                 break;
@@ -196,26 +214,27 @@ void modbusPoll() {
 char boolRead(unsigned int startAddress) {  // 1=ON, 0=OFF, 2=error.
     char boolStatus;
 
-    if (startAddress > 7)   return 2;
-    boolStatus = P1 & (1 << startAddress);
+    if (startAddress > (numCoils - 1))   return 2;
+    boolStatus = fakeP1 & (1 << startAddress);
     if (boolStatus != 0)    boolStatus = 1;
     return boolStatus;
 }
 
 long wordRead(unsigned int startAddress) {
-    if (startAddress < 2)   return EEPROMread(startAddress);
-    return -1;
+	if (startAddress > (numHoldingRegisters - 1))   return -1;
+    return EEPROMread(startAddress);
 }
 
 bit coilWrite(unsigned int startAddress, unsigned int value) {
-    if (startAddress > 7)   return 0;
-    if (value == 0)     P1 &= ~(1 << startAddress);
-    else                P1 |= (1 << startAddress);
+    if (startAddress > (numCoils - 1))   return 0;
+    if (value == 0)     fakeP1 &= ~(1 << startAddress);
+    else                fakeP1 |= (1 << startAddress);
+    P1 = fakeP1;
     return 1;
 }
 
 bit holdingRegisterWrite(unsigned int startAddress, unsigned int value) {
-	if (startAddress > 1)   return 0;
+	if (startAddress > (numHoldingRegisters - 1))   return 0;
     EEPROMwrite(startAddress, value);
     return 1;
 }
@@ -237,7 +256,7 @@ void write(char len) {
         buf[len + 1] = (char)(CRC >> 8);
 
         _DE = 1;
-        for(i=0; i<= len+2; i++)	serialTX(buf[i]);
+        for(i=0; i < len+2; i++)	serialTX(buf[i]);
         _DE = 0;
     }
 }

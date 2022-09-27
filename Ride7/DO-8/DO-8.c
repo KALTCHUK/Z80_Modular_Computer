@@ -7,16 +7,12 @@
 #include "EEPROM.h"
 #include "ModbusSlave.h"
 
-// Definitions
-#define baudEEaddr		0	// Baud rate address in EEPROM (register 1).
-#define idEEaddr		2	// ID address in EEPROM (register 2).
-
 void main() {
     blink(5);
 
 	numCoils = 8;
 	numDiscreteInputs = 0;
-	numHoldingRegisters = 2;
+	numHoldingRegisters = 4;
 
     P1 = 0;         // turn off all outputs.
 	
@@ -24,8 +20,8 @@ void main() {
 	id = 7;			// factory set modbus slave id.
 
 	if (_FS == 1) {
-		baud = EEPROMread(baudEEaddr);
-		id =  EEPROMread(idEEaddr);
+		baud = EEPROMread(0);
+		id =  EEPROMread(1);
         blink(2);
 	}
 	serialInit(baud);
