@@ -1,0 +1,20 @@
+MS-DOS LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263
+
+
+INTER-MODULE CROSS-REFERENCE LISTING
+------------------------------------
+
+          NAME. . . . . . . . USAGE   MODULE NAMES
+          ----------------------------------------
+          ?C_START3 . . . . . CODE    [C3S]:  RS485_ECHO
+          baud  . . . . . . . DATA    [RS485_ECHO]: 
+          HPD_ADDR  . . . . . DATA    [HPD]:  C3S
+          IDATALEN  . . . . . NUMBER  [_C_IDATALEN]:  C3S
+          main  . . . . . . . CODE    [RS485_ECHO]:  C3S
+          serialRX  . . . . . CODE    [RS485_ECHO]: 
+          TIM1_INIT . . . . . NUMBER  [** UNRESOLVED **]:
+          XSTACKLEN . . . . . NUMBER  [** UNRESOLVED **]:
+          _INITP2?  . . . . . NUMBER  [_C_IDATALEN]:  C3S
+          _serialInit . . . . CODE    [RS485_ECHO]: 
+          _serialTX . . . . . CODE    [RS485_ECHO]: 
+          _STACK  . . . . . . IDATA   [RS485_ECHO]:  C3S

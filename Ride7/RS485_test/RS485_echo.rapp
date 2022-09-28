@@ -1,0 +1,23 @@
+
+<ApplicationBuild Header="RS485_echo" Extern=".\RS485_echo.rapp" Path=".\RS485_echo.rapp" OutputFile=".\RS485_echo.aof" sate="32" >
+	<NodeH Path=".\Serial485.h" Header="Serial485.h" Marker="-1" OutputFile="" />
+	<NodeC Path=".\RS485_echo.c" Header="RS485_echo.c" Marker="-1" OutputFile=".\RS485_echo.obj" sate="0" />
+	<NodeH Path=".\REG51.h" Header="REG51.h" Marker="-1" OutputFile="" sate="0" />
+	<Options>
+		<Config Header="Standard" >
+			<Set Header="ApplicationBuild" >
+				<Section Header="General" >
+					<Property Header="TargetFamily" Value="80C51" />
+				</Section>
+			</Set>
+			<Set Header="Target" >
+				<Section Header="Processor80C51" >
+					<Property Header="Processor" Value="AT89S4051" Removable="1" />
+				</Section>
+				<Section Header="ToolSet80C51" >
+					<Property Header="BuildToolSet80C51" Value="80C51\RaisonanceTools.config" Removable="1" />
+				</Section>
+			</Set>
+		</Config>
+	</Options>
+</ApplicationBuild>
