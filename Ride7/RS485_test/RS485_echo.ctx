@@ -1,25 +1,5 @@
 
 <Debug>
-	<DO-8>
-		<CodeView TopRow="2379" Focus="2386" >
-			<DisplayOptions ShowSourceLines="1" CodeCoverageHex="0" ColoredJmp="0" />
-			<CodeReport>
-				<0>112</0>
-				<1>146</1>
-				<2>79</2>
-				<3>439</3>
-				<4>80</4>
-				<5>167</5>
-														
-			</CodeReport>
-										
-		</CodeView>
-		<Peripheral PaneID="1920233566" />
-		<Peripheral PaneID="1920233564" />
-		<Peripheral PaneID="1920233567" />
-		<SfrView Focus="2386" TopRow="128" NbPerLine="8" PaneID="84875095" />
-						
-	</DO-8>
 	<Flags>
 		<Report>
 			<Def Header="FlagReport" NbCol="9" >
@@ -41,13 +21,7 @@
 		</Report>
 			
 	</Flags>
-	<Views>
-		<View File=".\Serial.h" Line="20" Index="0" />
-		<View File=".\EEPROM.h" Line="120" Index="1" />
-		<View File=".\REG51.h" Line="34" Index="2" />
-		<View File=".\ModbusSlave.h" Line="4" Index="3" focus="1" />
-		<View File=".\DO-8.c" Line="34" Index="4" />
-	</Views>
+	<Views/>
 	<BookMarks>
 		<BookMark File="" Line="0" />
 		<BookMark File="" Line="0" />

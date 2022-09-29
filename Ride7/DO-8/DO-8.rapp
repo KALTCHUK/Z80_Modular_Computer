@@ -1,10 +1,10 @@
 
 <ApplicationBuild Header="DO-8" Extern=".\DO-8.rapp" Path=".\DO-8.rapp" OutputFile=".\DO-8.aof" sate="96" >
 	<NodeC Path=".\DO-8.c" Header="DO-8.c" Marker="-1" OutputFile=".\DO-8.obj" sate="0" />
-	<NodeH Path=".\Serial.h" Header="Serial.h" Marker="-1" OutputFile="" sate="0" />
+	<NodeH Path=".\Serial.h" Header="Serial.h" Marker="-1" OutputFile="" sate="2" />
 	<NodeH Path=".\REG51.h" Header="REG51.h" Marker="-1" OutputFile="" sate="0" />
 	<NodeH Path=".\ModbusSlave.h" Header="ModbusSlave.h" Marker="-1" OutputFile="" sate="0" />
-	<NodeH Path=".\EEPROM.h" Header="EEPROM.h" Marker="-1" OutputFile="" sate="2" />
+	<NodeH Path=".\EEPROM.h" Header="EEPROM.h" Marker="-1" OutputFile="" sate="0" />
 	<Options>
 		<Config Header="Standard" >
 			<Set Header="ApplicationBuild" >

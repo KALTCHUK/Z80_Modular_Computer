@@ -1,0 +1,4 @@
+
+<Project Header="Project 'RS485_echo'" Path=".\RS485_echo.rprj" Project="Yes" OutputFile="" sate="96" ActiveApp="RS485_echo" >
+	<ApplicationBuild Header="RS485_echo" Extern=".\RS485_echo.rapp" Path=".\RS485_echo.rapp" OutputFile=".\RS485_echo.aof" sate="32" />
+</Project>
