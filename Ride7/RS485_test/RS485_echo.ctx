@@ -21,7 +21,10 @@
 		</Report>
 			
 	</Flags>
-	<Views/>
+	<Views>
+		<View File=".\RS485_echo.c" Line="14" Index="0" focus="1" />
+		<View File=".\Serial485.h" Line="5" Index="1" />
+	</Views>
 	<BookMarks>
 		<BookMark File="" Line="0" />
 		<BookMark File="" Line="0" />
