@@ -14,8 +14,6 @@ void main() {
 	numDiscreteInputs = 0;
 	numHoldingRegisters = 4;
 
-    P1 = 0;         // turn off all outputs.
-	
 	baud = 9600;	// factory set baud rate.
 	id = 7;			// factory set modbus slave id.
 

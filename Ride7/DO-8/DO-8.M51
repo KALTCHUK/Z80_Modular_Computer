@@ -1,4 +1,4 @@
-LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263                                 09/27/22  11:18:42
+LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263                                 09/30/22  16:20:21
 MS-DOS LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263,  INVOKED BY:
 C:\Users\kaltc\Documents\Raisonance\Ride\Bin\LX51.EXE C:\Users\kaltc\Documents\GitHub\Z80_Modular&
 _Computer\Ride7\DO-8\DO-8.obj TO(C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Ride7\DO-8\&
@@ -70,15 +70,15 @@ LINK MAP OF MODULE: C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\D
     CODE     0401H      0456H     UNIT           ?PR?modbusPoll?DO_8
     CODE     0857H      0031H     UNIT           ?PR?_boolRead?DO_8
     CODE     0888H      002DH     UNIT           ?PR?_wordRead?DO_8
-    CODE     08B5H      003FH     UNIT           ?PR?_coilWrite?DO_8
-    CODE     08F4H      0030H     UNIT           ?PR?_holdingRegisterWrite?DO_8
-    CODE     0924H      000AH     UNIT           ?PR?_oops?DO_8
-    CODE     092EH      004AH     UNIT           ?PR?_write?DO_8
-    CODE     0978H      0043H     UNIT           ?PR?_crc?DO_8
-    CODE     09BBH      0013H     UNIT           ?PR?_div8RndUp?DO_8
-    CODE     09CEH      0011H     UNIT           ?PR?_bytesToWord?DO_8
-    CODE     09DFH      003FH     UNIT           ?PR?_blink?DO_8
-    CODE     0A1EH      004AH     UNIT           ?PR?main?DO_8
+    CODE     08B5H      0041H     UNIT           ?PR?_coilWrite?DO_8
+    CODE     08F6H      0030H     UNIT           ?PR?_holdingRegisterWrite?DO_8
+    CODE     0926H      000AH     UNIT           ?PR?_oops?DO_8
+    CODE     0930H      004AH     UNIT           ?PR?_write?DO_8
+    CODE     097AH      0043H     UNIT           ?PR?_crc?DO_8
+    CODE     09BDH      0013H     UNIT           ?PR?_div8RndUp?DO_8
+    CODE     09D0H      0011H     UNIT           ?PR?_bytesToWord?DO_8
+    CODE     09E1H      003FH     UNIT           ?PR?_blink?DO_8
+    CODE     0A20H      0048H     UNIT           ?PR?main?DO_8
 
 EXECUTABLE SUMMARY:
 -------------------
@@ -187,22 +187,22 @@ SYMBOL TABLE FOR C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\DO-8
 
 	-------            MODULE             DO-8
 	C:0000H            SYMBOL             _ICE_DUMMY_
-	C:0A1EH            PUBLIC             main
+	C:0A20H            PUBLIC             main
 	C:037AH            PUBLIC             timer0_isr
-	C:09DFH            PUBLIC             _blink
-	C:09CEH            PUBLIC             _bytesToWord
-	C:09BBH            PUBLIC             _div8RndUp
-	C:0978H            PUBLIC             _crc
-	C:092EH            PUBLIC             _write
-	C:0924H            PUBLIC             _oops
-	C:08F4H            PUBLIC             _holdingRegisterWrite
+	C:09E1H            PUBLIC             _blink
+	C:09D0H            PUBLIC             _bytesToWord
+	C:09BDH            PUBLIC             _div8RndUp
+	C:097AH            PUBLIC             _crc
+	C:0930H            PUBLIC             _write
+	C:0926H            PUBLIC             _oops
+	C:08F6H            PUBLIC             _holdingRegisterWrite
 	C:08B5H            PUBLIC             _coilWrite
 	C:0888H            PUBLIC             _wordRead
 	C:0857H            PUBLIC             _boolRead
 	C:0401H            PUBLIC             modbusPoll
 	C:03A8H            PUBLIC             _modbusBegin
 	C:0391H            PUBLIC             milliStart
-	D:0046H            PUBLIC             fakeP1
+	D:0046H            PUBLIC             outputState
 	D:0044H            PUBLIC             id
 	D:0042H            PUBLIC             milli
 	D:0040H            PUBLIC             frameTimeout
@@ -566,108 +566,107 @@ SYMBOL TABLE FOR C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\DO-8
 	C:08CEH            LINE#              230
 	C:08E2H            LINE#              231
 	C:08EFH            LINE#              232
-	C:08F2H            LINE#              233
-	C:08F3H            LINE#              234
-	C:08F3H            LINE#              234
+	C:08F4H            LINE#              233
+	C:08F5H            LINE#              234
+	C:08F5H            LINE#              234
 	-------            ENDPROC            _coilWrite
 	-------            PROC               _holdingRegisterWrite
 	D:0010H            SYMBOL             startAddress
 	D:0012H            SYMBOL             value
-	C:08F4H            LINE#              236
-	C:08FCH            LINE#              237
-	C:0916H            LINE#              240
-	C:0917H            LINE#              238
-	C:0922H            LINE#              239
-	C:0923H            LINE#              240
-	C:0923H            LINE#              240
+	C:08F6H            LINE#              236
+	C:08FEH            LINE#              237
+	C:0918H            LINE#              240
+	C:0919H            LINE#              238
+	C:0924H            LINE#              239
+	C:0925H            LINE#              240
+	C:0925H            LINE#              240
 	-------            ENDPROC            _holdingRegisterWrite
 	-------            PROC               _oops
-	C:0924H            LINE#              242
-	C:0924H            LINE#              243
-	C:0927H            LINE#              244
-	C:0929H            LINE#              245
-	C:092BH            LINE#              246
+	C:0926H            LINE#              242
+	C:0926H            LINE#              243
+	C:0929H            LINE#              244
+	C:092BH            LINE#              245
+	C:092DH            LINE#              246
 	-------            ENDPROC            _oops
 	-------            PROC               _write
 	D:0010H            SYMBOL             len
 	D:0013H            SYMBOL             i
 	D:0011H            SYMBOL             CRC
-	C:092EH            LINE#              248
-	C:0930H            LINE#              252
-	C:0934H            LINE#              253
-	C:0937H            LINE#              255
-	C:0939H            LINE#              253
-	C:093DH            LINE#              255
-	C:0944H            LINE#              256
-	C:094BH            LINE#              258
-	C:094DH            LINE#              259
-	C:0975H            LINE#              260
-	C:0977H            LINE#              262
-	C:0977H            LINE#              262
+	C:0930H            LINE#              248
+	C:0932H            LINE#              252
+	C:0936H            LINE#              253
+	C:0939H            LINE#              255
+	C:093BH            LINE#              253
+	C:093FH            LINE#              255
+	C:0946H            LINE#              256
+	C:094DH            LINE#              258
+	C:094FH            LINE#              259
+	C:0977H            LINE#              260
+	C:0979H            LINE#              262
+	C:0979H            LINE#              262
 	-------            ENDPROC            _write
 	-------            PROC               _crc
 	B:0000H            SYMBOL             lsb
 	D:0014H            SYMBOL             j
-	C:0978H            LINE#              264
-	C:0978H            LINE#              267
-	C:097CH            LINE#              269
-	C:0984H            LINE#              270
-	C:098CH            LINE#              271
-	C:098FH            LINE#              272
-	C:0996H            LINE#              273
-	C:09A1H            LINE#              274
-	C:09A4H            LINE#              275
-	C:09ACH            LINE#              271
-	C:09B3H            LINE#              269
-	C:09B6H            LINE#              279
-	C:09BAH            LINE#              280
-	C:09BAH            LINE#              280
+	C:097AH            LINE#              264
+	C:097AH            LINE#              267
+	C:097EH            LINE#              269
+	C:0986H            LINE#              270
+	C:098EH            LINE#              271
+	C:0991H            LINE#              272
+	C:0998H            LINE#              273
+	C:09A3H            LINE#              274
+	C:09A6H            LINE#              275
+	C:09AEH            LINE#              271
+	C:09B5H            LINE#              269
+	C:09B8H            LINE#              279
+	C:09BCH            LINE#              280
+	C:09BCH            LINE#              280
 	-------            ENDPROC            _crc
 	-------            PROC               _div8RndUp
-	C:09BBH            LINE#              282
-	C:09BBH            LINE#              283
-	C:09CDH            LINE#              284
-	C:09CDH            LINE#              284
+	C:09BDH            LINE#              282
+	C:09BDH            LINE#              283
+	C:09CFH            LINE#              284
+	C:09CFH            LINE#              284
 	-------            ENDPROC            _div8RndUp
 	-------            PROC               _bytesToWord
-	C:09CEH            LINE#              286
-	C:09CEH            LINE#              287
-	C:09DEH            LINE#              288
-	C:09DEH            LINE#              288
+	C:09D0H            LINE#              286
+	C:09D0H            LINE#              287
+	C:09E0H            LINE#              288
+	C:09E0H            LINE#              288
 	-------            ENDPROC            _bytesToWord
 	-------            PROC               _blink
-	C:09DFH            LINE#              291
-	C:09DFH            LINE#              294
-	C:09E1H            LINE#              295
-	C:09E4H            LINE#              296
-	C:09F0H            LINE#              298
-	C:09F8H            LINE#              299
-	C:09FAH            LINE#              300
-	C:09FDH            LINE#              301
-	C:0A09H            LINE#              302
-	C:0A0BH            LINE#              303
-	C:0A0EH            LINE#              304
-	C:0A1AH            LINE#              298
-	C:0A1DH            LINE#              8
-	C:0A1DH            LINE#              8
+	C:09E1H            LINE#              291
+	C:09E1H            LINE#              294
+	C:09E3H            LINE#              295
+	C:09E6H            LINE#              296
+	C:09F2H            LINE#              298
+	C:09FAH            LINE#              299
+	C:09FCH            LINE#              300
+	C:09FFH            LINE#              301
+	C:0A0BH            LINE#              302
+	C:0A0DH            LINE#              303
+	C:0A10H            LINE#              304
+	C:0A1CH            LINE#              298
+	C:0A1FH            LINE#              8
+	C:0A1FH            LINE#              8
 	-------            ENDPROC            _blink
 	-------            PROC               main
-	C:0A1EH            LINE#              10
-	C:0A1EH            LINE#              11
-	C:0A23H            LINE#              13
-	C:0A26H            LINE#              14
-	C:0A29H            LINE#              15
-	C:0A2CH            LINE#              17
-	C:0A2EH            LINE#              19
-	C:0A34H            LINE#              20
-	C:0A39H            LINE#              22
-	C:0A3CH            LINE#              23
-	C:0A45H            LINE#              24
-	C:0A50H            LINE#              25
-	C:0A55H            LINE#              27
-	C:0A5CH            LINE#              28
-	C:0A63H            LINE#              31
-	C:0A66H            LINE#              33
+	C:0A20H            LINE#              10
+	C:0A20H            LINE#              11
+	C:0A25H            LINE#              13
+	C:0A28H            LINE#              14
+	C:0A2BH            LINE#              15
+	C:0A2EH            LINE#              17
+	C:0A34H            LINE#              18
+	C:0A39H            LINE#              20
+	C:0A3CH            LINE#              21
+	C:0A45H            LINE#              22
+	C:0A50H            LINE#              23
+	C:0A55H            LINE#              25
+	C:0A5CH            LINE#              26
+	C:0A63H            LINE#              29
+	C:0A66H            LINE#              31
 	-------            ENDPROC            main
 	-------            ENDMOD             DO-8
 	C:01F7H            PUBLIC             ?C_START3

@@ -32,7 +32,7 @@ unsigned int frameTimeout;
 unsigned int milli;
 unsigned int id;
 
-char fakeP1=0;
+char outputState=0;         // outputState is the inverse of P1
 
 // Function Prototyping
 void milliStart(void);
@@ -215,7 +215,7 @@ char boolRead(unsigned int startAddress) {  // 1=ON, 0=OFF, 2=error.
     char boolStatus;
 
     if (startAddress > (numCoils - 1))   return 2;
-    boolStatus = fakeP1 & (1 << startAddress);
+    boolStatus = outputState & (1 << startAddress);
     if (boolStatus != 0)    boolStatus = 1;
     return boolStatus;
 }
@@ -227,9 +227,9 @@ long wordRead(unsigned int startAddress) {
 
 bit coilWrite(unsigned int startAddress, unsigned int value) {
     if (startAddress > (numCoils - 1))   return 0;
-    if (value == 0)     fakeP1 &= ~(1 << startAddress);
-    else                fakeP1 |= (1 << startAddress);
-    P1 = fakeP1;
+    if (value == 0)     outputState &= ~(1 << startAddress);
+    else                outputState |= (1 << startAddress);
+    P1 = ~outputState;
     return 1;
 }
 
