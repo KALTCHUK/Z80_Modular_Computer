@@ -43,7 +43,6 @@ INTER-MODULE CROSS-REFERENCE LISTING
           TIM1_INIT . . . . . NUMBER  [** UNRESOLVED **]:
           timer0_isr  . . . . CODE    [DO-8]: 
           XSTACKLEN . . . . . NUMBER  [** UNRESOLVED **]:
-          _blink  . . . . . . CODE    [DO-8]: 
           _boolRead . . . . . CODE    [DO-8]:  DO-8
           _bytesToWord  . . . CODE    [DO-8]:  DO-8
           _coilWrite  . . . . CODE    [DO-8]:  DO-8

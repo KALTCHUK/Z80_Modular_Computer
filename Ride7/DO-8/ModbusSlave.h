@@ -47,7 +47,6 @@ void write(char len);
 unsigned int crc(char len);
 unsigned int div8RndUp(unsigned int value);
 unsigned int bytesToWord(char high, char low);
-void blink(char X);
 
 void timer0_isr() interrupt 1
 {
@@ -108,9 +107,6 @@ void modbusPoll() {
         if (RI == 0 && (buf[0] == id || buf[0] == 0) && i < MAXBUF) {
             if (crc(i - 2) != bytesToWord(buf[i - 1], buf[i - 2])) return;
         
-            //for (j = 0; j < i; j++)    serialTX(buf[j]);
-            //return;
-    
             switch (buf[1]) {
             case 1: /* Read Coils */
                 startAddress = bytesToWord(buf[2], buf[3]);
@@ -287,21 +283,3 @@ unsigned int bytesToWord(char high, char low) {
   return (high << 8) | low;
 }
 
-
-void blink(char X) {
-    char i;
-
-    _DE = 0;
-    milliStart();
-    while (milli < 250);
-
-    for (i = 0; i < X; i++) {
-        _DE = 1;
-        milliStart();
-        while (milli < 250);
-        _DE = 0;
-        milliStart();
-        while (milli < 250);
-    }
-
-}
