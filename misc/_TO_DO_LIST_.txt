@@ -1,9 +1,16 @@
-- AT89C4051 tests:
-	- Convert Arduino Modbus RTU Slave to 8051 architecture.
+- DO-08:
+	- design PCB (waiting for components)
+	- assemble and test
 
+- DI-16:
+	- design circuit.
+	- write firmware.
+	- build and test prototype
+	- design PCB
+	- assemble and test
 ------------------------------------------------------------------
 Some ideas for new cards:
-- DIO - digital I/O for automation (8255)
-- analog I/O for automation (4-20mA, RTD, TC?)
+
+- PWM, stepper motor, fast counter, analog I/O (4-20mA, RTD, TC?)
 - audio card for .WAV play
 - VGA and PS2 keyboard (FPGA, STM32?)
