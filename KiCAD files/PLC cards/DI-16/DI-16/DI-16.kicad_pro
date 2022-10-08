@@ -239,7 +239,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "DO-08.kicad_pro",
+    "filename": "DI-16.kicad_pro",
     "version": 1
   },
   "net_settings": {
@@ -318,12 +318,16 @@
   },
   "sheets": [
     [
-      "e63e39d7-6ac0-4ffd-8aa3-1841a4541b55",
+      "f4b1cc82-032f-46e4-b914-51c04d09819d",
       ""
     ],
     [
-      "63220742-c59d-4aab-99e4-fb52a628905e",
-      "Relays"
+      "7756fa9b-0668-423f-8c55-701a1a1b7d1b",
+      "Optocouplers low half"
+    ],
+    [
+      "c516f7ec-34d5-48ab-b054-a8258417558c",
+      "Optocouplers upper half"
     ]
   ],
   "text_variables": {}
