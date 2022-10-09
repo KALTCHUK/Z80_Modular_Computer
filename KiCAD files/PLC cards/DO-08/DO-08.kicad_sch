@@ -1619,7 +1619,7 @@
     (property "Reference" "RN1" (id 0) (at 153.67 45.7199 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "" (id 1) (at 153.67 48.2599 0)
+    (property "Value" "10k" (id 1) (at 153.67 48.2599 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "Resistor_THT:R_Array_SIP5" (id 2) (at 155.575 46.736 90)
@@ -2066,10 +2066,10 @@
       (reference "RN1") (unit 1) (value "10k") (footprint "Resistor_THT:R_Array_SIP5")
     )
     (path "/63220742-c59d-4aab-99e4-fb52a628905e/4117bd78-9085-4a22-9861-944b06bea1fa"
-      (reference "RN2") (unit 1) (value "220") (footprint "Resistor_THT:R_Array_SIP5")
+      (reference "RN2") (unit 1) (value "330") (footprint "Resistor_THT:R_Array_SIP5")
     )
     (path "/63220742-c59d-4aab-99e4-fb52a628905e/2896ffab-efaa-4523-84f4-c2df3ed62417"
-      (reference "RN3") (unit 1) (value "220") (footprint "Resistor_THT:R_Array_SIP5")
+      (reference "RN3") (unit 1) (value "330") (footprint "Resistor_THT:R_Array_SIP5")
     )
     (path "/ab8b0540-9c9f-4195-88f5-7bed0b0a8ed6"
       (reference "U1") (unit 1) (value "AT89C4051-24P") (footprint "Package_DIP:DIP-20_W7.62mm")

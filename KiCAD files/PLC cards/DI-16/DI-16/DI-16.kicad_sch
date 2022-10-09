@@ -1819,7 +1819,7 @@
     (property "Reference" "RN1" (id 0) (at 106.68 31.7499 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "R_Network04" (id 1) (at 106.68 34.2899 0)
+    (property "Value" "" (id 1) (at 106.68 34.2899 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "Resistor_THT:R_Array_SIP5" (id 2) (at 108.585 32.766 90)
@@ -2017,7 +2017,7 @@
     (property "Reference" "#FLG01" (id 0) (at 238.76 132.715 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (property "Value" "" (id 1) (at 238.76 129.54 0))
+    (property "Value" "PWR_FLAG" (id 1) (at 238.76 129.54 0))
     (property "Footprint" "" (id 2) (at 238.76 134.62 0)
       (effects (font (size 1.27 1.27)) hide)
     )
@@ -2657,55 +2657,55 @@
       (reference "R1") (unit 1) (value "R_Small") (footprint "")
     )
     (path "/7756fa9b-0668-423f-8c55-701a1a1b7d1b/6d905af8-fdc3-480f-b23d-c850c4760595"
-      (reference "R2") (unit 1) (value "R_Small") (footprint "")
+      (reference "R2") (unit 1) (value "3k") (footprint "")
     )
     (path "/7756fa9b-0668-423f-8c55-701a1a1b7d1b/afd5b057-559a-4a5f-b3f1-1584a8e14682"
-      (reference "R3") (unit 1) (value "R_Small") (footprint "")
+      (reference "R3") (unit 1) (value "3k") (footprint "")
     )
     (path "/7756fa9b-0668-423f-8c55-701a1a1b7d1b/ad297e62-78ee-4605-860b-e7900137ef2a"
-      (reference "R4") (unit 1) (value "R_Small") (footprint "")
+      (reference "R4") (unit 1) (value "3k") (footprint "")
     )
     (path "/7756fa9b-0668-423f-8c55-701a1a1b7d1b/500b8de0-a5e3-4d03-a680-9979014a4d42"
-      (reference "R5") (unit 1) (value "R_Small") (footprint "")
+      (reference "R5") (unit 1) (value "3k") (footprint "")
     )
     (path "/7756fa9b-0668-423f-8c55-701a1a1b7d1b/c100734c-6507-4449-b15b-7fc2d8cfd81f"
-      (reference "R6") (unit 1) (value "R_Small") (footprint "")
+      (reference "R6") (unit 1) (value "3k") (footprint "")
     )
     (path "/7756fa9b-0668-423f-8c55-701a1a1b7d1b/f1ce561f-1489-4028-90fc-b22a58ee5112"
-      (reference "R7") (unit 1) (value "R_Small") (footprint "")
+      (reference "R7") (unit 1) (value "3k") (footprint "")
     )
     (path "/7756fa9b-0668-423f-8c55-701a1a1b7d1b/355460e6-380a-4454-93f2-9b4830d944ec"
-      (reference "R8") (unit 1) (value "R_Small") (footprint "")
+      (reference "R8") (unit 1) (value "3k") (footprint "")
     )
     (path "/7756fa9b-0668-423f-8c55-701a1a1b7d1b/8a45ff39-b1ad-4bf3-ad61-b9e718d2317e"
-      (reference "R9") (unit 1) (value "R_Small") (footprint "")
+      (reference "R9") (unit 1) (value "3k") (footprint "")
     )
     (path "/c516f7ec-34d5-48ab-b054-a8258417558c/07cc1e71-cc98-4ab2-b0ab-f3e09bbf80a0"
-      (reference "R10") (unit 1) (value "R_Small") (footprint "")
+      (reference "R10") (unit 1) (value "3k") (footprint "")
     )
     (path "/c516f7ec-34d5-48ab-b054-a8258417558c/6edb5287-a8e6-4f0c-8133-a85add57394b"
-      (reference "R11") (unit 1) (value "R_Small") (footprint "")
+      (reference "R11") (unit 1) (value "3k") (footprint "")
     )
     (path "/c516f7ec-34d5-48ab-b054-a8258417558c/632eb4ea-ff2b-4b50-9afa-4d5754b2edf3"
-      (reference "R12") (unit 1) (value "R_Small") (footprint "")
+      (reference "R12") (unit 1) (value "3k") (footprint "")
     )
     (path "/c516f7ec-34d5-48ab-b054-a8258417558c/d6334727-0221-41d3-8be7-43a77f1b8196"
-      (reference "R13") (unit 1) (value "R_Small") (footprint "")
+      (reference "R13") (unit 1) (value "3k") (footprint "")
     )
     (path "/c516f7ec-34d5-48ab-b054-a8258417558c/520a51ec-66f0-4528-898c-4f9943769291"
-      (reference "R14") (unit 1) (value "R_Small") (footprint "")
+      (reference "R14") (unit 1) (value "3k") (footprint "")
     )
     (path "/c516f7ec-34d5-48ab-b054-a8258417558c/c39a4188-7c20-47ea-8ea2-a33de9fa821c"
-      (reference "R15") (unit 1) (value "R_Small") (footprint "")
+      (reference "R15") (unit 1) (value "3k") (footprint "")
     )
     (path "/c516f7ec-34d5-48ab-b054-a8258417558c/07137f10-3978-4e42-940d-5ae2c1ff290f"
-      (reference "R16") (unit 1) (value "R_Small") (footprint "")
+      (reference "R16") (unit 1) (value "3k") (footprint "")
     )
     (path "/c516f7ec-34d5-48ab-b054-a8258417558c/2db81ea2-6ccf-49bc-8af6-82b73db1d20d"
-      (reference "R17") (unit 1) (value "R_Small") (footprint "")
+      (reference "R17") (unit 1) (value "3k") (footprint "")
     )
     (path "/46a4ea48-c711-4ba8-bcde-157460e3d207"
-      (reference "RN1") (unit 1) (value "R_Network04") (footprint "Resistor_THT:R_Array_SIP5")
+      (reference "RN1") (unit 1) (value "10k") (footprint "Resistor_THT:R_Array_SIP5")
     )
     (path "/7756fa9b-0668-423f-8c55-701a1a1b7d1b/be6350f0-a816-4d57-b657-afba9d1682e8"
       (reference "RN2") (unit 1) (value "330") (footprint "Resistor_THT:R_Array_SIP5")
