@@ -1569,8 +1569,8 @@
   (symbol (lib_id "Connector_Generic:Conn_01x02") (at 97.282 155.194 0) (mirror y) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid daa15e48-77cb-44c9-99cc-50bca0d156eb)
-    (property "Reference" "J1" (id 0) (at 97.282 148.844 0))
-    (property "Value" "Conn_01x02" (id 1) (at 97.282 151.384 0))
+    (property "Reference" "J1" (id 0) (at 97.282 148.59 0))
+    (property "Value" "" (id 1) (at 97.282 151.13 0))
     (property "Footprint" "" (id 2) (at 97.282 155.194 0)
       (effects (font (size 1.27 1.27)) hide)
     )
@@ -1952,7 +1952,7 @@
       (reference "D16") (unit 1) (value "1N4001") (footprint "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal")
     )
     (path "/daa15e48-77cb-44c9-99cc-50bca0d156eb"
-      (reference "J1") (unit 1) (value "Conn_01x02") (footprint "")
+      (reference "J1") (unit 1) (value "terminal") (footprint "")
     )
     (path "/76039f1a-afec-47d2-9df2-342db8f33034"
       (reference "J2") (unit 1) (value "factory setup") (footprint "")

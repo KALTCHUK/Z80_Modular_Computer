@@ -1819,7 +1819,7 @@
     (property "Reference" "RN1" (id 0) (at 106.68 31.7499 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "" (id 1) (at 106.68 34.2899 0)
+    (property "Value" "10k" (id 1) (at 106.68 34.2899 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "Resistor_THT:R_Array_SIP5" (id 2) (at 108.585 32.766 90)
@@ -1983,8 +1983,8 @@
   (symbol (lib_id "Connector_Generic:Conn_01x02") (at 50.292 141.224 0) (mirror y) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid 827067f8-941d-41b2-a241-7467adb8ddca)
-    (property "Reference" "J1" (id 0) (at 50.292 134.874 0))
-    (property "Value" "Conn_01x02" (id 1) (at 50.292 137.414 0))
+    (property "Reference" "J1" (id 0) (at 50.292 134.62 0))
+    (property "Value" "" (id 1) (at 50.292 137.16 0))
     (property "Footprint" "" (id 2) (at 50.292 141.224 0)
       (effects (font (size 1.27 1.27)) hide)
     )
@@ -2515,9 +2515,6 @@
     (path "/7756fa9b-0668-423f-8c55-701a1a1b7d1b/3040d37a-90d5-47c8-8824-c7c98e575a85"
       (reference "#PWR036") (unit 1) (value "GND") (footprint "")
     )
-    (path "/7756fa9b-0668-423f-8c55-701a1a1b7d1b/9975ff27-218d-40a0-839b-08ceb6270cd4"
-      (reference "#PWR037") (unit 1) (value "Earth_Protective") (footprint "")
-    )
     (path "/c516f7ec-34d5-48ab-b054-a8258417558c/f4f1dc14-6014-458c-aa74-cfb27d95d3b6"
       (reference "#PWR038") (unit 1) (value "+5V") (footprint "")
     )
@@ -2535,9 +2532,6 @@
     )
     (path "/c516f7ec-34d5-48ab-b054-a8258417558c/82e96b9f-41e8-468d-8198-bddfbedc937d"
       (reference "#PWR043") (unit 1) (value "GND") (footprint "")
-    )
-    (path "/c516f7ec-34d5-48ab-b054-a8258417558c/a4a76260-beaa-42d5-a380-c55c69277fe7"
-      (reference "#PWR044") (unit 1) (value "Earth_Protective") (footprint "")
     )
     (path "/c516f7ec-34d5-48ab-b054-a8258417558c/aab3ada9-e7cd-4cb0-9101-762f9c4c6d82"
       (reference "#PWR045") (unit 1) (value "+5V") (footprint "")
@@ -2557,8 +2551,14 @@
     (path "/c516f7ec-34d5-48ab-b054-a8258417558c/250cd21d-b3a3-4678-994d-f38f2a1e8e8d"
       (reference "#PWR050") (unit 1) (value "GND") (footprint "")
     )
-    (path "/c516f7ec-34d5-48ab-b054-a8258417558c/febc858c-4b6b-408d-94d2-7d45dff56bc4"
-      (reference "#PWR051") (unit 1) (value "Earth_Protective") (footprint "")
+    (path "/c516f7ec-34d5-48ab-b054-a8258417558c/1bb158ad-8432-4708-b927-e62bf2eaeced"
+      (reference "#PWR?") (unit 1) (value "Earth_Protective") (footprint "")
+    )
+    (path "/7756fa9b-0668-423f-8c55-701a1a1b7d1b/20e6d2d8-cc77-4536-8909-c0a4b5d338a2"
+      (reference "#PWR?") (unit 1) (value "Earth_Protective") (footprint "")
+    )
+    (path "/c516f7ec-34d5-48ab-b054-a8258417558c/276b2729-c8ba-48f7-be81-25833c3e1e23"
+      (reference "#PWR?") (unit 1) (value "Earth_Protective") (footprint "")
     )
     (path "/f53a99df-250f-4a1e-afbf-bad4642182eb"
       (reference "C1") (unit 1) (value "33pF") (footprint "")
@@ -2630,7 +2630,7 @@
       (reference "D16") (unit 1) (value "LED_Small") (footprint "")
     )
     (path "/827067f8-941d-41b2-a241-7467adb8ddca"
-      (reference "J1") (unit 1) (value "Conn_01x02") (footprint "")
+      (reference "J1") (unit 1) (value "terminal") (footprint "")
     )
     (path "/b6a23e91-69f5-44fe-a673-f9196ceb2100"
       (reference "J2") (unit 1) (value "factory setup") (footprint "")
@@ -2644,13 +2644,13 @@
     (path "/7756fa9b-0668-423f-8c55-701a1a1b7d1b/52ef4ad8-5610-4e34-84f0-f91a3ab88d2a"
       (reference "J5") (unit 1) (value "Conn_02x06_Odd_Even") (footprint "")
     )
-    (path "/7756fa9b-0668-423f-8c55-701a1a1b7d1b/3699b637-1b8b-487c-8c61-2299cec6c16b"
+    (path "/7756fa9b-0668-423f-8c55-701a1a1b7d1b/887ad99a-ff2c-421c-a746-b7864028919b"
       (reference "J6") (unit 1) (value "Conn_02x06_Odd_Even") (footprint "")
     )
-    (path "/c516f7ec-34d5-48ab-b054-a8258417558c/317f957b-f55a-4770-aa19-d699a1319be0"
+    (path "/c516f7ec-34d5-48ab-b054-a8258417558c/1aa267b4-7cd6-4cc6-93fd-b11ca94f57c2"
       (reference "J7") (unit 1) (value "Conn_02x06_Odd_Even") (footprint "")
     )
-    (path "/c516f7ec-34d5-48ab-b054-a8258417558c/52e7ed00-d24b-4444-a6c4-bfea26f5951f"
+    (path "/c516f7ec-34d5-48ab-b054-a8258417558c/e695e33c-9e3d-4296-8d28-9c5c56ef9e93"
       (reference "J8") (unit 1) (value "Conn_02x06_Odd_Even") (footprint "")
     )
     (path "/3b2bac1a-1ef0-450e-9597-a68fe8adac05"
