@@ -3,11 +3,17 @@
 	- assemble and test
 
 - DI-16:
-	- design circuit.
 	- write firmware.
-	- build and test prototype
+	- build and test prototype (waiting for components)
 	- design PCB
 	- assemble and test
+
+- RS485:
+	- write firmware.
+	- build and test prototype (waiting for components)
+	- design PCB
+	- assemble and test
+
 ------------------------------------------------------------------
 Some ideas for new cards:
 
