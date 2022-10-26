@@ -1,10 +1,10 @@
 /*
- * preTTY.c v1.0
+ * ModbusMaster.c v1.0
  *
- * Created: 29/08/2021 17:29:23
- * Author : kaltchuk
+ * Created: 20/10/2022 17:29:23
+ * Author : Kaltchuk
+ *
  */ 
-
 
 #define F_CPU	20000000UL
 
@@ -12,73 +12,105 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
-#define BAUD		250000
-#define MYUBRR		((F_CPU/8/BAUD)-1)
+// Define Drive enable pin
+#define DE			4						// DE pin
+#define DE_LO		(PORTC &= ~(1<<DE))		// Receive enable.
+#define DE_HI		(PORTC |= (1<<DE))		// Drive enable.
 
-#define DE			4
-#define DE_LO		(PORTC &= ~(1<<DE))
-#define DE_HI		(PORTC |= (1<<DE))
-
-#define CS			(PIND&(1<<INT0))
-#define RSM			3
+// Define chip select and release pins
+#define CS			(PIND&(1<<INT0))		// CS pin
+#define RSM			3						// RSM pin
 #define RSM_LO		(PORTC &= ~(1<<RSM))
 #define RSM_HI		(PORTC |= (1<<RSM))
 
 #define asInput		1
 #define asOutput	2
 
+// Define Operations
 #define WR_DATA		2
 #define WR_COMMAND	3
 #define RD_DATA		4
-#define RD_STATUS	5
 
-#define CR			0x0d
-#define LF			0x0a
+// Define Commands
+#define setBaudrate			1		// receive 1 byte with new baud rate (index).
+#define getBaudrate			2		// send byte with current baud rate (index).
+#define clearRXbuffer		3		// clear RX buffer. No arguments following.
+#define clearTXbuffer		4		// clear TX buffer. No arguments following.
+#define flushTXbuffer		5		// flush TX buffer. No arguments following.
+#define enableCRCappend		6		// calculate and append CRC to TX buffer before flushing TX buffer. Default. No arguments following.
+#define disableCRCappend	7		// don't do the CRC stuff. No arguments following.
+#define sizeRXbuffer		8		// send number of bytes available in RX buffer.
+#define readRXbuffer		9		// send one byte from RX buffer.
+#define writeTXbuffer		10		// receive byte and put it in TX buffer.
 
 #define MAXBUFF		256
 
-char			uBuffRX[MAXBUFF]; 					// Buffer for chars that arrived through serial port.
-int				uBuffRX_inPtr=0, uBuffRX_outPtr=0;
+char			RXbuf[MAXBUFF]; 					// Buffer for chars that arrived through serial port.
+int				RXbufInPtr=0, RXbufOutPtr=0;
+char			TXbuf[MAXBUFF]; 					// Buffer for chars to be sent through serial port.
+int				TXbufInPtr=0, TXbufOutPtr=0;
 
-unsigned int long	baud[] = {1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 57600, 125000, 250000};
+unsigned int long	baud[] = {1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 57600, 115200};
+unsigned long int	newBaud = 5;					// i.e. initial baud rate = 19200bps
 
-void setDataBus(int modus)
-{
-	if (modus == asInput)	// Write zeros to PORTs
-	{
+char			command=0;
+bool			appendCRC=1;
+
+void setDataBus(int modus) {
+	if (modus == asInput) {				// Write zeros to PORTs.
 		DDRB &= ~0x07;
 		DDRD &= ~0xf8;
 	}
-	else					// Write ones to PORTs
-	{
+	else {								// Write ones to PORTs.
 		DDRB |= 0x07;
 		DDRD |= 0xf8;
 	}
 }
 
-void xmit(char toSend)
-{
-	while ( !( UCSR0A & (1<<UDRE0)) )
-	{}
-	DE_HI;
+void CRC(void) {
+	bool lsb;
+	char i=TXbufOutPtr, j;
+	unsigned int crc = 0xFFFF;
+	
+	while (TXbufInPtr != i) {
+		crc ^= (unsigned int)TXbuf[i++];
+		for (j = 0; j < 8; j++) {
+			lsb = crc & 1;
+			crc >>= 1;
+			if (lsb == 1)
+			  crc ^= 0xA001;
+		}
+	}
+	TXbuf[TXbufInPtr++] = crc & 0xff;
+	TXbuf[TXbufInPtr++] = crc >> 8;	
+}
+
+void xmit(char toSend) {
+	while (!( UCSR0A & (1<<UDRE0)));
+	
 	UDR0 = toSend;
+	while (!( UCSR0A & (1<<TXC0)));
+	UCSR0A |= (1<<TXC0);				// Reset TXC flag.
+}
+
+void sendTXbuf(void) {
+	DE_HI;
+	while (TXbufInPtr < TXbufOutPtr)
+		xmit(TXbuf[TXbufOutPtr++]);
 	DE_LO;
 }
 
-void reply(char toPost)
-{
+void reply(char toPost) {
 	setDataBus(asOutput);
 	PORTB = (PINB&~0x7)|(toPost&0x7);
 	PORTD = (PIND&~0xf8)|(toPost&0xf8);
-
-	RSM_LO;							// Release wait line
-	RSM_HI;
-
-	setDataBus(asInput);
 }
 
-void USART_Init(unsigned int ubrr)
-{
+void USART_Init(unsigned int baudrateIndex) {
+	unsigned int ubrr;
+	
+	ubrr = (F_CPU / 8 / baud[baudrateIndex]) - 1;
+	
 	/* Set baud rate */
 	UBRR0H = (unsigned char)(ubrr>>8);
 	UBRR0L = (unsigned char)ubrr;
@@ -93,83 +125,94 @@ void USART_Init(unsigned int ubrr)
 	UCSR0C = (3<<UCSZ00);
 }
 
-ISR(USART_RX_vect)
-{
-	uBuffRX[uBuffRX_inPtr++] = UDR0;
-	if (uBuffRX_inPtr == MAXBUFF)
-		uBuffRX_inPtr = 0;
+ISR(USART_RX_vect) {
+	RXbuf[RXbufInPtr++] = UDR0;
+	if (RXbufInPtr == MAXBUFF)
+		RXbufInPtr = 0;
 }
 
-ISR(INT0_vect)									// We got a chip_select (CPU wants something)
-{
-	char				operation;
-	char				dataByte;
-	unsigned long int	newBaud;
+ISR(INT0_vect)	{								// We got a chip_select (CPU wants something).
+	char		operation, dataByte;
 	
-	operation = PINC & 0x7;						// Snapshots from I/O pins
-	dataByte = (PIND & 0xf8)|(PINB & 0x07);
+	operation = PINC & 0x7;						// Snapshot from I/O pins.
+	dataByte = (PIND & 0xf8)|(PINB & 0x07);		// Snapshot from data bus. 
 
-	switch (operation)
-	{
-		case RD_DATA:							// Read data request
-			if (uBuffRX_inPtr != uBuffRX_outPtr)
-			{
-				reply(uBuffRX[uBuffRX_outPtr++]);
-				if (uBuffRX_outPtr == MAXBUFF)
-					uBuffRX_outPtr = 0;
+	switch (operation) {
+		case WR_COMMAND:
+			command = dataByte;
+			switch (command) {
+				case clearRXbuffer:
+					RXbufInPtr = 0;
+					RXbufOutPtr = 0;
+					break;
+				case clearTXbuffer:
+					TXbufInPtr = 0;
+					TXbufOutPtr = 0;
+					break;
+				case flushTXbuffer:
+					if (appendCRC)
+						CRC();
+					sendTXbuf();
+					TXbufInPtr = 0;
+					TXbufOutPtr = 0;
+					break;
+				case enableCRCappend:
+					appendCRC = 1;
+					break;
+				case disableCRCappend:
+					appendCRC = 0;
+					break;
 			}
-			else
-			{
-				RSM_LO;							// Release wait line
-				RSM_HI;
+			break;
+
+		case WR_DATA:
+			switch (command) {
+				case setBaudrate:
+					newBaud = dataByte;
+					USART_Init(newBaud);
+					break;
+				case writeTXbuffer:
+					TXbuf[TXbufInPtr++] = dataByte;
+					break;
 			}
-		break;
-		
-		case RD_STATUS:							// Read status request
-			if (uBuffRX_inPtr != uBuffRX_outPtr)	// Put 0xff on data bus
-				reply(0xff);
-			else								// Put 00 on data bus
-				reply(0);
-		break;
-		
-		case WR_DATA:							// write data request
-			xmit(dataByte);
-			RSM_LO;								// Release wait line
-			RSM_HI;
-		break;
-		
-		case WR_COMMAND:						// write command request
-			if (dataByte < 11)
-			{
-				newBaud = baud[(int) dataByte];
-				USART_Init((F_CPU/8/newBaud)-1);
+			break;
+
+		case RD_DATA:
+			switch (command) {
+				case getBaudrate:
+					reply(newBaud);
+					break;
+				case sizeRXbuffer:
+					reply(RXbufOutPtr - RXbufInPtr);
+					break;
+				case readRXbuffer:
+					if (RXbufInPtr != RXbufOutPtr)
+						reply(RXbuf[RXbufOutPtr++]);
+					else
+						reply(0);
+					break;
 			}
-			RSM_LO;								// Release wait line
-			RSM_HI;
-		break;
+			break;
 	}
+	RSM_LO;							// Pulse RSM to release wait line.
+	RSM_HI;
+	
+	setDataBus(asInput);
 }
 
-int main(void)
-{
-	char	iniMsg[] = "\r\n*** TTY Card - firmware v1.1. ***\r\n*** by Kaltchuk, sep/2021.    ***\r\n\r\n\0";
-	int		i=0;
+int main(void) {
+	USART_Init(newBaud);		// Initialize USART
+
+	DDRC |= (1<<RSM);			// Configure RSM pin as output
+	RSM_HI;						// Turn off RSM (active low)
+	EIMSK = (1<<INT0);			// Enable INT0 (chip select)
 	
-	USART_Init(MYUBRR);		// Initialize USART
-	while ( iniMsg[i] != 0)	
-	{
-		xmit(iniMsg[i++]);
-	}
+	DDRC |= (1<<DE);			// Configure DE pin as output
+	DE_LO;						// Put SN76175 in "receive mode"
 	
-	DDRC |= (1<<DE);		// Configure DE pin as output
-	DE_LO;					// Turn DE low (RS485 receive ready)
-	
-	DDRC |= (1<<RSM);		// Configure RSM pin as output
-	RSM_HI;					// Turn off RSM (active low)
-	EIMSK = (1<<INT0);		// Enable INT0 (chip select)
-	
+	setDataBus(asInput);
+
 	sei();
-	while (1) 				// If we're not busy attending a service request
-	{						// from CPU, let's empty the TX buffer.
-	}
+	while (1);
 }
+
