@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ModbusMaster": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\Users\\kaltc\\source\\repos\\ModbusMaster\\bin\\Debug\\net6.0-windows"
+    }
+  }
+}
