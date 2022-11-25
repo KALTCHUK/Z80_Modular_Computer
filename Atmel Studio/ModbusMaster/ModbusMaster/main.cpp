@@ -6,7 +6,7 @@
  *
  */ 
 
-#define F_CPU	20000000UL
+#define F_CPU	11059200UL
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
