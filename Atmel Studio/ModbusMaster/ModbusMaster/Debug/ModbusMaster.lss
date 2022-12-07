@@ -140,7 +140,7 @@ void CRC(void) {
   c6:	60 91 2f 01 	lds	r22, 0x012F	; 0x80012f <TXbufOutPtr>
 	unsigned int crc = 0xFFFF;
 	
-	while (TXbufInPtr != i) {
+	while (i < TXbufInPtr) {
   ca:	e0 91 31 01 	lds	r30, 0x0131	; 0x800131 <TXbufInPtr>
   ce:	f0 91 32 01 	lds	r31, 0x0132	; 0x800132 <TXbufInPtr+0x1>
 }
@@ -152,12 +152,12 @@ void CRC(void) {
   d2:	8f ef       	ldi	r24, 0xFF	; 255
   d4:	9f ef       	ldi	r25, 0xFF	; 255
 	
-	while (TXbufInPtr != i) {
+	while (i < TXbufInPtr) {
   d6:	26 2f       	mov	r18, r22
   d8:	30 e0       	ldi	r19, 0x00	; 0
   da:	2e 17       	cp	r18, r30
   dc:	3f 07       	cpc	r19, r31
-  de:	a9 f0       	breq	.+42     	; 0x10a <_Z3CRCv+0x44>
+  de:	ac f4       	brge	.+42     	; 0x10a <_Z3CRCv+0x44>
 		crc ^= (unsigned int)TXbuf[i++];
   e0:	6f 5f       	subi	r22, 0xFF	; 255
   e2:	d9 01       	movw	r26, r18
@@ -186,7 +186,7 @@ void CRC(void) {
 	char i=TXbufOutPtr, j;
 	unsigned int crc = 0xFFFF;
 	
-	while (TXbufInPtr != i) {
+	while (i < TXbufInPtr) {
 		crc ^= (unsigned int)TXbuf[i++];
 		for (j = 0; j < 8; j++) {
  106:	99 f7       	brne	.-26     	; 0xee <_Z3CRCv+0x28>
@@ -242,13 +242,13 @@ void xmit(char toSend) {
 void sendTXbuf(void) {
 	DE_HI;
  146:	44 9a       	sbi	0x08, 4	; 8
-	while (TXbufInPtr < TXbufOutPtr)
+	while (TXbufOutPtr < TXbufInPtr)
  148:	80 91 2f 01 	lds	r24, 0x012F	; 0x80012f <TXbufOutPtr>
  14c:	90 91 30 01 	lds	r25, 0x0130	; 0x800130 <TXbufOutPtr+0x1>
  150:	20 91 31 01 	lds	r18, 0x0131	; 0x800131 <TXbufInPtr>
  154:	30 91 32 01 	lds	r19, 0x0132	; 0x800132 <TXbufInPtr+0x1>
- 158:	28 17       	cp	r18, r24
- 15a:	39 07       	cpc	r19, r25
+ 158:	82 17       	cp	r24, r18
+ 15a:	93 07       	cpc	r25, r19
  15c:	c4 f4       	brge	.+48     	; 0x18e <_Z9sendTXbufv+0x48>
 		xmit(TXbuf[TXbufOutPtr++]);
  15e:	9c 01       	movw	r18, r24
@@ -266,13 +266,13 @@ void sendTXbuf(void) {
 
 void sendTXbuf(void) {
 	DE_HI;
-	while (TXbufInPtr < TXbufOutPtr)
+	while (TXbufOutPtr < TXbufInPtr)
  178:	80 91 2f 01 	lds	r24, 0x012F	; 0x80012f <TXbufOutPtr>
  17c:	90 91 30 01 	lds	r25, 0x0130	; 0x800130 <TXbufOutPtr+0x1>
  180:	20 91 31 01 	lds	r18, 0x0131	; 0x800131 <TXbufInPtr>
  184:	30 91 32 01 	lds	r19, 0x0132	; 0x800132 <TXbufInPtr+0x1>
- 188:	28 17       	cp	r18, r24
- 18a:	39 07       	cpc	r19, r25
+ 188:	82 17       	cp	r24, r18
+ 18a:	93 07       	cpc	r25, r19
  18c:	44 f3       	brlt	.-48     	; 0x15e <_Z9sendTXbufv+0x18>
 		xmit(TXbuf[TXbufOutPtr++]);
 	DE_LO;
@@ -570,9 +570,9 @@ ISR(INT0_vect)	{								// We got a chip_select (CPU wants something).
 					break;
  376:	24 c0       	rjmp	.+72     	; 0x3c0 <__vector_1+0x162>
 				case sizeRXbuffer:
-					reply(RXbufOutPtr - RXbufInPtr);
- 378:	80 91 33 02 	lds	r24, 0x0233	; 0x800233 <RXbufOutPtr>
- 37c:	90 91 35 02 	lds	r25, 0x0235	; 0x800235 <RXbufInPtr>
+					reply(RXbufInPtr - RXbufOutPtr);
+ 378:	80 91 35 02 	lds	r24, 0x0235	; 0x800235 <RXbufInPtr>
+ 37c:	90 91 33 02 	lds	r25, 0x0233	; 0x800233 <RXbufOutPtr>
  380:	89 1b       	sub	r24, r25
  382:	0e 94 c9 00 	call	0x192	; 0x192 <_Z5replyc>
 					break;

@@ -72,7 +72,7 @@ void CRC(void) {
 	char i=TXbufOutPtr, j;
 	unsigned int crc = 0xFFFF;
 	
-	while (TXbufInPtr != i) {
+	while (i < TXbufInPtr) {
 		crc ^= (unsigned int)TXbuf[i++];
 		for (j = 0; j < 8; j++) {
 			lsb = crc & 1;
@@ -95,7 +95,7 @@ void xmit(char toSend) {
 
 void sendTXbuf(void) {
 	DE_HI;
-	while (TXbufInPtr < TXbufOutPtr)
+	while (TXbufOutPtr < TXbufInPtr)
 		xmit(TXbuf[TXbufOutPtr++]);
 	DE_LO;
 }
@@ -183,7 +183,7 @@ ISR(INT0_vect)	{								// We got a chip_select (CPU wants something).
 					reply(newBaud);
 					break;
 				case sizeRXbuffer:
-					reply(RXbufOutPtr - RXbufInPtr);
+					reply(RXbufInPtr - RXbufOutPtr);
 					break;
 				case readRXbuffer:
 					if (RXbufInPtr != RXbufOutPtr)
