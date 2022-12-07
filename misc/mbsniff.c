@@ -36,10 +36,10 @@ char *str; {
 	for(i=0; i<2; i++) {
 		if((str[i] >= '0') && (str[i] <= '9'))
 			str[i] -= '0';
-		else if((str[i] >= 'A') && (str[i] <= 'F')
-			str[i] = str[i] - 'A' + 10;
-		else if((str[i] >= 'a') && (str[i] <= 'f')
-			str[i] = str[i] - 'a' + 10;
+		else if((str[i] >= 'A') && (str[i] <= 'F'))
+			str[i] -= '7';
+		else if((str[i] >= 'a') && (str[i] <= 'f'))
+			str[i] -= 'W';
 		else {
 			printf("Invalid argument.\n");
 			exit();
@@ -53,11 +53,11 @@ void sendReq(p)
 char p; {
 	int i;
 
-	outp(p + 2, clrRXbuf);
-	outp(p + 2, writeBuf); 
+	outp(p+2, clrRXbuf);
+	outp(p+2, writeBuf); 
 	for(i=0; i<6; i++)
 		outp(p, buffer[i]);
-	outp(p + 2, flushBuf);
+	outp(p+2, flushBuf);
 }
 
 int getRep(p, s, f, a)
@@ -69,7 +69,7 @@ char p, s, f, *a; {
 	try = 0;
 	do {
 		msDelay(2);
-		outp(p + 2, sizeBuf);
+		outp(p+2, sizeBuf);
 		bs = inp(p);
 		i++;
 	} while((i < MAXTRY) & (bs < 5));
@@ -101,10 +101,18 @@ char p, s, f, *a; {
 	}
 	return rep;
 }
-/*
+
 void setBaud(p, b)
 char p, b; {
-*/
+	outp(p+2, setBaud);
+	outp(p, b);
+}
+
+void initPort(p)
+chap p; {
+	outp(p+2, clrRXbuf);
+	outp(p+2, clrTXbuf);
+	outp(p+2, enableCRC);
 }
 
 main () {
@@ -123,11 +131,14 @@ main () {
 	printf("Port (two digit hex)? ");
 	getline(linea,7);
 	port = asc2hex(linea);
+	printf("Port 0x%x configured. Starting device search...\n", port);
+	
+	initPort(port);
 	
 	for(baud=0; baud<10; baud++) {
-		printf("Baud enum = %d.\n", baud);
+		printf("Baud enum = %d of 9. Searching...\n", baud);
 		setBaud(port, baud);
-		for(slave=1; slave<=255; slave++) {
+		for(slave=1; slave != 0; slave++) {
 			buffer[0] = slave;
 			sendReq(port);
 			msDelay(10);
@@ -136,7 +147,7 @@ main () {
 				printf("Slave %d found.\n", slave);
 		}
 	}
-
+	printf("\nEnd of search.\n");
 	exit();
 }
 
