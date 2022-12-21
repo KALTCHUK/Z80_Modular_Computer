@@ -72,14 +72,15 @@ void modbusBegin(unsigned int baud) {
     milliStart();
 
     if (baud >= 19200) {
-        charTimeout = 1;
-        frameTimeout = 2;
+        charTimeout = 2;
+        frameTimeout = 4;
     }
     else {
         charTimeout = 15000/baud;		// in the range [1; 13]
         frameTimeout = 35000/baud;		// in the range [2; 30]
     }
-  
+
+    milli = 0;
     do {
         if (RI != 0) {
             milliStart();
@@ -92,28 +93,21 @@ void modbusPoll() {
     char i = 0, j;
     unsigned int startAddress, quantity, value;
 
-    if (RI != 0) {
-        P1 = 1;
-        do {
-            if (RI != 0) {
-                P1 = 1;
-                milliStart();
-                if(i < MAXBUF)	buf[i] = serialRX();
-                else			RI = 0 ;
-                i++;
-            } else
-                P1 = 0;
-        } while (milli < charTimeout && i < MAXBUF);
-	
-        while (milli < frameTimeout) {
+    while(RI == 0);
+    
+    milli = 0;
+    while(milli < charTimeout && i < MAXBUF) {
+        if(RI == 1) {
             RI = 0;
-            P1 = 0;
+            buf[i++] = SBUF;
+            milli = 0;
         }
+    }
 
-        if (RI == 0 && (buf[0] == id || buf[0] == 0) && i < MAXBUF) {
-            if (crc(i - 2) != bytesToWord(buf[i - 1], buf[i - 2])) return;
+    if (buf[0] == id || buf[0] == 0) {
+        if (crc(i - 2) != bytesToWord(buf[i - 1], buf[i - 2])) return;
         
-            switch (buf[1]) {
+        switch (buf[1]) {
             case 1: /* Read Coils */
                 startAddress = bytesToWord(buf[2], buf[3]);
                 quantity = bytesToWord(buf[4], buf[5]);
@@ -137,15 +131,13 @@ void modbusPoll() {
             case 3: /* Read Holding Registers */
                 startAddress = bytesToWord(buf[2], buf[3]);
                 quantity = bytesToWord(buf[4], buf[5]);
-                if (quantity == 0 || quantity > 2)                            oops(3);
-                else if ((startAddress + quantity) > numHoldingRegisters)     oops(2);
+                if (quantity > numHoldingRegisters)
+                    oops(3);
+                else if ((startAddress + quantity) > numHoldingRegisters)
+                    oops(2);
                 else {
                     for (j = 0; j < quantity; j++) {
-                        value = wordRead(startAddress + j);
-                        if (value < 0) {
-                            oops(4);
-                            return;
-                        }
+                        value = EEPROMread(startAddress + j);
                         buf[3 + (j * 2)] = (char)(value >> 8);
                         buf[4 + (j * 2)] = (char)(value & 0x00ff);
                     }
@@ -208,7 +200,6 @@ void modbusPoll() {
             default:
                 oops(1);
                 break;
-            }
         }
     }
 }

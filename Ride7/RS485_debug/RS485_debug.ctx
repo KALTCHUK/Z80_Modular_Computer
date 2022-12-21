@@ -22,8 +22,10 @@
 			
 	</Flags>
 	<Views>
-		<View File=".\RS485_echo.c" Line="14" Index="0" />
-		<View File=".\Serial485.h" Line="5" Index="1" focus="1" />
+		<View File=".\ModbusSlave.h" Line="97" Index="0" />
+		<View File=".\Serial.h" Line="1" Index="1" />
+		<View File=".\RS485_debug.c" Line="29" Index="2" focus="1" />
+		<View File=".\EEPROM.h" Line="1" Index="3" />
 	</Views>
 	<BookMarks>
 		<BookMark File="" Line="0" />
@@ -61,9 +63,7 @@
 		</GrepReplaceWhat>
 	</Grep>
 	<FindStrings>
-		<Find>P1</Find>
-		<Find>wordRead</Find>
-		<Find>id</Find>
+		<Find>coilWrite</Find>
 	</FindStrings>
 	<ReplaceStrings/>
 </Debug>

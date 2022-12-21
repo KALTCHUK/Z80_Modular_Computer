@@ -1,8 +1,10 @@
 
-<ApplicationBuild Header="RS485_echo" Extern=".\RS485_echo.rapp" Path=".\RS485_echo.rapp" OutputFile=".\RS485_echo.aof" sate="96" >
-	<NodeH Path=".\Serial485.h" Header="Serial485.h" Marker="-1" OutputFile="" sate="2" />
-	<NodeC Path=".\RS485_echo.c" Header="RS485_echo.c" Marker="-1" OutputFile=".\RS485_echo.obj" sate="0" />
+<ApplicationBuild Header="RS485_debug" Extern=".\RS485_debug.rapp" Path=".\RS485_debug.rapp" OutputFile=".\RS485_debug.aof" sate="98" >
+	<NodeC Path=".\RS485_debug.c" Header="RS485_debug.c" Marker="-1" OutputFile=".\RS485_debug.obj" sate="0" />
+	<NodeH Path=".\Serial.h" Header="Serial.h" Marker="-1" OutputFile="" sate="0" />
 	<NodeH Path=".\REG51.h" Header="REG51.h" Marker="-1" OutputFile="" sate="0" />
+	<NodeH Path=".\ModbusSlave.h" Header="ModbusSlave.h" Marker="-1" OutputFile="" sate="0" />
+	<NodeH Path=".\EEPROM.h" Header="EEPROM.h" Marker="-1" OutputFile="" sate="0" />
 	<Options>
 		<Config Header="Standard" >
 			<Set Header="ApplicationBuild" >
@@ -12,7 +14,7 @@
 			</Set>
 			<Set Header="Target" >
 				<Section Header="Processor80C51" >
-					<Property Header="Processor" Value="AT89S4051" Removable="1" />
+					<Property Header="Processor" Value="AT89C4051" Removable="1" />
 				</Section>
 				<Section Header="ToolSet80C51" >
 					<Property Header="BuildToolSet80C51" Value="80C51\RaisonanceTools.config" Removable="1" />

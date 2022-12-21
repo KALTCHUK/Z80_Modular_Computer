@@ -14,8 +14,8 @@ void main() {
 
     _DE = 0;
 
-baud = 9600;	// factory set baud rate.
-	id = 7;			// factory set modbus slave id.
+baud = 19200;	// factory set baud rate.
+	id = 1;			// factory set modbus slave id.
 
 	if (_FS == 1) {
 		baud = EEPROMread(0);

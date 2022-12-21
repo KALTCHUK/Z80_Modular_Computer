@@ -33,10 +33,14 @@ void timer0_isr() interrupt 1
 }
 
 void main(void) {
-    int tempo = 0;
+    //int tempo = 0;
 
     Inits();
 
+    while(1) {
+        serialTX(serialRX());
+    }
+/*
     while(1) {
         serialTX(0x30 + tempo++);
         if(tempo > 9)   tempo = 0;
@@ -44,6 +48,7 @@ void main(void) {
         milli = 0;
         while(milli < 1000);
     }
+*/
 }
 
 void Inits() {     // Initialize UART and TIMER0

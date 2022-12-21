@@ -1,16 +1,17 @@
 - DO-08:
-	- design PCB (waiting for components)
+	- debug firmware
+	- design PCB
 	- assemble and test
 
 - DI-16:
 	- write firmware.
-	- build and test prototype (waiting for components)
+	- build and test prototype
 	- design PCB
 	- assemble and test
 
 - RS485:
-	- write firmware.
-	- build and test prototype (waiting for components)
+	- debug firmware.
+	- test prototype
 	- design PCB
 	- assemble and test
 

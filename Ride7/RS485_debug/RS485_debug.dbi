@@ -1,5 +1,5 @@
 [Application]
-ApplicationPath=C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Ride7\RS485_test\RS485_echo.aof
+ApplicationPath=C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Ride7\RS485_debug\RS485_debug.aof
 DebugTool=SIM-51
 CodeSize=0x10000
 XDataSize=0x10000
@@ -8,13 +8,12 @@ Format=AOF
 CodeOffset=0x0
 LoaderTool=80C51
 Target=80C51
-ApplicationComponents=
-MakeApplicationPath=C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Ride7\RS485_test\RS485_echo.aof
+MakeApplicationPath=C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Ride7\RS485_debug\RS485_debug.aof
 [Device]
-Name=AT89S4051
+Name=AT89C4051
 Architecture=1
 [Debug]
-LastVirtual=AT89S4051
+LastVirtual=AT89C4051
 Explore=Yes
 ToolName=SIM-51
 Startup=1

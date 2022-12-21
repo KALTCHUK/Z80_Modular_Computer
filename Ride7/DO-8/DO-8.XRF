@@ -25,7 +25,6 @@ INTER-MODULE CROSS-REFERENCE LISTING
           frameTimeout  . . . DATA    [DO-8]: 
           GESI?C  . . . . . . CODE    [GESI]:  LONG_UNSIGNED_DIV, LONG_SIGNED_DIV_SPEED_OPTIMIZED
           HPD_ADDR  . . . . . DATA    [HPD]:  C3S
-          I2C_delay . . . . . CODE    [DO-8]: 
           I2C_start . . . . . CODE    [DO-8]: 
           I2C_stop  . . . . . CODE    [DO-8]: 
           id  . . . . . . . . DATA    [DO-8]: 
@@ -51,6 +50,7 @@ INTER-MODULE CROSS-REFERENCE LISTING
           _EEPROMread . . . . CODE    [DO-8]: 
           _EEPROMwrite  . . . CODE    [DO-8]: 
           _holdingRegisterWritCODE    [DO-8]:  DO-8
+          _I2C_delay  . . . . CODE    [DO-8]: 
           _I2C_read . . . . . CODE    [DO-8]: 
           _I2C_write  . . . . CODE    [DO-8]: 
           _INITP2?  . . . . . NUMBER  [_C_IDATALEN]:  C3S

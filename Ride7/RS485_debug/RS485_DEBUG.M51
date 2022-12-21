@@ -1,0 +1,695 @@
+LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263                                 12/20/22  22:22:38
+MS-DOS LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263,  INVOKED BY:
+C:\Users\kaltc\Documents\Raisonance\Ride\Bin\LX51.EXE C:\Users\kaltc\Documents\GitHub\Z80_Modular&
+_Computer\Ride7\RS485_debug\RS485_debug.obj TO(C:\Users\kaltc\Documents\GitHub\Z80_Modular_Comput&
+er\Ride7\RS485_debug\RS485_debug.aof) LIBPATH(C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51) GE&
+NERATEDEPFILE MAP IX RS(256) RSI(128) CSIZE(65536) XSIZE(65536) DEFN(XSTACKLEN,256) DEFN(TIM1_INI&
+T,E8h) CO(0) DT(0) ID(0) XD(0) BI(0) ABSCODEOFFS(0) XMLM(No,C:\Users\kaltc\Documents\GitHub\Z80_M&
+odular_Computer\Ride7\RS485_debug\RS485_debug-modules.Standard.xml) XMLF(No,8000,C:\Users\kaltc\D&
+ocuments\GitHub\Z80_Modular_Computer\Ride7\RS485_debug\RS485_debug-flash.Standard.xml) 
+
+
+MEMORY MODEL: SMALL WITHOUT ANY FLOATING POINT ARITHMETIC
+
+
+INPUT MODULES INCLUDED
+  C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\RS485_DEBUG\RS485_DEBUG.OBJ(RS485_DE&
+BUG)
+  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(C3S)
+  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(LONG_SIGNED_DIV_SPEED_OPTIMIZED)
+  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(DIVS)
+  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(HPD)
+  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(_C_IDATALEN)
+  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(LONG_UNSIGNED_DIV_SPEED_OPTIMIZED)
+  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(GESI)
+  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(LONG_UNSIGNED_DIV)
+  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(RSTSTK4)
+
+
+LINK MAP OF MODULE: C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\RS485_DEBUG\RS485_&
+DEBUG.AOF (RS485_DEBUG)
+
+    TYPE     BASE       LENGTH    RELOCATION     SEGMENT NAME
+    ----     ----       ------    ----------     ------------
+
+    * * * * * * *   DATA/IDATA    M E M O R Y   * * * * * * *
+    REG      0000H      0008H     ABSOLUTE       "REG BANK 0"
+    DATA     0008H      0012H     OVERLAID UNIT  _DGROUP03_
+             0008H      0002H     -------------  ?DT?_modbusBegin?RS485_DEBUG
+             0008H      0008H     -------------  ?DT?modbusPoll?RS485_DEBUG
+             0010H      0004H     -------------  ?DT?_write?RS485_DEBUG
+             0014H      0001H     -------------  ?DT?_crc?RS485_DEBUG
+             0010H      0001H     -------------  ?DT?_boolRead?RS485_DEBUG
+             0010H      0004H     -------------  ?DT?_EEPROMread?RS485_DEBUG
+             0014H      0002H     -------------  ?DT?_I2C_read?RS485_DEBUG
+             0010H      0004H     -------------  ?DT?_holdingRegisterWrite?RS485_DEBUG
+             0014H      0004H     -------------  ?DT?_EEPROMwrite?RS485_DEBUG
+             0018H      0002H     -------------  ?DT?_I2C_write?RS485_DEBUG
+             001AH      0006H                    *** GAP ***
+    BIT      0020H.0    0000H.1   OVERLAID UNIT  _BGROUP03_
+             0100H      0001H     -------------  ?BI?_crc?RS485_DEBUG
+             0020H.1    0000H.7                  *** GAP ***
+    DATA     0021H      0026H     UNIT           ?DT?RS485_DEBUG
+    IDATA    0047H      0001H     * * STACK * *  _STACK
+
+    * * * * * * *   CODE          M E M O R Y   * * * * * * *
+    CODE     0000H      0003H     ABSOLUTE       
+    CODE     0003H      0008H     UNIT           ?PR?_serialTX?RS485_DEBUG
+    CODE     000BH      0003H     ABSOLUTE       
+    CODE     000EH      01E9H     UNIT           ?PR?LIB51
+    CODE     01F7H      000FH     UNIT           ?PR?C51_STARTUP?
+    CODE     0206H      0077H     UNIT           ?PR?_serialInit?RS485_DEBUG
+    CODE     027DH      0008H     UNIT           ?PR?serialRX?RS485_DEBUG
+    CODE     0285H      001BH     UNIT           ?PR?_I2C_delay?RS485_DEBUG
+    CODE     02A0H      000CH     UNIT           ?PR?I2C_start?RS485_DEBUG
+    CODE     02ACH      0016H     UNIT           ?PR?I2C_stop?RS485_DEBUG
+    CODE     02C2H      003EH     UNIT           ?PR?_I2C_write?RS485_DEBUG
+    CODE     0300H      0057H     UNIT           ?PR?_I2C_read?RS485_DEBUG
+    CODE     0357H      0057H     UNIT           ?PR?_EEPROMread?RS485_DEBUG
+    CODE     03AEH      003BH     UNIT           ?PR?_EEPROMwrite?RS485_DEBUG
+    CODE     03E9H      0017H     UNIT           ?PR?timer0_isr?RS485_DEBUG
+    CODE     0400H      0017H     UNIT           ?PR?milliStart?RS485_DEBUG
+    CODE     0417H      005EH     UNIT           ?PR?_modbusBegin?RS485_DEBUG
+    CODE     0475H      041FH     UNIT           ?PR?modbusPoll?RS485_DEBUG
+    CODE     0894H      0031H     UNIT           ?PR?_boolRead?RS485_DEBUG
+    CODE     08C5H      002DH     UNIT           ?PR?_wordRead?RS485_DEBUG
+    CODE     08F2H      0041H     UNIT           ?PR?_coilWrite?RS485_DEBUG
+    CODE     0933H      0030H     UNIT           ?PR?_holdingRegisterWrite?RS485_DEBUG
+    CODE     0963H      000AH     UNIT           ?PR?_oops?RS485_DEBUG
+    CODE     096DH      004AH     UNIT           ?PR?_write?RS485_DEBUG
+    CODE     09B7H      0043H     UNIT           ?PR?_crc?RS485_DEBUG
+    CODE     09FAH      0013H     UNIT           ?PR?_div8RndUp?RS485_DEBUG
+    CODE     0A0DH      0011H     UNIT           ?PR?_bytesToWord?RS485_DEBUG
+    CODE     0A1EH      0028H     UNIT           ?PR?main?RS485_DEBUG
+
+EXECUTABLE SUMMARY:
+-------------------
+    Total INTERNAL RAM storage requirement:  0040H.1 (64.1)
+    Total EXTERNAL RAM storage requirement:  0000H (0)
+    Total     CODE     storage requirement:  0A46H (2630)
+Note:  Summary does not include dynamic stack requirements
+
+
+REFERENCE MAP OF MODULE: C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\RS485_DEBUG\RS485_DEBUG.AOF (R&
+S485_DEBUG)
+
+SEGMENT                           BI_GROUP            DT_GROUP             ID_GROUP             XD_GROUP
+  +--> CALLED SEGMENT          START    LENGTH     START    LENGTH     START    LENGTH     START    LENGTH
+--------------------------------------------------------------------------------------
+
+?PR?serialRX?RS485_DEBUG       ---------------     ---------------     ---------------     ---------------
+
+?PR?timer0_isr?RS485_DEBUG     ---------------     ---------------     ---------------     ---------------
+
+?PR?_wordRead?RS485_DEBUG      ---------------     ---------------     ---------------     ---------------
+  +--> ?PR?_EEPROMread?RS485_DEBUG
+
+?PR?_EEPROMread?RS485_DEBUG    ---------------     0010H    0004H     ---------------     ---------------
+  +--> ?PR?I2C_start?RS485_DEBUG
+  +--> ?PR?_I2C_write?RS485_DEBUG
+  +--> ?PR?I2C_stop?RS485_DEBUG
+  +--> ?PR?_I2C_read?RS485_DEBUG
+  +--> ?PR?_I2C_delay?RS485_DEBUG
+
+?PR?I2C_start?RS485_DEBUG      ---------------     ---------------     ---------------     ---------------
+  +--> ?PR?_I2C_delay?RS485_DEBUG
+
+?PR?_I2C_delay?RS485_DEBUG     ---------------     ---------------     ---------------     ---------------
+
+?PR?_I2C_write?RS485_DEBUG     ---------------     0018H    0002H     ---------------     ---------------
+  +--> ?PR?_I2C_delay?RS485_DEBUG
+
+?PR?I2C_stop?RS485_DEBUG       ---------------     ---------------     ---------------     ---------------
+  +--> ?PR?_I2C_delay?RS485_DEBUG
+
+?PR?_I2C_read?RS485_DEBUG      ---------------     0014H    0002H     ---------------     ---------------
+  +--> ?PR?_I2C_delay?RS485_DEBUG
+
+?PR?main?RS485_DEBUG           ---------------     ---------------     ---------------     ---------------
+  +--> ?PR?_serialInit?RS485_DEBUG
+  +--> ?PR?_modbusBegin?RS485_DEBUG
+  +--> ?PR?modbusPoll?RS485_DEBUG
+
+?PR?_serialInit?RS485_DEBUG    ---------------     ---------------     ---------------     ---------------
+
+?PR?_modbusBegin?RS485_DEBUG   ---------------     0008H    0002H     ---------------     ---------------
+  +--> ?PR?milliStart?RS485_DEBUG
+
+?PR?milliStart?RS485_DEBUG     ---------------     ---------------     ---------------     ---------------
+
+?PR?modbusPoll?RS485_DEBUG     ---------------     0008H    0008H     ---------------     ---------------
+  +--> ?PR?_bytesToWord?RS485_DEBUG
+  +--> ?PR?_oops?RS485_DEBUG
+  +--> ?PR?_boolRead?RS485_DEBUG
+  +--> ?PR?_div8RndUp?RS485_DEBUG
+  +--> ?PR?_EEPROMread?RS485_DEBUG
+  +--> ?PR?_coilWrite?RS485_DEBUG
+  +--> ?PR?_holdingRegisterWrite?RS485_DEBUG
+  +--> ?PR?_crc?RS485_DEBUG
+  +--> ?PR?_write?RS485_DEBUG
+
+?PR?_bytesToWord?RS485_DEBUG   ---------------     ---------------     ---------------     ---------------
+
+?PR?_oops?RS485_DEBUG          ---------------     ---------------     ---------------     ---------------
+  +--> ?PR?_write?RS485_DEBUG
+
+?PR?_write?RS485_DEBUG         ---------------     0010H    0004H     ---------------     ---------------
+  +--> ?PR?_crc?RS485_DEBUG
+  +--> ?PR?_serialTX?RS485_DEBUG
+
+?PR?_crc?RS485_DEBUG           0020H.0  0000H.1     0014H    0001H     ---------------     ---------------
+
+?PR?_serialTX?RS485_DEBUG      ---------------     ---------------     ---------------     ---------------
+
+?PR?_boolRead?RS485_DEBUG      ---------------     0010H    0001H     ---------------     ---------------
+
+?PR?_div8RndUp?RS485_DEBUG     ---------------     ---------------     ---------------     ---------------
+
+?PR?_coilWrite?RS485_DEBUG     ---------------     ---------------     ---------------     ---------------
+
+?PR?_holdingRegisterWrite?RS485_DEBUG---------------     0010H    0004H     ---------------     ---------------
+  +--> ?PR?_EEPROMwrite?RS485_DEBUG
+
+?PR?_EEPROMwrite?RS485_DEBUG   ---------------     0014H    0004H     ---------------     ---------------
+  +--> ?PR?I2C_start?RS485_DEBUG
+  +--> ?PR?_I2C_delay?RS485_DEBUG
+  +--> ?PR?_I2C_write?RS485_DEBUG
+  +--> ?PR?I2C_stop?RS485_DEBUG
+
+SYMBOL TABLE FOR C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\RS485_DEBUG\RS485_DEB&
+UG.AOF(RS485_DEBUG)
+-------------------------------------------------------------------------------------------------&
+--------------------
+
+    VALUE              TYPE               NAME
+    -----              ----               ----
+
+	-------            MODULE             RS485_debug
+	C:0000H            SYMBOL             _ICE_DUMMY_
+	C:0A1EH            PUBLIC             main
+	C:03E9H            PUBLIC             timer0_isr
+	C:0A0DH            PUBLIC             _bytesToWord
+	C:09FAH            PUBLIC             _div8RndUp
+	C:09B7H            PUBLIC             _crc
+	C:096DH            PUBLIC             _write
+	C:0963H            PUBLIC             _oops
+	C:0933H            PUBLIC             _holdingRegisterWrite
+	C:08F2H            PUBLIC             _coilWrite
+	C:08C5H            PUBLIC             _wordRead
+	C:0894H            PUBLIC             _boolRead
+	C:0475H            PUBLIC             modbusPoll
+	C:0417H            PUBLIC             _modbusBegin
+	C:0400H            PUBLIC             milliStart
+	D:0046H            PUBLIC             outputState
+	D:0044H            PUBLIC             id
+	D:0042H            PUBLIC             milli
+	D:0040H            PUBLIC             frameTimeout
+	D:003EH            PUBLIC             charTimeout
+	D:003DH            PUBLIC             numHoldingRegisters
+	D:003CH            PUBLIC             numDiscreteInputs
+	D:003BH            PUBLIC             numCoils
+	D:0023H            PUBLIC             buf
+	C:03AEH            PUBLIC             _EEPROMwrite
+	C:0357H            PUBLIC             _EEPROMread
+	C:0300H            PUBLIC             _I2C_read
+	C:02C2H            PUBLIC             _I2C_write
+	C:02ACH            PUBLIC             I2C_stop
+	C:02A0H            PUBLIC             I2C_start
+	C:0285H            PUBLIC             _I2C_delay
+	C:027DH            PUBLIC             serialRX
+	C:0003H            PUBLIC             _serialTX
+	C:0206H            PUBLIC             _serialInit
+	D:0021H            PUBLIC             baud
+	B:0098H            SYMBOL             RI
+	B:0099H            SYMBOL             TI
+	B:009AH            SYMBOL             RB8
+	B:009BH            SYMBOL             TB8
+	B:009CH            SYMBOL             REN
+	B:009DH            SYMBOL             SM2
+	B:009EH            SYMBOL             SM1
+	B:009FH            SYMBOL             SM0
+	B:00B0H            SYMBOL             RXD
+	B:00B1H            SYMBOL             TXD
+	B:00B2H            SYMBOL             INT0
+	B:00B3H            SYMBOL             INT1
+	B:00B4H            SYMBOL             T0
+	B:00B5H            SYMBOL             T1
+	B:00B6H            SYMBOL             WR
+	B:00B7H            SYMBOL             RD
+	B:00B8H            SYMBOL             PX0
+	B:00B9H            SYMBOL             PT0
+	B:00BAH            SYMBOL             PX1
+	B:00BBH            SYMBOL             PT1
+	B:00BCH            SYMBOL             PS
+	B:00A8H            SYMBOL             EX0
+	B:00A9H            SYMBOL             ET0
+	B:00AAH            SYMBOL             EX1
+	B:00ABH            SYMBOL             ET1
+	B:00ACH            SYMBOL             ES
+	B:00AFH            SYMBOL             EA
+	B:0088H            SYMBOL             IT0
+	B:0089H            SYMBOL             IE0
+	B:008AH            SYMBOL             IT1
+	B:008BH            SYMBOL             IE1
+	B:008CH            SYMBOL             TR0
+	B:008DH            SYMBOL             TF0
+	B:008EH            SYMBOL             TR1
+	B:008FH            SYMBOL             TF1
+	B:00D0H            SYMBOL             P
+	B:00D2H            SYMBOL             OV
+	B:00D3H            SYMBOL             RS0
+	B:00D4H            SYMBOL             RS1
+	B:00D5H            SYMBOL             F0
+	B:00D6H            SYMBOL             AC
+	B:00D7H            SYMBOL             CY
+	D:0099H            SYMBOL             SBUF
+	D:0098H            SYMBOL             SCON
+	D:00B8H            SYMBOL             IP
+	D:00A8H            SYMBOL             IE
+	D:008DH            SYMBOL             TH1
+	D:008CH            SYMBOL             TH0
+	D:008BH            SYMBOL             TL1
+	D:008AH            SYMBOL             TL0
+	D:0089H            SYMBOL             TMOD
+	D:0088H            SYMBOL             TCON
+	D:0087H            SYMBOL             PCON
+	D:0083H            SYMBOL             DPH
+	D:0082H            SYMBOL             DPL
+	D:0081H            SYMBOL             SP
+	D:00F0H            SYMBOL             B
+	D:00E0H            SYMBOL             ACC
+	D:00D0H            SYMBOL             PSW
+	D:00B0H            SYMBOL             P3
+	D:00A0H            SYMBOL             P2
+	D:0090H            SYMBOL             P1
+	D:0080H            SYMBOL             P0
+	-------            PROC               _serialInit
+	C:0206H            LINE#              24
+	C:0206H            LINE#              25
+	C:0209H            LINE#              26
+	C:020CH            LINE#              27
+	C:020FH            LINE#              28
+	C:0259H            LINE#              30
+	C:025CH            LINE#              31
+	C:025EH            LINE#              33
+	C:0261H            LINE#              34
+	C:0263H            LINE#              36
+	C:0266H            LINE#              37
+	C:0268H            LINE#              39
+	C:026BH            LINE#              40
+	C:026DH            LINE#              42
+	C:0270H            LINE#              43
+	C:0272H            LINE#              45
+	C:0275H            LINE#              46
+	C:0277H            LINE#              48
+	C:027AH            LINE#              51
+	C:027CH            LINE#              52
+	C:027CH            LINE#              52
+	-------            ENDPROC            _serialInit
+	-------            PROC               _serialTX
+	C:0003H            LINE#              54
+	C:0003H            LINE#              55
+	C:0005H            LINE#              56
+	C:0008H            LINE#              57
+	C:000AH            LINE#              58
+	C:000AH            LINE#              58
+	-------            ENDPROC            _serialTX
+	-------            PROC               serialRX
+	C:027DH            LINE#              60
+	C:027DH            LINE#              61
+	C:0280H            LINE#              62
+	C:0282H            LINE#              63
+	C:0284H            LINE#              64
+	C:0284H            LINE#              64
+	-------            ENDPROC            serialRX
+	-------            PROC               _I2C_delay
+	C:0285H            LINE#              48
+	C:0285H            LINE#              51
+	C:029FH            LINE#              52
+	C:029FH            LINE#              52
+	-------            ENDPROC            _I2C_delay
+	-------            PROC               I2C_start
+	C:02A0H            LINE#              57
+	C:02A0H            LINE#              58
+	C:02A2H            LINE#              59
+	C:02A9H            LINE#              60
+	C:02ABH            LINE#              61
+	C:02ABH            LINE#              61
+	-------            ENDPROC            I2C_start
+	-------            PROC               I2C_stop
+	C:02ACH            LINE#              66
+	C:02ACH            LINE#              67
+	C:02AFH            LINE#              69
+	C:02B6H            LINE#              70
+	C:02B8H            LINE#              71
+	C:02BFH            LINE#              72
+	C:02C1H            LINE#              73
+	C:02C1H            LINE#              73
+	-------            ENDPROC            I2C_stop
+	-------            PROC               _I2C_write
+	D:0018H            SYMBOL             byte
+	D:0019H            SYMBOL             bt
+	C:02C2H            LINE#              78
+	C:02C4H            LINE#              81
+	C:02C7H            LINE#              82
+	C:02CCH            LINE#              83
+	C:02D0H            LINE#              85
+	C:02D2H            LINE#              87
+	C:02D9H            LINE#              88
+	C:02DBH            LINE#              89
+	C:02DEH            LINE#              90
+	C:02E0H            LINE#              91
+	C:02E6H            LINE#              81
+	C:02EDH            LINE#              93
+	C:02EFH            LINE#              94
+	C:02F2H            LINE#              95
+	C:02F8H            LINE#              96
+	C:02FAH            LINE#              97
+	C:02FDH            LINE#              98
+	C:02FFH            LINE#              99
+	C:02FFH            LINE#              99
+	-------            ENDPROC            _I2C_write
+	-------            PROC               _I2C_read
+	D:0015H            SYMBOL             bt
+	D:0014H            SYMBOL             byte
+	C:0300H            LINE#              104
+	C:0302H            LINE#              105
+	C:0305H            LINE#              107
+	C:0308H            LINE#              108
+	C:030AH            LINE#              109
+	C:0311H            LINE#              110
+	C:0313H            LINE#              111
+	C:0316H            LINE#              112
+	C:031BH            LINE#              113
+	C:0329H            LINE#              114
+	C:032BH            LINE#              107
+	C:0332H            LINE#              116
+	C:0336H            LINE#              117
+	C:033AH            LINE#              119
+	C:033CH            LINE#              121
+	C:0343H            LINE#              122
+	C:0345H            LINE#              123
+	C:0348H            LINE#              124
+	C:034BH            LINE#              125
+	C:034DH            LINE#              126
+	C:0354H            LINE#              127
+	C:0356H            LINE#              128
+	C:0356H            LINE#              128
+	-------            ENDPROC            _I2C_read
+	-------            PROC               _EEPROMread
+	D:0010H            SYMBOL             address
+	D:0012H            SYMBOL             word
+	C:0357H            LINE#              133
+	C:035BH            LINE#              136
+	C:0368H            LINE#              137
+	C:036BH            LINE#              138
+	C:0370H            LINE#              139
+	C:0375H            LINE#              140
+	C:037AH            LINE#              141
+	C:037DH            LINE#              142
+	C:0384H            LINE#              143
+	C:0387H            LINE#              144
+	C:038CH            LINE#              145
+	C:03A6H            LINE#              146
+	C:03A9H            LINE#              148
+	C:03ADH            LINE#              149
+	C:03ADH            LINE#              149
+	-------            ENDPROC            _EEPROMread
+	-------            PROC               _EEPROMwrite
+	D:0014H            SYMBOL             address
+	D:0016H            SYMBOL             word
+	C:03AEH            LINE#              154
+	C:03B6H            LINE#              155
+	C:03C3H            LINE#              156
+	C:03C6H            LINE#              157
+	C:03CBH            LINE#              158
+	C:03D0H            LINE#              159
+	C:03D5H            LINE#              160
+	C:03DAH            LINE#              161
+	C:03DFH            LINE#              162
+	C:03E6H            LINE#              163
+	C:03E6H            LINE#              164
+	-------            ENDPROC            _EEPROMwrite
+	-------            PROC               timer0_isr
+	C:03E9H            LINE#              51
+	C:03EDH            LINE#              53
+	C:03F0H            LINE#              54
+	C:03F3H            LINE#              56
+	C:03FFH            LINE#              57
+	C:03FFH            LINE#              57
+	-------            ENDPROC            timer0_isr
+	-------            PROC               milliStart
+	C:0400H            LINE#              59
+	C:0400H            LINE#              60
+	C:0402H            LINE#              61
+	C:0405H            LINE#              62
+	C:0408H            LINE#              63
+	C:040BH            LINE#              64
+	C:040DH            LINE#              65
+	C:040FH            LINE#              66
+	C:0411H            LINE#              68
+	C:0416H            LINE#              69
+	C:0416H            LINE#              69
+	-------            ENDPROC            milliStart
+	-------            PROC               _modbusBegin
+	D:0021H            PUBLIC             baud
+	C:0417H            LINE#              71
+	C:041BH            LINE#              72
+	C:041EH            LINE#              74
+	C:0424H            LINE#              75
+	C:042AH            LINE#              76
+	C:0431H            LINE#              79
+	C:0440H            LINE#              80
+	C:045BH            LINE#              83
+	C:0460H            LINE#              85
+	C:0463H            LINE#              86
+	C:0466H            LINE#              87
+	C:0474H            LINE#              90
+	C:0474H            LINE#              90
+	-------            ENDPROC            _modbusBegin
+	-------            PROC               modbusPoll
+	D:0008H            SYMBOL             i
+	D:000DH            SYMBOL             j
+	D:0009H            SYMBOL             startAddress
+	D:000BH            SYMBOL             quantity
+	D:000EH            SYMBOL             value
+	C:0475H            LINE#              92
+	C:0475H            LINE#              93
+	C:0478H            LINE#              96
+	C:047BH            LINE#              98
+	C:0480H            LINE#              99
+	C:0493H            LINE#              100
+	C:0496H            LINE#              101
+	C:0498H            LINE#              102
+	C:04A2H            LINE#              103
+	C:04A9H            LINE#              107
+	C:04BAH            LINE#              108
+	C:04E3H            LINE#              205
+	C:04E4H            LINE#              110
+	C:050DH            LINE#              112
+	C:0518H            LINE#              113
+	C:0523H            LINE#              114
+	C:0540H            LINE#              115
+	C:055DH            LINE#              117
+	C:056BH            LINE#              118
+	C:057CH            LINE#              119
+	C:0589H            LINE#              120
+	C:0590H            LINE#              123
+	C:05B6H            LINE#              124
+	C:05D3H            LINE#              117
+	C:05D7H            LINE#              126
+	C:05DEH            LINE#              127
+	C:05DFH            LINE#              126
+	C:05E1H            LINE#              127
+	C:05E7H            LINE#              132
+	C:05F2H            LINE#              133
+	C:05FDH            LINE#              134
+	C:060AH            LINE#              135
+	C:0614H            LINE#              136
+	C:0627H            LINE#              137
+	C:0631H            LINE#              139
+	C:063FH            LINE#              140
+	C:064FH            LINE#              141
+	C:065BH            LINE#              142
+	C:0661H            LINE#              139
+	C:0665H            LINE#              144
+	C:066BH            LINE#              145
+	C:0671H            LINE#              150
+	C:067CH            LINE#              151
+	C:0687H            LINE#              152
+	C:06A0H            LINE#              153
+	C:06B6H            LINE#              154
+	C:06CDH            LINE#              155
+	C:06D2H            LINE#              159
+	C:06DDH            LINE#              160
+	C:06E8H            LINE#              161
+	C:06FEH            LINE#              162
+	C:0715H            LINE#              163
+	C:071AH            LINE#              167
+	C:0725H            LINE#              168
+	C:0730H            LINE#              169
+	C:075DH            LINE#              170
+	C:077AH            LINE#              172
+	C:0788H            LINE#              173
+	C:07B0H            LINE#              174
+	C:07BCH            LINE#              175
+	C:07CEH            LINE#              176
+	C:07D5H            LINE#              172
+	C:07D9H            LINE#              180
+	C:07DEH            LINE#              185
+	C:07E9H            LINE#              186
+	C:07F4H            LINE#              187
+	C:0823H            LINE#              188
+	C:083FH            LINE#              190
+	C:084DH            LINE#              191
+	C:087CH            LINE#              192
+	C:0883H            LINE#              190
+	C:0887H            LINE#              196
+	C:088CH            LINE#              201
+	C:0893H            LINE#              205
+	C:0893H            LINE#              205
+	-------            ENDPROC            modbusPoll
+	-------            PROC               _boolRead
+	D:0010H            SYMBOL             boolStatus
+	C:0894H            LINE#              207
+	C:0894H            LINE#              210
+	C:08ADH            LINE#              214
+	C:08AEH            LINE#              211
+	C:08BDH            LINE#              212
+	C:08C2H            LINE#              213
+	C:08C4H            LINE#              214
+	C:08C4H            LINE#              214
+	-------            ENDPROC            _boolRead
+	-------            PROC               _wordRead
+	C:08C5H            LINE#              216
+	C:08C9H            LINE#              217
+	C:08E6H            LINE#              219
+	C:08E7H            LINE#              218
+	C:08F1H            LINE#              219
+	C:08F1H            LINE#              219
+	-------            ENDPROC            _wordRead
+	-------            PROC               _coilWrite
+	C:08F2H            LINE#              221
+	C:08F2H            LINE#              222
+	C:090AH            LINE#              227
+	C:090BH            LINE#              223
+	C:091FH            LINE#              224
+	C:092CH            LINE#              225
+	C:0931H            LINE#              226
+	C:0932H            LINE#              227
+	C:0932H            LINE#              227
+	-------            ENDPROC            _coilWrite
+	-------            PROC               _holdingRegisterWrite
+	D:0010H            SYMBOL             startAddress
+	D:0012H            SYMBOL             value
+	C:0933H            LINE#              229
+	C:093BH            LINE#              230
+	C:0955H            LINE#              233
+	C:0956H            LINE#              231
+	C:0961H            LINE#              232
+	C:0962H            LINE#              233
+	C:0962H            LINE#              233
+	-------            ENDPROC            _holdingRegisterWrite
+	-------            PROC               _oops
+	C:0963H            LINE#              235
+	C:0963H            LINE#              236
+	C:0966H            LINE#              237
+	C:0968H            LINE#              238
+	C:096AH            LINE#              239
+	-------            ENDPROC            _oops
+	-------            PROC               _write
+	D:0010H            SYMBOL             len
+	D:0013H            SYMBOL             i
+	D:0011H            SYMBOL             CRC
+	C:096DH            LINE#              241
+	C:096FH            LINE#              245
+	C:0973H            LINE#              246
+	C:0976H            LINE#              248
+	C:0978H            LINE#              246
+	C:097CH            LINE#              248
+	C:0983H            LINE#              249
+	C:098AH            LINE#              251
+	C:098CH            LINE#              252
+	C:09B4H            LINE#              253
+	C:09B6H            LINE#              255
+	C:09B6H            LINE#              255
+	-------            ENDPROC            _write
+	-------            PROC               _crc
+	B:0000H            SYMBOL             lsb
+	D:0014H            SYMBOL             j
+	C:09B7H            LINE#              257
+	C:09B7H            LINE#              260
+	C:09BBH            LINE#              262
+	C:09C3H            LINE#              263
+	C:09CBH            LINE#              264
+	C:09CEH            LINE#              265
+	C:09D5H            LINE#              266
+	C:09E0H            LINE#              267
+	C:09E3H            LINE#              268
+	C:09EBH            LINE#              264
+	C:09F2H            LINE#              262
+	C:09F5H            LINE#              272
+	C:09F9H            LINE#              273
+	C:09F9H            LINE#              273
+	-------            ENDPROC            _crc
+	-------            PROC               _div8RndUp
+	C:09FAH            LINE#              275
+	C:09FAH            LINE#              276
+	C:0A0CH            LINE#              277
+	C:0A0CH            LINE#              277
+	-------            ENDPROC            _div8RndUp
+	-------            PROC               _bytesToWord
+	C:0A0DH            LINE#              279
+	C:0A0DH            LINE#              280
+	C:0A1DH            LINE#              281
+	C:0A1DH            LINE#              281
+	-------            ENDPROC            _bytesToWord
+	-------            PROC               main
+	C:0A1EH            LINE#              17
+	C:0A1EH            LINE#              18
+	C:0A21H            LINE#              19
+	C:0A24H            LINE#              20
+	C:0A27H            LINE#              22
+	C:0A29H            LINE#              24
+	C:0A2EH            LINE#              25
+	C:0A33H            LINE#              31
+	C:0A3AH            LINE#              32
+	C:0A41H            LINE#              35
+	C:0A44H            LINE#              37
+	-------            ENDPROC            main
+	-------            ENDMOD             RS485_debug
+	C:01F7H            PUBLIC             ?C_START3
+	C:000EH            PUBLIC             ?C_SLDIV_SP
+	C:003AH            PUBLIC             ?C_SIDIV
+	C:0062H            PUBLIC             ?C_UIDIV
+	C:00E7H            PUBLIC             CPL_R4R5
+	C:00EFH            PUBLIC             CPL_R6R7
+	C:009AH            PUBLIC             DIV_2
+	D:00A0H            PUBLIC             HPD_ADDR
+	N:007FH            PUBLIC             IDATALEN
+	N:00FFH            PUBLIC             _INITP2?
+	C:00FEH            PUBLIC             DIVL?C_1_SP
+	C:00F7H            PUBLIC             ?C_ULDIV_SP
+	C:017EH            PUBLIC             GESI?C
+	C:0193H            PUBLIC             DIVL?C_1
+	C:018CH            PUBLIC             ?C_ULDIV
+	C:019CH            PUBLIC             ?LOOP_DIV_SZ
+	C:01D4H            PUBLIC             ?DIV_STORE_Q_SZ
+	C:01E8H            PUBLIC             RST_STK4?C
+
+UNCALLED SEGMENTS:
+------------------
+    ?PR?serialRX?RS485_DEBUG: Function serialRX in file C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODUL&
+AR_COMPUTER\RIDE7\RS485_DEBUG\RS485_DEBUG.OBJ was not called
+    ?PR?_wordRead?RS485_DEBUG: Function _wordRead in file C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MOD&
+ULAR_COMPUTER\RIDE7\RS485_DEBUG\RS485_DEBUG.OBJ was not called
+
+----------------------
+SUGGESTED OPTIMIZATION
+----------------------
+Warning: 64 (40H) data bytes in the range [00H-80H] are available for storage.
+         Consider using some of these for 'data' variables in your source files.
+
+
+LINK/LOCATE RUN COMPLETE,  NO ERROR FOUND.
+

@@ -12,7 +12,7 @@ INTER-MODULE CROSS-REFERENCE LISTING
           Inits . . . . . . . CODE    [SERIAL_AND_TIMER_TEST]:  SERIAL_AND_TIMER_TEST
           main  . . . . . . . CODE    [SERIAL_AND_TIMER_TEST]:  C3S
           milli . . . . . . . DATA    [SERIAL_AND_TIMER_TEST]: 
-          serialRX  . . . . . CODE    [SERIAL_AND_TIMER_TEST]: 
+          serialRX  . . . . . CODE    [SERIAL_AND_TIMER_TEST]:  SERIAL_AND_TIMER_TEST
           TIM1_INIT . . . . . NUMBER  [** UNRESOLVED **]:
           timer0_isr  . . . . CODE    [SERIAL_AND_TIMER_TEST]: 
           XSTACKLEN . . . . . NUMBER  [** UNRESOLVED **]:
