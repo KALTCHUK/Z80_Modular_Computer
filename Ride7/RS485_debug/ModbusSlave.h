@@ -69,6 +69,8 @@ void milliStart(void) {
 }
 
 void modbusBegin(unsigned int baud) {
+    unsigned int kTO=38400;
+
     milliStart();
 
     if (baud >= 19200) {
@@ -76,8 +78,8 @@ void modbusBegin(unsigned int baud) {
         frameTimeout = 4;
     }
     else {
-        charTimeout = 15000/baud;		// in the range [1; 13]
-        frameTimeout = 35000/baud;		// in the range [2; 30]
+        charTimeout = 4;        		    // NEW
+        frameTimeout = 2 * charTimeout;		// NEW
     }
 
     milli = 0;

@@ -1,4 +1,4 @@
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE  1
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE  1
 
 QCW(0x00002F32)
 
@@ -17,55 +17,57 @@ COMPILER INVOKED BY: QUIET GENERATEDEPFILE OJ(C:\Users\kaltc\Documents\GitHub\Z8
 stmt level    source
    1          /*
    2           RS485_debug.c - Modbus RTU Slave controller (AT89C4051).
-   3           
-   4           including modbusBegin():                               didn't wor
-            -k
-   5           taking out the final part of modbusBegin() (RI test):  OK
-   6           restores original modbusBegin() and included milli=0:  OK
-   7           back with modbusPoll():                                didn't wor
-            -k
-   8           including milli=0 in modbusPoll():                     didn't wor
-            -k
-   9           new approach for modbusPoll (wait for a character):
-  10          */
-  11          
-  12          #include <REG51.h>
-  13          #include "Serial.h"
-  14          #include "EEPROM.h"
+   3            */
+   4          
+   5          #include <REG51.h>
+   6          #include "Serial.h"
+   7          #include "EEPROM.h"
 
-*** WARNING C176 IN LINE 113 OF EEPROM.h : '|' : only one operand have bit type
+*** WARNING C092 IN LINE 48 OF EEPROM.h : 'd' is declared but not used
+
+*** WARNING C092 IN LINE 70 OF EEPROM.h : 'c' is declared but not used
+
+*** WARNING C020 IN LINE 70 OF EEPROM.h : 'c' is assigned a value that is never
+            - used
+
+*** WARNING C176 IN LINE 120 OF EEPROM.h : '|' : only one operand have bit type
             -
-  15          #include "ModbusSlave.h"
+   8          #include "ModbusSlave.h"
 
 *** WARNING C233 IN LINE 57 OF ModbusSlave.h : using absolute registers togethe
             -r with interrupts can cause register corruptions (mixup of register
             - banks)
-  16          
-  17          void main() {
-  18   1      	numCoils = 8;
-  19   1      	numDiscreteInputs = 0;
-  20   1      	numHoldingRegisters = 4;
-  21   1      
-  22   1          _DE = 0;
-  23   1      
-  24   1      baud = 19200;	// factory set baud rate.
-  25   1      	id = 1;			// factory set modbus slave id.
-  26   1      
-  27   1      /*	if (_FS == 1) {
-  28   1      		baud = EEPROMread(0);
-  29   1      		id =  EEPROMread(1);
-  30   1      	}*/
-  31   1      	serialInit(baud);
-  32   1      	modbusBegin(baud);
-  33   1      	
-  34   1      	while (1) {
-  35   2              modbusPoll();
-  36   2          }
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE 29
 
-  37   1      }
-  38          
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE 31
+*** WARNING C092 IN LINE 72 OF ModbusSlave.h : 'kTO' is declared but not used
+
+*** WARNING C020 IN LINE 72 OF ModbusSlave.h : 'kTO' is assigned a value that i
+            -s never used
+   9          
+  10          void main() {
+  11   1      	numCoils = 8;
+  12   1      	numDiscreteInputs = 0;
+  13   1      	numHoldingRegisters = 4;
+  14   1      
+  15   1          _DE = 0;
+  16   1      
+  17   1      baud = 19200;	// factory set baud rate.
+  18   1      	id = 1;			// factory set modbus slave id.
+  19   1      
+  20   1      	if (_FS == 1) {
+  21   2      		baud = EEPROMread(0);
+  22   2      		id =  EEPROMread(1);
+  23   2      	}
+  24   1      	serialInit(baud);
+  25   1      	modbusBegin(baud);
+  26   1      	
+  27   1      	while (1) {
+  28   2              modbusPoll();
+  29   2          }
+  30   1      }
+  31          
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 29
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 30
+
 
 ASSEMBLY LISTING OF GENERATED OBJECT CODE
 
@@ -127,7 +129,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0053         ?CASE7:
                                            ; SOURCE LINE # 30 
 0053 758DD0         MOV    TH1,#0D0H
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE  2
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE  2
 
                                            ; SOURCE LINE # 31 
 0056 801C           SJMP   ?NXT1
@@ -187,7 +189,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0000 3098FD         JNB    RI,?WHILE3
                                            ; SOURCE LINE # 62 
 0003 C298           CLR    RI
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE  3
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE  3
 
                                            ; SOURCE LINE # 63 
 0005 AF99           MOV    R7,SBUF
@@ -197,217 +199,196 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
             ; FUNCTION serialRX (END)
 
             ; FUNCTION _I2C_delay (BEGIN)
-              ; Register R6R7 is assigned to parameter d
-              ; R4R5 is assigned to i
-                                           ; SOURCE LINE # 51 
-0000 E4             CLR    A
-0001 FC             MOV    R4,A
-0002 FD             MOV    R5,A
-0003         ?FOR1:
-0003 8EF0           MOV    B,R6
-0005 B2F7           CPL    B.7
-0007 EC             MOV    A,R4
-0008 6480           XRL    A,#080H
-000A B5F004         CJNE   A,B,?LAB24
-000D ED             MOV    A,R5
-000E B50700         CJNE   A,AR7,?LAB24
-0011         ?LAB24:
-0011 5007           JNC    ?NXT8
-0013 0D             INC    R5
-0014 ED             MOV    A,R5
-0015 70EC           JNZ    ?FOR1
-0017 0C             INC    R4
-0018 80E9           SJMP   ?FOR1
-001A         ?NXT8:
-                                           ; SOURCE LINE # 52 
-001A 22             RET    
+                                           ; SOURCE LINE # 55 
+0000 22             RET    
 
             ; FUNCTION _I2C_delay (END)
 
             ; FUNCTION I2C_start (BEGIN)
-                                           ; SOURCE LINE # 58 
+                                           ; SOURCE LINE # 61 
 0000 C2B2           CLR    INT0
-                                           ; SOURCE LINE # 59 
+                                           ; SOURCE LINE # 62 
 0002 E4             CLR    A
 0003 FE             MOV    R6,A
-0004 7F01           MOV    R7,#001H
-0006 120000  R      LCALL  _I2C_delay
-                                           ; SOURCE LINE # 60 
-0009 C2B3           CLR    INT1
-                                           ; SOURCE LINE # 61 
-000B 22             RET    
+0004 FF             MOV    R7,A
+0005 120000  R      LCALL  _I2C_delay
+                                           ; SOURCE LINE # 63 
+0008 C2B3           CLR    INT1
+                                           ; SOURCE LINE # 64 
+000A 22             RET    
 
             ; FUNCTION I2C_start (END)
 
             ; FUNCTION I2C_stop (BEGIN)
-0000         ?WHILE5:
-                                           ; SOURCE LINE # 67 
-0000 30B2FD         JNB    INT0,?WHILE5
-                                           ; SOURCE LINE # 69 
-0003 7E03           MOV    R6,#003H
-0005 7FE8           MOV    R7,#0E8H
-0007 120000  R      LCALL  _I2C_delay
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE  4
-
-                                           ; SOURCE LINE # 70 
-000A D2B3           SETB   INT1
-                                           ; SOURCE LINE # 71 
-000C E4             CLR    A
-000D FE             MOV    R6,A
-000E 7F01           MOV    R7,#001H
-0010 120000  R      LCALL  _I2C_delay
-                                           ; SOURCE LINE # 72 
-0013 D2B2           SETB   INT0
-                                           ; SOURCE LINE # 73 
-0015 22             RET    
+                                           ; SOURCE LINE # 74 
+0000 E4             CLR    A
+0001 FE             MOV    R6,A
+0002 FF             MOV    R7,A
+0003 120000  R      LCALL  _I2C_delay
+                                           ; SOURCE LINE # 75 
+0006 D2B3           SETB   INT1
+                                           ; SOURCE LINE # 76 
+0008 120000  R      LCALL  _I2C_delay
+                                           ; SOURCE LINE # 77 
+000B D2B2           SETB   INT0
+                                           ; SOURCE LINE # 78 
+000D 22             RET    
 
             ; FUNCTION I2C_stop (END)
 
             ; FUNCTION _I2C_write (BEGIN)
-                                           ; SOURCE LINE # 78 
-0000 8F00    R      MOV    byte,R7
-                                           ; SOURCE LINE # 81 
-0002 750000  R      MOV    bt,#000H
-0005         ?FOR3:
-                                           ; SOURCE LINE # 82 
-0005 E500    R      MOV    A,byte
-0007 30E704         JNB    ACC.7,?ELSE1
+              ; Register R5 is assigned to parameter byte
                                            ; SOURCE LINE # 83 
-000A D2B2           SETB   INT0
-000C 8002           SJMP   ?NXT17
-000E         ?ELSE1:
-                                           ; SOURCE LINE # 85 
-000E C2B2           CLR    INT0
-0010         ?NXT17:
+0000 8F05           MOV    AR5,R7
+              ; R4 is assigned to bt
+                                           ; SOURCE LINE # 86 
+0002 7C00           MOV    R4,#000H
+0004         ?FOR1:
                                            ; SOURCE LINE # 87 
-0010 E4             CLR    A
-0011 FE             MOV    R6,A
-0012 7F01           MOV    R7,#001H
-0014 120000  R      LCALL  _I2C_delay
+0004 ED             MOV    A,R5
+0005 30E704         JNB    ACC.7,?ELSE1
                                            ; SOURCE LINE # 88 
-0017 D2B3           SETB   INT1
-                                           ; SOURCE LINE # 89 
-0019 120000  R      LCALL  _I2C_delay
-                                           ; SOURCE LINE # 90 
-001C C2B3           CLR    INT1
-                                           ; SOURCE LINE # 91 
-001E E500    R      MOV    A,byte
-0020 C3             CLR    C
-0021 33             RLC    A
-0022 F500    R      MOV    byte,A
-                                           ; SOURCE LINE # 81 
-0024 0500    R      INC    bt
-0026 E500    R      MOV    A,bt
-0028 B408DA         CJNE   A,#008H,?FOR3
-                                           ; SOURCE LINE # 93 
-002B D2B3           SETB   INT1
-                                           ; SOURCE LINE # 94 
-002D 120000  R      LCALL  _I2C_delay
-              ; R3 is assigned to reply
-                                           ; SOURCE LINE # 95 
-0030 7B00           MOV    R3,#000H
-0032 30B201         JNB    INT0,?LAB35
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE  5
+0008 D2B2           SETB   INT0
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE  4
 
-0035 0B             INC    R3
-0036         ?LAB35:
+000A 8002           SJMP   ?NXT11
+000C         ?ELSE1:
+                                           ; SOURCE LINE # 90 
+000C C2B2           CLR    INT0
+000E         ?NXT11:
+                                           ; SOURCE LINE # 92 
+000E E4             CLR    A
+000F FE             MOV    R6,A
+0010 FF             MOV    R7,A
+0011 120000  R      LCALL  _I2C_delay
+                                           ; SOURCE LINE # 93 
+0014 D2B3           SETB   INT1
+                                           ; SOURCE LINE # 94 
+0016 120000  R      LCALL  _I2C_delay
+                                           ; SOURCE LINE # 95 
+0019 C2B3           CLR    INT1
                                            ; SOURCE LINE # 96 
-0036 C2B3           CLR    INT1
-                                           ; SOURCE LINE # 97 
-0038 120000  R      LCALL  _I2C_delay
+001B ED             MOV    A,R5
+001C C3             CLR    C
+001D 33             RLC    A
+001E FD             MOV    R5,A
+                                           ; SOURCE LINE # 86 
+001F 0C             INC    R4
+0020 BC08E1         CJNE   R4,#008H,?FOR1
                                            ; SOURCE LINE # 98 
-003B 8B07           MOV    AR7,R3
+0023 D2B2           SETB   INT0
                                            ; SOURCE LINE # 99 
-003D 22             RET    
+0025 D2B3           SETB   INT1
+                                           ; SOURCE LINE # 100 
+0027 120000  R      LCALL  _I2C_delay
+              ; R3 is assigned to reply
+                                           ; SOURCE LINE # 101 
+002A 7B00           MOV    R3,#000H
+002C 30B201         JNB    INT0,?LAB29
+002F 0B             INC    R3
+0030         ?LAB29:
+                                           ; SOURCE LINE # 102 
+0030 C2B2           CLR    INT0
+                                           ; SOURCE LINE # 103 
+0032 C2B3           CLR    INT1
+                                           ; SOURCE LINE # 104 
+0034 120000  R      LCALL  _I2C_delay
+                                           ; SOURCE LINE # 105 
+0037 8B07           MOV    AR7,R3
+                                           ; SOURCE LINE # 106 
+0039 22             RET    
 
             ; FUNCTION _I2C_write (END)
 
             ; FUNCTION _I2C_read (BEGIN)
-              ; Register R3 is assigned to parameter condition
-                                           ; SOURCE LINE # 104 
-0000 8F03           MOV    AR3,R7
-                                           ; SOURCE LINE # 105 
-0002 750000  R      MOV    byte,#000H
-                                           ; SOURCE LINE # 107 
-0005 750000  R      MOV    bt,#000H
-0008         ?FOR5:
-                                           ; SOURCE LINE # 108 
-0008 D2B2           SETB   INT0
-                                           ; SOURCE LINE # 109 
-000A E4             CLR    A
-000B FE             MOV    R6,A
-000C 7F01           MOV    R7,#001H
-000E 120000  R      LCALL  _I2C_delay
-                                           ; SOURCE LINE # 110 
-0011 D2B3           SETB   INT1
+              ; Register R5 is assigned to parameter condition
                                            ; SOURCE LINE # 111 
-0013 120000  R      LCALL  _I2C_delay
-0016         ?WHILE8:
+0000 8F05           MOV    AR5,R7
+              ; R4 is assigned to byte
                                            ; SOURCE LINE # 112 
-0016 20B302         JB     INT1,?NXT25
-0019 80FB           SJMP   ?WHILE8
-001B         ?NXT25:
-                                           ; SOURCE LINE # 113 
-001B E500    R      MOV    A,byte
-001D C3             CLR    C
-001E 33             RLC    A
-001F FE             MOV    R6,A
-0020 A2B2           MOV    C,INT0
-0022 E4             CLR    A
-0023 33             RLC    A
-0024 FA             MOV    R2,A
-0025 EE             MOV    A,R6
-0026 4A             ORL    A,R2
-0027 F500    R      MOV    byte,A
+0002 7C00           MOV    R4,#000H
+              ; R3 is assigned to bt
                                            ; SOURCE LINE # 114 
-0029 C2B3           CLR    INT1
-                                           ; SOURCE LINE # 107 
-002B 0500    R      INC    bt
-002D E500    R      MOV    A,bt
-002F B408D6         CJNE   A,#008H,?FOR5
-                                           ; SOURCE LINE # 116 
-0032 EB             MOV    A,R3
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE  6
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE  5
 
-0033 B40104         CJNE   A,#001H,?ELSE3
+0004 7B00           MOV    R3,#000H
+0006         ?FOR3:
+                                           ; SOURCE LINE # 115 
+0006 D2B2           SETB   INT0
+                                           ; SOURCE LINE # 116 
+0008 E4             CLR    A
+0009 FF             MOV    R7,A
+000A FE             MOV    R6,A
+000B 120000  R      LCALL  _I2C_delay
                                            ; SOURCE LINE # 117 
-0036 C2B2           CLR    INT0
-0038 8002           SJMP   ?NXT26
-003A         ?ELSE3:
+000E D2B3           SETB   INT1
+                                           ; SOURCE LINE # 118 
+0010 120000  R      LCALL  _I2C_delay
+0013         ?WHILE6:
                                            ; SOURCE LINE # 119 
-003A D2B2           SETB   INT0
-003C         ?NXT26:
+0013 20B302         JB     INT1,?NXT19
+0016 80FB           SJMP   ?WHILE6
+0018         ?NXT19:
+                                           ; SOURCE LINE # 120 
+0018 EC             MOV    A,R4
+0019 C3             CLR    C
+001A 33             RLC    A
+001B FE             MOV    R6,A
+001C A2B2           MOV    C,INT0
+001E E4             CLR    A
+001F 33             RLC    A
+0020 FA             MOV    R2,A
+0021 EE             MOV    A,R6
+0022 4A             ORL    A,R2
+0023 FC             MOV    R4,A
                                            ; SOURCE LINE # 121 
-003C E4             CLR    A
-003D FE             MOV    R6,A
-003E 7F01           MOV    R7,#001H
-0040 120000  R      LCALL  _I2C_delay
-                                           ; SOURCE LINE # 122 
-0043 D2B3           SETB   INT1
+0024 C2B3           CLR    INT1
+                                           ; SOURCE LINE # 114 
+0026 0B             INC    R3
+0027 BB08DC         CJNE   R3,#008H,?FOR3
                                            ; SOURCE LINE # 123 
-0045 120000  R      LCALL  _I2C_delay
-0048         ?WHILE9:
+002A ED             MOV    A,R5
+002B B40104         CJNE   A,#001H,?ELSE3
                                            ; SOURCE LINE # 124 
-0048 30B3FD         JNB    INT1,?WHILE9
-                                           ; SOURCE LINE # 125 
-004B C2B3           CLR    INT1
+002E C2B2           CLR    INT0
+0030 8002           SJMP   ?NXT20
+0032         ?ELSE3:
                                            ; SOURCE LINE # 126 
-004D E4             CLR    A
-004E FE             MOV    R6,A
-004F 7F01           MOV    R7,#001H
-0051 120000  R      LCALL  _I2C_delay
-                                           ; SOURCE LINE # 127 
-0054 AF00    R      MOV    R7,byte
+0032 D2B2           SETB   INT0
+0034         ?NXT20:
                                            ; SOURCE LINE # 128 
-0056 22             RET    
+0034 E4             CLR    A
+0035 FE             MOV    R6,A
+0036 FF             MOV    R7,A
+0037 120000  R      LCALL  _I2C_delay
+                                           ; SOURCE LINE # 129 
+003A D2B3           SETB   INT1
+                                           ; SOURCE LINE # 130 
+003C 120000  R      LCALL  _I2C_delay
+003F         ?WHILE7:
+                                           ; SOURCE LINE # 131 
+003F 30B3FD         JNB    INT1,?WHILE7
+                                           ; SOURCE LINE # 132 
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE  6
+
+0042 C2B3           CLR    INT1
+                                           ; SOURCE LINE # 133 
+0044 E4             CLR    A
+0045 FE             MOV    R6,A
+0046 FF             MOV    R7,A
+0047 120000  R      LCALL  _I2C_delay
+                                           ; SOURCE LINE # 134 
+004A 8C07           MOV    AR7,R4
+                                           ; SOURCE LINE # 135 
+004C 22             RET    
 
             ; FUNCTION _I2C_read (END)
 
             ; FUNCTION _EEPROMread (BEGIN)
-                                           ; SOURCE LINE # 133 
+                                           ; SOURCE LINE # 140 
 0000 8E00    R      MOV    address,R6
 0002 8F00    R      MOV    address+01H,R7
-                                           ; SOURCE LINE # 136 
+                                           ; SOURCE LINE # 143 
 0004 AA00    R      MOV    R2,address
 0006 E500    R      MOV    A,address+01H
 0008 C3             CLR    C
@@ -417,64 +398,64 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 000C CA             XCH    A,R2
 000D F500    R      MOV    address+01H,A
 000F 8A00    R      MOV    address,R2
-                                           ; SOURCE LINE # 137 
+                                           ; SOURCE LINE # 144 
 0011 120000  R      LCALL  I2C_start
-                                           ; SOURCE LINE # 138 
+                                           ; SOURCE LINE # 145 
 0014 7FA0           MOV    R7,#0A0H
 0016 120000  R      LCALL  _I2C_write
-                                           ; SOURCE LINE # 139 
+                                           ; SOURCE LINE # 146 
 0019 AF00    R      MOV    R7,address
 001B 120000  R      LCALL  _I2C_write
-                                           ; SOURCE LINE # 140 
+                                           ; SOURCE LINE # 147 
 001E AF00    R      MOV    R7,address+01H
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE  7
-
 0020 120000  R      LCALL  _I2C_write
-                                           ; SOURCE LINE # 141 
+                                           ; SOURCE LINE # 148 
 0023 120000  R      LCALL  I2C_stop
-                                           ; SOURCE LINE # 142 
+                                           ; SOURCE LINE # 149 
 0026 E4             CLR    A
 0027 FE             MOV    R6,A
-0028 7F01           MOV    R7,#001H
-002A 120000  R      LCALL  _I2C_delay
-                                           ; SOURCE LINE # 143 
-002D 120000  R      LCALL  I2C_start
-                                           ; SOURCE LINE # 144 
-0030 7FA1           MOV    R7,#0A1H
-0032 120000  R      LCALL  _I2C_write
-                                           ; SOURCE LINE # 145 
-0035 7F01           MOV    R7,#001H
-0037 120000  R      LCALL  _I2C_read
-003A EF             MOV    A,R7
-003B FA             MOV    R2,A
-003C E4             CLR    A
-003D FB             MOV    R3,A
-003E FF             MOV    R7,A
-003F C002           PUSH   AR2
-0041 C003           PUSH   AR3
-0043 120000  R      LCALL  _I2C_read
-0046 D0E0           POP    ACC
-0048 4F             ORL    A,R7
-0049 F500    R      MOV    word+01H,A
-004B D0E0           POP    ACC
-004D F500    R      MOV    word,A
-                                           ; SOURCE LINE # 146 
-004F 120000  R      LCALL  I2C_stop
-                                           ; SOURCE LINE # 148 
-0052 AE00    R      MOV    R6,word
-0054 AF00    R      MOV    R7,word+01H
-                                           ; SOURCE LINE # 149 
-0056 22             RET    
+0028 FF             MOV    R7,A
+0029 120000  R      LCALL  _I2C_delay
+                                           ; SOURCE LINE # 150 
+002C 120000  R      LCALL  I2C_start
+                                           ; SOURCE LINE # 151 
+002F 7FA1           MOV    R7,#0A1H
+0031 120000  R      LCALL  _I2C_write
+                                           ; SOURCE LINE # 152 
+0034 7F01           MOV    R7,#001H
+0036 120000  R      LCALL  _I2C_read
+0039 EF             MOV    A,R7
+003A FA             MOV    R2,A
+003B E4             CLR    A
+003C FB             MOV    R3,A
+003D FF             MOV    R7,A
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE  7
+
+003E C002           PUSH   AR2
+0040 C003           PUSH   AR3
+0042 120000  R      LCALL  _I2C_read
+0045 D0E0           POP    ACC
+0047 4F             ORL    A,R7
+0048 F500    R      MOV    word+01H,A
+004A D0E0           POP    ACC
+004C F500    R      MOV    word,A
+                                           ; SOURCE LINE # 153 
+004E 120000  R      LCALL  I2C_stop
+                                           ; SOURCE LINE # 155 
+0051 AE00    R      MOV    R6,word
+0053 AF00    R      MOV    R7,word+01H
+                                           ; SOURCE LINE # 156 
+0055 22             RET    
 
             ; FUNCTION _EEPROMread (END)
 
             ; FUNCTION _EEPROMwrite (BEGIN)
-                                           ; SOURCE LINE # 154 
+                                           ; SOURCE LINE # 161 
 0000 8E00    R      MOV    address,R6
 0002 8F00    R      MOV    address+01H,R7
 0004 8C00    R      MOV    word,R4
 0006 8D00    R      MOV    word+01H,R5
-                                           ; SOURCE LINE # 155 
+                                           ; SOURCE LINE # 162 
 0008 AA00    R      MOV    R2,address
 000A E500    R      MOV    A,address+01H
 000C C3             CLR    C
@@ -484,32 +465,32 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0010 CA             XCH    A,R2
 0011 F500    R      MOV    address+01H,A
 0013 8A00    R      MOV    address,R2
-                                           ; SOURCE LINE # 156 
+                                           ; SOURCE LINE # 163 
 0015 120000  R      LCALL  I2C_start
-                                           ; SOURCE LINE # 157 
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE  8
-
+                                           ; SOURCE LINE # 164 
 0018 7FA0           MOV    R7,#0A0H
 001A 120000  R      LCALL  _I2C_write
-                                           ; SOURCE LINE # 158 
+                                           ; SOURCE LINE # 165 
 001D AF00    R      MOV    R7,address
 001F 120000  R      LCALL  _I2C_write
-                                           ; SOURCE LINE # 159 
+                                           ; SOURCE LINE # 166 
 0022 AF00    R      MOV    R7,address+01H
 0024 120000  R      LCALL  _I2C_write
-                                           ; SOURCE LINE # 160 
+                                           ; SOURCE LINE # 167 
 0027 AF00    R      MOV    R7,word
 0029 120000  R      LCALL  _I2C_write
-                                           ; SOURCE LINE # 161 
+                                           ; SOURCE LINE # 168 
 002C AF00    R      MOV    R7,word+01H
 002E 120000  R      LCALL  _I2C_write
-                                           ; SOURCE LINE # 162 
+                                           ; SOURCE LINE # 169 
 0031 E4             CLR    A
 0032 FE             MOV    R6,A
-0033 7F01           MOV    R7,#001H
-0035 120000  R      LCALL  _I2C_delay
-                                           ; SOURCE LINE # 163 
-0038 020000  R      LJMP   I2C_stop
+0033 FF             MOV    R7,A
+0034 120000  R      LCALL  _I2C_delay
+                                           ; SOURCE LINE # 170 
+0037 020000  R      LJMP   I2C_stop
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE  8
+
 
             ; FUNCTION _EEPROMwrite (END)
 
@@ -524,9 +505,9 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 56 
 000A 0500    R      INC    milli+01H
 000C E500    R      MOV    A,milli+01H
-000E 7002           JNZ    ?NXT29
+000E 7002           JNZ    ?NXT23
 0010 0500    R      INC    milli
-0012         ?NXT29:
+0012         ?NXT23:
 0012 D0D0           POP    PSW
 0014 D0E0           POP    ACC
                                            ; SOURCE LINE # 57 
@@ -547,8 +528,6 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 000B D28C           SETB   TR0
                                            ; SOURCE LINE # 65 
 000D D2A9           SETB   ET0
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE  9
-
                                            ; SOURCE LINE # 66 
 000F D2AF           SETB   EA
                                            ; SOURCE LINE # 68 
@@ -561,128 +540,114 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
             ; FUNCTION milliStart (END)
 
             ; FUNCTION _modbusBegin (BEGIN)
-                                           ; SOURCE LINE # 71 
-0000 8E00    R      MOV    baud,R6
-0002 8F00    R      MOV    baud+01H,R7
-                                           ; SOURCE LINE # 72 
-0004 120000  R      LCALL  milliStart
+              ; Register R6R7 is assigned to parameter baud
                                            ; SOURCE LINE # 74 
-0007 EE             MOV    A,R6
-0008 B44B00         CJNE   A,#04BH,?LAB60
-000B         ?LAB60:
-000B 400D           JC     ?ELSE6
-                                           ; SOURCE LINE # 75 
-000D E4             CLR    A
-000E F500    R      MOV    charTimeout,A
-0010 750002  R      MOV    charTimeout+01H,#002H
+0000 120000  R      LCALL  milliStart
                                            ; SOURCE LINE # 76 
-0013 F500    R      MOV    frameTimeout,A
-0015 750004  R      MOV    frameTimeout+01H,#004H
-0018 802A           SJMP   ?NXT33
-001A         ?ELSE6:
-                                           ; SOURCE LINE # 79 
-001A 7E3A           MOV    R6,#03AH
-001C 7F98           MOV    R7,#098H
-001E AC00    R      MOV    R4,baud
-0020 AD00    R      MOV    R5,baud+01H
-0022 120000  R      LCALL  ?C_UIDIV
-0025 8E00    R      MOV    charTimeout,R6
-0027 8F00    R      MOV    charTimeout+01H,R7
-                                           ; SOURCE LINE # 80 
-0029 E4             CLR    A
-002A C0E0           PUSH   ACC
-002C C0E0           PUSH   ACC
-002E 7488           MOV    A,#088H
-0030 C0E0           PUSH   ACC
-0032 74B8           MOV    A,#0B8H
-0034 C0E0           PUSH   ACC
-0036 E4             CLR    A
-0037 FC             MOV    R4,A
-0038 FD             MOV    R5,A
-0039 AE00    R      MOV    R6,baud
-003B AF00    R      MOV    R7,baud+01H
-003D 120000  R      LCALL  ?C_SLDIV_SP
-0040 8E00    R      MOV    frameTimeout,R6
-0042 8F00    R      MOV    frameTimeout+01H,R7
-0044         ?NXT33:
-                                           ; SOURCE LINE # 83 
-0044 E4             CLR    A
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE 10
+0003 BE4B00         CJNE   R6,#04BH,?LAB55
+0006         ?LAB55:
+0006 E4             CLR    A
+0007 400C           JC     ?ELSE6
+                                           ; SOURCE LINE # 77 
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE  9
 
-0045 F500    R      MOV    milli,A
-0047 F500    R      MOV    milli+01H,A
-0049         ?DO1:
+0009 F500    R      MOV    charTimeout,A
+000B 750002  R      MOV    charTimeout+01H,#002H
+                                           ; SOURCE LINE # 78 
+000E F500    R      MOV    frameTimeout,A
+0010 750004  R      MOV    frameTimeout+01H,#004H
+0013 8012           SJMP   ?NXT27
+0015         ?ELSE6:
+                                           ; SOURCE LINE # 81 
+0015 F500    R      MOV    charTimeout,A
+0017 750004  R      MOV    charTimeout+01H,#004H
+                                           ; SOURCE LINE # 82 
+001A E500    R      MOV    A,charTimeout+01H
+001C AA00    R      MOV    R2,charTimeout
+001E C3             CLR    C
+001F 33             RLC    A
+0020 CA             XCH    A,R2
+0021 33             RLC    A
+0022 CA             XCH    A,R2
+0023 F500    R      MOV    frameTimeout+01H,A
+0025 8A00    R      MOV    frameTimeout,R2
+0027         ?NXT27:
                                            ; SOURCE LINE # 85 
-0049 309805         JNB    RI,?TEST1
-                                           ; SOURCE LINE # 86 
-004C 120000  R      LCALL  milliStart
+0027 E4             CLR    A
+0028 F500    R      MOV    milli,A
+002A F500    R      MOV    milli+01H,A
+002C         ?DO1:
                                            ; SOURCE LINE # 87 
-004F C298           CLR    RI
-0051         ?TEST1:
-0051 E500    R      MOV    A,milli
-0053 B50005  R      CJNE   A,frameTimeout,?LAB62
-0056 E500    R      MOV    A,milli+01H
-0058 B50000  R      CJNE   A,frameTimeout+01H,?LAB62
-005B         ?LAB62:
-005B 40EC           JC     ?DO1
-                                           ; SOURCE LINE # 90 
-005D 22             RET    
+002C 309805         JNB    RI,?TEST1
+                                           ; SOURCE LINE # 88 
+002F 120000  R      LCALL  milliStart
+                                           ; SOURCE LINE # 89 
+0032 C298           CLR    RI
+0034         ?TEST1:
+0034 E500    R      MOV    A,milli
+0036 B50005  R      CJNE   A,frameTimeout,?LAB58
+0039 E500    R      MOV    A,milli+01H
+003B B50000  R      CJNE   A,frameTimeout+01H,?LAB58
+003E         ?LAB58:
+003E 40EC           JC     ?DO1
+                                           ; SOURCE LINE # 92 
+0040 22             RET    
 
             ; FUNCTION _modbusBegin (END)
 
             ; FUNCTION modbusPoll (BEGIN)
-                                           ; SOURCE LINE # 93 
+                                           ; SOURCE LINE # 95 
 0000 750000  R      MOV    i,#000H
-0003         ?WHILE12:
-                                           ; SOURCE LINE # 96 
-0003 3098FD         JNB    RI,?WHILE12
+0003         ?WHILE10:
                                            ; SOURCE LINE # 98 
+0003 3098FD         JNB    RI,?WHILE10
+                                           ; SOURCE LINE # 100 
 0006 E4             CLR    A
 0007 F500    R      MOV    milli,A
 0009 F500    R      MOV    milli+01H,A
-000B         ?WHILE13:
-                                           ; SOURCE LINE # 99 
-000B E500    R      MOV    A,milli
-000D B50005  R      CJNE   A,charTimeout,?LAB126
-0010 E500    R      MOV    A,milli+01H
-0012 B50000  R      CJNE   A,charTimeout+01H,?LAB126
-0015         ?LAB126:
-0015 501D           JNC    ?NXT69
-0017 E500    R      MOV    A,i
-0019 B41800         CJNE   A,#018H,?LAB128
-001C         ?LAB128:
-001C 5016           JNC    ?NXT69
-                                           ; SOURCE LINE # 100 
-001E 3098EA         JNB    RI,?WHILE13
+000B         ?WHILE11:
                                            ; SOURCE LINE # 101 
-0021 C298           CLR    RI
+000B E500    R      MOV    A,milli
+000D B50005  R      CJNE   A,charTimeout,?LAB122
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 10
+
+0010 E500    R      MOV    A,milli+01H
+0012 B50000  R      CJNE   A,charTimeout+01H,?LAB122
+0015         ?LAB122:
+0015 501D           JNC    ?NXT63
+0017 E500    R      MOV    A,i
+0019 B41800         CJNE   A,#018H,?LAB124
+001C         ?LAB124:
+001C 5016           JNC    ?NXT63
                                            ; SOURCE LINE # 102 
+001E 3098EA         JNB    RI,?WHILE11
+                                           ; SOURCE LINE # 103 
+0021 C298           CLR    RI
+                                           ; SOURCE LINE # 104 
 0023 AA00    R      MOV    R2,i
 0025 0500    R      INC    i
 0027 EA             MOV    A,R2
 0028 2400    R      ADD    A,#buf
 002A F8             MOV    R0,A
 002B A699           MOV    @R0,SBUF
-                                           ; SOURCE LINE # 103 
+                                           ; SOURCE LINE # 105 
 002D E4             CLR    A
 002E F500    R      MOV    milli,A
 0030 F500    R      MOV    milli+01H,A
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE 11
-
-0032 80D7           SJMP   ?WHILE13
-0034         ?NXT69:
-                                           ; SOURCE LINE # 107 
+0032 80D7           SJMP   ?WHILE11
+0034         ?NXT63:
+                                           ; SOURCE LINE # 109 
 0034 E4             CLR    A
-0035 B50006  R      CJNE   A,id,?LAB131
+0035 B50006  R      CJNE   A,id,?LAB127
 0038 E500    R      MOV    A,buf
 003A 6500    R      XRL    A,id+01H
-003C 6007           JZ     ?LAB130
-003E         ?LAB131:
+003C 6007           JZ     ?LAB126
+003E         ?LAB127:
 003E E500    R      MOV    A,buf
 0040 6003           JZ     $ + 5
-0042 020000  R      LJMP   ?NXT71
-0045         ?LAB130:
-                                           ; SOURCE LINE # 108 
+0042 020000  R      LJMP   ?NXT65
+0045         ?LAB126:
+                                           ; SOURCE LINE # 110 
 0045 E500    R      MOV    A,i
 0047 2400    R      ADD    A,#buf+0FFH
 0049 F8             MOV    R0,A
@@ -701,15 +666,17 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0062 D005           POP    AR5
 0064 D0F0           POP    B
 0066 EE             MOV    A,R6
-0067 B5F004         CJNE   A,B,?LAB132
+0067 B5F004         CJNE   A,B,?LAB128
 006A EF             MOV    A,R7
 006B 6D             XRL    A,R5
-006C 6001           JZ     ?NXT72
-006E         ?LAB132:
-                                           ; SOURCE LINE # 205 
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 11
+
+006C 6001           JZ     ?NXT66
+006E         ?LAB128:
+                                           ; SOURCE LINE # 207 
 006E 22             RET    
-006F         ?NXT72:
-                                           ; SOURCE LINE # 110 
+006F         ?NXT66:
+                                           ; SOURCE LINE # 112 
 006F E500    R      MOV    A,buf+01H
 0071 14             DEC    A
 0072 6024           JZ     ?CASE20
@@ -727,71 +694,69 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 008C 020000  R      LJMP   ?CASE24
 008F 14             DEC    A
 0090 7003           JNZ    $ + 5
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE 12
-
 0092 020000  R      LJMP   ?CASE25
 0095 020000  R      LJMP   ?DEFAULT1
 0098         ?CASE20:
-                                           ; SOURCE LINE # 112 
+                                           ; SOURCE LINE # 114 
 0098 AF00    R      MOV    R7,buf+02H
 009A AD00    R      MOV    R5,buf+03H
 009C 120000  R      LCALL  _bytesToWord
 009F 8E00    R      MOV    startAddress,R6
 00A1 8F00    R      MOV    startAddress+01H,R7
-                                           ; SOURCE LINE # 113 
+                                           ; SOURCE LINE # 115 
 00A3 AF00    R      MOV    R7,buf+04H
 00A5 AD00    R      MOV    R5,buf+05H
 00A7 120000  R      LCALL  _bytesToWord
 00AA 8E00    R      MOV    quantity,R6
 00AC 8F00    R      MOV    quantity+01H,R7
-                                           ; SOURCE LINE # 114 
+                                           ; SOURCE LINE # 116 
 00AE E500    R      MOV    A,quantity
 00B0 4500    R      ORL    A,quantity+01H
-00B2 600D           JZ     ?LAB135
+00B2 600D           JZ     ?LAB131
 00B4 E500    R      MOV    A,quantity
-00B6 B40006         CJNE   A,#000H,?LAB136
+00B6 B40006         CJNE   A,#000H,?LAB132
 00B9 E500    R      MOV    A,quantity+01H
-00BB B40801         CJNE   A,#008H,?LAB136
+00BB B40801         CJNE   A,#008H,?LAB132
 00BE D3             SETB   C
-00BF         ?LAB136:
+00BF         ?LAB132:
 00BF 400A           JC     ?ELSE32
-00C1         ?LAB135:
+00C1         ?LAB131:
 00C1 E4             CLR    A
 00C2 FE             MOV    R6,A
 00C3 7F03           MOV    R7,#003H
 00C5 120000  R      LCALL  _oops
-00C8 020000  R      LJMP   ?NXT73
+00C8 020000  R      LJMP   ?NXT67
 00CB         ?ELSE32:
-                                           ; SOURCE LINE # 115 
+                                           ; SOURCE LINE # 117 
 00CB E500    R      MOV    A,quantity+01H
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 12
+
 00CD 2500    R      ADD    A,startAddress+01H
 00CF FE             MOV    R6,A
 00D0 E500    R      MOV    A,quantity
 00D2 3500    R      ADDC   A,startAddress
-00D4 B40005         CJNE   A,#000H,?LAB138
+00D4 B40005         CJNE   A,#000H,?LAB134
 00D7 EE             MOV    A,R6
-00D8 B50001  R      CJNE   A,numCoils,?LAB138
+00D8 B50001  R      CJNE   A,numCoils,?LAB134
 00DB D3             SETB   C
-00DC         ?LAB138:
+00DC         ?LAB134:
 00DC 400A           JC     ?ELSE33
 00DE E4             CLR    A
 00DF FE             MOV    R6,A
 00E0 7F02           MOV    R7,#002H
 00E2 120000  R      LCALL  _oops
-00E5 020000  R      LJMP   ?NXT73
+00E5 020000  R      LJMP   ?NXT67
 00E8         ?ELSE33:
-                                           ; SOURCE LINE # 117 
+                                           ; SOURCE LINE # 119 
 00E8 750000  R      MOV    j,#000H
-00EB         ?FOR10:
+00EB         ?FOR8:
 00EB E4             CLR    A
-00EC B50005  R      CJNE   A,quantity,?LAB140
+00EC B50005  R      CJNE   A,quantity,?LAB136
 00EF E500    R      MOV    A,j
-00F1 B50000  R      CJNE   A,quantity+01H,?LAB140
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE 13
-
-00F4         ?LAB140:
-00F4 506C           JNC    ?NXT76
-                                           ; SOURCE LINE # 118 
+00F1 B50000  R      CJNE   A,quantity+01H,?LAB136
+00F4         ?LAB136:
+00F4 506C           JNC    ?NXT70
+                                           ; SOURCE LINE # 120 
 00F6 E500    R      MOV    A,startAddress+01H
 00F8 2500    R      ADD    A,j
 00FA FF             MOV    R7,A
@@ -801,21 +766,21 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 00FF 120000  R      LCALL  _boolRead
 0102 750000  R      MOV    value,#000H
 0105 8F00    R      MOV    value+01H,R7
-                                           ; SOURCE LINE # 119 
+                                           ; SOURCE LINE # 121 
 0107 E500    R      MOV    A,value
-0109 B40006         CJNE   A,#000H,?LAB142
+0109 B40006         CJNE   A,#000H,?LAB138
 010C E500    R      MOV    A,value+01H
-010E B40101         CJNE   A,#001H,?LAB142
+010E B40101         CJNE   A,#001H,?LAB138
 0111 D3             SETB   C
-0112         ?LAB142:
-0112 4007           JC     ?NXT78
-                                           ; SOURCE LINE # 120 
+0112         ?LAB138:
+0112 4007           JC     ?NXT72
+                                           ; SOURCE LINE # 122 
 0114 E4             CLR    A
 0115 FE             MOV    R6,A
 0116 7F04           MOV    R7,#004H
 0118 020000  R      LJMP   _oops
-011B         ?NXT78:
-                                           ; SOURCE LINE # 123 
+011B         ?NXT72:
+                                           ; SOURCE LINE # 125 
 011B E500    R      MOV    A,value+01H
 011D 6401           XRL    A,#001H
 011F 4500    R      ORL    A,value
@@ -824,6 +789,8 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0125 03             RR     A
 0126 03             RR     A
 0127 03             RR     A
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 13
+
 0128 541F           ANL    A,#01FH
 012A 2400    R      ADD    A,#buf+03H
 012C F8             MOV    R0,A
@@ -832,23 +799,21 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0131 FC             MOV    R4,A
 0132 0C             INC    R4
 0133 7401           MOV    A,#001H
-0135 8002           SJMP   ?LAB145
-0137         ?LAB146:
+0135 8002           SJMP   ?LAB141
+0137         ?LAB142:
 0137 C3             CLR    C
 0138 33             RLC    A
-0139         ?LAB145:
-0139 DCFC           DJNZ   R4,?LAB146
+0139         ?LAB141:
+0139 DCFC           DJNZ   R4,?LAB142
 013B FA             MOV    R2,A
 013C E6             MOV    A,@R0
 013D 4A             ORL    A,R2
 013E F6             MOV    @R0,A
-013F 801D           SJMP   ?NXT77
+013F 801D           SJMP   ?NXT71
 0141         ?ELSE35:
-                                           ; SOURCE LINE # 124 
+                                           ; SOURCE LINE # 126 
 0141 E500    R      MOV    A,j
 0143 03             RR     A
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE 14
-
 0144 03             RR     A
 0145 03             RR     A
 0146 541F           ANL    A,#01FH
@@ -859,93 +824,95 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 014F FC             MOV    R4,A
 0150 0C             INC    R4
 0151 7401           MOV    A,#001H
-0153 8002           SJMP   ?LAB147
-0155         ?LAB148:
+0153 8002           SJMP   ?LAB143
+0155         ?LAB144:
 0155 C3             CLR    C
 0156 33             RLC    A
-0157         ?LAB147:
-0157 DCFC           DJNZ   R4,?LAB148
+0157         ?LAB143:
+0157 DCFC           DJNZ   R4,?LAB144
 0159 F4             CPL    A
 015A FA             MOV    R2,A
 015B E6             MOV    A,@R0
 015C 5A             ANL    A,R2
 015D F6             MOV    @R0,A
-015E         ?NXT77:
-                                           ; SOURCE LINE # 117 
+015E         ?NXT71:
+                                           ; SOURCE LINE # 119 
 015E 0500    R      INC    j
-0160 8089           SJMP   ?FOR10
-0162         ?NXT76:
-                                           ; SOURCE LINE # 126 
+0160 8089           SJMP   ?FOR8
+0162         ?NXT70:
+                                           ; SOURCE LINE # 128 
 0162 AE00    R      MOV    R6,quantity
 0164 AF00    R      MOV    R7,quantity+01H
 0166 120000  R      LCALL  _div8RndUp
-                                           ; SOURCE LINE # 127 
+                                           ; SOURCE LINE # 129 
 0169 EF             MOV    A,R7
-                                           ; SOURCE LINE # 126 
+                                           ; SOURCE LINE # 128 
 016A 8F00    R      MOV    buf+02H,R7
-                                           ; SOURCE LINE # 127 
+                                           ; SOURCE LINE # 129 
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 14
+
 016C 2403           ADD    A,#003H
 016E FF             MOV    R7,A
 016F 020000  R      LJMP   _write
 0172         ?CASE21:
-                                           ; SOURCE LINE # 132 
+                                           ; SOURCE LINE # 134 
 0172 AF00    R      MOV    R7,buf+02H
 0174 AD00    R      MOV    R5,buf+03H
 0176 120000  R      LCALL  _bytesToWord
 0179 8E00    R      MOV    startAddress,R6
 017B 8F00    R      MOV    startAddress+01H,R7
-                                           ; SOURCE LINE # 133 
+                                           ; SOURCE LINE # 135 
 017D AF00    R      MOV    R7,buf+04H
 017F AD00    R      MOV    R5,buf+05H
 0181 120000  R      LCALL  _bytesToWord
 0184 8E00    R      MOV    quantity,R6
 0186 8F00    R      MOV    quantity+01H,R7
-                                           ; SOURCE LINE # 134 
+                                           ; SOURCE LINE # 136 
 0188 E500    R      MOV    A,quantity
-018A B40006         CJNE   A,#000H,?LAB149
+018A B40006         CJNE   A,#000H,?LAB145
 018D E500    R      MOV    A,quantity+01H
-018F B50001  R      CJNE   A,numHoldingRegisters,?LAB149
+018F B50001  R      CJNE   A,numHoldingRegisters,?LAB145
 0192 D3             SETB   C
-0193         ?LAB149:
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE 15
-
+0193         ?LAB145:
 0193 400A           JC     ?ELSE36
-                                           ; SOURCE LINE # 135 
+                                           ; SOURCE LINE # 137 
 0195 E4             CLR    A
 0196 FE             MOV    R6,A
 0197 7F03           MOV    R7,#003H
 0199 120000  R      LCALL  _oops
-019C 020000  R      LJMP   ?NXT73
+019C 020000  R      LJMP   ?NXT67
 019F         ?ELSE36:
-                                           ; SOURCE LINE # 136 
+                                           ; SOURCE LINE # 138 
 019F E500    R      MOV    A,quantity+01H
 01A1 2500    R      ADD    A,startAddress+01H
 01A3 FE             MOV    R6,A
 01A4 E500    R      MOV    A,quantity
 01A6 3500    R      ADDC   A,startAddress
-01A8 B40005         CJNE   A,#000H,?LAB151
+01A8 B40005         CJNE   A,#000H,?LAB147
 01AB EE             MOV    A,R6
-01AC B50001  R      CJNE   A,numHoldingRegisters,?LAB151
+01AC B50001  R      CJNE   A,numHoldingRegisters,?LAB147
 01AF D3             SETB   C
-01B0         ?LAB151:
+01B0         ?LAB147:
 01B0 400A           JC     ?ELSE37
-                                           ; SOURCE LINE # 137 
+                                           ; SOURCE LINE # 139 
 01B2 E4             CLR    A
 01B3 FE             MOV    R6,A
 01B4 7F02           MOV    R7,#002H
 01B6 120000  R      LCALL  _oops
-01B9 020000  R      LJMP   ?NXT73
+01B9 020000  R      LJMP   ?NXT67
 01BC         ?ELSE37:
-                                           ; SOURCE LINE # 139 
+                                           ; SOURCE LINE # 141 
 01BC 750000  R      MOV    j,#000H
-01BF         ?FOR11:
+01BF         ?FOR9:
 01BF E4             CLR    A
-01C0 B50005  R      CJNE   A,quantity,?LAB153
+01C0 B50005  R      CJNE   A,quantity,?LAB149
 01C3 E500    R      MOV    A,j
-01C5 B50000  R      CJNE   A,quantity+01H,?LAB153
-01C8         ?LAB153:
-01C8 5026           JNC    ?NXT82
-                                           ; SOURCE LINE # 140 
+01C5 B50000  R      CJNE   A,quantity+01H,?LAB149
+01C8         ?LAB149:
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 15
+
+01C8 5026           JNC    ?NXT76
+                                           ; SOURCE LINE # 142 
 01CA E500    R      MOV    A,startAddress+01H
 01CC 2500    R      ADD    A,j
 01CE FF             MOV    R7,A
@@ -955,7 +922,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 01D3 120000  R      LCALL  _EEPROMread
 01D6 8E00    R      MOV    value,R6
 01D8 8F00    R      MOV    value+01H,R7
-                                           ; SOURCE LINE # 141 
+                                           ; SOURCE LINE # 143 
 01DA 75F002         MOV    B,#002H
 01DD E500    R      MOV    A,j
 01DF A4             MUL    AB
@@ -963,72 +930,70 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 01E1 2400    R      ADD    A,#buf+03H
 01E3 F8             MOV    R0,A
 01E4 A600    R      MOV    @R0,value
-                                           ; SOURCE LINE # 142 
+                                           ; SOURCE LINE # 144 
 01E6 EF             MOV    A,R7
 01E7 2400    R      ADD    A,#buf+04H
 01E9 F8             MOV    R0,A
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE 16
-
 01EA A600    R      MOV    @R0,value+01H
-                                           ; SOURCE LINE # 139 
+                                           ; SOURCE LINE # 141 
 01EC 0500    R      INC    j
-01EE 80CF           SJMP   ?FOR11
-01F0         ?NXT82:
-                                           ; SOURCE LINE # 144 
+01EE 80CF           SJMP   ?FOR9
+01F0         ?NXT76:
+                                           ; SOURCE LINE # 146 
 01F0 E500    R      MOV    A,quantity+01H
 01F2 C3             CLR    C
 01F3 33             RLC    A
 01F4 F500    R      MOV    buf+02H,A
-                                           ; SOURCE LINE # 145 
+                                           ; SOURCE LINE # 147 
 01F6 2403           ADD    A,#003H
 01F8 FF             MOV    R7,A
 01F9 020000  R      LJMP   _write
 01FC         ?CASE22:
-                                           ; SOURCE LINE # 150 
+                                           ; SOURCE LINE # 152 
 01FC AF00    R      MOV    R7,buf+02H
 01FE AD00    R      MOV    R5,buf+03H
 0200 120000  R      LCALL  _bytesToWord
 0203 8E00    R      MOV    startAddress,R6
 0205 8F00    R      MOV    startAddress+01H,R7
-                                           ; SOURCE LINE # 151 
+                                           ; SOURCE LINE # 153 
 0207 AF00    R      MOV    R7,buf+04H
 0209 AD00    R      MOV    R5,buf+05H
 020B 120000  R      LCALL  _bytesToWord
 020E 8E00    R      MOV    value,R6
 0210 8F00    R      MOV    value+01H,R7
-                                           ; SOURCE LINE # 152 
+                                           ; SOURCE LINE # 154 
 0212 E500    R      MOV    A,value
 0214 4500    R      ORL    A,value+01H
 0216 6013           JZ     ?ELSE38
 0218 E500    R      MOV    A,value
-021A B4FF04         CJNE   A,#0FFH,?LAB155
+021A B4FF04         CJNE   A,#0FFH,?LAB151
 021D E500    R      MOV    A,value+01H
 021F 600A           JZ     ?ELSE38
-0221         ?LAB155:
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 16
+
+0221         ?LAB151:
 0221 E4             CLR    A
 0222 FE             MOV    R6,A
 0223 7F03           MOV    R7,#003H
 0225 120000  R      LCALL  _oops
-0228 020000  R      LJMP   ?NXT73
+0228 020000  R      LJMP   ?NXT67
 022B         ?ELSE38:
-                                           ; SOURCE LINE # 153 
+                                           ; SOURCE LINE # 155 
 022B E500    R      MOV    A,startAddress
-022D B40005         CJNE   A,#000H,?LAB157
+022D B40005         CJNE   A,#000H,?LAB153
 0230 E500    R      MOV    A,startAddress+01H
-0232 B50000  R      CJNE   A,numCoils,?LAB157
-0235         ?LAB157:
+0232 B50000  R      CJNE   A,numCoils,?LAB153
+0235         ?LAB153:
 0235 400A           JC     ?ELSE39
 0237 E4             CLR    A
 0238 FE             MOV    R6,A
 0239 7F02           MOV    R7,#002H
 023B 120000  R      LCALL  _oops
-023E 020000  R      LJMP   ?NXT73
+023E 020000  R      LJMP   ?NXT67
 0241         ?ELSE39:
-                                           ; SOURCE LINE # 154 
+                                           ; SOURCE LINE # 156 
 0241 AE00    R      MOV    R6,startAddress
 0243 AF00    R      MOV    R7,startAddress+01H
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE 17
-
 0245 AC00    R      MOV    R4,value
 0247 AD00    R      MOV    R5,value+01H
 0249 120000  R      LCALL  _coilWrite
@@ -1037,38 +1002,40 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 024F FE             MOV    R6,A
 0250 7F04           MOV    R7,#004H
 0252 120000  R      LCALL  _oops
-0255 020000  R      LJMP   ?NXT73
+0255 020000  R      LJMP   ?NXT67
 0258         ?ELSE40:
-                                           ; SOURCE LINE # 155 
+                                           ; SOURCE LINE # 157 
 0258 7F06           MOV    R7,#006H
 025A 020000  R      LJMP   _write
 025D         ?CASE23:
-                                           ; SOURCE LINE # 159 
+                                           ; SOURCE LINE # 161 
 025D AF00    R      MOV    R7,buf+02H
 025F AD00    R      MOV    R5,buf+03H
 0261 120000  R      LCALL  _bytesToWord
 0264 8E00    R      MOV    startAddress,R6
 0266 8F00    R      MOV    startAddress+01H,R7
-                                           ; SOURCE LINE # 160 
+                                           ; SOURCE LINE # 162 
 0268 AF00    R      MOV    R7,buf+04H
 026A AD00    R      MOV    R5,buf+05H
 026C 120000  R      LCALL  _bytesToWord
 026F 8E00    R      MOV    value,R6
 0271 8F00    R      MOV    value+01H,R7
-                                           ; SOURCE LINE # 161 
+                                           ; SOURCE LINE # 163 
 0273 E500    R      MOV    A,startAddress
-0275 B40005         CJNE   A,#000H,?LAB159
+0275 B40005         CJNE   A,#000H,?LAB155
 0278 E500    R      MOV    A,startAddress+01H
-027A B50000  R      CJNE   A,numHoldingRegisters,?LAB159
-027D         ?LAB159:
+027A B50000  R      CJNE   A,numHoldingRegisters,?LAB155
+027D         ?LAB155:
 027D 400A           JC     ?ELSE41
 027F E4             CLR    A
 0280 FE             MOV    R6,A
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 17
+
 0281 7F02           MOV    R7,#002H
 0283 120000  R      LCALL  _oops
-0286 020000  R      LJMP   ?NXT73
+0286 020000  R      LJMP   ?NXT67
 0289         ?ELSE41:
-                                           ; SOURCE LINE # 162 
+                                           ; SOURCE LINE # 164 
 0289 AE00    R      MOV    R6,startAddress
 028B AF00    R      MOV    R7,startAddress+01H
 028D AC00    R      MOV    R4,value
@@ -1079,97 +1046,95 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0297 FE             MOV    R6,A
 0298 7F04           MOV    R7,#004H
 029A 120000  R      LCALL  _oops
-029D 020000  R      LJMP   ?NXT73
+029D 020000  R      LJMP   ?NXT67
 02A0         ?ELSE42:
-                                           ; SOURCE LINE # 163 
+                                           ; SOURCE LINE # 165 
 02A0 7F06           MOV    R7,#006H
 02A2 020000  R      LJMP   _write
 02A5         ?CASE24:
-                                           ; SOURCE LINE # 167 
+                                           ; SOURCE LINE # 169 
 02A5 AF00    R      MOV    R7,buf+02H
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE 18
-
 02A7 AD00    R      MOV    R5,buf+03H
 02A9 120000  R      LCALL  _bytesToWord
 02AC 8E00    R      MOV    startAddress,R6
 02AE 8F00    R      MOV    startAddress+01H,R7
-                                           ; SOURCE LINE # 168 
+                                           ; SOURCE LINE # 170 
 02B0 AF00    R      MOV    R7,buf+04H
 02B2 AD00    R      MOV    R5,buf+05H
 02B4 120000  R      LCALL  _bytesToWord
 02B7 8E00    R      MOV    quantity,R6
 02B9 8F00    R      MOV    quantity+01H,R7
-                                           ; SOURCE LINE # 169 
+                                           ; SOURCE LINE # 171 
 02BB E500    R      MOV    A,quantity
 02BD 4500    R      ORL    A,quantity+01H
-02BF 601D           JZ     ?LAB161
+02BF 601D           JZ     ?LAB157
 02C1 E500    R      MOV    A,quantity
-02C3 B40006         CJNE   A,#000H,?LAB163
+02C3 B40006         CJNE   A,#000H,?LAB159
 02C6 E500    R      MOV    A,quantity+01H
-02C8 B47001         CJNE   A,#070H,?LAB163
+02C8 B47001         CJNE   A,#070H,?LAB159
 02CB D3             SETB   C
-02CC         ?LAB163:
-02CC 5010           JNC    ?LAB161
+02CC         ?LAB159:
+02CC 5010           JNC    ?LAB157
 02CE AE00    R      MOV    R6,quantity
 02D0 AF00    R      MOV    R7,quantity+01H
 02D2 120000  R      LCALL  _div8RndUp
 02D5 E4             CLR    A
-02D6 B50605         CJNE   A,AR6,?LAB161
+02D6 B50605         CJNE   A,AR6,?LAB157
 02D9 E500    R      MOV    A,buf+06H
 02DB 6F             XRL    A,R7
 02DC 600A           JZ     ?ELSE43
-02DE         ?LAB161:
+02DE         ?LAB157:
 02DE E4             CLR    A
 02DF FE             MOV    R6,A
 02E0 7F03           MOV    R7,#003H
 02E2 120000  R      LCALL  _oops
-02E5 020000  R      LJMP   ?NXT73
+02E5 020000  R      LJMP   ?NXT67
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 18
+
 02E8         ?ELSE43:
-                                           ; SOURCE LINE # 170 
+                                           ; SOURCE LINE # 172 
 02E8 E500    R      MOV    A,quantity+01H
 02EA 2500    R      ADD    A,startAddress+01H
 02EC FE             MOV    R6,A
 02ED E500    R      MOV    A,quantity
 02EF 3500    R      ADDC   A,startAddress
-02F1 B40005         CJNE   A,#000H,?LAB166
+02F1 B40005         CJNE   A,#000H,?LAB162
 02F4 EE             MOV    A,R6
-02F5 B50001  R      CJNE   A,numCoils,?LAB166
+02F5 B50001  R      CJNE   A,numCoils,?LAB162
 02F8 D3             SETB   C
-02F9         ?LAB166:
+02F9         ?LAB162:
 02F9 400A           JC     ?ELSE44
 02FB E4             CLR    A
 02FC FE             MOV    R6,A
 02FD 7F02           MOV    R7,#002H
 02FF 120000  R      LCALL  _oops
-0302 020000  R      LJMP   ?NXT73
+0302 020000  R      LJMP   ?NXT67
 0305         ?ELSE44:
-                                           ; SOURCE LINE # 172 
+                                           ; SOURCE LINE # 174 
 0305 750000  R      MOV    j,#000H
-0308         ?FOR12:
+0308         ?FOR10:
 0308 E4             CLR    A
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE 19
-
-0309 B50005  R      CJNE   A,quantity,?LAB168
+0309 B50005  R      CJNE   A,quantity,?LAB164
 030C E500    R      MOV    A,j
-030E B50000  R      CJNE   A,quantity+01H,?LAB168
-0311         ?LAB168:
-0311 5051           JNC    ?NXT91
-                                           ; SOURCE LINE # 173 
+030E B50000  R      CJNE   A,quantity+01H,?LAB164
+0311         ?LAB164:
+0311 5051           JNC    ?NXT85
+                                           ; SOURCE LINE # 175 
 0313 E500    R      MOV    A,j
 0315 5407           ANL    A,#007H
 0317 7A00           MOV    R2,#000H
 0319 F8             MOV    R0,A
 031A 08             INC    R0
 031B 7401           MOV    A,#001H
-031D 8005           SJMP   ?LAB170
-031F         ?LAB171:
+031D 8005           SJMP   ?LAB166
+031F         ?LAB167:
 031F C3             CLR    C
 0320 33             RLC    A
 0321 CA             XCH    A,R2
 0322 33             RLC    A
 0323 CA             XCH    A,R2
-0324         ?LAB170:
-0324 D8F9           DJNZ   R0,?LAB171
+0324         ?LAB166:
+0324 D8F9           DJNZ   R0,?LAB167
 0326 FE             MOV    R6,A
 0327 E500    R      MOV    A,j
 0329 03             RR     A
@@ -1184,15 +1149,17 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0334 5207           ANL    AR7,A
 0336 750000  R      MOV    value,#000H
 0339 8F00    R      MOV    value+01H,R7
-                                           ; SOURCE LINE # 174 
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 19
+
+                                           ; SOURCE LINE # 176 
 033B E500    R      MOV    A,value
 033D 4500    R      ORL    A,value+01H
-033F 6006           JZ     ?NXT93
+033F 6006           JZ     ?NXT87
 0341 7500FF  R      MOV    value,#0FFH
 0344 E4             CLR    A
 0345 F500    R      MOV    value+01H,A
-0347         ?NXT93:
-                                           ; SOURCE LINE # 175 
+0347         ?NXT87:
+                                           ; SOURCE LINE # 177 
 0347 E500    R      MOV    A,startAddress+01H
 0349 2500    R      ADD    A,j
 034B FF             MOV    R7,A
@@ -1202,48 +1169,48 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0350 AC00    R      MOV    R4,value
 0352 AD00    R      MOV    R5,value+01H
 0354 120000  R      LCALL  _coilWrite
-0357 4007           JC     ?NXT92
-                                           ; SOURCE LINE # 176 
+0357 4007           JC     ?NXT86
+                                           ; SOURCE LINE # 178 
 0359 E4             CLR    A
 035A FE             MOV    R6,A
 035B 7F04           MOV    R7,#004H
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE 20
-
 035D 020000  R      LJMP   _oops
-0360         ?NXT92:
-                                           ; SOURCE LINE # 172 
+0360         ?NXT86:
+                                           ; SOURCE LINE # 174 
 0360 0500    R      INC    j
-0362 80A4           SJMP   ?FOR12
-0364         ?NXT91:
-                                           ; SOURCE LINE # 180 
+0362 80A4           SJMP   ?FOR10
+0364         ?NXT85:
+                                           ; SOURCE LINE # 182 
 0364 7F06           MOV    R7,#006H
 0366 020000  R      LJMP   _write
 0369         ?CASE25:
-                                           ; SOURCE LINE # 185 
+                                           ; SOURCE LINE # 187 
 0369 AF00    R      MOV    R7,buf+02H
 036B AD00    R      MOV    R5,buf+03H
 036D 120000  R      LCALL  _bytesToWord
 0370 8E00    R      MOV    startAddress,R6
 0372 8F00    R      MOV    startAddress+01H,R7
-                                           ; SOURCE LINE # 186 
+                                           ; SOURCE LINE # 188 
 0374 AF00    R      MOV    R7,buf+04H
 0376 AD00    R      MOV    R5,buf+05H
 0378 120000  R      LCALL  _bytesToWord
 037B 8E00    R      MOV    quantity,R6
 037D 8F00    R      MOV    quantity+01H,R7
-                                           ; SOURCE LINE # 187 
+                                           ; SOURCE LINE # 189 
 037F E500    R      MOV    A,quantity
 0381 4500    R      ORL    A,quantity+01H
-0383 6020           JZ     ?LAB173
+0383 6020           JZ     ?LAB169
 0385 E500    R      MOV    A,quantity
-0387 B40006         CJNE   A,#000H,?LAB175
+0387 B40006         CJNE   A,#000H,?LAB171
 038A E500    R      MOV    A,quantity+01H
-038C B40701         CJNE   A,#007H,?LAB175
+038C B40701         CJNE   A,#007H,?LAB171
 038F D3             SETB   C
-0390         ?LAB175:
-0390 5013           JNC    ?LAB173
+0390         ?LAB171:
+0390 5013           JNC    ?LAB169
 0392 AA00    R      MOV    R2,quantity
 0394 E500    R      MOV    A,quantity+01H
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 20
+
 0396 C3             CLR    C
 0397 33             RLC    A
 0398 CA             XCH    A,R2
@@ -1251,47 +1218,45 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 039A CA             XCH    A,R2
 039B FB             MOV    R3,A
 039C E4             CLR    A
-039D B50205         CJNE   A,AR2,?LAB173
+039D B50205         CJNE   A,AR2,?LAB169
 03A0 E500    R      MOV    A,buf+06H
 03A2 6B             XRL    A,R3
 03A3 6009           JZ     ?ELSE47
-03A5         ?LAB173:
+03A5         ?LAB169:
 03A5 E4             CLR    A
 03A6 FE             MOV    R6,A
 03A7 7F03           MOV    R7,#003H
 03A9 120000  R      LCALL  _oops
-03AC 8070           SJMP   ?NXT73
+03AC 8070           SJMP   ?NXT67
 03AE         ?ELSE47:
-                                           ; SOURCE LINE # 188 
+                                           ; SOURCE LINE # 190 
 03AE E500    R      MOV    A,quantity+01H
 03B0 2500    R      ADD    A,startAddress+01H
 03B2 FE             MOV    R6,A
 03B3 E500    R      MOV    A,quantity
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE 21
-
 03B5 3500    R      ADDC   A,startAddress
-03B7 B40005         CJNE   A,#000H,?LAB179
+03B7 B40005         CJNE   A,#000H,?LAB175
 03BA EE             MOV    A,R6
-03BB B50001  R      CJNE   A,numHoldingRegisters,?LAB179
+03BB B50001  R      CJNE   A,numHoldingRegisters,?LAB175
 03BE D3             SETB   C
-03BF         ?LAB179:
+03BF         ?LAB175:
 03BF 4009           JC     ?ELSE48
 03C1 E4             CLR    A
 03C2 FE             MOV    R6,A
 03C3 7F02           MOV    R7,#002H
 03C5 120000  R      LCALL  _oops
-03C8 8054           SJMP   ?NXT73
+03C8 8054           SJMP   ?NXT67
 03CA         ?ELSE48:
-                                           ; SOURCE LINE # 190 
+                                           ; SOURCE LINE # 192 
 03CA 750000  R      MOV    j,#000H
-03CD         ?FOR13:
+03CD         ?FOR11:
 03CD E4             CLR    A
-03CE B50005  R      CJNE   A,quantity,?LAB181
+03CE B50005  R      CJNE   A,quantity,?LAB177
 03D1 E500    R      MOV    A,j
-03D3 B50000  R      CJNE   A,quantity+01H,?LAB181
-03D6         ?LAB181:
-03D6 503A           JNC    ?NXT97
-                                           ; SOURCE LINE # 191 
+03D3 B50000  R      CJNE   A,quantity+01H,?LAB177
+03D6         ?LAB177:
+03D6 503A           JNC    ?NXT91
+                                           ; SOURCE LINE # 193 
 03D8 E500    R      MOV    A,startAddress+01H
 03DA 2500    R      ADD    A,j
 03DC FF             MOV    R7,A
@@ -1304,6 +1269,8 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 03E8 E500    R      MOV    A,j
 03EA A4             MUL    AB
 03EB FE             MOV    R6,A
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 21
+
 03EC 2400    R      ADD    A,#buf+07H
 03EE F8             MOV    R0,A
 03EF 8607           MOV    AR7,@R0
@@ -1317,39 +1284,37 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 03FE D007           POP    AR7
 0400 D006           POP    AR6
 0402 120000  R      LCALL  _holdingRegisterWrite
-0405 4007           JC     ?NXT98
-                                           ; SOURCE LINE # 192 
+0405 4007           JC     ?NXT92
+                                           ; SOURCE LINE # 194 
 0407 E4             CLR    A
 0408 FE             MOV    R6,A
 0409 7F04           MOV    R7,#004H
 040B 020000  R      LJMP   _oops
-040E         ?NXT98:
-                                           ; SOURCE LINE # 190 
+040E         ?NXT92:
+                                           ; SOURCE LINE # 192 
 040E 0500    R      INC    j
-0410 80BB           SJMP   ?FOR13
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE 22
-
-0412         ?NXT97:
-                                           ; SOURCE LINE # 196 
+0410 80BB           SJMP   ?FOR11
+0412         ?NXT91:
+                                           ; SOURCE LINE # 198 
 0412 7F06           MOV    R7,#006H
 0414 020000  R      LJMP   _write
 0417         ?DEFAULT1:
-                                           ; SOURCE LINE # 201 
+                                           ; SOURCE LINE # 203 
 0417 E4             CLR    A
 0418 FE             MOV    R6,A
 0419 7F01           MOV    R7,#001H
 041B 120000  R      LCALL  _oops
-041E         ?NXT73:
+041E         ?NXT67:
 
-041E         ?NXT71:
-                                           ; SOURCE LINE # 205 
+041E         ?NXT65:
+                                           ; SOURCE LINE # 207 
 041E 22             RET    
 
             ; FUNCTION modbusPoll (END)
 
             ; FUNCTION _boolRead (BEGIN)
               ; Register R6R7 is assigned to parameter startAddress
-                                           ; SOURCE LINE # 210 
+                                           ; SOURCE LINE # 212 
 0000 E500    R      MOV    A,numCoils
 0002 24FF           ADD    A,#0FFH
 0004 F8             MOV    R0,A
@@ -1358,47 +1323,47 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0008 AB00           MOV    R3,AR0
 000A F5F0           MOV    B,A
 000C EE             MOV    A,R6
-000D B5F005         CJNE   A,B,?LAB191
+000D B5F005         CJNE   A,B,?LAB187
 0010 EF             MOV    A,R7
-0011 B50301         CJNE   A,AR3,?LAB191
+0011 B50301         CJNE   A,AR3,?LAB187
 0014 D3             SETB   C
-0015         ?LAB191:
-0015 4003           JC     ?NXT102
+0015         ?LAB187:
+0015 4003           JC     ?NXT96
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 22
+
 0017 7F02           MOV    R7,#002H
-                                           ; SOURCE LINE # 214 
+                                           ; SOURCE LINE # 216 
 0019 22             RET    
-001A         ?NXT102:
-                                           ; SOURCE LINE # 211 
+001A         ?NXT96:
+                                           ; SOURCE LINE # 213 
 001A 8F02           MOV    AR2,R7
 001C 0A             INC    R2
 001D 7401           MOV    A,#001H
-001F 8002           SJMP   ?LAB194
-0021         ?LAB195:
+001F 8002           SJMP   ?LAB190
+0021         ?LAB191:
 0021 C3             CLR    C
 0022 33             RLC    A
-0023         ?LAB194:
-0023 DAFC           DJNZ   R2,?LAB195
+0023         ?LAB190:
+0023 DAFC           DJNZ   R2,?LAB191
 0025 5500    R      ANL    A,outputState
 0027 F500    R      MOV    boolStatus,A
-                                           ; SOURCE LINE # 212 
-0029 6003           JZ     ?NXT103
-002B 750001  R      MOV    boolStatus,#001H
-002E         ?NXT103:
-                                           ; SOURCE LINE # 213 
-002E AF00    R      MOV    R7,boolStatus
                                            ; SOURCE LINE # 214 
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE 23
-
+0029 6003           JZ     ?NXT97
+002B 750001  R      MOV    boolStatus,#001H
+002E         ?NXT97:
+                                           ; SOURCE LINE # 215 
+002E AF00    R      MOV    R7,boolStatus
+                                           ; SOURCE LINE # 216 
 0030 22             RET    
 
             ; FUNCTION _boolRead (END)
 
             ; FUNCTION _wordRead (BEGIN)
               ; Register R4R5 is assigned to parameter startAddress
-                                           ; SOURCE LINE # 216 
+                                           ; SOURCE LINE # 218 
 0000 8E04           MOV    AR4,R6
 0002 8F05           MOV    AR5,R7
-                                           ; SOURCE LINE # 217 
+                                           ; SOURCE LINE # 219 
 0004 E500    R      MOV    A,numHoldingRegisters
 0006 24FF           ADD    A,#0FFH
 0008 F8             MOV    R0,A
@@ -1407,28 +1372,30 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 000C AB00           MOV    R3,AR0
 000E F5F0           MOV    B,A
 0010 EE             MOV    A,R6
-0011 B5F005         CJNE   A,B,?LAB201
+0011 B5F005         CJNE   A,B,?LAB197
 0014 EF             MOV    A,R7
-0015 B50301         CJNE   A,AR3,?LAB201
+0015 B50301         CJNE   A,AR3,?LAB197
 0018 D3             SETB   C
-0019         ?LAB201:
-0019 4007           JC     ?NXT105
+0019         ?LAB197:
+0019 4007           JC     ?NXT99
 001B 74FF           MOV    A,#0FFH
 001D FF             MOV    R7,A
 001E FE             MOV    R6,A
 001F FC             MOV    R4,A
 0020 FD             MOV    R5,A
-                                           ; SOURCE LINE # 219 
+                                           ; SOURCE LINE # 221 
 0021 22             RET    
-0022         ?NXT105:
-                                           ; SOURCE LINE # 218 
+0022         ?NXT99:
+                                           ; SOURCE LINE # 220 
 0022 8C06           MOV    AR6,R4
 0024 8D07           MOV    AR7,R5
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 23
+
 0026 120000  R      LCALL  _EEPROMread
 0029 E4             CLR    A
 002A FC             MOV    R4,A
 002B FD             MOV    R5,A
-                                           ; SOURCE LINE # 219 
+                                           ; SOURCE LINE # 221 
 002C 22             RET    
 
             ; FUNCTION _wordRead (END)
@@ -1436,7 +1403,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
             ; FUNCTION _coilWrite (BEGIN)
               ; Register R6R7 is assigned to parameter startAddress
               ; Register R4R5 is assigned to parameter value
-                                           ; SOURCE LINE # 222 
+                                           ; SOURCE LINE # 224 
 0000 E500    R      MOV    A,numCoils
 0002 24FF           ADD    A,#0FFH
 0004 F8             MOV    R0,A
@@ -1445,141 +1412,139 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0008 AB00           MOV    R3,AR0
 000A F5F0           MOV    B,A
 000C EE             MOV    A,R6
-000D B5F005         CJNE   A,B,?LAB213
+000D B5F005         CJNE   A,B,?LAB209
 0010 EF             MOV    A,R7
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE 24
-
-0011 B50301         CJNE   A,AR3,?LAB213
+0011 B50301         CJNE   A,AR3,?LAB209
 0014 D3             SETB   C
-0015         ?LAB213:
-0015 4002           JC     ?NXT108
+0015         ?LAB209:
+0015 4002           JC     ?NXT102
 0017 C3             CLR    C
-                                           ; SOURCE LINE # 227 
+                                           ; SOURCE LINE # 229 
 0018 22             RET    
-0019         ?NXT108:
-                                           ; SOURCE LINE # 223 
+0019         ?NXT102:
+                                           ; SOURCE LINE # 225 
 0019 EC             MOV    A,R4
 001A 4D             ORL    A,R5
 001B 7010           JNZ    ?ELSE59
 001D 7401           MOV    A,#001H
 001F 8F02           MOV    AR2,R7
 0021 0A             INC    R2
-0022 8002           SJMP   ?LAB216
-0024         ?LAB217:
+0022 8002           SJMP   ?LAB212
+0024         ?LAB213:
 0024 C3             CLR    C
 0025 33             RLC    A
-0026         ?LAB216:
-0026 DAFC           DJNZ   R2,?LAB217
+0026         ?LAB212:
+0026 DAFC           DJNZ   R2,?LAB213
 0028 F4             CPL    A
 0029 5200    R      ANL    outputState,A
-002B 800D           SJMP   ?NXT109
+002B 800D           SJMP   ?NXT103
 002D         ?ELSE59:
-                                           ; SOURCE LINE # 224 
+                                           ; SOURCE LINE # 226 
 002D 8F02           MOV    AR2,R7
 002F 0A             INC    R2
 0030 7401           MOV    A,#001H
-0032 8002           SJMP   ?LAB218
-0034         ?LAB219:
+0032 8002           SJMP   ?LAB214
+0034         ?LAB215:
 0034 C3             CLR    C
 0035 33             RLC    A
-0036         ?LAB218:
-0036 DAFC           DJNZ   R2,?LAB219
+0036         ?LAB214:
+0036 DAFC           DJNZ   R2,?LAB215
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 24
+
 0038 4200    R      ORL    outputState,A
-003A         ?NXT109:
-                                           ; SOURCE LINE # 225 
+003A         ?NXT103:
+                                           ; SOURCE LINE # 227 
 003A E500    R      MOV    A,outputState
 003C F4             CPL    A
 003D F590           MOV    P1,A
-                                           ; SOURCE LINE # 226 
+                                           ; SOURCE LINE # 228 
 003F D3             SETB   C
-                                           ; SOURCE LINE # 227 
+                                           ; SOURCE LINE # 229 
 0040 22             RET    
 
             ; FUNCTION _coilWrite (END)
 
             ; FUNCTION _holdingRegisterWrite (BEGIN)
-                                           ; SOURCE LINE # 229 
+                                           ; SOURCE LINE # 231 
 0000 8E00    R      MOV    startAddress,R6
 0002 8F00    R      MOV    startAddress+01H,R7
 0004 8C00    R      MOV    value,R4
 0006 8D00    R      MOV    value+01H,R5
-                                           ; SOURCE LINE # 230 
+                                           ; SOURCE LINE # 232 
 0008 E500    R      MOV    A,numHoldingRegisters
 000A 24FF           ADD    A,#0FFH
 000C F8             MOV    R0,A
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE 25
-
 000D E4             CLR    A
 000E 34FF           ADDC   A,#0FFH
 0010 AB00           MOV    R3,AR0
 0012 F5F0           MOV    B,A
 0014 E500    R      MOV    A,startAddress
-0016 B5F006         CJNE   A,B,?LAB225
+0016 B5F006         CJNE   A,B,?LAB221
 0019 E500    R      MOV    A,startAddress+01H
-001B B50301         CJNE   A,AR3,?LAB225
+001B B50301         CJNE   A,AR3,?LAB221
 001E D3             SETB   C
-001F         ?LAB225:
-001F 4002           JC     ?NXT111
+001F         ?LAB221:
+001F 4002           JC     ?NXT105
 0021 C3             CLR    C
-                                           ; SOURCE LINE # 233 
+                                           ; SOURCE LINE # 235 
 0022 22             RET    
-0023         ?NXT111:
-                                           ; SOURCE LINE # 231 
+0023         ?NXT105:
+                                           ; SOURCE LINE # 233 
 0023 AE00    R      MOV    R6,startAddress
 0025 AF00    R      MOV    R7,startAddress+01H
 0027 AC00    R      MOV    R4,value
 0029 AD00    R      MOV    R5,value+01H
 002B 120000  R      LCALL  _EEPROMwrite
-                                           ; SOURCE LINE # 232 
+                                           ; SOURCE LINE # 234 
 002E D3             SETB   C
-                                           ; SOURCE LINE # 233 
+                                           ; SOURCE LINE # 235 
 002F 22             RET    
 
             ; FUNCTION _holdingRegisterWrite (END)
 
             ; FUNCTION _oops (BEGIN)
               ; Register R6R7 is assigned to parameter errCode
-                                           ; SOURCE LINE # 236 
-0000 430080  R      ORL    buf+01H,#080H
-                                           ; SOURCE LINE # 237 
-0003 8F00    R      MOV    buf+02H,R7
                                            ; SOURCE LINE # 238 
+0000 430080  R      ORL    buf+01H,#080H
+                                           ; SOURCE LINE # 239 
+0003 8F00    R      MOV    buf+02H,R7
+                                           ; SOURCE LINE # 240 
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 25
+
 0005 7F03           MOV    R7,#003H
 0007 020000  R      LJMP   _write
 
             ; FUNCTION _oops (END)
 
             ; FUNCTION _write (BEGIN)
-                                           ; SOURCE LINE # 241 
+                                           ; SOURCE LINE # 243 
 0000 8F00    R      MOV    len,R7
-                                           ; SOURCE LINE # 245 
+                                           ; SOURCE LINE # 247 
 0002 E500    R      MOV    A,buf
-0004 6043           JZ     ?NXT115
-                                           ; SOURCE LINE # 246 
-0006 120000  R      LCALL  _crc
+0004 6043           JZ     ?NXT109
                                            ; SOURCE LINE # 248 
+0006 120000  R      LCALL  _crc
+                                           ; SOURCE LINE # 250 
 0009 EF             MOV    A,R7
 000A FB             MOV    R3,A
-                                           ; SOURCE LINE # 246 
+                                           ; SOURCE LINE # 248 
 000B 8E00    R      MOV    CRC,R6
 000D 8F00    R      MOV    CRC+01H,R7
-                                           ; SOURCE LINE # 248 
+                                           ; SOURCE LINE # 250 
 000F E500    R      MOV    A,len
 0011 2400    R      ADD    A,#buf
 0013 F8             MOV    R0,A
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE 26
-
 0014 A603           MOV    @R0,AR3
-                                           ; SOURCE LINE # 249 
+                                           ; SOURCE LINE # 251 
 0016 E500    R      MOV    A,len
 0018 2400    R      ADD    A,#buf+01H
 001A F8             MOV    R0,A
 001B A600    R      MOV    @R0,CRC
-                                           ; SOURCE LINE # 251 
+                                           ; SOURCE LINE # 253 
 001D D2B5           SETB   T1
-                                           ; SOURCE LINE # 252 
+                                           ; SOURCE LINE # 254 
 001F 750000  R      MOV    i,#000H
-0022         ?FOR15:
+0022         ?FOR13:
 0022 E500    R      MOV    A,len
 0024 2402           ADD    A,#002H
 0026 FB             MOV    R3,A
@@ -1588,23 +1553,25 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0029 F5F0           MOV    B,A
 002B B2F7           CPL    B.7
 002D 7480           MOV    A,#080H
-002F B5F005         CJNE   A,B,?LAB234
+002F B5F005         CJNE   A,B,?LAB230
 0032 E500    R      MOV    A,i
-0034 B50300         CJNE   A,AR3,?LAB234
-0037         ?LAB234:
-0037 500E           JNC    ?NXT116
+0034 B50300         CJNE   A,AR3,?LAB230
+0037         ?LAB230:
+0037 500E           JNC    ?NXT110
 0039 E500    R      MOV    A,i
 003B 2400    R      ADD    A,#buf
 003D F8             MOV    R0,A
 003E 8607           MOV    AR7,@R0
 0040 120000  R      LCALL  _serialTX
 0043 0500    R      INC    i
-0045 80DB           SJMP   ?FOR15
-0047         ?NXT116:
-                                           ; SOURCE LINE # 253 
-0047 C2B5           CLR    T1
-0049         ?NXT115:
+0045 80DB           SJMP   ?FOR13
+0047         ?NXT110:
                                            ; SOURCE LINE # 255 
+0047 C2B5           CLR    T1
+0049         ?NXT109:
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 26
+
+                                           ; SOURCE LINE # 257 
 0049 22             RET    
 
             ; FUNCTION _write (END)
@@ -1612,37 +1579,35 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
             ; FUNCTION _crc (BEGIN)
               ; Register R7 is assigned to parameter len
               ; R4R5 is assigned to crc
-                                           ; SOURCE LINE # 260 
+                                           ; SOURCE LINE # 262 
 0000 74FF           MOV    A,#0FFH
 0002 FC             MOV    R4,A
 0003 FD             MOV    R5,A
               ; R6 is assigned to i
-                                           ; SOURCE LINE # 262 
+                                           ; SOURCE LINE # 264 
 0004 7E00           MOV    R6,#000H
-0006         ?FOR18:
+0006         ?FOR16:
 0006 EE             MOV    A,R6
-0007 B50700         CJNE   A,AR7,?LAB243
-000A         ?LAB243:
-000A 5032           JNC    ?NXT123
-                                           ; SOURCE LINE # 263 
+0007 B50700         CJNE   A,AR7,?LAB239
+000A         ?LAB239:
+000A 5032           JNC    ?NXT117
+                                           ; SOURCE LINE # 265 
 000C 2400    R      ADD    A,#buf
 000E F8             MOV    R0,A
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE 27
-
 000F E6             MOV    A,@R0
 0010 FB             MOV    R3,A
 0011 ED             MOV    A,R5
 0012 6B             XRL    A,R3
 0013 FD             MOV    R5,A
-                                           ; SOURCE LINE # 264 
+                                           ; SOURCE LINE # 266 
 0014 750000  R      MOV    j,#000H
-0017         ?FOR19:
-                                           ; SOURCE LINE # 265 
+0017         ?FOR17:
+                                           ; SOURCE LINE # 267 
 0017 ED             MOV    A,R5
 0018 5401           ANL    A,#001H
 001A 24FF           ADD    A,#0FFH
 001C 9200    R      MOV    lsb,C
-                                           ; SOURCE LINE # 266 
+                                           ; SOURCE LINE # 268 
 001E 8D03           MOV    AR3,R5
 0020 EC             MOV    A,R4
 0021 C3             CLR    C
@@ -1652,52 +1617,52 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0025 CB             XCH    A,R3
 0026 FC             MOV    R4,A
 0027 8B05           MOV    AR5,R3
-                                           ; SOURCE LINE # 267 
-0029 300008  R      JNB    lsb,?NXT126
-                                           ; SOURCE LINE # 268 
+                                           ; SOURCE LINE # 269 
+0029 300008  R      JNB    lsb,?NXT120
+                                           ; SOURCE LINE # 270 
 002C EB             MOV    A,R3
 002D 6401           XRL    A,#001H
 002F FD             MOV    R5,A
 0030 EC             MOV    A,R4
 0031 64A0           XRL    A,#0A0H
 0033 FC             MOV    R4,A
-0034         ?NXT126:
-                                           ; SOURCE LINE # 264 
+0034         ?NXT120:
+                                           ; SOURCE LINE # 266 
 0034 0500    R      INC    j
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 27
+
 0036 E500    R      MOV    A,j
-0038 B408DC         CJNE   A,#008H,?FOR19
-                                           ; SOURCE LINE # 262 
+0038 B408DC         CJNE   A,#008H,?FOR17
+                                           ; SOURCE LINE # 264 
 003B 0E             INC    R6
-003C 80C8           SJMP   ?FOR18
-003E         ?NXT123:
-                                           ; SOURCE LINE # 272 
+003C 80C8           SJMP   ?FOR16
+003E         ?NXT117:
+                                           ; SOURCE LINE # 274 
 003E 8C06           MOV    AR6,R4
 0040 8D07           MOV    AR7,R5
-                                           ; SOURCE LINE # 273 
+                                           ; SOURCE LINE # 275 
 0042 22             RET    
 
             ; FUNCTION _crc (END)
 
             ; FUNCTION _div8RndUp (BEGIN)
               ; Register R6R7 is assigned to parameter value
-                                           ; SOURCE LINE # 276 
+                                           ; SOURCE LINE # 278 
 0000 EF             MOV    A,R7
 0001 2407           ADD    A,#007H
 0003 FF             MOV    R7,A
 0004 E4             CLR    A
 0005 3E             ADDC   A,R6
 0006 75F003         MOV    B,#003H
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE 28
-
-0009         ?LAB249:
+0009         ?LAB245:
 0009 C3             CLR    C
 000A 13             RRC    A
 000B CF             XCH    A,R7
 000C 13             RRC    A
 000D CF             XCH    A,R7
-000E D5F0F8         DJNZ   B,?LAB249
+000E D5F0F8         DJNZ   B,?LAB245
 0011 FE             MOV    R6,A
-                                           ; SOURCE LINE # 277 
+                                           ; SOURCE LINE # 279 
 0012 22             RET    
 
             ; FUNCTION _div8RndUp (END)
@@ -1705,7 +1670,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
             ; FUNCTION _bytesToWord (BEGIN)
               ; Register R7 is assigned to parameter high
               ; Register R5 is assigned to parameter low
-                                           ; SOURCE LINE # 280 
+                                           ; SOURCE LINE # 282 
 0000 ED             MOV    A,R5
 0001 FB             MOV    R3,A
 0002 7A00           MOV    R2,#000H
@@ -1717,56 +1682,72 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 000C D0E0           POP    ACC
 000E 4A             ORL    A,R2
 000F FE             MOV    R6,A
-                                           ; SOURCE LINE # 281 
+                                           ; SOURCE LINE # 283 
 0010 22             RET    
 
             ; FUNCTION _bytesToWord (END)
 
             ; FUNCTION main (BEGIN)
-                                           ; SOURCE LINE # 18 
+                                           ; SOURCE LINE # 11 
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 28
+
 0000 750008  R      MOV    numCoils,#008H
-                                           ; SOURCE LINE # 19 
+                                           ; SOURCE LINE # 12 
 0003 E4             CLR    A
 0004 F500    R      MOV    numDiscreteInputs,A
-                                           ; SOURCE LINE # 20 
+                                           ; SOURCE LINE # 13 
 0006 750004  R      MOV    numHoldingRegisters,#004H
-                                           ; SOURCE LINE # 22 
+                                           ; SOURCE LINE # 15 
 0009 C2B5           CLR    T1
-                                           ; SOURCE LINE # 24 
+                                           ; SOURCE LINE # 17 
 000B 75004B  R      MOV    baud,#04BH
 000E F500    R      MOV    baud+01H,A
-                                           ; SOURCE LINE # 25 
+                                           ; SOURCE LINE # 18 
 0010 F500    R      MOV    id,A
 0012 750001  R      MOV    id+01H,#001H
-                                           ; SOURCE LINE # 31 
-0015 AE00    R      MOV    R6,baud
-0017 AF00    R      MOV    R7,baud+01H
-0019 120000  R      LCALL  _serialInit
-                                           ; SOURCE LINE # 32 
-001C AE00    R      MOV    R6,baud
-001E AF00    R      MOV    R7,baud+01H
-0020 120000  R      LCALL  _modbusBegin
-0023         ?WHILE15:
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE 30
-
-                                           ; SOURCE LINE # 35 
-0023 120000  R      LCALL  modbusPoll
-0026 80FB           SJMP   ?WHILE15
+                                           ; SOURCE LINE # 20 
+0015 30B414         JNB    T0,?NXT124
+                                           ; SOURCE LINE # 21 
+0018 FE             MOV    R6,A
+0019 FF             MOV    R7,A
+001A 120000  R      LCALL  _EEPROMread
+001D 8E00    R      MOV    baud,R6
+001F 8F00    R      MOV    baud+01H,R7
+                                           ; SOURCE LINE # 22 
+0021 E4             CLR    A
+0022 FE             MOV    R6,A
+0023 7F01           MOV    R7,#001H
+0025 120000  R      LCALL  _EEPROMread
+0028 8E00    R      MOV    id,R6
+002A 8F00    R      MOV    id+01H,R7
+002C         ?NXT124:
+                                           ; SOURCE LINE # 24 
+002C AE00    R      MOV    R6,baud
+002E AF00    R      MOV    R7,baud+01H
+0030 120000  R      LCALL  _serialInit
+                                           ; SOURCE LINE # 25 
+0033 AE00    R      MOV    R6,baud
+0035 AF00    R      MOV    R7,baud+01H
+0037 120000  R      LCALL  _modbusBegin
+003A         ?WHILE13:
+                                           ; SOURCE LINE # 28 
+003A 120000  R      LCALL  modbusPoll
+003D 80FB           SJMP   ?WHILE13
 
             ; FUNCTION main (END)
 
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/20/22  22:22:38  PAGE 32
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 31
 
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   2120    ----
+   CODE SIZE        =   2063    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     38      24
+   DATA SIZE        =     38      26
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----       1
 END OF MODULE INFORMATION.
 
-RC51 COMPILATION COMPLETE.  2 WARNINGS,  0 ERROR
+RC51 COMPILATION COMPLETE.  7 WARNINGS,  0 ERROR

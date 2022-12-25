@@ -46,9 +46,12 @@ I2C_delay Function
 Propagation delay
 ------------------------------------------------*/
 void I2C_delay(int d) {
-	int	i;
+/*	int	i, j=0;
 	
-    for(i=0; i<d; i++);
+    if(d == 0)
+        return;
+    for(i=0; i<d; )
+        j++;*/
 }
 
 /*------------------------------------------------
@@ -56,7 +59,7 @@ I2C_start Function
 ------------------------------------------------*/
 void I2C_start(void) {
 	SDA_LO;
-	I2C_delay(1);
+	I2C_delay(0);
 	SCL_LO;
 }
 
@@ -64,11 +67,13 @@ void I2C_start(void) {
 I2C_stop Function
 ------------------------------------------------*/
 void I2C_stop(void) {
-    while (_SDA == 0);
+    int c=0;
 
-	I2C_delay(1000);
+    //while (_SDA == 0 && c++ < 5);
+
+	I2C_delay(0);
 	SCL_HI;
-	I2C_delay(1);
+	I2C_delay(0);
 	SDA_HI;
 }
 
@@ -84,17 +89,19 @@ char I2C_write(char byte) {
 		} else {
 			SDA_LO;
 		}
-		I2C_delay(1);
+		I2C_delay(0);
 		SCL_HI;
-		I2C_delay(1);
+		I2C_delay(0);
 		SCL_LO;
 		byte <<= 1;
 	}
-	SCL_HI;
-	I2C_delay(1);
+    SDA_HI;
+    SCL_HI;
+	I2C_delay(0);
 	reply = _SDA;
+    SDA_LO;
 	SCL_LO;
-	I2C_delay(1);
+	I2C_delay(0);
 	return reply;
 }
 
@@ -106,9 +113,9 @@ char I2C_read(char condition) {
 
     for (bt = 0; bt < 8; bt++) {
 		SDA_HI;
-		I2C_delay(1);
+		I2C_delay(0);
 		SCL_HI;
-		I2C_delay(1);
+		I2C_delay(0);
 		while (_SCL == 0) {}	// clock stretching
 		byte = (byte << 1) | _SDA;
 		SCL_LO;
@@ -118,12 +125,12 @@ char I2C_read(char condition) {
 	} else {
 		SDA_HI;
 	}
-	I2C_delay(1);
+	I2C_delay(0);
 	SCL_HI;
-	I2C_delay(1);
+	I2C_delay(0);
 	while(_SCL == 0);		// clock stretching
 	SCL_LO;
-	I2C_delay(1);
+	I2C_delay(0);
     return byte;
 }
 
@@ -139,7 +146,7 @@ unsigned int EEPROMread(unsigned int address) {
 	I2C_write((char)(address>>8));      // Address HI
 	I2C_write((char)address);           // Address LO
 	I2C_stop();
-	I2C_delay(1);
+	I2C_delay(0);
 	I2C_start();
 	I2C_write(slaveRead);
 	word = (I2C_read(ACK)<<8) | I2C_read(NAK);
@@ -159,7 +166,7 @@ void EEPROMwrite(unsigned int address, unsigned int word) {
 	I2C_write((char)address);           // Address LO
 	I2C_write((char)(word>>8));         // Word HI
 	I2C_write((char)word);              // Word LO
-    I2C_delay(1);
+    I2C_delay(0);
 	I2C_stop();
 }
 

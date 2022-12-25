@@ -12,42 +12,12 @@
   </Row>
   <Row>
     <Column>--</Column>
-    <Column>LONG_SIGNED_DIV_SPEED_OPTIMIZED</Column>
-    <Column>C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB</Column>
-  </Row>
-  <Row>
-    <Column>--</Column>
-    <Column>DIVS</Column>
-    <Column>C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB</Column>
-  </Row>
-  <Row>
-    <Column>--</Column>
     <Column>HPD</Column>
     <Column>C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB</Column>
   </Row>
   <Row>
     <Column>--</Column>
     <Column>_C_IDATALEN</Column>
-    <Column>C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB</Column>
-  </Row>
-  <Row>
-    <Column>--</Column>
-    <Column>LONG_UNSIGNED_DIV_SPEED_OPTIMIZED</Column>
-    <Column>C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB</Column>
-  </Row>
-  <Row>
-    <Column>--</Column>
-    <Column>GESI</Column>
-    <Column>C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB</Column>
-  </Row>
-  <Row>
-    <Column>--</Column>
-    <Column>LONG_UNSIGNED_DIV</Column>
-    <Column>C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB</Column>
-  </Row>
-  <Row>
-    <Column>--</Column>
-    <Column>RSTSTK4</Column>
     <Column>C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB</Column>
   </Row>
 </Table>

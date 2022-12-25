@@ -6,24 +6,11 @@ INTER-MODULE CROSS-REFERENCE LISTING
 
           NAME. . . . . . . . USAGE   MODULE NAMES
           ----------------------------------------
-          ?C_SIDIV  . . . . . CODE    [DIVS]: 
-          ?C_SLDIV_SP . . . . CODE    [LONG_SIGNED_DIV_SPEED_OPTIMIZED]:  RS485_DEBUG
           ?C_START3 . . . . . CODE    [C3S]:  RS485_DEBUG
-          ?C_UIDIV  . . . . . CODE    [DIVS]:  RS485_DEBUG
-          ?C_ULDIV  . . . . . CODE    [LONG_UNSIGNED_DIV]: 
-          ?C_ULDIV_SP . . . . CODE    [LONG_UNSIGNED_DIV_SPEED_OPTIMIZED]: 
-          ?DIV_STORE_Q_SZ . . CODE    [LONG_UNSIGNED_DIV]:  LONG_UNSIGNED_DIV_SPEED_OPTIMIZED
-          ?LOOP_DIV_SZ  . . . CODE    [LONG_UNSIGNED_DIV]:  LONG_UNSIGNED_DIV_SPEED_OPTIMIZED
           baud  . . . . . . . DATA    [RS485_DEBUG]: 
           buf . . . . . . . . DATA    [RS485_DEBUG]: 
           charTimeout . . . . DATA    [RS485_DEBUG]: 
-          CPL_R4R5  . . . . . CODE    [DIVS]: 
-          CPL_R6R7  . . . . . CODE    [DIVS]: 
-          DIVL?C_1  . . . . . CODE    [LONG_UNSIGNED_DIV]:  LONG_UNSIGNED_DIV_SPEED_OPTIMIZED
-          DIVL?C_1_SP . . . . CODE    [LONG_UNSIGNED_DIV_SPEED_OPTIMIZED]:  LONG_SIGNED_DIV_SPEED_OPTIMIZED
-          DIV_2 . . . . . . . CODE    [DIVS]: 
           frameTimeout  . . . DATA    [RS485_DEBUG]: 
-          GESI?C  . . . . . . CODE    [GESI]:  LONG_UNSIGNED_DIV, LONG_SIGNED_DIV_SPEED_OPTIMIZED
           HPD_ADDR  . . . . . DATA    [HPD]:  C3S
           I2C_start . . . . . CODE    [RS485_DEBUG]: 
           I2C_stop  . . . . . CODE    [RS485_DEBUG]: 
@@ -37,7 +24,6 @@ INTER-MODULE CROSS-REFERENCE LISTING
           numDiscreteInputs . DATA    [RS485_DEBUG]: 
           numHoldingRegisters DATA    [RS485_DEBUG]: 
           outputState . . . . DATA    [RS485_DEBUG]: 
-          RST_STK4?C  . . . . CODE    [RSTSTK4]:  LONG_UNSIGNED_DIV
           serialRX  . . . . . CODE    [RS485_DEBUG]: 
           TIM1_INIT . . . . . NUMBER  [** UNRESOLVED **]:
           timer0_isr  . . . . CODE    [RS485_DEBUG]: 
