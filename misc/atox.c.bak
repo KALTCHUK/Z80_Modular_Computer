@@ -8,17 +8,22 @@ char *s; {
 	val = 0;
 	do {
 		curr = toupper(s[idx++]);
-		if(curr >= '0' && curr <= '9') {
+		if(curr >= '0' && curr <= '9')
 			val = (val * 0x10) + (curr - 0x30);
-		} else if(curr >= 'A' && curr <= 'F') {
+		else if(curr >= 'A' && curr <= 'F')
 			val = (val * 0x10) + (curr - 0x37);
-		}
+		else
+			curr = NULL;			 <<<============ added.
 	} while(curr != NULL);
 	return val;
 }
 
 somewhere inside main()
+	
 	...
+	addr = atox(line+1);
+	
+	
 	comma_ant = 0;
 	do {
 		comma = index(line + comma_ant);

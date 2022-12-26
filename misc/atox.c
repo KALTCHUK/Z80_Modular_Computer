@@ -12,8 +12,8 @@ char *s; {
 			val = (val * 0x10) + (curr - 0x30);
 		else if(curr >= 'A' && curr <= 'F')
 			val = (val * 0x10) + (curr - 0x37);
-		else
-			curr = NULL;			 <<<============ corrected
+		else						 <<<============ added.
+			curr = NULL;			 <<<============ added.
 	} while(curr != NULL);
 	return val;
 }
