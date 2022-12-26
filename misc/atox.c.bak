@@ -25,7 +25,7 @@ somewhere inside main()
 		if(comma != -1) {
 			comma += comma_ant + 1;
 			comma_ant = comma;
-			value = atoi(line + comma);
+			value = atox(line + comma);
 			I2Cwrite(addr++, value);
 		}
 	} while(comma != -1);
