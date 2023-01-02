@@ -21,12 +21,7 @@
 		</Report>
 			
 	</Flags>
-	<Views>
-		<View File=".\ModbusSlave.h" Line="108" Index="0" />
-		<View File=".\Serial.h" Line="16" Index="1" />
-		<View File=".\RS485_debug.c" Line="12" Index="2" focus="1" />
-		<View File=".\EEPROM.h" Line="102" Index="3" />
-	</Views>
+	<Views/>
 	<BookMarks>
 		<BookMark File="" Line="0" />
 		<BookMark File="" Line="0" />

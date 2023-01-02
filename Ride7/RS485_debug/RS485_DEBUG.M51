@@ -1,4 +1,4 @@
-LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263                                 12/23/22  09:32:19
+LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263                                 12/29/22  21:03:29
 MS-DOS LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263,  INVOKED BY:
 C:\Users\kaltc\Documents\Raisonance\Ride\Bin\LX51.EXE C:\Users\kaltc\Documents\GitHub\Z80_Modular&
 _Computer\Ride7\RS485_debug\RS485_debug.obj TO(C:\Users\kaltc\Documents\GitHub\Z80_Modular_Comput&
@@ -53,30 +53,30 @@ DEBUG.AOF (RS485_DEBUG)
     CODE     009CH      0001H     UNIT           ?PR?_I2C_delay?RS485_DEBUG
     CODE     009DH      000BH     UNIT           ?PR?I2C_start?RS485_DEBUG
     CODE     00A8H      000EH     UNIT           ?PR?I2C_stop?RS485_DEBUG
-    CODE     00B6H      003AH     UNIT           ?PR?_I2C_write?RS485_DEBUG
-    CODE     00F0H      004DH     UNIT           ?PR?_I2C_read?RS485_DEBUG
-    CODE     013DH      0056H     UNIT           ?PR?_EEPROMread?RS485_DEBUG
-    CODE     0193H      003AH     UNIT           ?PR?_EEPROMwrite?RS485_DEBUG
-    CODE     01CDH      0017H     UNIT           ?PR?timer0_isr?RS485_DEBUG
-    CODE     01E4H      0017H     UNIT           ?PR?milliStart?RS485_DEBUG
-    CODE     01FBH      0041H     UNIT           ?PR?_modbusBegin?RS485_DEBUG
-    CODE     023CH      041FH     UNIT           ?PR?modbusPoll?RS485_DEBUG
-    CODE     065BH      0031H     UNIT           ?PR?_boolRead?RS485_DEBUG
-    CODE     068CH      002DH     UNIT           ?PR?_wordRead?RS485_DEBUG
-    CODE     06B9H      0041H     UNIT           ?PR?_coilWrite?RS485_DEBUG
-    CODE     06FAH      0030H     UNIT           ?PR?_holdingRegisterWrite?RS485_DEBUG
-    CODE     072AH      000AH     UNIT           ?PR?_oops?RS485_DEBUG
-    CODE     0734H      004AH     UNIT           ?PR?_write?RS485_DEBUG
-    CODE     077EH      0043H     UNIT           ?PR?_crc?RS485_DEBUG
-    CODE     07C1H      0013H     UNIT           ?PR?_div8RndUp?RS485_DEBUG
-    CODE     07D4H      0011H     UNIT           ?PR?_bytesToWord?RS485_DEBUG
-    CODE     07E5H      003FH     UNIT           ?PR?main?RS485_DEBUG
+    CODE     00B6H      0036H     UNIT           ?PR?_I2C_write?RS485_DEBUG
+    CODE     00ECH      004DH     UNIT           ?PR?_I2C_read?RS485_DEBUG
+    CODE     0139H      0056H     UNIT           ?PR?_EEPROMread?RS485_DEBUG
+    CODE     018FH      003AH     UNIT           ?PR?_EEPROMwrite?RS485_DEBUG
+    CODE     01C9H      0017H     UNIT           ?PR?timer0_isr?RS485_DEBUG
+    CODE     01E0H      0017H     UNIT           ?PR?milliStart?RS485_DEBUG
+    CODE     01F7H      0041H     UNIT           ?PR?_modbusBegin?RS485_DEBUG
+    CODE     0238H      041FH     UNIT           ?PR?modbusPoll?RS485_DEBUG
+    CODE     0657H      0031H     UNIT           ?PR?_boolRead?RS485_DEBUG
+    CODE     0688H      002DH     UNIT           ?PR?_wordRead?RS485_DEBUG
+    CODE     06B5H      0041H     UNIT           ?PR?_coilWrite?RS485_DEBUG
+    CODE     06F6H      0030H     UNIT           ?PR?_holdingRegisterWrite?RS485_DEBUG
+    CODE     0726H      000AH     UNIT           ?PR?_oops?RS485_DEBUG
+    CODE     0730H      004AH     UNIT           ?PR?_write?RS485_DEBUG
+    CODE     077AH      0043H     UNIT           ?PR?_crc?RS485_DEBUG
+    CODE     07BDH      0013H     UNIT           ?PR?_div8RndUp?RS485_DEBUG
+    CODE     07D0H      0011H     UNIT           ?PR?_bytesToWord?RS485_DEBUG
+    CODE     07E1H      003FH     UNIT           ?PR?main?RS485_DEBUG
 
 EXECUTABLE SUMMARY:
 -------------------
     Total INTERNAL RAM storage requirement:  003EH.1 (62.1)
     Total EXTERNAL RAM storage requirement:  0000H (0)
-    Total     CODE     storage requirement:  0824H (2084)
+    Total     CODE     storage requirement:  0820H (2080)
 Note:  Summary does not include dynamic stack requirements
 
 
@@ -177,20 +177,20 @@ UG.AOF(RS485_DEBUG)
 
 	-------            MODULE             RS485_debug
 	C:0000H            SYMBOL             _ICE_DUMMY_
-	C:07E5H            PUBLIC             main
-	C:01CDH            PUBLIC             timer0_isr
-	C:07D4H            PUBLIC             _bytesToWord
-	C:07C1H            PUBLIC             _div8RndUp
-	C:077EH            PUBLIC             _crc
-	C:0734H            PUBLIC             _write
-	C:072AH            PUBLIC             _oops
-	C:06FAH            PUBLIC             _holdingRegisterWrite
-	C:06B9H            PUBLIC             _coilWrite
-	C:068CH            PUBLIC             _wordRead
-	C:065BH            PUBLIC             _boolRead
-	C:023CH            PUBLIC             modbusPoll
-	C:01FBH            PUBLIC             _modbusBegin
-	C:01E4H            PUBLIC             milliStart
+	C:07E1H            PUBLIC             main
+	C:01C9H            PUBLIC             timer0_isr
+	C:07D0H            PUBLIC             _bytesToWord
+	C:07BDH            PUBLIC             _div8RndUp
+	C:077AH            PUBLIC             _crc
+	C:0730H            PUBLIC             _write
+	C:0726H            PUBLIC             _oops
+	C:06F6H            PUBLIC             _holdingRegisterWrite
+	C:06B5H            PUBLIC             _coilWrite
+	C:0688H            PUBLIC             _wordRead
+	C:0657H            PUBLIC             _boolRead
+	C:0238H            PUBLIC             modbusPoll
+	C:01F7H            PUBLIC             _modbusBegin
+	C:01E0H            PUBLIC             milliStart
 	D:0046H            PUBLIC             outputState
 	D:0044H            PUBLIC             id
 	D:0042H            PUBLIC             milli
@@ -200,9 +200,9 @@ UG.AOF(RS485_DEBUG)
 	D:003CH            PUBLIC             numDiscreteInputs
 	D:003BH            PUBLIC             numCoils
 	D:0023H            PUBLIC             buf
-	C:0193H            PUBLIC             _EEPROMwrite
-	C:013DH            PUBLIC             _EEPROMread
-	C:00F0H            PUBLIC             _I2C_read
+	C:018FH            PUBLIC             _EEPROMwrite
+	C:0139H            PUBLIC             _EEPROMread
+	C:00ECH            PUBLIC             _I2C_read
 	C:00B6H            PUBLIC             _I2C_write
 	C:00A8H            PUBLIC             I2C_stop
 	C:009DH            PUBLIC             I2C_start
@@ -347,111 +347,109 @@ UG.AOF(RS485_DEBUG)
 	C:00CFH            LINE#              95
 	C:00D1H            LINE#              96
 	C:00D5H            LINE#              86
-	C:00D9H            LINE#              98
-	C:00DBH            LINE#              99
-	C:00DDH            LINE#              100
-	C:00E0H            LINE#              101
-	C:00E6H            LINE#              102
-	C:00E8H            LINE#              103
-	C:00EAH            LINE#              104
-	C:00EDH            LINE#              105
-	C:00EFH            LINE#              106
-	C:00EFH            LINE#              106
+	C:00D9H            LINE#              99
+	C:00DBH            LINE#              100
+	C:00DEH            LINE#              101
+	C:00E4H            LINE#              103
+	C:00E6H            LINE#              104
+	C:00E9H            LINE#              105
+	C:00EBH            LINE#              106
+	C:00EBH            LINE#              106
 	-------            ENDPROC            _I2C_write
 	-------            PROC               _I2C_read
-	C:00F0H            LINE#              111
-	C:00F2H            LINE#              112
-	C:00F4H            LINE#              114
-	C:00F6H            LINE#              115
-	C:00F8H            LINE#              116
-	C:00FEH            LINE#              117
-	C:0100H            LINE#              118
-	C:0103H            LINE#              119
-	C:0108H            LINE#              120
-	C:0114H            LINE#              121
-	C:0116H            LINE#              114
-	C:011AH            LINE#              123
-	C:011EH            LINE#              124
-	C:0122H            LINE#              126
-	C:0124H            LINE#              128
-	C:012AH            LINE#              129
-	C:012CH            LINE#              130
-	C:012FH            LINE#              131
-	C:0132H            LINE#              132
-	C:0134H            LINE#              133
-	C:013AH            LINE#              134
-	C:013CH            LINE#              135
-	C:013CH            LINE#              135
+	C:00ECH            LINE#              111
+	C:00EEH            LINE#              112
+	C:00F0H            LINE#              114
+	C:00F2H            LINE#              115
+	C:00F4H            LINE#              116
+	C:00FAH            LINE#              117
+	C:00FCH            LINE#              118
+	C:00FFH            LINE#              119
+	C:0104H            LINE#              120
+	C:0110H            LINE#              121
+	C:0112H            LINE#              114
+	C:0116H            LINE#              123
+	C:011AH            LINE#              124
+	C:011EH            LINE#              126
+	C:0120H            LINE#              128
+	C:0126H            LINE#              129
+	C:0128H            LINE#              130
+	C:012BH            LINE#              131
+	C:012EH            LINE#              132
+	C:0130H            LINE#              133
+	C:0136H            LINE#              134
+	C:0138H            LINE#              135
+	C:0138H            LINE#              135
 	-------            ENDPROC            _I2C_read
 	-------            PROC               _EEPROMread
 	D:0010H            SYMBOL             address
 	D:0012H            SYMBOL             word
-	C:013DH            LINE#              140
-	C:0141H            LINE#              143
-	C:014EH            LINE#              144
-	C:0151H            LINE#              145
-	C:0156H            LINE#              146
-	C:015BH            LINE#              147
-	C:0160H            LINE#              148
-	C:0163H            LINE#              149
-	C:0169H            LINE#              150
-	C:016CH            LINE#              151
-	C:0171H            LINE#              152
-	C:018BH            LINE#              153
-	C:018EH            LINE#              155
-	C:0192H            LINE#              156
-	C:0192H            LINE#              156
+	C:0139H            LINE#              140
+	C:013DH            LINE#              143
+	C:014AH            LINE#              144
+	C:014DH            LINE#              145
+	C:0152H            LINE#              146
+	C:0157H            LINE#              147
+	C:015CH            LINE#              148
+	C:015FH            LINE#              149
+	C:0165H            LINE#              150
+	C:0168H            LINE#              151
+	C:016DH            LINE#              152
+	C:0187H            LINE#              153
+	C:018AH            LINE#              155
+	C:018EH            LINE#              156
+	C:018EH            LINE#              156
 	-------            ENDPROC            _EEPROMread
 	-------            PROC               _EEPROMwrite
 	D:0014H            SYMBOL             address
 	D:0016H            SYMBOL             word
-	C:0193H            LINE#              161
-	C:019BH            LINE#              162
-	C:01A8H            LINE#              163
-	C:01ABH            LINE#              164
-	C:01B0H            LINE#              165
-	C:01B5H            LINE#              166
-	C:01BAH            LINE#              167
-	C:01BFH            LINE#              168
-	C:01C4H            LINE#              169
-	C:01CAH            LINE#              170
-	C:01CAH            LINE#              171
+	C:018FH            LINE#              161
+	C:0197H            LINE#              162
+	C:01A4H            LINE#              163
+	C:01A7H            LINE#              164
+	C:01ACH            LINE#              165
+	C:01B1H            LINE#              166
+	C:01B6H            LINE#              167
+	C:01BBH            LINE#              168
+	C:01C0H            LINE#              169
+	C:01C6H            LINE#              170
+	C:01C6H            LINE#              171
 	-------            ENDPROC            _EEPROMwrite
 	-------            PROC               timer0_isr
-	C:01CDH            LINE#              51
-	C:01D1H            LINE#              53
-	C:01D4H            LINE#              54
-	C:01D7H            LINE#              56
-	C:01E3H            LINE#              57
-	C:01E3H            LINE#              57
+	C:01C9H            LINE#              51
+	C:01CDH            LINE#              53
+	C:01D0H            LINE#              54
+	C:01D3H            LINE#              56
+	C:01DFH            LINE#              57
+	C:01DFH            LINE#              57
 	-------            ENDPROC            timer0_isr
 	-------            PROC               milliStart
-	C:01E4H            LINE#              59
-	C:01E4H            LINE#              60
-	C:01E6H            LINE#              61
-	C:01E9H            LINE#              62
-	C:01ECH            LINE#              63
-	C:01EFH            LINE#              64
-	C:01F1H            LINE#              65
-	C:01F3H            LINE#              66
-	C:01F5H            LINE#              68
-	C:01FAH            LINE#              69
-	C:01FAH            LINE#              69
+	C:01E0H            LINE#              59
+	C:01E0H            LINE#              60
+	C:01E2H            LINE#              61
+	C:01E5H            LINE#              62
+	C:01E8H            LINE#              63
+	C:01EBH            LINE#              64
+	C:01EDH            LINE#              65
+	C:01EFH            LINE#              66
+	C:01F1H            LINE#              68
+	C:01F6H            LINE#              69
+	C:01F6H            LINE#              69
 	-------            ENDPROC            milliStart
 	-------            PROC               _modbusBegin
-	C:01FBH            LINE#              71
-	C:01FBH            LINE#              74
-	C:01FEH            LINE#              76
-	C:0204H            LINE#              77
-	C:0209H            LINE#              78
-	C:0210H            LINE#              81
-	C:0215H            LINE#              82
-	C:0222H            LINE#              85
-	C:0227H            LINE#              87
-	C:022AH            LINE#              88
-	C:022DH            LINE#              89
-	C:023BH            LINE#              92
-	C:023BH            LINE#              92
+	C:01F7H            LINE#              71
+	C:01F7H            LINE#              74
+	C:01FAH            LINE#              76
+	C:0200H            LINE#              77
+	C:0205H            LINE#              78
+	C:020CH            LINE#              81
+	C:0211H            LINE#              82
+	C:021EH            LINE#              85
+	C:0223H            LINE#              87
+	C:0226H            LINE#              88
+	C:0229H            LINE#              89
+	C:0237H            LINE#              92
+	C:0237H            LINE#              92
 	-------            ENDPROC            _modbusBegin
 	-------            PROC               modbusPoll
 	D:0008H            SYMBOL             i
@@ -459,192 +457,192 @@ UG.AOF(RS485_DEBUG)
 	D:0009H            SYMBOL             startAddress
 	D:000BH            SYMBOL             quantity
 	D:000EH            SYMBOL             value
-	C:023CH            LINE#              94
-	C:023CH            LINE#              95
-	C:023FH            LINE#              98
-	C:0242H            LINE#              100
-	C:0247H            LINE#              101
-	C:025AH            LINE#              102
-	C:025DH            LINE#              103
-	C:025FH            LINE#              104
-	C:0269H            LINE#              105
-	C:0270H            LINE#              109
-	C:0281H            LINE#              110
-	C:02AAH            LINE#              207
-	C:02ABH            LINE#              112
-	C:02D4H            LINE#              114
-	C:02DFH            LINE#              115
-	C:02EAH            LINE#              116
-	C:0307H            LINE#              117
-	C:0324H            LINE#              119
-	C:0332H            LINE#              120
-	C:0343H            LINE#              121
-	C:0350H            LINE#              122
-	C:0357H            LINE#              125
-	C:037DH            LINE#              126
-	C:039AH            LINE#              119
-	C:039EH            LINE#              128
-	C:03A5H            LINE#              129
-	C:03A6H            LINE#              128
-	C:03A8H            LINE#              129
-	C:03AEH            LINE#              134
-	C:03B9H            LINE#              135
-	C:03C4H            LINE#              136
-	C:03D1H            LINE#              137
-	C:03DBH            LINE#              138
-	C:03EEH            LINE#              139
-	C:03F8H            LINE#              141
-	C:0406H            LINE#              142
-	C:0416H            LINE#              143
-	C:0422H            LINE#              144
-	C:0428H            LINE#              141
-	C:042CH            LINE#              146
-	C:0432H            LINE#              147
-	C:0438H            LINE#              152
-	C:0443H            LINE#              153
-	C:044EH            LINE#              154
-	C:0467H            LINE#              155
-	C:047DH            LINE#              156
-	C:0494H            LINE#              157
-	C:0499H            LINE#              161
-	C:04A4H            LINE#              162
-	C:04AFH            LINE#              163
-	C:04C5H            LINE#              164
-	C:04DCH            LINE#              165
-	C:04E1H            LINE#              169
-	C:04ECH            LINE#              170
-	C:04F7H            LINE#              171
-	C:0524H            LINE#              172
-	C:0541H            LINE#              174
-	C:054FH            LINE#              175
-	C:0577H            LINE#              176
-	C:0583H            LINE#              177
-	C:0595H            LINE#              178
-	C:059CH            LINE#              174
-	C:05A0H            LINE#              182
-	C:05A5H            LINE#              187
-	C:05B0H            LINE#              188
-	C:05BBH            LINE#              189
-	C:05EAH            LINE#              190
-	C:0606H            LINE#              192
-	C:0614H            LINE#              193
-	C:0643H            LINE#              194
-	C:064AH            LINE#              192
-	C:064EH            LINE#              198
-	C:0653H            LINE#              203
-	C:065AH            LINE#              207
-	C:065AH            LINE#              207
+	C:0238H            LINE#              94
+	C:0238H            LINE#              95
+	C:023BH            LINE#              98
+	C:023EH            LINE#              100
+	C:0243H            LINE#              101
+	C:0256H            LINE#              102
+	C:0259H            LINE#              103
+	C:025BH            LINE#              104
+	C:0265H            LINE#              105
+	C:026CH            LINE#              109
+	C:027DH            LINE#              110
+	C:02A6H            LINE#              207
+	C:02A7H            LINE#              112
+	C:02D0H            LINE#              114
+	C:02DBH            LINE#              115
+	C:02E6H            LINE#              116
+	C:0303H            LINE#              117
+	C:0320H            LINE#              119
+	C:032EH            LINE#              120
+	C:033FH            LINE#              121
+	C:034CH            LINE#              122
+	C:0353H            LINE#              125
+	C:0379H            LINE#              126
+	C:0396H            LINE#              119
+	C:039AH            LINE#              128
+	C:03A1H            LINE#              129
+	C:03A2H            LINE#              128
+	C:03A4H            LINE#              129
+	C:03AAH            LINE#              134
+	C:03B5H            LINE#              135
+	C:03C0H            LINE#              136
+	C:03CDH            LINE#              137
+	C:03D7H            LINE#              138
+	C:03EAH            LINE#              139
+	C:03F4H            LINE#              141
+	C:0402H            LINE#              142
+	C:0412H            LINE#              143
+	C:041EH            LINE#              144
+	C:0424H            LINE#              141
+	C:0428H            LINE#              146
+	C:042EH            LINE#              147
+	C:0434H            LINE#              152
+	C:043FH            LINE#              153
+	C:044AH            LINE#              154
+	C:0463H            LINE#              155
+	C:0479H            LINE#              156
+	C:0490H            LINE#              157
+	C:0495H            LINE#              161
+	C:04A0H            LINE#              162
+	C:04ABH            LINE#              163
+	C:04C1H            LINE#              164
+	C:04D8H            LINE#              165
+	C:04DDH            LINE#              169
+	C:04E8H            LINE#              170
+	C:04F3H            LINE#              171
+	C:0520H            LINE#              172
+	C:053DH            LINE#              174
+	C:054BH            LINE#              175
+	C:0573H            LINE#              176
+	C:057FH            LINE#              177
+	C:0591H            LINE#              178
+	C:0598H            LINE#              174
+	C:059CH            LINE#              182
+	C:05A1H            LINE#              187
+	C:05ACH            LINE#              188
+	C:05B7H            LINE#              189
+	C:05E6H            LINE#              190
+	C:0602H            LINE#              192
+	C:0610H            LINE#              193
+	C:063FH            LINE#              194
+	C:0646H            LINE#              192
+	C:064AH            LINE#              198
+	C:064FH            LINE#              203
+	C:0656H            LINE#              207
+	C:0656H            LINE#              207
 	-------            ENDPROC            modbusPoll
 	-------            PROC               _boolRead
 	D:0010H            SYMBOL             boolStatus
-	C:065BH            LINE#              209
-	C:065BH            LINE#              212
-	C:0674H            LINE#              216
-	C:0675H            LINE#              213
-	C:0684H            LINE#              214
-	C:0689H            LINE#              215
-	C:068BH            LINE#              216
-	C:068BH            LINE#              216
+	C:0657H            LINE#              209
+	C:0657H            LINE#              212
+	C:0670H            LINE#              216
+	C:0671H            LINE#              213
+	C:0680H            LINE#              214
+	C:0685H            LINE#              215
+	C:0687H            LINE#              216
+	C:0687H            LINE#              216
 	-------            ENDPROC            _boolRead
 	-------            PROC               _wordRead
-	C:068CH            LINE#              218
-	C:0690H            LINE#              219
-	C:06ADH            LINE#              221
-	C:06AEH            LINE#              220
-	C:06B8H            LINE#              221
-	C:06B8H            LINE#              221
+	C:0688H            LINE#              218
+	C:068CH            LINE#              219
+	C:06A9H            LINE#              221
+	C:06AAH            LINE#              220
+	C:06B4H            LINE#              221
+	C:06B4H            LINE#              221
 	-------            ENDPROC            _wordRead
 	-------            PROC               _coilWrite
-	C:06B9H            LINE#              223
-	C:06B9H            LINE#              224
-	C:06D1H            LINE#              229
-	C:06D2H            LINE#              225
-	C:06E6H            LINE#              226
-	C:06F3H            LINE#              227
-	C:06F8H            LINE#              228
-	C:06F9H            LINE#              229
-	C:06F9H            LINE#              229
+	C:06B5H            LINE#              223
+	C:06B5H            LINE#              224
+	C:06CDH            LINE#              229
+	C:06CEH            LINE#              225
+	C:06E2H            LINE#              226
+	C:06EFH            LINE#              227
+	C:06F4H            LINE#              228
+	C:06F5H            LINE#              229
+	C:06F5H            LINE#              229
 	-------            ENDPROC            _coilWrite
 	-------            PROC               _holdingRegisterWrite
 	D:0010H            SYMBOL             startAddress
 	D:0012H            SYMBOL             value
-	C:06FAH            LINE#              231
-	C:0702H            LINE#              232
-	C:071CH            LINE#              235
-	C:071DH            LINE#              233
-	C:0728H            LINE#              234
-	C:0729H            LINE#              235
-	C:0729H            LINE#              235
+	C:06F6H            LINE#              231
+	C:06FEH            LINE#              232
+	C:0718H            LINE#              235
+	C:0719H            LINE#              233
+	C:0724H            LINE#              234
+	C:0725H            LINE#              235
+	C:0725H            LINE#              235
 	-------            ENDPROC            _holdingRegisterWrite
 	-------            PROC               _oops
-	C:072AH            LINE#              237
-	C:072AH            LINE#              238
-	C:072DH            LINE#              239
-	C:072FH            LINE#              240
-	C:0731H            LINE#              241
+	C:0726H            LINE#              237
+	C:0726H            LINE#              238
+	C:0729H            LINE#              239
+	C:072BH            LINE#              240
+	C:072DH            LINE#              241
 	-------            ENDPROC            _oops
 	-------            PROC               _write
 	D:0010H            SYMBOL             len
 	D:0013H            SYMBOL             i
 	D:0011H            SYMBOL             CRC
-	C:0734H            LINE#              243
-	C:0736H            LINE#              247
-	C:073AH            LINE#              248
-	C:073DH            LINE#              250
-	C:073FH            LINE#              248
-	C:0743H            LINE#              250
-	C:074AH            LINE#              251
-	C:0751H            LINE#              253
-	C:0753H            LINE#              254
-	C:077BH            LINE#              255
-	C:077DH            LINE#              257
-	C:077DH            LINE#              257
+	C:0730H            LINE#              243
+	C:0732H            LINE#              247
+	C:0736H            LINE#              248
+	C:0739H            LINE#              250
+	C:073BH            LINE#              248
+	C:073FH            LINE#              250
+	C:0746H            LINE#              251
+	C:074DH            LINE#              253
+	C:074FH            LINE#              254
+	C:0777H            LINE#              255
+	C:0779H            LINE#              257
+	C:0779H            LINE#              257
 	-------            ENDPROC            _write
 	-------            PROC               _crc
 	B:0000H            SYMBOL             lsb
 	D:0014H            SYMBOL             j
-	C:077EH            LINE#              259
-	C:077EH            LINE#              262
-	C:0782H            LINE#              264
-	C:078AH            LINE#              265
-	C:0792H            LINE#              266
-	C:0795H            LINE#              267
-	C:079CH            LINE#              268
-	C:07A7H            LINE#              269
-	C:07AAH            LINE#              270
-	C:07B2H            LINE#              266
-	C:07B9H            LINE#              264
-	C:07BCH            LINE#              274
-	C:07C0H            LINE#              275
-	C:07C0H            LINE#              275
+	C:077AH            LINE#              259
+	C:077AH            LINE#              262
+	C:077EH            LINE#              264
+	C:0786H            LINE#              265
+	C:078EH            LINE#              266
+	C:0791H            LINE#              267
+	C:0798H            LINE#              268
+	C:07A3H            LINE#              269
+	C:07A6H            LINE#              270
+	C:07AEH            LINE#              266
+	C:07B5H            LINE#              264
+	C:07B8H            LINE#              274
+	C:07BCH            LINE#              275
+	C:07BCH            LINE#              275
 	-------            ENDPROC            _crc
 	-------            PROC               _div8RndUp
-	C:07C1H            LINE#              277
-	C:07C1H            LINE#              278
-	C:07D3H            LINE#              279
-	C:07D3H            LINE#              279
+	C:07BDH            LINE#              277
+	C:07BDH            LINE#              278
+	C:07CFH            LINE#              279
+	C:07CFH            LINE#              279
 	-------            ENDPROC            _div8RndUp
 	-------            PROC               _bytesToWord
-	C:07D4H            LINE#              281
-	C:07D4H            LINE#              282
-	C:07E4H            LINE#              283
-	C:07E4H            LINE#              283
+	C:07D0H            LINE#              281
+	C:07D0H            LINE#              282
+	C:07E0H            LINE#              283
+	C:07E0H            LINE#              283
 	-------            ENDPROC            _bytesToWord
 	-------            PROC               main
-	C:07E5H            LINE#              10
-	C:07E5H            LINE#              11
-	C:07E8H            LINE#              12
-	C:07EBH            LINE#              13
-	C:07EEH            LINE#              15
-	C:07F0H            LINE#              17
-	C:07F5H            LINE#              18
-	C:07FAH            LINE#              20
-	C:07FDH            LINE#              21
-	C:0806H            LINE#              22
-	C:0811H            LINE#              24
-	C:0818H            LINE#              25
-	C:081FH            LINE#              28
-	C:0822H            LINE#              30
+	C:07E1H            LINE#              10
+	C:07E1H            LINE#              11
+	C:07E4H            LINE#              12
+	C:07E7H            LINE#              13
+	C:07EAH            LINE#              15
+	C:07ECH            LINE#              17
+	C:07F1H            LINE#              18
+	C:07F6H            LINE#              20
+	C:07F9H            LINE#              21
+	C:0802H            LINE#              22
+	C:080DH            LINE#              24
+	C:0814H            LINE#              25
+	C:081BH            LINE#              28
+	C:081EH            LINE#              30
 	-------            ENDPROC            main
 	-------            ENDMOD             RS485_debug
 	C:000EH            PUBLIC             ?C_START3

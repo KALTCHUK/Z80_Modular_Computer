@@ -1,4 +1,4 @@
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE  1
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE  1
 
 QCW(0x00002F32)
 
@@ -65,8 +65,8 @@ stmt level    source
   29   2          }
   30   1      }
   31          
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 29
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 30
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE 29
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE 30
 
 
 ASSEMBLY LISTING OF GENERATED OBJECT CODE
@@ -129,7 +129,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0053         ?CASE7:
                                            ; SOURCE LINE # 30 
 0053 758DD0         MOV    TH1,#0D0H
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE  2
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE  2
 
                                            ; SOURCE LINE # 31 
 0056 801C           SJMP   ?NXT1
@@ -189,7 +189,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0000 3098FD         JNB    RI,?WHILE3
                                            ; SOURCE LINE # 62 
 0003 C298           CLR    RI
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE  3
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE  3
 
                                            ; SOURCE LINE # 63 
 0005 AF99           MOV    R7,SBUF
@@ -249,7 +249,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0005 30E704         JNB    ACC.7,?ELSE1
                                            ; SOURCE LINE # 88 
 0008 D2B2           SETB   INT0
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE  4
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE  4
 
 000A 8002           SJMP   ?NXT11
 000C         ?ELSE1:
@@ -275,28 +275,24 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 86 
 001F 0C             INC    R4
 0020 BC08E1         CJNE   R4,#008H,?FOR1
-                                           ; SOURCE LINE # 98 
-0023 D2B2           SETB   INT0
                                            ; SOURCE LINE # 99 
-0025 D2B3           SETB   INT1
+0023 D2B3           SETB   INT1
                                            ; SOURCE LINE # 100 
-0027 120000  R      LCALL  _I2C_delay
+0025 120000  R      LCALL  _I2C_delay
               ; R3 is assigned to reply
                                            ; SOURCE LINE # 101 
-002A 7B00           MOV    R3,#000H
-002C 30B201         JNB    INT0,?LAB29
-002F 0B             INC    R3
-0030         ?LAB29:
-                                           ; SOURCE LINE # 102 
-0030 C2B2           CLR    INT0
+0028 7B00           MOV    R3,#000H
+002A 30B201         JNB    INT0,?LAB29
+002D 0B             INC    R3
+002E         ?LAB29:
                                            ; SOURCE LINE # 103 
-0032 C2B3           CLR    INT1
+002E C2B3           CLR    INT1
                                            ; SOURCE LINE # 104 
-0034 120000  R      LCALL  _I2C_delay
+0030 120000  R      LCALL  _I2C_delay
                                            ; SOURCE LINE # 105 
-0037 8B07           MOV    AR7,R3
+0033 8B07           MOV    AR7,R3
                                            ; SOURCE LINE # 106 
-0039 22             RET    
+0035 22             RET    
 
             ; FUNCTION _I2C_write (END)
 
@@ -309,12 +305,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0002 7C00           MOV    R4,#000H
               ; R3 is assigned to bt
                                            ; SOURCE LINE # 114 
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE  5
-
 0004 7B00           MOV    R3,#000H
 0006         ?FOR3:
                                            ; SOURCE LINE # 115 
 0006 D2B2           SETB   INT0
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE  5
+
                                            ; SOURCE LINE # 116 
 0008 E4             CLR    A
 0009 FF             MOV    R7,A
@@ -369,12 +365,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 131 
 003F 30B3FD         JNB    INT1,?WHILE7
                                            ; SOURCE LINE # 132 
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE  6
-
 0042 C2B3           CLR    INT1
                                            ; SOURCE LINE # 133 
 0044 E4             CLR    A
 0045 FE             MOV    R6,A
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE  6
+
 0046 FF             MOV    R7,A
 0047 120000  R      LCALL  _I2C_delay
                                            ; SOURCE LINE # 134 
@@ -429,12 +425,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 003B E4             CLR    A
 003C FB             MOV    R3,A
 003D FF             MOV    R7,A
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE  7
-
 003E C002           PUSH   AR2
 0040 C003           PUSH   AR3
 0042 120000  R      LCALL  _I2C_read
 0045 D0E0           POP    ACC
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE  7
+
 0047 4F             ORL    A,R7
 0048 F500    R      MOV    word+01H,A
 004A D0E0           POP    ACC
@@ -489,12 +485,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0034 120000  R      LCALL  _I2C_delay
                                            ; SOURCE LINE # 170 
 0037 020000  R      LJMP   I2C_stop
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE  8
-
 
             ; FUNCTION _EEPROMwrite (END)
 
             ; FUNCTION timer0_isr (BEGIN)
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE  8
+
                                            ; SOURCE LINE # 51 
 0000 C0E0           PUSH   ACC
 0002 C0D0           PUSH   PSW
@@ -549,12 +545,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0006 E4             CLR    A
 0007 400C           JC     ?ELSE6
                                            ; SOURCE LINE # 77 
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE  9
-
 0009 F500    R      MOV    charTimeout,A
 000B 750002  R      MOV    charTimeout+01H,#002H
                                            ; SOURCE LINE # 78 
 000E F500    R      MOV    frameTimeout,A
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE  9
+
 0010 750004  R      MOV    frameTimeout+01H,#004H
 0013 8012           SJMP   ?NXT27
 0015         ?ELSE6:
@@ -609,12 +605,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 101 
 000B E500    R      MOV    A,milli
 000D B50005  R      CJNE   A,charTimeout,?LAB122
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 10
-
 0010 E500    R      MOV    A,milli+01H
 0012 B50000  R      CJNE   A,charTimeout+01H,?LAB122
 0015         ?LAB122:
 0015 501D           JNC    ?NXT63
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE 10
+
 0017 E500    R      MOV    A,i
 0019 B41800         CJNE   A,#018H,?LAB124
 001C         ?LAB124:
@@ -669,12 +665,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0067 B5F004         CJNE   A,B,?LAB128
 006A EF             MOV    A,R7
 006B 6D             XRL    A,R5
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 11
-
 006C 6001           JZ     ?NXT66
 006E         ?LAB128:
                                            ; SOURCE LINE # 207 
 006E 22             RET    
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE 11
+
 006F         ?NXT66:
                                            ; SOURCE LINE # 112 
 006F E500    R      MOV    A,buf+01H
@@ -729,12 +725,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 00CB         ?ELSE32:
                                            ; SOURCE LINE # 117 
 00CB E500    R      MOV    A,quantity+01H
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 12
-
 00CD 2500    R      ADD    A,startAddress+01H
 00CF FE             MOV    R6,A
 00D0 E500    R      MOV    A,quantity
 00D2 3500    R      ADDC   A,startAddress
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE 12
+
 00D4 B40005         CJNE   A,#000H,?LAB134
 00D7 EE             MOV    A,R6
 00D8 B50001  R      CJNE   A,numCoils,?LAB134
@@ -789,12 +785,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0125 03             RR     A
 0126 03             RR     A
 0127 03             RR     A
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 13
-
 0128 541F           ANL    A,#01FH
 012A 2400    R      ADD    A,#buf+03H
 012C F8             MOV    R0,A
 012D E500    R      MOV    A,j
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE 13
+
 012F 5407           ANL    A,#007H
 0131 FC             MOV    R4,A
 0132 0C             INC    R4
@@ -849,12 +845,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 128 
 016A 8F00    R      MOV    buf+02H,R7
                                            ; SOURCE LINE # 129 
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 14
-
 016C 2403           ADD    A,#003H
 016E FF             MOV    R7,A
 016F 020000  R      LJMP   _write
 0172         ?CASE21:
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE 14
+
                                            ; SOURCE LINE # 134 
 0172 AF00    R      MOV    R7,buf+02H
 0174 AD00    R      MOV    R5,buf+03H
@@ -909,12 +905,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 01C3 E500    R      MOV    A,j
 01C5 B50000  R      CJNE   A,quantity+01H,?LAB149
 01C8         ?LAB149:
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 15
-
 01C8 5026           JNC    ?NXT76
                                            ; SOURCE LINE # 142 
 01CA E500    R      MOV    A,startAddress+01H
 01CC 2500    R      ADD    A,j
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE 15
+
 01CE FF             MOV    R7,A
 01CF E4             CLR    A
 01D0 3500    R      ADDC   A,startAddress
@@ -969,12 +965,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 021A B4FF04         CJNE   A,#0FFH,?LAB151
 021D E500    R      MOV    A,value+01H
 021F 600A           JZ     ?ELSE38
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 16
-
 0221         ?LAB151:
 0221 E4             CLR    A
 0222 FE             MOV    R6,A
 0223 7F03           MOV    R7,#003H
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE 16
+
 0225 120000  R      LCALL  _oops
 0228 020000  R      LJMP   ?NXT67
 022B         ?ELSE38:
@@ -1029,12 +1025,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 027D 400A           JC     ?ELSE41
 027F E4             CLR    A
 0280 FE             MOV    R6,A
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 17
-
 0281 7F02           MOV    R7,#002H
 0283 120000  R      LCALL  _oops
 0286 020000  R      LJMP   ?NXT67
 0289         ?ELSE41:
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE 17
+
                                            ; SOURCE LINE # 164 
 0289 AE00    R      MOV    R6,startAddress
 028B AF00    R      MOV    R7,startAddress+01H
@@ -1089,12 +1085,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 02E0 7F03           MOV    R7,#003H
 02E2 120000  R      LCALL  _oops
 02E5 020000  R      LJMP   ?NXT67
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 18
-
 02E8         ?ELSE43:
                                            ; SOURCE LINE # 172 
 02E8 E500    R      MOV    A,quantity+01H
 02EA 2500    R      ADD    A,startAddress+01H
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE 18
+
 02EC FE             MOV    R6,A
 02ED E500    R      MOV    A,quantity
 02EF 3500    R      ADDC   A,startAddress
@@ -1149,12 +1145,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0334 5207           ANL    AR7,A
 0336 750000  R      MOV    value,#000H
 0339 8F00    R      MOV    value+01H,R7
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 19
-
                                            ; SOURCE LINE # 176 
 033B E500    R      MOV    A,value
 033D 4500    R      ORL    A,value+01H
 033F 6006           JZ     ?NXT87
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE 19
+
 0341 7500FF  R      MOV    value,#0FFH
 0344 E4             CLR    A
 0345 F500    R      MOV    value+01H,A
@@ -1209,12 +1205,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0390 5013           JNC    ?LAB169
 0392 AA00    R      MOV    R2,quantity
 0394 E500    R      MOV    A,quantity+01H
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 20
-
 0396 C3             CLR    C
 0397 33             RLC    A
 0398 CA             XCH    A,R2
 0399 33             RLC    A
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE 20
+
 039A CA             XCH    A,R2
 039B FB             MOV    R3,A
 039C E4             CLR    A
@@ -1269,12 +1265,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 03E8 E500    R      MOV    A,j
 03EA A4             MUL    AB
 03EB FE             MOV    R6,A
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 21
-
 03EC 2400    R      ADD    A,#buf+07H
 03EE F8             MOV    R0,A
 03EF 8607           MOV    AR7,@R0
 03F1 EE             MOV    A,R6
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE 21
+
 03F2 2400    R      ADD    A,#buf+08H
 03F4 F8             MOV    R0,A
 03F5 8605           MOV    AR5,@R0
@@ -1329,12 +1325,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0014 D3             SETB   C
 0015         ?LAB187:
 0015 4003           JC     ?NXT96
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 22
-
 0017 7F02           MOV    R7,#002H
                                            ; SOURCE LINE # 216 
 0019 22             RET    
 001A         ?NXT96:
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE 22
+
                                            ; SOURCE LINE # 213 
 001A 8F02           MOV    AR2,R7
 001C 0A             INC    R2
@@ -1389,12 +1385,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 220 
 0022 8C06           MOV    AR6,R4
 0024 8D07           MOV    AR7,R5
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 23
-
 0026 120000  R      LCALL  _EEPROMread
 0029 E4             CLR    A
 002A FC             MOV    R4,A
 002B FD             MOV    R5,A
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE 23
+
                                            ; SOURCE LINE # 221 
 002C 22             RET    
 
@@ -1449,12 +1445,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0035 33             RLC    A
 0036         ?LAB214:
 0036 DAFC           DJNZ   R2,?LAB215
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 24
-
 0038 4200    R      ORL    outputState,A
 003A         ?NXT103:
                                            ; SOURCE LINE # 227 
 003A E500    R      MOV    A,outputState
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE 24
+
 003C F4             CPL    A
 003D F590           MOV    P1,A
                                            ; SOURCE LINE # 228 
@@ -1509,12 +1505,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 239 
 0003 8F00    R      MOV    buf+02H,R7
                                            ; SOURCE LINE # 240 
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 25
-
 0005 7F03           MOV    R7,#003H
 0007 020000  R      LJMP   _write
 
             ; FUNCTION _oops (END)
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE 25
+
 
             ; FUNCTION _write (BEGIN)
                                            ; SOURCE LINE # 243 
@@ -1569,12 +1565,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 255 
 0047 C2B5           CLR    T1
 0049         ?NXT109:
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 26
-
                                            ; SOURCE LINE # 257 
 0049 22             RET    
 
             ; FUNCTION _write (END)
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE 26
+
 
             ; FUNCTION _crc (BEGIN)
               ; Register R7 is assigned to parameter len
@@ -1629,12 +1625,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0034         ?NXT120:
                                            ; SOURCE LINE # 266 
 0034 0500    R      INC    j
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 27
-
 0036 E500    R      MOV    A,j
 0038 B408DC         CJNE   A,#008H,?FOR17
                                            ; SOURCE LINE # 264 
 003B 0E             INC    R6
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE 27
+
 003C 80C8           SJMP   ?FOR16
 003E         ?NXT117:
                                            ; SOURCE LINE # 274 
@@ -1689,12 +1685,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 
             ; FUNCTION main (BEGIN)
                                            ; SOURCE LINE # 11 
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 28
-
 0000 750008  R      MOV    numCoils,#008H
                                            ; SOURCE LINE # 12 
 0003 E4             CLR    A
 0004 F500    R      MOV    numDiscreteInputs,A
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE 28
+
                                            ; SOURCE LINE # 13 
 0006 750004  R      MOV    numHoldingRegisters,#004H
                                            ; SOURCE LINE # 15 
@@ -1736,12 +1732,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 
             ; FUNCTION main (END)
 
-RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/23/22  09:32:19  PAGE 31
+RC51 COMPILER V06.20.17.263,  RS485_DEBUG        12/29/22  21:03:29  PAGE 31
 
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   2063    ----
+   CODE SIZE        =   2059    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

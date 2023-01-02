@@ -1,0 +1,33 @@
+MS-DOS LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263
+
+
+INTER-MODULE CROSS-REFERENCE LISTING
+------------------------------------
+
+          NAME. . . . . . . . USAGE   MODULE NAMES
+          ----------------------------------------
+          ?C_CPY  . . . . . . CODE    [STRCPY]:  PT100
+          ?C_START3 . . . . . CODE    [C3S]:  PT100
+          ?strcpy . . . . . . CODE    [STRCPY]: 
+          baud  . . . . . . . DATA    [PT100]: 
+          greeting  . . . . . CODE    [PT100]:  PT100
+          HPD_ADDR  . . . . . DATA    [HPD]:  C3S
+          IDATALEN  . . . . . NUMBER  [_C_IDATALEN]:  C3S
+          main  . . . . . . . CODE    [PT100]:  C3S
+          milli . . . . . . . DATA    [PT100]: 
+          milliStart  . . . . CODE    [PT100]:  PT100
+          milliStop . . . . . CODE    [PT100]:  PT100
+          newLine . . . . . . CODE    [PT100]:  PT100
+          readADC . . . . . . CODE    [PT100]:  PT100
+          serialRX  . . . . . CODE    [PT100]: 
+          TIM1_INIT . . . . . NUMBER  [** UNRESOLVED **]:
+          timer0_isr  . . . . CODE    [PT100]: 
+          XSTACKLEN . . . . . NUMBER  [** UNRESOLVED **]:
+          _INITP2?  . . . . . NUMBER  [_C_IDATALEN]:  C3S
+          _printASCII . . . . CODE    [PT100]:  PT100
+          _serialInit . . . . CODE    [PT100]: 
+          _serialTX . . . . . CODE    [PT100]: 
+          _STACK  . . . . . . IDATA   [PT100]:  C3S
+          __LOCAL_END__ . . . CODE    [SHARING]:  STRCPY
+          __NULL_POINTER__  . CODE    [SHARING]:  STRCPY
+          __STRCPY_NXT1__ . . CODE    [STRCPY]: 

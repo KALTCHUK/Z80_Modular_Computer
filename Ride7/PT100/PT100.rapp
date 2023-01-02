@@ -1,0 +1,23 @@
+
+<ApplicationBuild Header="PT100" Extern=".\PT100.rapp" Path=".\PT100.rapp" OutputFile=".\PT100.aof" sate="96" >
+	<NodeH Path=".\Serial.h" Header="Serial.h" Marker="-1" OutputFile="" sate="0" />
+	<NodeC Path=".\PT100.c" Header="PT100.c" Marker="-1" OutputFile=".\PT100.obj" sate="2" />
+	<Options>
+		<Config Header="Standard" >
+			<Set Header="ApplicationBuild" >
+				<Section Header="General" >
+					<Property Header="TargetFamily" Value="80C51" />
+				</Section>
+			</Set>
+			<Set Header="Target" >
+				<Section Header="Processor80C51" >
+					<Property Header="Processor" Value="AT89C4051" Removable="1" />
+				</Section>
+				<Section Header="ToolSet80C51" >
+					<Property Header="BuildToolSet80C51" Value="80C51\RaisonanceTools.config" Removable="1" />
+					<Property Header="ArelocInfo" Value="" Removable="1" />
+				</Section>
+			</Set>
+		</Config>
+	</Options>
+</ApplicationBuild>

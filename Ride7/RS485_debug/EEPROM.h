@@ -95,11 +95,11 @@ char I2C_write(char byte) {
 		SCL_LO;
 		byte <<= 1;
 	}
-    SDA_HI;
+    //SDA_HI;
     SCL_HI;
 	I2C_delay(0);
 	reply = _SDA;
-    SDA_LO;
+    //SDA_LO;
 	SCL_LO;
 	I2C_delay(0);
 	return reply;

@@ -1,0 +1,585 @@
+RC51 COMPILER V06.20.17.263,  PT100              01/01/23  21:05:03  PAGE  1
+
+QCW(0x00002F32)
+
+DOS RC51 COMPILER V06.20.17.263, COMPILATION OF MODULE PT100     
+OBJECT MODULE PLACED IN C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Rid
+            -e7\PT100\PT100.obj
+COMPILER INVOKED BY: QUIET GENERATEDEPFILE OJ(C:\Users\kaltc\Documents\GitHub\Z8
+            -0_Modular_Computer\Ride7\PT100\PT100.obj) PIN(C:\Users\kaltc\Docume
+            -nts\Raisonance\Ride\Inc;C:\Users\kaltc\Documents\Raisonance\Ride\In
+            -c\51) PIN(C:\Users\kaltc\Documents\Raisonance\Ride\\inc\51) NOAM CD
+            - PR(C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Ride7\PT10
+            -0\PT100.lst) FP(NOFLOAT) IP NOIS UNSIGNEDCHAR ET(CHAR) PR PL(60) PW
+            -(80) OE(1) OT(7,SPEED) RB(0) MAXERR(25) MAXWAR(25) SM MOD517(NODP8,
+            -NOAU) 
+
+stmt level    source
+   1          /*
+   2           PT100.c
+   3            */
+   4          
+   5          #include <REG51.h>
+   6          #include "Serial.h"
+   7          
+   8          // Definitions
+   9          #define CR      0x0D
+  10          #define LF      0x0A
+  11          #define _CS     INT0
+  12          #define _RD     INT1
+  13          #define _WR     T0
+  14          #define _INT    T1
+  15          
+  16          unsigned int milli;
+  17          
+  18          // Function Prototyping
+  19          void greeting(void);
+  20          void printASCII(char v);
+  21          void milliStart(void);
+  22          void milliStop(void);
+  23          void newLine(void);
+  24          char readADC(void);
+  25          
+  26          void main() {
+  27   1          char val;
+  28   1      
+  29   1          _CS = 1;
+  30   1          _RD = 1;
+  31   1          _WR = 1;
+  32   1          _INT = 1;
+  33   1          P1 = 0xff;
+  34   1      
+  35   1          baud = 4800;
+  36   1      	serialInit(baud);
+  37   1      	
+  38   1          greeting();
+  39   1      
+  40   1      	while (1) {
+  41   2              while(serialRX() != 's');
+  42   2          
+  43   2              val = readADC();
+  44   2              printASCII(val);
+RC51 COMPILER V06.20.17.263,  PT100              01/01/23  21:05:03  PAGE  3
+
+  45   2          
+  46   2              milliStart();
+  47   2              while(milli < 1000);
+  48   2              milliStop();
+  49   2          }
+  50   1      }
+  51          
+  52          void timer0_isr() interrupt 1 {
+  53   1          TH0 = 0xfc;        //Reload the TIMER0.
+  54   1          TL0 = 0x66;
+  55   1      
+  56   1          milli++;
+  57   1      }
+
+*** WARNING C233 IN LINE 57 OF C:\Users\kaltc\Documents\GitHub\Z80_Modular_Comp
+            -uter\Ride7\PT100\PT100.c : using absolute registers together with i
+            -nterrupts can cause register corruptions (mixup of register banks)
+  58          
+  59          void greeting(void) {
+  60   1          char msg[]="PT100 reading";
+  61   1          int i;
+  62   1      
+  63   1          newLine();
+  64   1          for(i=0; msg[i] != 0; i++)
+  65   1              serialTX(msg[i]);
+  66   1          newLine();
+  67   1      }
+  68          
+  69          void printASCII(char v) {
+  70   1          char buf[2];
+  71   1          char vDiv, vRem;
+  72   1      
+  73   1          serialTX('P');
+  74   1      
+  75   1          vDiv = v / 0xa;
+  76   1          vRem = v % 0xa;
+  77   1      
+  78   1          serialTX('C');
+  79   1      
+  80   1          if(vDiv < 0xa)
+  81   1              buf[0] = vDiv + '0';
+  82   1          else
+  83   1              buf[0] = vDiv + 'A' - 0xa;
+  84   1      
+  85   1          if(vRem < 0xa)
+  86   1              buf[0] = vRem + '0';
+  87   1          else
+  88   1              buf[0] = vRem + 'A' - 0xa;
+  89   1      
+  90   1          serialTX('A');
+  91   1      
+  92   1          newLine();
+  93   1          serialTX(buf[0]);
+  94   1          serialTX(buf[1]);
+  95   1      }
+  96          
+  97          void milliStart(void) {
+  98   1      	ET0 = 0;				//Disable TIMER0 interrupt while configuring it.
+  99   1          TMOD |= 0x01;      //TIMER0 = mode_1.
+RC51 COMPILER V06.20.17.263,  PT100              01/01/23  21:05:03  PAGE  7
+
+ 100   1          TH0 = 0xfc;        //Load the timer value for 1ms tick (crysta
+            -l = 11.059MHz).
+ 101   1          TL0 = 0x66;
+ 102   1          TR0 = 1;           //Turn ON TIMER0.
+ 103   1          ET0 = 1;           //Enable TIMER0 Interrupt.
+ 104   1          EA = 1;            //Enable Global Interrupt.
+ 105   1      	
+ 106   1      	milli = 0;
+ 107   1      }
+ 108          
+ 109          void milliStop(void) {
+ 110   1          ET0 = 0;           //Disable TIMER0 Interrupt.
+ 111   1      }
+ 112          
+ 113          void newLine(void) {
+ 114   1          serialTX(CR);
+ 115   1          serialTX(LF);
+ 116   1      }
+ 117          
+ 118          char readADC(void) {
+ 119   1          char i, val=0;
+ 120   1          unsigned int sum=0;
+ 121   1      
+ 122   1          serialTX('R');
+ 123   1      
+ 124   1          for(i=0; i<16; i++) {   //Read 16 samples.
+ 125   2              _WR = 0;
+ 126   2              _CS = 0;
+ 127   2              val++;              //Just a delay.
+ 128   2              _CS = 1;
+ 129   2              _WR = 1;
+ 130   2          
+ 131   2              while(_INT == 1);
+ 132   2          
+ 133   2              _RD = 0;
+ 134   2              _CS = 0;
+ 135   2              sum += P1;
+ 136   2              _CS = 1;
+ 137   2              _RD = 1;
+ 138   2      
+ 139   2              while(_INT == 0);   //Wait til ADC releases CS.
+ 140   2          
+ 141   2          }
+ 142   1          val = sum/16;           //Average sample.
+ 143   1          return val;
+ 144   1      }
+RC51 COMPILER V06.20.17.263,  PT100              01/01/23  21:05:03  PAGE 10
+
+ASSEMBLY LISTING OF GENERATED OBJECT CODE
+
+            ; FUNCTION _serialInit (BEGIN)
+              ; Register R6R7 is assigned to parameter baud
+                                           ; SOURCE LINE # 25 
+0000 438920         ORL    TMOD,#020H
+                                           ; SOURCE LINE # 26 
+0003 438780         ORL    PCON,#080H
+                                           ; SOURCE LINE # 27 
+0006 759850         MOV    SCON,#050H
+                                           ; SOURCE LINE # 28 
+0009 BE2507         CJNE   R6,#025H,?LAB9
+000C EF             MOV    A,R7
+000D 2480           ADD    A,#080H
+000F 6047           JZ     ?CASE13
+0011 8048           SJMP   ?NXT1
+0013         ?LAB9:
+0013 5021           JNC    ?LAB10
+0015 EE             MOV    A,R6
+0016 B40407         CJNE   A,#004H,?LAB11
+0019 EF             MOV    A,R7
+001A 2450           ADD    A,#050H
+001C 6035           JZ     ?CASE9
+001E 803B           SJMP   ?NXT1
+0020         ?LAB11:
+0020 EE             MOV    A,R6
+0021 B40907         CJNE   A,#009H,?LAB12
+0024 EF             MOV    A,R7
+0025 24A0           ADD    A,#0A0H
+0027 602A           JZ     ?CASE9
+0029 8030           SJMP   ?NXT1
+002B         ?LAB12:
+002B EE             MOV    A,R6
+002C B4122C         CJNE   A,#012H,?NXT1
+002F EF             MOV    A,R7
+0030 2440           ADD    A,#040H
+0032 601F           JZ     ?CASE9
+0034 8025           SJMP   ?NXT1
+0036         ?LAB10:
+0036 EE             MOV    A,R6
+0037 B44B05         CJNE   A,#04BH,?LAB13
+003A EF             MOV    A,R7
+003B 601B           JZ     ?CASE13
+003D 801C           SJMP   ?NXT1
+003F         ?LAB13:
+003F EE             MOV    A,R6
+0040 B47007         CJNE   A,#070H,?LAB14
+0043 EF             MOV    A,R7
+0044 2480           ADD    A,#080H
+0046 6010           JZ     ?CASE13
+0048 8011           SJMP   ?NXT1
+004A         ?LAB14:
+004A EE             MOV    A,R6
+004B B4E10D         CJNE   A,#0E1H,?NXT1
+004E EF             MOV    A,R7
+004F 6007           JZ     ?CASE13
+0051 8008           SJMP   ?NXT1
+0053         ?CASE9:
+                                           ; SOURCE LINE # 32 
+0053 758DEF         MOV    TH1,#0EFH
+RC51 COMPILER V06.20.17.263,  PT100              01/01/23  21:05:03  PAGE  2
+
+                                           ; SOURCE LINE # 33 
+0056 8003           SJMP   ?NXT1
+0058         ?CASE13:
+                                           ; SOURCE LINE # 38 
+0058 758DEF         MOV    TH1,#0EFH
+005B         ?NXT1:
+                                           ; SOURCE LINE # 41 
+005B D28E           SETB   TR1
+                                           ; SOURCE LINE # 42 
+005D 22             RET    
+
+            ; FUNCTION _serialInit (END)
+
+            ; FUNCTION _serialTX (BEGIN)
+              ; Register R7 is assigned to parameter x
+                                           ; SOURCE LINE # 45 
+0000 8F99           MOV    SBUF,R7
+0002         ?WHILE1:
+                                           ; SOURCE LINE # 46 
+0002 3099FD         JNB    TI,?WHILE1
+                                           ; SOURCE LINE # 47 
+0005 C299           CLR    TI
+                                           ; SOURCE LINE # 48 
+0007 22             RET    
+
+            ; FUNCTION _serialTX (END)
+
+            ; FUNCTION serialRX (BEGIN)
+0000         ?WHILE3:
+                                           ; SOURCE LINE # 51 
+0000 3098FD         JNB    RI,?WHILE3
+                                           ; SOURCE LINE # 52 
+0003 C298           CLR    RI
+                                           ; SOURCE LINE # 53 
+0005 AF99           MOV    R7,SBUF
+                                           ; SOURCE LINE # 54 
+0007 22             RET    
+
+            ; FUNCTION serialRX (END)
+
+            ; FUNCTION main (BEGIN)
+                                           ; SOURCE LINE # 29 
+0000 D2B2           SETB   INT0
+                                           ; SOURCE LINE # 30 
+0002 D2B3           SETB   INT1
+                                           ; SOURCE LINE # 31 
+0004 D2B4           SETB   T0
+                                           ; SOURCE LINE # 32 
+0006 D2B5           SETB   T1
+                                           ; SOURCE LINE # 33 
+0008 7590FF         MOV    P1,#0FFH
+                                           ; SOURCE LINE # 35 
+000B 750012  R      MOV    baud,#012H
+000E 7500C0  R      MOV    baud+01H,#0C0H
+                                           ; SOURCE LINE # 36 
+0011 AE00    R      MOV    R6,baud
+0013 AF00    R      MOV    R7,baud+01H
+0015 120000  R      LCALL  _serialInit
+RC51 COMPILER V06.20.17.263,  PT100              01/01/23  21:05:03  PAGE  4
+
+                                           ; SOURCE LINE # 38 
+0018 120000  R      LCALL  greeting
+001B         ?WHILE8:
+                                           ; SOURCE LINE # 41 
+001B 120000  R      LCALL  serialRX
+001E BF73FA         CJNE   R7,#073H,?WHILE8
+                                           ; SOURCE LINE # 43 
+0021 120000  R      LCALL  readADC
+0024 8F00    R      MOV    val,R7
+                                           ; SOURCE LINE # 44 
+0026 120000  R      LCALL  _printASCII
+                                           ; SOURCE LINE # 46 
+0029 120000  R      LCALL  milliStart
+002C         ?WHILE9:
+                                           ; SOURCE LINE # 47 
+002C E500    R      MOV    A,milli
+002E B40305         CJNE   A,#003H,?LAB23
+0031 E500    R      MOV    A,milli+01H
+0033 B4E800         CJNE   A,#0E8H,?LAB23
+0036         ?LAB23:
+0036 40F4           JC     ?WHILE9
+                                           ; SOURCE LINE # 48 
+0038 120000  R      LCALL  milliStop
+003B 80DE           SJMP   ?WHILE8
+
+            ; FUNCTION main (END)
+
+            ; FUNCTION timer0_isr (BEGIN)
+                                           ; SOURCE LINE # 52 
+0000 C0E0           PUSH   ACC
+0002 C0D0           PUSH   PSW
+                                           ; SOURCE LINE # 53 
+0004 758CFC         MOV    TH0,#0FCH
+                                           ; SOURCE LINE # 54 
+0007 758A66         MOV    TL0,#066H
+                                           ; SOURCE LINE # 56 
+000A 0500    R      INC    milli+01H
+000C E500    R      MOV    A,milli+01H
+000E 7002           JNZ    ?NXT13
+0010 0500    R      INC    milli
+0012         ?NXT13:
+0012 D0D0           POP    PSW
+0014 D0E0           POP    ACC
+                                           ; SOURCE LINE # 57 
+0016 32             RETI   
+
+            ; FUNCTION timer0_isr (END)
+
+            ; FUNCTION greeting (BEGIN)
+                                           ; SOURCE LINE # 60 
+0000 7D05           MOV    R5,#005H
+0002 7C00    R      MOV    R4,#HIGH(?STR?PT100?BASE)
+0004 7800    R      MOV    R0,#LOW(?STR?PT100?BASE)
+0006 7B01           MOV    R3,#001H
+0008 E4             CLR    A
+0009 FA             MOV    R2,A
+000A 7900    R      MOV    R1,#msg
+000C 7E0E           MOV    R6,#00EH
+RC51 COMPILER V06.20.17.263,  PT100              01/01/23  21:05:03  PAGE  5
+
+000E 120000  R      LCALL  ?C_CPY
+                                           ; SOURCE LINE # 63 
+0011 120000  R      LCALL  newLine
+                                           ; SOURCE LINE # 64 
+0014 E4             CLR    A
+0015 F500    R      MOV    i,A
+0017 F500    R      MOV    i+01H,A
+0019         ?FOR1:
+0019 E500    R      MOV    A,i+01H
+001B 2400    R      ADD    A,#msg
+001D F8             MOV    R0,A
+001E E6             MOV    A,@R0
+001F 6014           JZ     ?NXT16
+                                           ; SOURCE LINE # 65 
+0021 E500    R      MOV    A,i+01H
+0023 2400    R      ADD    A,#msg
+0025 F8             MOV    R0,A
+0026 8607           MOV    AR7,@R0
+0028 120000  R      LCALL  _serialTX
+                                           ; SOURCE LINE # 64 
+002B 0500    R      INC    i+01H
+002D E500    R      MOV    A,i+01H
+002F 70E8           JNZ    ?FOR1
+0031 0500    R      INC    i
+0033 80E4           SJMP   ?FOR1
+0035         ?NXT16:
+                                           ; SOURCE LINE # 66 
+0035 020000  R      LJMP   newLine
+
+            ; FUNCTION greeting (END)
+
+            ; FUNCTION _printASCII (BEGIN)
+              ; Register R6 is assigned to parameter v
+                                           ; SOURCE LINE # 69 
+0000 8F06           MOV    AR6,R7
+                                           ; SOURCE LINE # 73 
+0002 7F50           MOV    R7,#050H
+0004 120000  R      LCALL  _serialTX
+              ; R5 is assigned to vDiv
+                                           ; SOURCE LINE # 75 
+0007 75F00A         MOV    B,#00AH
+000A EE             MOV    A,R6
+000B 84             DIV    AB
+000C FD             MOV    R5,A
+              ; R4 is assigned to vRem
+                                           ; SOURCE LINE # 76 
+000D 75F00A         MOV    B,#00AH
+0010 EE             MOV    A,R6
+0011 84             DIV    AB
+0012 ACF0           MOV    R4,B
+                                           ; SOURCE LINE # 78 
+0014 7F43           MOV    R7,#043H
+0016 120000  R      LCALL  _serialTX
+                                           ; SOURCE LINE # 80 
+0019 BD0A00         CJNE   R5,#00AH,?LAB39
+001C         ?LAB39:
+001C 5007           JNC    ?ELSE2
+                                           ; SOURCE LINE # 81 
+RC51 COMPILER V06.20.17.263,  PT100              01/01/23  21:05:03  PAGE  6
+
+001E ED             MOV    A,R5
+001F 2430           ADD    A,#030H
+0021 F500    R      MOV    buf,A
+0023 8005           SJMP   ?NXT20
+0025         ?ELSE2:
+                                           ; SOURCE LINE # 83 
+0025 ED             MOV    A,R5
+0026 2437           ADD    A,#037H
+0028 F500    R      MOV    buf,A
+002A         ?NXT20:
+                                           ; SOURCE LINE # 85 
+002A EC             MOV    A,R4
+002B B40A00         CJNE   A,#00AH,?LAB41
+002E         ?LAB41:
+002E 5007           JNC    ?ELSE3
+                                           ; SOURCE LINE # 86 
+0030 EC             MOV    A,R4
+0031 2430           ADD    A,#030H
+0033 F500    R      MOV    buf,A
+0035 8005           SJMP   ?NXT21
+0037         ?ELSE3:
+                                           ; SOURCE LINE # 88 
+0037 EC             MOV    A,R4
+0038 2437           ADD    A,#037H
+003A F500    R      MOV    buf,A
+003C         ?NXT21:
+                                           ; SOURCE LINE # 90 
+003C 7F41           MOV    R7,#041H
+003E 120000  R      LCALL  _serialTX
+                                           ; SOURCE LINE # 92 
+0041 120000  R      LCALL  newLine
+                                           ; SOURCE LINE # 93 
+0044 AF00    R      MOV    R7,buf
+0046 120000  R      LCALL  _serialTX
+                                           ; SOURCE LINE # 94 
+0049 AF00    R      MOV    R7,buf+01H
+004B 020000  R      LJMP   _serialTX
+
+            ; FUNCTION _printASCII (END)
+
+            ; FUNCTION milliStart (BEGIN)
+                                           ; SOURCE LINE # 98 
+0000 C2A9           CLR    ET0
+                                           ; SOURCE LINE # 99 
+0002 438901         ORL    TMOD,#001H
+                                           ; SOURCE LINE # 100 
+0005 758CFC         MOV    TH0,#0FCH
+                                           ; SOURCE LINE # 101 
+0008 758A66         MOV    TL0,#066H
+                                           ; SOURCE LINE # 102 
+000B D28C           SETB   TR0
+                                           ; SOURCE LINE # 103 
+000D D2A9           SETB   ET0
+                                           ; SOURCE LINE # 104 
+000F D2AF           SETB   EA
+                                           ; SOURCE LINE # 106 
+0011 E4             CLR    A
+0012 F500    R      MOV    milli,A
+RC51 COMPILER V06.20.17.263,  PT100              01/01/23  21:05:03  PAGE  8
+
+0014 F500    R      MOV    milli+01H,A
+                                           ; SOURCE LINE # 107 
+0016 22             RET    
+
+            ; FUNCTION milliStart (END)
+
+            ; FUNCTION milliStop (BEGIN)
+                                           ; SOURCE LINE # 110 
+0000 C2A9           CLR    ET0
+                                           ; SOURCE LINE # 111 
+0002 22             RET    
+
+            ; FUNCTION milliStop (END)
+
+            ; FUNCTION newLine (BEGIN)
+                                           ; SOURCE LINE # 114 
+0000 7F0D           MOV    R7,#00DH
+0002 120000  R      LCALL  _serialTX
+                                           ; SOURCE LINE # 115 
+0005 7F0A           MOV    R7,#00AH
+0007 020000  R      LJMP   _serialTX
+
+            ; FUNCTION newLine (END)
+
+            ; FUNCTION readADC (BEGIN)
+              ; R6 is assigned to val
+              ; R4R5 is assigned to sum
+                                           ; SOURCE LINE # 119 
+0000 7E00           MOV    R6,#000H
+                                           ; SOURCE LINE # 120 
+0002 E4             CLR    A
+0003 FC             MOV    R4,A
+0004 FD             MOV    R5,A
+                                           ; SOURCE LINE # 122 
+0005 7F52           MOV    R7,#052H
+0007 120000  R      LCALL  _serialTX
+                                           ; SOURCE LINE # 124 
+000A 8C00    R      MOV    i,R4
+000C         ?FOR3:
+                                           ; SOURCE LINE # 125 
+000C C2B4           CLR    T0
+                                           ; SOURCE LINE # 126 
+000E C2B2           CLR    INT0
+                                           ; SOURCE LINE # 127 
+0010 0E             INC    R6
+                                           ; SOURCE LINE # 128 
+0011 D2B2           SETB   INT0
+                                           ; SOURCE LINE # 129 
+0013 D2B4           SETB   T0
+0015         ?WHILE12:
+                                           ; SOURCE LINE # 131 
+0015 20B5FD         JB     T1,?WHILE12
+                                           ; SOURCE LINE # 133 
+0018 C2B3           CLR    INT1
+                                           ; SOURCE LINE # 134 
+001A C2B2           CLR    INT0
+                                           ; SOURCE LINE # 135 
+001C E590           MOV    A,P1
+RC51 COMPILER V06.20.17.263,  PT100              01/01/23  21:05:03  PAGE  9
+
+001E FB             MOV    R3,A
+001F ED             MOV    A,R5
+0020 2B             ADD    A,R3
+0021 FD             MOV    R5,A
+0022 E4             CLR    A
+0023 3C             ADDC   A,R4
+0024 FC             MOV    R4,A
+                                           ; SOURCE LINE # 136 
+0025 D2B2           SETB   INT0
+                                           ; SOURCE LINE # 137 
+0027 D2B3           SETB   INT1
+0029         ?WHILE13:
+                                           ; SOURCE LINE # 139 
+0029 30B5FD         JNB    T1,?WHILE13
+                                           ; SOURCE LINE # 124 
+002C 0500    R      INC    i
+002E E500    R      MOV    A,i
+0030 B410D9         CJNE   A,#010H,?FOR3
+              ; R7 is assigned to val
+                                           ; SOURCE LINE # 142 
+0033 8D03           MOV    AR3,R5
+0035 EC             MOV    A,R4
+0036 75F004         MOV    B,#004H
+0039         ?LAB54:
+0039 C3             CLR    C
+003A 13             RRC    A
+003B CB             XCH    A,R3
+003C 13             RRC    A
+003D CB             XCH    A,R3
+003E D5F0F8         DJNZ   B,?LAB54
+0041 8B07           MOV    AR7,R3
+                                           ; SOURCE LINE # 144 
+0043 22             RET    
+
+            ; FUNCTION readADC (END)
+
+RC51 COMPILER V06.20.17.263,  PT100              01/01/23  21:05:04  PAGE 11
+
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    432    ----
+   CONSTANT SIZE    =     14    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      4      25
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+RC51 COMPILATION COMPLETE.  1 WARNING,  0 ERROR
