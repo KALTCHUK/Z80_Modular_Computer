@@ -10,20 +10,20 @@
 				<3>439</3>
 				<4>80</4>
 				<5>167</5>
-																																																																																																																
+																																																																																																																														
 			</CodeReport>
-																																																																																
+																																																																																										
 		</CodeView>
 		<Peripheral PaneID="1920233566" />
 		<Peripheral PaneID="1920233564" />
 		<Peripheral PaneID="1920233567" />
 		<SfrView Focus="2386" TopRow="128" NbPerLine="8" PaneID="84875095" />
-																																																
+																																																						
 	</DO-8>
 	<Flags>
 		<Report>
 			<Def Header="FlagReport" NbCol="9" >
-				<Col Type="PT_BOOL" Header="Check" sizeCache="18" AutoSize="0" Edit="1" Sortable="1" Icon="C:\Users\kaltc\Documents\Raisonance\Ride\Config\Resources\check.bmp" />
+				<Col Type="PT_BOOL" Header="Check" sizeCache="18" AutoSize="0" Edit="1" Sortable="1" Icon="C:\Users\ricardo\Documents\Raisonance\Ride\Config\Resources\check.bmp" />
 				<Col Type="PT_STRING" Header="Kind" sizeCache="DDDDDDDDDDD" AutoSize="1" Edit="0" Sortable="1" />
 				<Col Type="PT_STRING" Header="KindID" sizeCache="DD" AutoSize="1" Edit="0" Sortable="1" Visible="0" />
 				<Col Type="PT_STRING" Header="Space" sizeCache="DDDDDD" AutoSize="1" Edit="0" Sortable="1" />

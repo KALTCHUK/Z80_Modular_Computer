@@ -1,41 +1,39 @@
-LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263                                 01/01/23  21:05:04
+LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263                                 01/04/23  16:42:38
 MS-DOS LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263,  INVOKED BY:
-C:\Users\kaltc\Documents\Raisonance\Ride\Bin\LX51.EXE C:\Users\kaltc\Documents\GitHub\Z80_Modular&
-_Computer\Ride7\PT100\PT100.obj TO(C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Ride7\PT1&
-00\PT100.aof) LIBPATH(C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51) GENERATEDEPFILE MAP IX RS(&
-256) RSI(128) CSIZE(65536) XSIZE(65536) DEFN(XSTACKLEN,256) DEFN(TIM1_INIT,E8h) CO(0) DT(0) ID(0)&
- XD(0) BI(0) ABSCODEOFFS(0) XMLM(No,C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Ride7\PT&
-100\PT100-modules.Standard.xml) XMLF(No,8000,C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer&
-\Ride7\PT100\PT100-flash.Standard.xml) 
+C:\Users\ricardo\Documents\Raisonance\Ride\Bin\LX51.EXE C:\Users\ricardo\Documents\GitHub\Z80_Mod&
+ular_Computer\Ride7\PT100\PT100.obj TO(C:\Users\ricardo\Documents\GitHub\Z80_Modular_Computer\Rid&
+e7\PT100\PT100.aof) LIBPATH(C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51) GENERATEDEPFILE MA&
+P IX RS(256) RSI(128) CSIZE(65536) XSIZE(65536) DEFN(XSTACKLEN,256) DEFN(TIM1_INIT,E8h) CO(0) DT(&
+0) ID(0) XD(0) BI(0) ABSCODEOFFS(0) XMLM(No,C:\Users\ricardo\Documents\GitHub\Z80_Modular_Compute&
+r\Ride7\PT100\PT100-modules.Standard.xml) XMLF(No,8000,C:\Users\ricardo\Documents\GitHub\Z80_Modu&
+lar_Computer\Ride7\PT100\PT100-flash.Standard.xml) 
 
 
 MEMORY MODEL: SMALL WITHOUT ANY FLOATING POINT ARITHMETIC
 
 
 INPUT MODULES INCLUDED
-  C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\PT100\PT100.OBJ(PT100)
-  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(C3S)
-  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(STRCPY)
-  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(SHARING)
-  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(HPD)
-  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(_C_IDATALEN)
+  C:\USERS\RICARDO\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\PT100\PT100.OBJ(PT100)
+  C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(C3S)
+  C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(STRCPY)
+  C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(SHARING)
+  C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(HPD)
+  C:\Users\ricardo\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(_C_IDATALEN)
 
 
-LINK MAP OF MODULE: C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\PT100\PT100.AOF (P&
-T100)
+LINK MAP OF MODULE: C:\USERS\RICARDO\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\PT100\PT100.AOF &
+(PT100)
 
     TYPE     BASE       LENGTH    RELOCATION     SEGMENT NAME
     ----     ----       ------    ----------     ------------
 
     * * * * * * *   DATA/IDATA    M E M O R Y   * * * * * * *
     REG      0000H      0008H     ABSOLUTE       "REG BANK 0"
-    DATA     0008H      0011H     OVERLAID UNIT  _DGROUP00_
-             0008H      0001H     -------------  ?DT?main?PT100
-             0009H      0010H     -------------  ?DT?greeting?PT100
-             0009H      0001H     -------------  ?DT?readADC?PT100
-             0009H      0002H     -------------  ?DT?_printASCII?PT100
-    DATA     0019H      0004H     UNIT           ?DT?PT100
-    IDATA    001DH      0001H     * * STACK * *  _STACK
+    DATA     0008H      0018H     OVERLAID UNIT  _DGROUP01_
+             0008H      0018H     -------------  ?DT?greeting?PT100
+             0008H      0002H     -------------  ?DT?_printASCII?PT100
+    DATA     0020H      0004H     UNIT           ?DT?PT100
+    IDATA    0024H      0001H     * * STACK * *  _STACK
 
     * * * * * * *   CODE          M E M O R Y   * * * * * * *
     CODE     0000H      0003H     ABSOLUTE       
@@ -43,36 +41,37 @@ T100)
     CODE     000BH      0003H     ABSOLUTE       
     CODE     000EH      016BH     UNIT           ?PR?LIB51
     CODE     0179H      000FH     UNIT           ?PR?C51_STARTUP?
-    CODE     0188H      005EH     UNIT           ?PR?_serialInit?PT100
-    CODE     01E6H      0008H     UNIT           ?PR?serialRX?PT100
-    CODE     01EEH      003DH     UNIT           ?PR?main?PT100
-    CODE     022BH      0017H     UNIT           ?PR?timer0_isr?PT100
-    CODE     0242H      000EH     UNIT           ?STR?PT100
-    CODE     0250H      0038H     UNIT           ?PR?greeting?PT100
-    CODE     0288H      004EH     UNIT           ?PR?_printASCII?PT100
-    CODE     02D6H      0017H     UNIT           ?PR?milliStart?PT100
-    CODE     02EDH      0003H     UNIT           ?PR?milliStop?PT100
-    CODE     02F0H      000AH     UNIT           ?PR?newLine?PT100
-    CODE     02FAH      0044H     UNIT           ?PR?readADC?PT100
+    CODE     0188H      0077H     UNIT           ?PR?_serialInit?PT100
+    CODE     01FFH      0008H     UNIT           ?PR?serialRX?PT100
+    CODE     0207H      0035H     UNIT           ?PR?main?PT100
+    CODE     023CH      0017H     UNIT           ?PR?timer0_isr?PT100
+    CODE     0253H      0016H     UNIT           ?STR?PT100
+    CODE     0269H      0038H     UNIT           ?PR?greeting?PT100
+    CODE     02A1H      003DH     UNIT           ?PR?_printASCII?PT100
+    CODE     02DEH      0017H     UNIT           ?PR?milliStart?PT100
+    CODE     02F5H      0003H     UNIT           ?PR?milliStop?PT100
+    CODE     02F8H      000AH     UNIT           ?PR?newLine?PT100
+    CODE     0302H      003CH     UNIT           ?PR?readADC?PT100
 
 EXECUTABLE SUMMARY:
 -------------------
-    Total INTERNAL RAM storage requirement:  001DH (29)
+    Total INTERNAL RAM storage requirement:  0024H (36)
     Total EXTERNAL RAM storage requirement:  0000H (0)
     Total     CODE     storage requirement:  033EH (830)
 Note:  Summary does not include dynamic stack requirements
 
 
-REFERENCE MAP OF MODULE: C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\PT100\PT100.AOF (PT100)
+REFERENCE MAP OF MODULE: C:\USERS\RICARDO\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\PT100\PT100.AOF (PT100)
 
 SEGMENT                           BI_GROUP            DT_GROUP             ID_GROUP             XD_GROUP
   +--> CALLED SEGMENT          START    LENGTH     START    LENGTH     START    LENGTH     START    LENGTH
 --------------------------------------------------------------------------------------
 
-?PR?main?PT100                 ---------------     0008H    0001H      ---------------     ---------------
+?PR?serialRX?PT100             ---------------     ---------------     ---------------     ---------------
+
+?PR?main?PT100                 ---------------     ---------------     ---------------     ---------------
   +--> ?PR?_serialInit?PT100
   +--> ?PR?greeting?PT100
-  +--> ?PR?serialRX?PT100
   +--> ?PR?readADC?PT100
   +--> ?PR?_printASCII?PT100
   +--> ?PR?milliStart?PT100
@@ -80,7 +79,7 @@ SEGMENT                           BI_GROUP            DT_GROUP             ID_GR
 
 ?PR?_serialInit?PT100          ---------------     ---------------     ---------------     ---------------
 
-?PR?greeting?PT100             ---------------     0009H    0010H     ---------------     ---------------
+?PR?greeting?PT100             ---------------     0008H    0018H     ---------------     ---------------
   +--> ?PR?newLine?PT100
   +--> ?PR?_serialTX?PT100
 
@@ -89,12 +88,9 @@ SEGMENT                           BI_GROUP            DT_GROUP             ID_GR
 
 ?PR?_serialTX?PT100            ---------------     ---------------     ---------------     ---------------
 
-?PR?serialRX?PT100             ---------------     ---------------     ---------------     ---------------
+?PR?readADC?PT100              ---------------     ---------------     ---------------     ---------------
 
-?PR?readADC?PT100              ---------------     0009H    0001H     ---------------     ---------------
-  +--> ?PR?_serialTX?PT100
-
-?PR?_printASCII?PT100          ---------------     0009H    0002H     ---------------     ---------------
+?PR?_printASCII?PT100          ---------------     0008H    0002H     ---------------     ---------------
   +--> ?PR?newLine?PT100
   +--> ?PR?_serialTX?PT100
 
@@ -104,29 +100,29 @@ SEGMENT                           BI_GROUP            DT_GROUP             ID_GR
 
 ?PR?timer0_isr?PT100           ---------------     ---------------     ---------------     ---------------
 
-SYMBOL TABLE FOR C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\PT100\PT100.AOF(PT100&
-)
+SYMBOL TABLE FOR C:\USERS\RICARDO\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\PT100\PT100.AOF(PT1&
+00)
 -------------------------------------------------------------------------------------------------&
---
+----
 
     VALUE              TYPE               NAME
     -----              ----               ----
 
 	-------            MODULE             PT100
 	C:0000H            SYMBOL             _ICE_DUMMY_
-	C:022BH            PUBLIC             timer0_isr
-	C:01EEH            PUBLIC             main
-	C:02FAH            PUBLIC             readADC
-	C:02F0H            PUBLIC             newLine
-	C:02EDH            PUBLIC             milliStop
-	C:02D6H            PUBLIC             milliStart
-	C:0288H            PUBLIC             _printASCII
-	C:0250H            PUBLIC             greeting
-	D:001BH            PUBLIC             milli
-	C:01E6H            PUBLIC             serialRX
+	C:023CH            PUBLIC             timer0_isr
+	C:0207H            PUBLIC             main
+	C:0302H            PUBLIC             readADC
+	C:02F8H            PUBLIC             newLine
+	C:02F5H            PUBLIC             milliStop
+	C:02DEH            PUBLIC             milliStart
+	C:02A1H            PUBLIC             _printASCII
+	C:0269H            PUBLIC             greeting
+	D:0022H            PUBLIC             milli
+	C:01FFH            PUBLIC             serialRX
 	C:0003H            PUBLIC             _serialTX
 	C:0188H            PUBLIC             _serialInit
-	D:0019H            PUBLIC             baud
+	D:0020H            PUBLIC             baud
 	B:0098H            SYMBOL             RI
 	B:0099H            SYMBOL             TI
 	B:009AH            SYMBOL             RB8
@@ -196,135 +192,138 @@ SYMBOL TABLE FOR C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\PT10
 	C:018BH            LINE#              26
 	C:018EH            LINE#              27
 	C:0191H            LINE#              28
-	C:01DBH            LINE#              32
-	C:01DEH            LINE#              33
-	C:01E0H            LINE#              38
-	C:01E3H            LINE#              41
-	C:01E5H            LINE#              42
-	C:01E5H            LINE#              42
+	C:01DBH            LINE#              30
+	C:01DEH            LINE#              31
+	C:01E0H            LINE#              33
+	C:01E3H            LINE#              34
+	C:01E5H            LINE#              36
+	C:01E8H            LINE#              37
+	C:01EAH            LINE#              39
+	C:01EDH            LINE#              40
+	C:01EFH            LINE#              42
+	C:01F2H            LINE#              43
+	C:01F4H            LINE#              45
+	C:01F7H            LINE#              46
+	C:01F9H            LINE#              48
+	C:01FCH            LINE#              51
+	C:01FEH            LINE#              52
+	C:01FEH            LINE#              52
 	-------            ENDPROC            _serialInit
 	-------            PROC               _serialTX
-	C:0003H            LINE#              44
-	C:0003H            LINE#              45
-	C:0005H            LINE#              46
-	C:0008H            LINE#              47
-	C:000AH            LINE#              48
-	C:000AH            LINE#              48
+	C:0003H            LINE#              54
+	C:0003H            LINE#              55
+	C:0005H            LINE#              56
+	C:0008H            LINE#              57
+	C:000AH            LINE#              58
+	C:000AH            LINE#              58
 	-------            ENDPROC            _serialTX
 	-------            PROC               serialRX
-	C:01E6H            LINE#              50
-	C:01E6H            LINE#              51
-	C:01E9H            LINE#              52
-	C:01EBH            LINE#              53
-	C:01EDH            LINE#              54
-	C:01EDH            LINE#              54
+	C:01FFH            LINE#              60
+	C:01FFH            LINE#              61
+	C:0202H            LINE#              62
+	C:0204H            LINE#              63
+	C:0206H            LINE#              64
+	C:0206H            LINE#              64
 	-------            ENDPROC            serialRX
 	-------            PROC               main
-	D:0008H            SYMBOL             val
-	C:01EEH            LINE#              26
-	C:01EEH            LINE#              29
-	C:01F0H            LINE#              30
-	C:01F2H            LINE#              31
-	C:01F4H            LINE#              32
-	C:01F6H            LINE#              33
-	C:01F9H            LINE#              35
-	C:01FFH            LINE#              36
-	C:0206H            LINE#              38
-	C:0209H            LINE#              41
-	C:020FH            LINE#              43
-	C:0214H            LINE#              44
-	C:0217H            LINE#              46
-	C:021AH            LINE#              47
-	C:0226H            LINE#              48
-	C:0229H            LINE#              50
+	C:0207H            LINE#              26
+	C:0207H            LINE#              27
+	C:0209H            LINE#              28
+	C:020BH            LINE#              29
+	C:020DH            LINE#              30
+	C:020FH            LINE#              31
+	C:0212H            LINE#              33
+	C:0218H            LINE#              34
+	C:021FH            LINE#              36
+	C:0222H            LINE#              39
+	C:0228H            LINE#              40
+	C:022BH            LINE#              41
+	C:0237H            LINE#              42
+	C:023AH            LINE#              44
 	-------            ENDPROC            main
 	-------            PROC               timer0_isr
-	C:022BH            LINE#              52
-	C:022FH            LINE#              53
-	C:0232H            LINE#              54
-	C:0235H            LINE#              56
-	C:0241H            LINE#              57
-	C:0241H            LINE#              57
+	C:023CH            LINE#              46
+	C:0240H            LINE#              47
+	C:0243H            LINE#              48
+	C:0246H            LINE#              50
+	C:0252H            LINE#              51
+	C:0252H            LINE#              51
 	-------            ENDPROC            timer0_isr
 	-------            PROC               greeting
-	D:0009H            SYMBOL             msg
-	D:0017H            SYMBOL             i
-	C:0250H            LINE#              59
-	C:0250H            LINE#              60
-	C:0261H            LINE#              63
-	C:0264H            LINE#              64
-	C:0271H            LINE#              65
-	C:027BH            LINE#              64
-	C:0285H            LINE#              66
-	C:0285H            LINE#              67
+	D:0008H            SYMBOL             msg
+	D:001EH            SYMBOL             i
+	C:0269H            LINE#              53
+	C:0269H            LINE#              54
+	C:027AH            LINE#              57
+	C:027DH            LINE#              58
+	C:028AH            LINE#              59
+	C:0294H            LINE#              58
+	C:029EH            LINE#              60
+	C:029EH            LINE#              61
 	-------            ENDPROC            greeting
 	-------            PROC               _printASCII
-	D:0009H            SYMBOL             buf
-	C:0288H            LINE#              69
-	C:028AH            LINE#              73
-	C:028FH            LINE#              75
-	C:0295H            LINE#              76
-	C:029CH            LINE#              78
-	C:02A1H            LINE#              80
-	C:02A6H            LINE#              81
-	C:02ADH            LINE#              83
-	C:02B2H            LINE#              85
-	C:02B8H            LINE#              86
-	C:02BFH            LINE#              88
-	C:02C4H            LINE#              90
-	C:02C9H            LINE#              92
-	C:02CCH            LINE#              93
-	C:02D1H            LINE#              94
-	C:02D3H            LINE#              95
+	D:0008H            SYMBOL             buf
+	C:02A1H            LINE#              63
+	C:02A1H            LINE#              66
+	C:02A7H            LINE#              67
+	C:02AEH            LINE#              69
+	C:02B3H            LINE#              70
+	C:02BAH            LINE#              72
+	C:02BFH            LINE#              74
+	C:02C5H            LINE#              75
+	C:02CCH            LINE#              77
+	C:02D1H            LINE#              79
+	C:02D4H            LINE#              80
+	C:02D9H            LINE#              81
+	C:02DBH            LINE#              82
 	-------            ENDPROC            _printASCII
 	-------            PROC               milliStart
-	C:02D6H            LINE#              97
-	C:02D6H            LINE#              98
-	C:02D8H            LINE#              99
-	C:02DBH            LINE#              100
-	C:02DEH            LINE#              101
-	C:02E1H            LINE#              102
-	C:02E3H            LINE#              103
-	C:02E5H            LINE#              104
-	C:02E7H            LINE#              106
-	C:02ECH            LINE#              107
-	C:02ECH            LINE#              107
+	C:02DEH            LINE#              84
+	C:02DEH            LINE#              85
+	C:02E0H            LINE#              86
+	C:02E3H            LINE#              87
+	C:02E6H            LINE#              88
+	C:02E9H            LINE#              89
+	C:02EBH            LINE#              90
+	C:02EDH            LINE#              91
+	C:02EFH            LINE#              93
+	C:02F4H            LINE#              94
+	C:02F4H            LINE#              94
 	-------            ENDPROC            milliStart
 	-------            PROC               milliStop
-	C:02EDH            LINE#              109
-	C:02EDH            LINE#              110
-	C:02EFH            LINE#              111
-	C:02EFH            LINE#              111
+	C:02F5H            LINE#              96
+	C:02F5H            LINE#              97
+	C:02F7H            LINE#              98
+	C:02F7H            LINE#              98
 	-------            ENDPROC            milliStop
 	-------            PROC               newLine
-	C:02F0H            LINE#              113
-	C:02F0H            LINE#              114
-	C:02F5H            LINE#              115
-	C:02F7H            LINE#              116
+	C:02F8H            LINE#              100
+	C:02F8H            LINE#              101
+	C:02FDH            LINE#              102
+	C:02FFH            LINE#              103
 	-------            ENDPROC            newLine
 	-------            PROC               readADC
-	D:0009H            SYMBOL             i
-	C:02FAH            LINE#              118
-	C:02FAH            LINE#              119
-	C:02FCH            LINE#              120
-	C:02FFH            LINE#              122
-	C:0304H            LINE#              124
-	C:0306H            LINE#              125
-	C:0308H            LINE#              126
-	C:030AH            LINE#              127
-	C:030BH            LINE#              128
-	C:030DH            LINE#              129
-	C:030FH            LINE#              131
-	C:0312H            LINE#              133
-	C:0314H            LINE#              134
-	C:0316H            LINE#              135
-	C:031FH            LINE#              136
-	C:0321H            LINE#              137
-	C:0323H            LINE#              139
-	C:0326H            LINE#              124
-	C:032DH            LINE#              142
-	C:033DH            LINE#              144
-	C:033DH            LINE#              144
+	C:0302H            LINE#              105
+	C:0302H            LINE#              106
+	C:0304H            LINE#              107
+	C:0307H            LINE#              109
+	C:0308H            LINE#              110
+	C:030AH            LINE#              111
+	C:030CH            LINE#              112
+	C:030DH            LINE#              113
+	C:030FH            LINE#              114
+	C:0311H            LINE#              116
+	C:0314H            LINE#              118
+	C:0316H            LINE#              119
+	C:0318H            LINE#              120
+	C:031AH            LINE#              121
+	C:031DH            LINE#              122
+	C:0326H            LINE#              123
+	C:0328H            LINE#              124
+	C:032AH            LINE#              109
+	C:032EH            LINE#              127
+	C:033DH            LINE#              129
+	C:033DH            LINE#              129
 	-------            ENDPROC            readADC
 	-------            ENDMOD             PT100
 	C:0179H            PUBLIC             ?C_START3
@@ -337,10 +336,15 @@ SYMBOL TABLE FOR C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\PT10
 	N:007FH            PUBLIC             IDATALEN
 	N:00FFH            PUBLIC             _INITP2?
 
+UNCALLED SEGMENTS:
+------------------
+    ?PR?serialRX?PT100: Function serialRX in file C:\USERS\RICARDO\DOCUMENTS\GITHUB\Z80_MODULAR_C&
+OMPUTER\RIDE7\PT100\PT100.OBJ was not called
+
 ----------------------
 SUGGESTED OPTIMIZATION
 ----------------------
-Warning: 99 (63H) data bytes in the range [00H-80H] are available for storage.
+Warning: 92 (5CH) data bytes in the range [00H-80H] are available for storage.
          Consider using some of these for 'data' variables in your source files.
 
 
