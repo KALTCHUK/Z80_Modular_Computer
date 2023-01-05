@@ -1,5 +1,5 @@
 [Application]
-ApplicationPath=C:\Users\ricardo\Documents\GitHub\Z80_Modular_Computer\Ride7\PT100\PT100.aof
+ApplicationPath=C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Ride7\PT100\PT100.aof
 DebugTool=SIM-51
 CodeSize=0x10000
 XDataSize=0x10000
@@ -8,7 +8,7 @@ Format=AOF
 CodeOffset=0x0
 LoaderTool=80C51
 Target=80C51
-MakeApplicationPath=C:\Users\ricardo\Documents\GitHub\Z80_Modular_Computer\Ride7\PT100\PT100.aof
+MakeApplicationPath=C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Ride7\PT100\PT100.aof
 [Device]
 Name=AT89C4051
 Architecture=1

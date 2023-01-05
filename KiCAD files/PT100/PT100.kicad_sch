@@ -2537,7 +2537,7 @@
     (property "Reference" "Y1" (id 0) (at 240.03 85.09 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "24MHz" (id 1) (at 238.76 87.63 90)
+    (property "Value" "" (id 1) (at 233.68 87.63 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "" (id 2) (at 241.3 81.28 0)
@@ -2966,7 +2966,7 @@
       (reference "U3") (unit 1) (value "AT89C4051-24P") (footprint "Package_DIP:DIP-20_W7.62mm")
     )
     (path "/d4425a69-7786-4067-88c4-6c450a65597a"
-      (reference "Y1") (unit 1) (value "24MHz") (footprint "")
+      (reference "Y1") (unit 1) (value "11.059MHz") (footprint "")
     )
   )
 )

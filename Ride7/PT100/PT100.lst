@@ -1,18 +1,18 @@
-RC51 COMPILER V06.20.17.263,  PT100              01/04/23  16:42:37  PAGE  1
+RC51 COMPILER V06.20.17.263,  PT100              01/04/23  20:06:25  PAGE  1
 
 QCW(0x00002F32)
 
 DOS RC51 COMPILER V06.20.17.263, COMPILATION OF MODULE PT100     
-OBJECT MODULE PLACED IN C:\Users\ricardo\Documents\GitHub\Z80_Modular_Computer\R
-            -ide7\PT100\PT100.obj
-COMPILER INVOKED BY: QUIET GENERATEDEPFILE OJ(C:\Users\ricardo\Documents\GitHub\
-            -Z80_Modular_Computer\Ride7\PT100\PT100.obj) PIN(C:\Users\ricardo\Do
-            -cuments\Raisonance\Ride\Inc;C:\Users\ricardo\Documents\Raisonance\R
-            -ide\Inc\51) PIN(C:\Users\ricardo\Documents\Raisonance\Ride\\inc\51)
-            - NOAM CD PR(C:\Users\ricardo\Documents\GitHub\Z80_Modular_Computer\
-            -Ride7\PT100\PT100.lst) FP(NOFLOAT) IP NOIS UNSIGNEDCHAR ET(CHAR) PR
-            - PL(60) PW(80) OE(1) OT(7,SPEED) RB(0) MAXERR(25) MAXWAR(25) SM MOD
-            -517(NODP8,NOAU) 
+OBJECT MODULE PLACED IN C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Rid
+            -e7\PT100\PT100.obj
+COMPILER INVOKED BY: QUIET GENERATEDEPFILE OJ(C:\Users\kaltc\Documents\GitHub\Z8
+            -0_Modular_Computer\Ride7\PT100\PT100.obj) PIN(C:\Users\kaltc\Docume
+            -nts\Raisonance\Ride\Inc;C:\Users\kaltc\Documents\Raisonance\Ride\In
+            -c\51) PIN(C:\Users\kaltc\Documents\Raisonance\Ride\\inc\51) NOAM CD
+            - PR(C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Ride7\PT10
+            -0\PT100.lst) FP(NOFLOAT) IP NOIS UNSIGNEDCHAR ET(CHAR) PR PL(60) PW
+            -(80) OE(1) OT(7,SPEED) RB(0) MAXERR(25) MAXWAR(25) SM MOD517(NODP8,
+            -NOAU) 
 
 stmt level    source
    1          /*
@@ -59,7 +59,7 @@ stmt level    source
   42   2              milliStop();
   43   2          }
   44   1      }
-RC51 COMPILER V06.20.17.263,  PT100              01/04/23  16:42:37  PAGE  4
+RC51 COMPILER V06.20.17.263,  PT100              01/04/23  20:06:25  PAGE  4
 
   45          
   46          void timer0_isr() interrupt 1 {
@@ -69,10 +69,9 @@ stmt level    source
   50   1          milli++;
   51   1      }
 
-*** WARNING C233 IN LINE 51 OF C:\Users\ricardo\Documents\GitHub\Z80_Modular_Co
-            -mputer\Ride7\PT100\PT100.c : using absolute registers together with
-            - interrupts can cause register corruptions (mixup of register banks
-            -)
+*** WARNING C233 IN LINE 51 OF C:\Users\kaltc\Documents\GitHub\Z80_Modular_Comp
+            -uter\Ride7\PT100\PT100.c : using absolute registers together with i
+            -nterrupts can cause register corruptions (mixup of register banks)
   52          
   53          void greeting(void) {
   54   1          char msg[]="*** PT100 reading ***";
@@ -120,9 +119,9 @@ stmt level    source
   95          
   96          void milliStop(void) {
   97   1          ET0 = 0;           //Disable TIMER0 Interrupt.
-RC51 COMPILER V06.20.17.263,  PT100              01/04/23  16:42:37  PAGE  8
-
   98   1      }
+RC51 COMPILER V06.20.17.263,  PT100              01/04/23  20:06:25  PAGE  8
+
   99          
  100          void newLine(void) {
  101   1          serialTX(CR);
@@ -155,7 +154,7 @@ stmt level    source
  127   1          val = sum/16;           //Average sample.
  128   1          return val;
  129   1      }
-RC51 COMPILER V06.20.17.263,  PT100              01/04/23  16:42:37  PAGE 10
+RC51 COMPILER V06.20.17.263,  PT100              01/04/23  20:06:25  PAGE 10
 
 ASSEMBLY LISTING OF GENERATED OBJECT CODE
 
@@ -217,7 +216,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0053         ?CASE7:
                                            ; SOURCE LINE # 30 
 0053 758DD0         MOV    TH1,#0D0H
-RC51 COMPILER V06.20.17.263,  PT100              01/04/23  16:42:37  PAGE  2
+RC51 COMPILER V06.20.17.263,  PT100              01/04/23  20:06:25  PAGE  2
 
                                            ; SOURCE LINE # 31 
 0056 801C           SJMP   ?NXT1
@@ -277,7 +276,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0000 3098FD         JNB    RI,?WHILE3
                                            ; SOURCE LINE # 62 
 0003 C298           CLR    RI
-RC51 COMPILER V06.20.17.263,  PT100              01/04/23  16:42:37  PAGE  3
+RC51 COMPILER V06.20.17.263,  PT100              01/04/23  20:06:25  PAGE  3
 
                                            ; SOURCE LINE # 63 
 0005 AF99           MOV    R7,SBUF
@@ -337,7 +336,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0007 758A66         MOV    TL0,#066H
                                            ; SOURCE LINE # 50 
 000A 0500    R      INC    milli+01H
-RC51 COMPILER V06.20.17.263,  PT100              01/04/23  16:42:37  PAGE  5
+RC51 COMPILER V06.20.17.263,  PT100              01/04/23  20:06:25  PAGE  5
 
 000C E500    R      MOV    A,milli+01H
 000E 7002           JNZ    ?NXT11
@@ -397,7 +396,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 66 
 0000 75F00A         MOV    B,#00AH
 0003 EF             MOV    A,R7
-RC51 COMPILER V06.20.17.263,  PT100              01/04/23  16:42:37  PAGE  6
+RC51 COMPILER V06.20.17.263,  PT100              01/04/23  20:06:25  PAGE  6
 
 0004 84             DIV    AB
 0005 FD             MOV    R5,A
@@ -457,7 +456,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 87 
 0005 758CFC         MOV    TH0,#0FCH
                                            ; SOURCE LINE # 88 
-RC51 COMPILER V06.20.17.263,  PT100              01/04/23  16:42:37  PAGE  7
+RC51 COMPILER V06.20.17.263,  PT100              01/04/23  20:06:25  PAGE  7
 
 0008 758A66         MOV    TL0,#066H
                                            ; SOURCE LINE # 89 
@@ -517,7 +516,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 114 
 000D D2B2           SETB   INT0
 000F         ?WHILE10:
-RC51 COMPILER V06.20.17.263,  PT100              01/04/23  16:42:37  PAGE  9
+RC51 COMPILER V06.20.17.263,  PT100              01/04/23  20:06:25  PAGE  9
 
                                            ; SOURCE LINE # 116 
 000F 20B5FD         JB     T1,?WHILE10
@@ -563,7 +562,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 
             ; FUNCTION readADC (END)
 
-RC51 COMPILER V06.20.17.263,  PT100              01/04/23  16:42:37  PAGE 11
+RC51 COMPILER V06.20.17.263,  PT100              01/04/23  20:06:25  PAGE 11
 
 
 
