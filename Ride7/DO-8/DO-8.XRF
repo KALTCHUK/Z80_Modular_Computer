@@ -6,24 +6,21 @@ INTER-MODULE CROSS-REFERENCE LISTING
 
           NAME. . . . . . . . USAGE   MODULE NAMES
           ----------------------------------------
+          ?C_CMPL . . . . . . CODE    [CMPL]:  DO-8
+          ?C_CMPLS  . . . . . CODE    [CMPL]:  DO-8
+          ?C_LANL . . . . . . CODE    [LANL]:  DO-8
+          ?C_LOP  . . . . . . CODE    [COML]:  LANL
+          ?C_LSSHR  . . . . . CODE    [SHIFT_LS]:  DO-8
           ?C_SIDIV  . . . . . CODE    [DIVS]: 
-          ?C_SLDIV_SP . . . . CODE    [LONG_SIGNED_DIV_SPEED_OPTIMIZED]:  DO-8
           ?C_START3 . . . . . CODE    [C3S]:  DO-8
           ?C_UIDIV  . . . . . CODE    [DIVS]:  DO-8
-          ?C_ULDIV  . . . . . CODE    [LONG_UNSIGNED_DIV]: 
-          ?C_ULDIV_SP . . . . CODE    [LONG_UNSIGNED_DIV_SPEED_OPTIMIZED]: 
-          ?DIV_STORE_Q_SZ . . CODE    [LONG_UNSIGNED_DIV]:  LONG_UNSIGNED_DIV_SPEED_OPTIMIZED
-          ?LOOP_DIV_SZ  . . . CODE    [LONG_UNSIGNED_DIV]:  LONG_UNSIGNED_DIV_SPEED_OPTIMIZED
           baud  . . . . . . . DATA    [DO-8]: 
           buf . . . . . . . . DATA    [DO-8]: 
           charTimeout . . . . DATA    [DO-8]: 
           CPL_R4R5  . . . . . CODE    [DIVS]: 
           CPL_R6R7  . . . . . CODE    [DIVS]: 
-          DIVL?C_1  . . . . . CODE    [LONG_UNSIGNED_DIV]:  LONG_UNSIGNED_DIV_SPEED_OPTIMIZED
-          DIVL?C_1_SP . . . . CODE    [LONG_UNSIGNED_DIV_SPEED_OPTIMIZED]:  LONG_SIGNED_DIV_SPEED_OPTIMIZED
           DIV_2 . . . . . . . CODE    [DIVS]: 
           frameTimeout  . . . DATA    [DO-8]: 
-          GESI?C  . . . . . . CODE    [GESI]:  LONG_UNSIGNED_DIV, LONG_SIGNED_DIV_SPEED_OPTIMIZED
           HPD_ADDR  . . . . . DATA    [HPD]:  C3S
           I2C_start . . . . . CODE    [DO-8]: 
           I2C_stop  . . . . . CODE    [DO-8]: 
@@ -37,7 +34,7 @@ INTER-MODULE CROSS-REFERENCE LISTING
           numDiscreteInputs . DATA    [DO-8]: 
           numHoldingRegisters DATA    [DO-8]: 
           outputState . . . . DATA    [DO-8]: 
-          RST_STK4?C  . . . . CODE    [RSTSTK4]:  LONG_UNSIGNED_DIV
+          RST_STK4?C  . . . . CODE    [RSTSTK4]:  CMPL, LANL
           serialRX  . . . . . CODE    [DO-8]: 
           TIM1_INIT . . . . . NUMBER  [** UNRESOLVED **]:
           timer0_isr  . . . . CODE    [DO-8]: 

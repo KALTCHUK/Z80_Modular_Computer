@@ -57,7 +57,7 @@ void timer0_isr() interrupt 1
 }
 
 void milliStart(void) {
-	ET0 = 0;				//Disable TIMER0 interrupt while configuring it.
+	ET0 = 0;            //Disable TIMER0 interrupt while configuring it.
     TMOD |= 0x01;      //TIMER0 = mode_1.
     TH0 = 0xfc;        //Load the timer value for 1ms tick (crystal = 11.059MHz).
     TL0 = 0x66;
@@ -76,8 +76,10 @@ void modbusBegin(unsigned int baud) {
         frameTimeout = 2;
     }
     else {
-        charTimeout = 15000/baud;		// in the range [1; 13]
-        frameTimeout = 35000/baud;		// in the range [2; 30]
+        charTimeout = (19200/baud) +1;
+        frameTimeout = charTimeout*2;
+//        charTimeout = 15000/baud;		// in the range [1; 13]
+//        frameTimeout = 35000/baud;		// in the range [2; 30]
     }
   
     do {
@@ -90,24 +92,21 @@ void modbusBegin(unsigned int baud) {
 
 void modbusPoll() {
     char i = 0, j;
-    unsigned int startAddress, quantity, value;
+    unsigned int startAddress, quantity;
+    long value;
 
     if (RI != 0) {
-        P1 = 1;
         do {
             if (RI != 0) {
-                P1 = 1;
                 milliStart();
                 if(i < MAXBUF)	buf[i] = serialRX();
                 else			RI = 0 ;
                 i++;
-            } else
-                P1 = 0;
+            }
         } while (milli < charTimeout && i < MAXBUF);
 	
         while (milli < frameTimeout) {
             RI = 0;
-            P1 = 0;
         }
 
         if (RI == 0 && (buf[0] == id || buf[0] == 0) && i < MAXBUF) {
@@ -137,7 +136,7 @@ void modbusPoll() {
             case 3: /* Read Holding Registers */
                 startAddress = bytesToWord(buf[2], buf[3]);
                 quantity = bytesToWord(buf[4], buf[5]);
-                if (quantity == 0 || quantity > 2)                            oops(3);
+                if (quantity == 0 || quantity > numHoldingRegisters)          oops(3);
                 else if ((startAddress + quantity) > numHoldingRegisters)     oops(2);
                 else {
                     for (j = 0; j < quantity; j++) {

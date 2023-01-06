@@ -64,8 +64,10 @@ void I2C_start(void) {
 I2C_stop Function
 ------------------------------------------------*/
 void I2C_stop(void) {
-    while (_SDA == 0);
+    //while (_SDA == 0);
 
+    SDA_LO;
+	I2C_delay(0);
 	SCL_HI;
 	I2C_delay(0);
 	SDA_HI;
@@ -89,6 +91,7 @@ char I2C_write(char byte) {
 		SCL_LO;
 		byte <<= 1;
 	}
+    I2C_delay(0);
 	SCL_HI;
 	I2C_delay(0);
 	reply = _SDA;
@@ -109,7 +112,7 @@ char I2C_read(char condition) {
 		SCL_HI;
 		I2C_delay(0);
 		while (_SCL == 0) {}	// clock stretching
-		byte = (byte << 1) | _SDA;
+		byte = (byte << 1) | (char)_SDA;
 		SCL_LO;
   }
 	if(condition == ACK) {

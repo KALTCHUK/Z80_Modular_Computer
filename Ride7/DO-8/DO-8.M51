@@ -1,4 +1,4 @@
-LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263                                 12/16/22  16:37:52
+LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263                                 01/06/23  15:57:47
 MS-DOS LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263,  INVOKED BY:
 C:\Users\kaltc\Documents\Raisonance\Ride\Bin\LX51.EXE C:\Users\kaltc\Documents\GitHub\Z80_Modular&
 _Computer\Ride7\DO-8\DO-8.obj TO(C:\Users\kaltc\Documents\GitHub\Z80_Modular_Computer\Ride7\DO-8\&
@@ -15,14 +15,14 @@ MEMORY MODEL: SMALL WITHOUT ANY FLOATING POINT ARITHMETIC
 INPUT MODULES INCLUDED
   C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\DO-8\DO-8.OBJ(DO-8)
   C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(C3S)
-  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(LONG_SIGNED_DIV_SPEED_OPTIMIZED)
+  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(LANL)
   C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(DIVS)
+  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(CMPL)
+  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(RSTSTK4)
+  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(SHIFT_LS)
   C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(HPD)
   C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(_C_IDATALEN)
-  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(LONG_UNSIGNED_DIV_SPEED_OPTIMIZED)
-  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(GESI)
-  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(LONG_UNSIGNED_DIV)
-  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(RSTSTK4)
+  C:\Users\kaltc\Documents\Raisonance\Ride\Lib\51\RC51S.LIB(COML)
 
 
 LINK MAP OF MODULE: C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\DO-8\DO-8.AOF (DO-&
@@ -33,18 +33,18 @@ LINK MAP OF MODULE: C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\D
 
     * * * * * * *   DATA/IDATA    M E M O R Y   * * * * * * *
     REG      0000H      0008H     ABSOLUTE       "REG BANK 0"
-    DATA     0008H      0012H     OVERLAID UNIT  _DGROUP01_
+    DATA     0008H      0014H     OVERLAID UNIT  _DGROUP01_
              0008H      0002H     -------------  ?DT?_modbusBegin?DO_8
-             0008H      0008H     -------------  ?DT?modbusPoll?DO_8
-             0010H      0004H     -------------  ?DT?_write?DO_8
-             0014H      0001H     -------------  ?DT?_crc?DO_8
-             0010H      0001H     -------------  ?DT?_boolRead?DO_8
-             0010H      0004H     -------------  ?DT?_EEPROMread?DO_8
-             0014H      0002H     -------------  ?DT?_I2C_read?DO_8
-             0010H      0004H     -------------  ?DT?_holdingRegisterWrite?DO_8
-             0014H      0004H     -------------  ?DT?_EEPROMwrite?DO_8
-             0018H      0002H     -------------  ?DT?_I2C_write?DO_8
-             001AH      0006H                    *** GAP ***
+             0008H      000AH     -------------  ?DT?modbusPoll?DO_8
+             0012H      0004H     -------------  ?DT?_write?DO_8
+             0016H      0001H     -------------  ?DT?_crc?DO_8
+             0012H      0001H     -------------  ?DT?_boolRead?DO_8
+             0012H      0004H     -------------  ?DT?_EEPROMread?DO_8
+             0016H      0002H     -------------  ?DT?_I2C_read?DO_8
+             0012H      0004H     -------------  ?DT?_holdingRegisterWrite?DO_8
+             0016H      0004H     -------------  ?DT?_EEPROMwrite?DO_8
+             001AH      0002H     -------------  ?DT?_I2C_write?DO_8
+             001CH      0004H                    *** GAP ***
     BIT      0020H.0    0000H.1   OVERLAID UNIT  _BGROUP01_
              0100H      0001H     -------------  ?BI?_crc?DO_8
              0020H.1    0000H.7                  *** GAP ***
@@ -55,37 +55,38 @@ LINK MAP OF MODULE: C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\D
     CODE     0000H      0003H     ABSOLUTE       
     CODE     0003H      0008H     UNIT           ?PR?_serialTX?DO_8
     CODE     000BH      0003H     ABSOLUTE       
-    CODE     000EH      01E9H     UNIT           ?PR?LIB51
-    CODE     01F7H      000FH     UNIT           ?PR?C51_STARTUP?
-    CODE     0206H      0077H     UNIT           ?PR?_serialInit?DO_8
-    CODE     027DH      0008H     UNIT           ?PR?serialRX?DO_8
-    CODE     0285H      001BH     UNIT           ?PR?_I2C_delay?DO_8
-    CODE     02A0H      000BH     UNIT           ?PR?I2C_start?DO_8
-    CODE     02ABH      000EH     UNIT           ?PR?I2C_stop?DO_8
-    CODE     02B9H      003DH     UNIT           ?PR?_I2C_write?DO_8
-    CODE     02F6H      0054H     UNIT           ?PR?_I2C_read?DO_8
-    CODE     034AH      0056H     UNIT           ?PR?_EEPROMread?DO_8
-    CODE     03A0H      003AH     UNIT           ?PR?_EEPROMwrite?DO_8
-    CODE     03DAH      0017H     UNIT           ?PR?timer0_isr?DO_8
-    CODE     03F1H      0017H     UNIT           ?PR?milliStart?DO_8
-    CODE     0408H      0059H     UNIT           ?PR?_modbusBegin?DO_8
-    CODE     0461H      0464H     UNIT           ?PR?modbusPoll?DO_8
-    CODE     08C5H      0031H     UNIT           ?PR?_boolRead?DO_8
-    CODE     08F6H      002DH     UNIT           ?PR?_wordRead?DO_8
-    CODE     0923H      0041H     UNIT           ?PR?_coilWrite?DO_8
-    CODE     0964H      0030H     UNIT           ?PR?_holdingRegisterWrite?DO_8
-    CODE     0994H      000AH     UNIT           ?PR?_oops?DO_8
-    CODE     099EH      004AH     UNIT           ?PR?_write?DO_8
-    CODE     09E8H      0043H     UNIT           ?PR?_crc?DO_8
-    CODE     0A2BH      0013H     UNIT           ?PR?_div8RndUp?DO_8
-    CODE     0A3EH      0011H     UNIT           ?PR?_bytesToWord?DO_8
-    CODE     0A4FH      003FH     UNIT           ?PR?main?DO_8
+    CODE     000EH      0016H     UNIT           ?PR?SHIFTRLS?
+    CODE     0024H      0121H     UNIT           ?PR?LIB51
+    CODE     0145H      000FH     UNIT           ?PR?C51_STARTUP?
+    CODE     0154H      0077H     UNIT           ?PR?_serialInit?DO_8
+    CODE     01CBH      0008H     UNIT           ?PR?serialRX?DO_8
+    CODE     01D3H      001BH     UNIT           ?PR?_I2C_delay?DO_8
+    CODE     01EEH      000BH     UNIT           ?PR?I2C_start?DO_8
+    CODE     01F9H      0010H     UNIT           ?PR?I2C_stop?DO_8
+    CODE     0209H      0040H     UNIT           ?PR?_I2C_write?DO_8
+    CODE     0249H      0054H     UNIT           ?PR?_I2C_read?DO_8
+    CODE     029DH      0056H     UNIT           ?PR?_EEPROMread?DO_8
+    CODE     02F3H      003AH     UNIT           ?PR?_EEPROMwrite?DO_8
+    CODE     032DH      0017H     UNIT           ?PR?timer0_isr?DO_8
+    CODE     0344H      0017H     UNIT           ?PR?milliStart?DO_8
+    CODE     035BH      0050H     UNIT           ?PR?_modbusBegin?DO_8
+    CODE     03ABH      04DCH     UNIT           ?PR?modbusPoll?DO_8
+    CODE     0887H      0031H     UNIT           ?PR?_boolRead?DO_8
+    CODE     08B8H      002DH     UNIT           ?PR?_wordRead?DO_8
+    CODE     08E5H      0041H     UNIT           ?PR?_coilWrite?DO_8
+    CODE     0926H      0030H     UNIT           ?PR?_holdingRegisterWrite?DO_8
+    CODE     0956H      000AH     UNIT           ?PR?_oops?DO_8
+    CODE     0960H      004AH     UNIT           ?PR?_write?DO_8
+    CODE     09AAH      0043H     UNIT           ?PR?_crc?DO_8
+    CODE     09EDH      0013H     UNIT           ?PR?_div8RndUp?DO_8
+    CODE     0A00H      0011H     UNIT           ?PR?_bytesToWord?DO_8
+    CODE     0A11H      003FH     UNIT           ?PR?main?DO_8
 
 EXECUTABLE SUMMARY:
 -------------------
-    Total INTERNAL RAM storage requirement:  0040H.1 (64.1)
+    Total INTERNAL RAM storage requirement:  0042H.1 (66.1)
     Total EXTERNAL RAM storage requirement:  0000H (0)
-    Total     CODE     storage requirement:  0A8EH (2702)
+    Total     CODE     storage requirement:  0A50H (2640)
 Note:  Summary does not include dynamic stack requirements
 
 
@@ -110,7 +111,7 @@ SEGMENT                           BI_GROUP            DT_GROUP             ID_GR
 
 ?PR?milliStart?DO_8            ---------------     ---------------     ---------------     ---------------
 
-?PR?modbusPoll?DO_8            ---------------     0008H    0008H     ---------------     ---------------
+?PR?modbusPoll?DO_8            ---------------     0008H    000AH     ---------------     ---------------
   +--> ?PR?serialRX?DO_8
   +--> ?PR?_bytesToWord?DO_8
   +--> ?PR?_oops?DO_8
@@ -130,22 +131,22 @@ SEGMENT                           BI_GROUP            DT_GROUP             ID_GR
 ?PR?_oops?DO_8                 ---------------     ---------------     ---------------     ---------------
   +--> ?PR?_write?DO_8
 
-?PR?_write?DO_8                ---------------     0010H    0004H     ---------------     ---------------
+?PR?_write?DO_8                ---------------     0012H    0004H     ---------------     ---------------
   +--> ?PR?_crc?DO_8
   +--> ?PR?_serialTX?DO_8
 
-?PR?_crc?DO_8                  0020H.0  0000H.1     0014H    0001H     ---------------     ---------------
+?PR?_crc?DO_8                  0020H.0  0000H.1     0016H    0001H     ---------------     ---------------
 
 ?PR?_serialTX?DO_8             ---------------     ---------------     ---------------     ---------------
 
-?PR?_boolRead?DO_8             ---------------     0010H    0001H     ---------------     ---------------
+?PR?_boolRead?DO_8             ---------------     0012H    0001H     ---------------     ---------------
 
 ?PR?_div8RndUp?DO_8            ---------------     ---------------     ---------------     ---------------
 
 ?PR?_wordRead?DO_8             ---------------     ---------------     ---------------     ---------------
   +--> ?PR?_EEPROMread?DO_8
 
-?PR?_EEPROMread?DO_8           ---------------     0010H    0004H     ---------------     ---------------
+?PR?_EEPROMread?DO_8           ---------------     0012H    0004H     ---------------     ---------------
   +--> ?PR?I2C_start?DO_8
   +--> ?PR?_I2C_write?DO_8
   +--> ?PR?I2C_stop?DO_8
@@ -157,21 +158,21 @@ SEGMENT                           BI_GROUP            DT_GROUP             ID_GR
 
 ?PR?_I2C_delay?DO_8            ---------------     ---------------     ---------------     ---------------
 
-?PR?_I2C_write?DO_8            ---------------     0018H    0002H     ---------------     ---------------
+?PR?_I2C_write?DO_8            ---------------     001AH    0002H     ---------------     ---------------
   +--> ?PR?_I2C_delay?DO_8
 
 ?PR?I2C_stop?DO_8              ---------------     ---------------     ---------------     ---------------
   +--> ?PR?_I2C_delay?DO_8
 
-?PR?_I2C_read?DO_8             ---------------     0014H    0002H     ---------------     ---------------
+?PR?_I2C_read?DO_8             ---------------     0016H    0002H     ---------------     ---------------
   +--> ?PR?_I2C_delay?DO_8
 
 ?PR?_coilWrite?DO_8            ---------------     ---------------     ---------------     ---------------
 
-?PR?_holdingRegisterWrite?DO_8 ---------------     0010H    0004H     ---------------     ---------------
+?PR?_holdingRegisterWrite?DO_8 ---------------     0012H    0004H     ---------------     ---------------
   +--> ?PR?_EEPROMwrite?DO_8
 
-?PR?_EEPROMwrite?DO_8          ---------------     0014H    0004H     ---------------     ---------------
+?PR?_EEPROMwrite?DO_8          ---------------     0016H    0004H     ---------------     ---------------
   +--> ?PR?I2C_start?DO_8
   +--> ?PR?_I2C_delay?DO_8
   +--> ?PR?_I2C_write?DO_8
@@ -185,20 +186,20 @@ SYMBOL TABLE FOR C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\DO-8
 
 	-------            MODULE             DO-8
 	C:0000H            SYMBOL             _ICE_DUMMY_
-	C:0A4FH            PUBLIC             main
-	C:03DAH            PUBLIC             timer0_isr
-	C:0A3EH            PUBLIC             _bytesToWord
-	C:0A2BH            PUBLIC             _div8RndUp
-	C:09E8H            PUBLIC             _crc
-	C:099EH            PUBLIC             _write
-	C:0994H            PUBLIC             _oops
-	C:0964H            PUBLIC             _holdingRegisterWrite
-	C:0923H            PUBLIC             _coilWrite
-	C:08F6H            PUBLIC             _wordRead
-	C:08C5H            PUBLIC             _boolRead
-	C:0461H            PUBLIC             modbusPoll
-	C:0408H            PUBLIC             _modbusBegin
-	C:03F1H            PUBLIC             milliStart
+	C:0A11H            PUBLIC             main
+	C:032DH            PUBLIC             timer0_isr
+	C:0A00H            PUBLIC             _bytesToWord
+	C:09EDH            PUBLIC             _div8RndUp
+	C:09AAH            PUBLIC             _crc
+	C:0960H            PUBLIC             _write
+	C:0956H            PUBLIC             _oops
+	C:0926H            PUBLIC             _holdingRegisterWrite
+	C:08E5H            PUBLIC             _coilWrite
+	C:08B8H            PUBLIC             _wordRead
+	C:0887H            PUBLIC             _boolRead
+	C:03ABH            PUBLIC             modbusPoll
+	C:035BH            PUBLIC             _modbusBegin
+	C:0344H            PUBLIC             milliStart
 	D:0046H            PUBLIC             outputState
 	D:0044H            PUBLIC             id
 	D:0042H            PUBLIC             milli
@@ -208,16 +209,16 @@ SYMBOL TABLE FOR C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\DO-8
 	D:003CH            PUBLIC             numDiscreteInputs
 	D:003BH            PUBLIC             numCoils
 	D:0023H            PUBLIC             buf
-	C:03A0H            PUBLIC             _EEPROMwrite
-	C:034AH            PUBLIC             _EEPROMread
-	C:02F6H            PUBLIC             _I2C_read
-	C:02B9H            PUBLIC             _I2C_write
-	C:02ABH            PUBLIC             I2C_stop
-	C:02A0H            PUBLIC             I2C_start
-	C:0285H            PUBLIC             _I2C_delay
-	C:027DH            PUBLIC             serialRX
+	C:02F3H            PUBLIC             _EEPROMwrite
+	C:029DH            PUBLIC             _EEPROMread
+	C:0249H            PUBLIC             _I2C_read
+	C:0209H            PUBLIC             _I2C_write
+	C:01F9H            PUBLIC             I2C_stop
+	C:01EEH            PUBLIC             I2C_start
+	C:01D3H            PUBLIC             _I2C_delay
+	C:01CBH            PUBLIC             serialRX
 	C:0003H            PUBLIC             _serialTX
-	C:0206H            PUBLIC             _serialInit
+	C:0154H            PUBLIC             _serialInit
 	D:0021H            PUBLIC             baud
 	B:0098H            SYMBOL             RI
 	B:0099H            SYMBOL             TI
@@ -283,27 +284,27 @@ SYMBOL TABLE FOR C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\DO-8
 	D:0090H            SYMBOL             P1
 	D:0080H            SYMBOL             P0
 	-------            PROC               _serialInit
-	C:0206H            LINE#              24
-	C:0206H            LINE#              25
-	C:0209H            LINE#              26
-	C:020CH            LINE#              27
-	C:020FH            LINE#              28
-	C:0259H            LINE#              30
-	C:025CH            LINE#              31
-	C:025EH            LINE#              33
-	C:0261H            LINE#              34
-	C:0263H            LINE#              36
-	C:0266H            LINE#              37
-	C:0268H            LINE#              39
-	C:026BH            LINE#              40
-	C:026DH            LINE#              42
-	C:0270H            LINE#              43
-	C:0272H            LINE#              45
-	C:0275H            LINE#              46
-	C:0277H            LINE#              48
-	C:027AH            LINE#              51
-	C:027CH            LINE#              52
-	C:027CH            LINE#              52
+	C:0154H            LINE#              24
+	C:0154H            LINE#              25
+	C:0157H            LINE#              26
+	C:015AH            LINE#              27
+	C:015DH            LINE#              28
+	C:01A7H            LINE#              30
+	C:01AAH            LINE#              31
+	C:01ACH            LINE#              33
+	C:01AFH            LINE#              34
+	C:01B1H            LINE#              36
+	C:01B4H            LINE#              37
+	C:01B6H            LINE#              39
+	C:01B9H            LINE#              40
+	C:01BBH            LINE#              42
+	C:01BEH            LINE#              43
+	C:01C0H            LINE#              45
+	C:01C3H            LINE#              46
+	C:01C5H            LINE#              48
+	C:01C8H            LINE#              51
+	C:01CAH            LINE#              52
+	C:01CAH            LINE#              52
 	-------            ENDPROC            _serialInit
 	-------            PROC               _serialTX
 	C:0003H            LINE#              54
@@ -314,155 +315,157 @@ SYMBOL TABLE FOR C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\DO-8
 	C:000AH            LINE#              58
 	-------            ENDPROC            _serialTX
 	-------            PROC               serialRX
-	C:027DH            LINE#              60
-	C:027DH            LINE#              61
-	C:0280H            LINE#              62
-	C:0282H            LINE#              63
-	C:0284H            LINE#              64
-	C:0284H            LINE#              64
+	C:01CBH            LINE#              60
+	C:01CBH            LINE#              61
+	C:01CEH            LINE#              62
+	C:01D0H            LINE#              63
+	C:01D2H            LINE#              64
+	C:01D2H            LINE#              64
 	-------            ENDPROC            serialRX
 	-------            PROC               _I2C_delay
-	C:0285H            LINE#              48
-	C:0285H            LINE#              51
-	C:029FH            LINE#              52
-	C:029FH            LINE#              52
+	C:01D3H            LINE#              48
+	C:01D3H            LINE#              51
+	C:01EDH            LINE#              52
+	C:01EDH            LINE#              52
 	-------            ENDPROC            _I2C_delay
 	-------            PROC               I2C_start
-	C:02A0H            LINE#              57
-	C:02A0H            LINE#              58
-	C:02A2H            LINE#              59
-	C:02A8H            LINE#              60
-	C:02AAH            LINE#              61
-	C:02AAH            LINE#              61
+	C:01EEH            LINE#              57
+	C:01EEH            LINE#              58
+	C:01F0H            LINE#              59
+	C:01F6H            LINE#              60
+	C:01F8H            LINE#              61
+	C:01F8H            LINE#              61
 	-------            ENDPROC            I2C_start
 	-------            PROC               I2C_stop
-	C:02ABH            LINE#              66
-	C:02ABH            LINE#              67
-	C:02AEH            LINE#              69
-	C:02B0H            LINE#              70
-	C:02B6H            LINE#              71
-	C:02B8H            LINE#              72
-	C:02B8H            LINE#              72
+	C:01F9H            LINE#              66
+	C:01F9H            LINE#              69
+	C:01FBH            LINE#              70
+	C:0201H            LINE#              71
+	C:0203H            LINE#              72
+	C:0206H            LINE#              73
+	C:0208H            LINE#              74
+	C:0208H            LINE#              74
 	-------            ENDPROC            I2C_stop
 	-------            PROC               _I2C_write
-	D:0018H            SYMBOL             byte
-	D:0019H            SYMBOL             bt
-	C:02B9H            LINE#              77
-	C:02BBH            LINE#              80
-	C:02BEH            LINE#              81
-	C:02C3H            LINE#              82
-	C:02C7H            LINE#              84
-	C:02C9H            LINE#              86
-	C:02CFH            LINE#              87
-	C:02D1H            LINE#              88
-	C:02D4H            LINE#              89
-	C:02D6H            LINE#              90
-	C:02DCH            LINE#              80
-	C:02E3H            LINE#              92
-	C:02E5H            LINE#              93
-	C:02E8H            LINE#              94
-	C:02EEH            LINE#              95
-	C:02F0H            LINE#              96
-	C:02F3H            LINE#              97
-	C:02F5H            LINE#              98
-	C:02F5H            LINE#              98
+	D:001AH            SYMBOL             byte
+	D:001BH            SYMBOL             bt
+	C:0209H            LINE#              79
+	C:020BH            LINE#              82
+	C:020EH            LINE#              83
+	C:0213H            LINE#              84
+	C:0217H            LINE#              86
+	C:0219H            LINE#              88
+	C:021FH            LINE#              89
+	C:0221H            LINE#              90
+	C:0224H            LINE#              91
+	C:0226H            LINE#              92
+	C:022CH            LINE#              82
+	C:0233H            LINE#              94
+	C:0236H            LINE#              95
+	C:0238H            LINE#              96
+	C:023BH            LINE#              97
+	C:0241H            LINE#              98
+	C:0243H            LINE#              99
+	C:0246H            LINE#              100
+	C:0248H            LINE#              101
+	C:0248H            LINE#              101
 	-------            ENDPROC            _I2C_write
 	-------            PROC               _I2C_read
-	D:0015H            SYMBOL             bt
-	D:0014H            SYMBOL             byte
-	C:02F6H            LINE#              103
-	C:02F8H            LINE#              104
-	C:02FBH            LINE#              106
-	C:02FEH            LINE#              107
-	C:0300H            LINE#              108
-	C:0306H            LINE#              109
-	C:0308H            LINE#              110
-	C:030BH            LINE#              111
-	C:0310H            LINE#              112
-	C:031EH            LINE#              113
-	C:0320H            LINE#              106
-	C:0327H            LINE#              115
-	C:032BH            LINE#              116
-	C:032FH            LINE#              118
-	C:0331H            LINE#              120
-	C:0337H            LINE#              121
-	C:0339H            LINE#              122
-	C:033CH            LINE#              123
-	C:033FH            LINE#              124
-	C:0341H            LINE#              125
-	C:0347H            LINE#              126
-	C:0349H            LINE#              127
-	C:0349H            LINE#              127
+	D:0017H            SYMBOL             bt
+	D:0016H            SYMBOL             byte
+	C:0249H            LINE#              106
+	C:024BH            LINE#              107
+	C:024EH            LINE#              109
+	C:0251H            LINE#              110
+	C:0253H            LINE#              111
+	C:0259H            LINE#              112
+	C:025BH            LINE#              113
+	C:025EH            LINE#              114
+	C:0263H            LINE#              115
+	C:0271H            LINE#              116
+	C:0273H            LINE#              109
+	C:027AH            LINE#              118
+	C:027EH            LINE#              119
+	C:0282H            LINE#              121
+	C:0284H            LINE#              123
+	C:028AH            LINE#              124
+	C:028CH            LINE#              125
+	C:028FH            LINE#              126
+	C:0292H            LINE#              127
+	C:0294H            LINE#              128
+	C:029AH            LINE#              129
+	C:029CH            LINE#              130
+	C:029CH            LINE#              130
 	-------            ENDPROC            _I2C_read
 	-------            PROC               _EEPROMread
-	D:0010H            SYMBOL             address
-	D:0012H            SYMBOL             word
-	C:034AH            LINE#              132
-	C:034EH            LINE#              135
-	C:035BH            LINE#              136
-	C:035EH            LINE#              137
-	C:0363H            LINE#              138
-	C:0368H            LINE#              139
-	C:036DH            LINE#              140
-	C:0370H            LINE#              141
-	C:0376H            LINE#              142
-	C:0379H            LINE#              143
-	C:037EH            LINE#              144
-	C:0398H            LINE#              145
-	C:039BH            LINE#              147
-	C:039FH            LINE#              148
-	C:039FH            LINE#              148
+	D:0012H            SYMBOL             address
+	D:0014H            SYMBOL             word
+	C:029DH            LINE#              135
+	C:02A1H            LINE#              138
+	C:02AEH            LINE#              139
+	C:02B1H            LINE#              140
+	C:02B6H            LINE#              141
+	C:02BBH            LINE#              142
+	C:02C0H            LINE#              143
+	C:02C3H            LINE#              144
+	C:02C9H            LINE#              145
+	C:02CCH            LINE#              146
+	C:02D1H            LINE#              147
+	C:02EBH            LINE#              148
+	C:02EEH            LINE#              150
+	C:02F2H            LINE#              151
+	C:02F2H            LINE#              151
 	-------            ENDPROC            _EEPROMread
 	-------            PROC               _EEPROMwrite
-	D:0014H            SYMBOL             address
-	D:0016H            SYMBOL             word
-	C:03A0H            LINE#              153
-	C:03A8H            LINE#              154
-	C:03B5H            LINE#              155
-	C:03B8H            LINE#              156
-	C:03BDH            LINE#              157
-	C:03C2H            LINE#              158
-	C:03C7H            LINE#              159
-	C:03CCH            LINE#              160
-	C:03D1H            LINE#              161
-	C:03D7H            LINE#              162
-	C:03D7H            LINE#              163
+	D:0016H            SYMBOL             address
+	D:0018H            SYMBOL             word
+	C:02F3H            LINE#              156
+	C:02FBH            LINE#              157
+	C:0308H            LINE#              158
+	C:030BH            LINE#              159
+	C:0310H            LINE#              160
+	C:0315H            LINE#              161
+	C:031AH            LINE#              162
+	C:031FH            LINE#              163
+	C:0324H            LINE#              164
+	C:032AH            LINE#              165
+	C:032AH            LINE#              166
 	-------            ENDPROC            _EEPROMwrite
 	-------            PROC               timer0_isr
-	C:03DAH            LINE#              51
-	C:03DEH            LINE#              53
-	C:03E1H            LINE#              54
-	C:03E4H            LINE#              56
-	C:03F0H            LINE#              57
-	C:03F0H            LINE#              57
+	C:032DH            LINE#              51
+	C:0331H            LINE#              53
+	C:0334H            LINE#              54
+	C:0337H            LINE#              56
+	C:0343H            LINE#              57
+	C:0343H            LINE#              57
 	-------            ENDPROC            timer0_isr
 	-------            PROC               milliStart
-	C:03F1H            LINE#              59
-	C:03F1H            LINE#              60
-	C:03F3H            LINE#              61
-	C:03F6H            LINE#              62
-	C:03F9H            LINE#              63
-	C:03FCH            LINE#              64
-	C:03FEH            LINE#              65
-	C:0400H            LINE#              66
-	C:0402H            LINE#              68
-	C:0407H            LINE#              69
-	C:0407H            LINE#              69
+	C:0344H            LINE#              59
+	C:0344H            LINE#              60
+	C:0346H            LINE#              61
+	C:0349H            LINE#              62
+	C:034CH            LINE#              63
+	C:034FH            LINE#              64
+	C:0351H            LINE#              65
+	C:0353H            LINE#              66
+	C:0355H            LINE#              68
+	C:035AH            LINE#              69
+	C:035AH            LINE#              69
 	-------            ENDPROC            milliStart
 	-------            PROC               _modbusBegin
 	D:0021H            PUBLIC             baud
-	C:0408H            LINE#              71
-	C:040CH            LINE#              72
-	C:040FH            LINE#              74
-	C:0415H            LINE#              75
-	C:041BH            LINE#              76
-	C:0422H            LINE#              79
-	C:0431H            LINE#              80
-	C:044CH            LINE#              84
-	C:044FH            LINE#              85
-	C:0452H            LINE#              86
-	C:0460H            LINE#              89
-	C:0460H            LINE#              89
+	C:035BH            LINE#              71
+	C:035FH            LINE#              72
+	C:0362H            LINE#              74
+	C:0368H            LINE#              75
+	C:036EH            LINE#              76
+	C:0375H            LINE#              79
+	C:0389H            LINE#              80
+	C:0396H            LINE#              86
+	C:0399H            LINE#              87
+	C:039CH            LINE#              88
+	C:03AAH            LINE#              91
+	C:03AAH            LINE#              91
 	-------            ENDPROC            _modbusBegin
 	-------            PROC               modbusPoll
 	D:0008H            SYMBOL             i
@@ -470,222 +473,215 @@ SYMBOL TABLE FOR C:\USERS\KALTC\DOCUMENTS\GITHUB\Z80_MODULAR_COMPUTER\RIDE7\DO-8
 	D:0009H            SYMBOL             startAddress
 	D:000BH            SYMBOL             quantity
 	D:000EH            SYMBOL             value
-	C:0461H            LINE#              91
-	C:0461H            LINE#              92
-	C:0464H            LINE#              95
-	C:046AH            LINE#              96
-	C:046DH            LINE#              98
-	C:0470H            LINE#              99
-	C:0473H            LINE#              100
-	C:0476H            LINE#              101
-	C:0489H            LINE#              102
-	C:048BH            LINE#              103
-	C:048FH            LINE#              105
-	C:04A5H            LINE#              108
-	C:04B1H            LINE#              109
-	C:04B3H            LINE#              110
-	C:04B8H            LINE#              113
-	C:04DCH            LINE#              114
-	C:0505H            LINE#              214
-	C:0506H            LINE#              116
-	C:052FH            LINE#              118
-	C:053AH            LINE#              119
-	C:0545H            LINE#              120
-	C:0562H            LINE#              121
-	C:057FH            LINE#              123
-	C:058DH            LINE#              124
-	C:059EH            LINE#              125
-	C:05ABH            LINE#              126
-	C:05B2H            LINE#              129
-	C:05D8H            LINE#              130
-	C:05F5H            LINE#              123
-	C:05F9H            LINE#              132
-	C:0600H            LINE#              133
-	C:0601H            LINE#              132
-	C:0603H            LINE#              133
-	C:0609H            LINE#              138
-	C:0614H            LINE#              139
-	C:061FH            LINE#              140
-	C:063CH            LINE#              141
-	C:0659H            LINE#              143
-	C:0667H            LINE#              144
-	C:0677H            LINE#              145
-	C:0679H            LINE#              146
-	C:0680H            LINE#              149
-	C:068CH            LINE#              150
-	C:0692H            LINE#              143
-	C:0696H            LINE#              152
-	C:069CH            LINE#              153
-	C:06A2H            LINE#              158
-	C:06ADH            LINE#              159
-	C:06B8H            LINE#              160
-	C:06D1H            LINE#              161
-	C:06E7H            LINE#              162
-	C:06FEH            LINE#              163
-	C:0703H            LINE#              167
-	C:070EH            LINE#              168
-	C:0719H            LINE#              169
-	C:072FH            LINE#              170
-	C:0746H            LINE#              171
-	C:074BH            LINE#              175
-	C:0756H            LINE#              176
-	C:0761H            LINE#              177
-	C:078EH            LINE#              178
-	C:07ABH            LINE#              180
-	C:07B9H            LINE#              181
-	C:07E1H            LINE#              182
-	C:07EDH            LINE#              183
-	C:07FFH            LINE#              184
-	C:0806H            LINE#              180
-	C:080AH            LINE#              188
-	C:080FH            LINE#              193
-	C:081AH            LINE#              194
-	C:0825H            LINE#              195
-	C:0854H            LINE#              196
-	C:0870H            LINE#              198
-	C:087EH            LINE#              199
-	C:08ADH            LINE#              200
-	C:08B4H            LINE#              198
-	C:08B8H            LINE#              204
-	C:08BDH            LINE#              209
-	C:08C4H            LINE#              214
-	C:08C4H            LINE#              214
+	C:03ABH            LINE#              93
+	C:03ABH            LINE#              94
+	C:03AEH            LINE#              98
+	C:03B4H            LINE#              100
+	C:03B7H            LINE#              101
+	C:03BAH            LINE#              102
+	C:03CDH            LINE#              103
+	C:03CFH            LINE#              104
+	C:03E4H            LINE#              108
+	C:03F0H            LINE#              109
+	C:03F4H            LINE#              112
+	C:0418H            LINE#              113
+	C:0441H            LINE#              213
+	C:0442H            LINE#              115
+	C:046BH            LINE#              117
+	C:0476H            LINE#              118
+	C:0481H            LINE#              119
+	C:049EH            LINE#              120
+	C:04BBH            LINE#              122
+	C:04CCH            LINE#              123
+	C:04E8H            LINE#              124
+	C:04FCH            LINE#              125
+	C:0503H            LINE#              128
+	C:0535H            LINE#              129
+	C:0552H            LINE#              122
+	C:0557H            LINE#              131
+	C:055EH            LINE#              132
+	C:055FH            LINE#              131
+	C:0561H            LINE#              132
+	C:0567H            LINE#              137
+	C:0572H            LINE#              138
+	C:057DH            LINE#              139
+	C:059AH            LINE#              140
+	C:05B7H            LINE#              142
+	C:05C5H            LINE#              143
+	C:05D9H            LINE#              144
+	C:05ECH            LINE#              145
+	C:05F3H            LINE#              148
+	C:060FH            LINE#              149
+	C:0626H            LINE#              142
+	C:062AH            LINE#              151
+	C:0630H            LINE#              152
+	C:0636H            LINE#              157
+	C:0641H            LINE#              158
+	C:0651H            LINE#              159
+	C:067BH            LINE#              160
+	C:0691H            LINE#              161
+	C:06A8H            LINE#              162
+	C:06ADH            LINE#              166
+	C:06B8H            LINE#              167
+	C:06C8H            LINE#              168
+	C:06DEH            LINE#              169
+	C:06F5H            LINE#              170
+	C:06FAH            LINE#              174
+	C:0705H            LINE#              175
+	C:0710H            LINE#              176
+	C:073DH            LINE#              177
+	C:075AH            LINE#              179
+	C:0768H            LINE#              180
+	C:079BH            LINE#              181
+	C:07AFH            LINE#              182
+	C:07C1H            LINE#              183
+	C:07C8H            LINE#              179
+	C:07CCH            LINE#              187
+	C:07D1H            LINE#              192
+	C:07DCH            LINE#              193
+	C:07E7H            LINE#              194
+	C:0816H            LINE#              195
+	C:0832H            LINE#              197
+	C:0840H            LINE#              198
+	C:086FH            LINE#              199
+	C:0876H            LINE#              197
+	C:087AH            LINE#              203
+	C:087FH            LINE#              208
+	C:0886H            LINE#              213
+	C:0886H            LINE#              213
 	-------            ENDPROC            modbusPoll
 	-------            PROC               _boolRead
-	D:0010H            SYMBOL             boolStatus
-	C:08C5H            LINE#              216
-	C:08C5H            LINE#              219
-	C:08DEH            LINE#              223
-	C:08DFH            LINE#              220
-	C:08EEH            LINE#              221
-	C:08F3H            LINE#              222
-	C:08F5H            LINE#              223
-	C:08F5H            LINE#              223
+	D:0012H            SYMBOL             boolStatus
+	C:0887H            LINE#              215
+	C:0887H            LINE#              218
+	C:08A0H            LINE#              222
+	C:08A1H            LINE#              219
+	C:08B0H            LINE#              220
+	C:08B5H            LINE#              221
+	C:08B7H            LINE#              222
+	C:08B7H            LINE#              222
 	-------            ENDPROC            _boolRead
 	-------            PROC               _wordRead
-	C:08F6H            LINE#              225
-	C:08FAH            LINE#              226
-	C:0917H            LINE#              228
-	C:0918H            LINE#              227
-	C:0922H            LINE#              228
-	C:0922H            LINE#              228
+	C:08B8H            LINE#              224
+	C:08BCH            LINE#              225
+	C:08D9H            LINE#              227
+	C:08DAH            LINE#              226
+	C:08E4H            LINE#              227
+	C:08E4H            LINE#              227
 	-------            ENDPROC            _wordRead
 	-------            PROC               _coilWrite
-	C:0923H            LINE#              230
-	C:0923H            LINE#              231
-	C:093BH            LINE#              236
-	C:093CH            LINE#              232
-	C:0950H            LINE#              233
-	C:095DH            LINE#              234
-	C:0962H            LINE#              235
-	C:0963H            LINE#              236
-	C:0963H            LINE#              236
+	C:08E5H            LINE#              229
+	C:08E5H            LINE#              230
+	C:08FDH            LINE#              235
+	C:08FEH            LINE#              231
+	C:0912H            LINE#              232
+	C:091FH            LINE#              233
+	C:0924H            LINE#              234
+	C:0925H            LINE#              235
+	C:0925H            LINE#              235
 	-------            ENDPROC            _coilWrite
 	-------            PROC               _holdingRegisterWrite
-	D:0010H            SYMBOL             startAddress
-	D:0012H            SYMBOL             value
-	C:0964H            LINE#              238
-	C:096CH            LINE#              239
-	C:0986H            LINE#              242
-	C:0987H            LINE#              240
-	C:0992H            LINE#              241
-	C:0993H            LINE#              242
-	C:0993H            LINE#              242
+	D:0012H            SYMBOL             startAddress
+	D:0014H            SYMBOL             value
+	C:0926H            LINE#              237
+	C:092EH            LINE#              238
+	C:0948H            LINE#              241
+	C:0949H            LINE#              239
+	C:0954H            LINE#              240
+	C:0955H            LINE#              241
+	C:0955H            LINE#              241
 	-------            ENDPROC            _holdingRegisterWrite
 	-------            PROC               _oops
-	C:0994H            LINE#              244
-	C:0994H            LINE#              245
-	C:0997H            LINE#              246
-	C:0999H            LINE#              247
-	C:099BH            LINE#              248
+	C:0956H            LINE#              243
+	C:0956H            LINE#              244
+	C:0959H            LINE#              245
+	C:095BH            LINE#              246
+	C:095DH            LINE#              247
 	-------            ENDPROC            _oops
 	-------            PROC               _write
-	D:0010H            SYMBOL             len
-	D:0013H            SYMBOL             i
-	D:0011H            SYMBOL             CRC
-	C:099EH            LINE#              250
-	C:09A0H            LINE#              254
-	C:09A4H            LINE#              255
-	C:09A7H            LINE#              257
-	C:09A9H            LINE#              255
-	C:09ADH            LINE#              257
-	C:09B4H            LINE#              258
-	C:09BBH            LINE#              260
-	C:09BDH            LINE#              261
-	C:09E5H            LINE#              262
-	C:09E7H            LINE#              264
-	C:09E7H            LINE#              264
+	D:0012H            SYMBOL             len
+	D:0015H            SYMBOL             i
+	D:0013H            SYMBOL             CRC
+	C:0960H            LINE#              249
+	C:0962H            LINE#              253
+	C:0966H            LINE#              254
+	C:0969H            LINE#              256
+	C:096BH            LINE#              254
+	C:096FH            LINE#              256
+	C:0976H            LINE#              257
+	C:097DH            LINE#              259
+	C:097FH            LINE#              260
+	C:09A7H            LINE#              261
+	C:09A9H            LINE#              263
+	C:09A9H            LINE#              263
 	-------            ENDPROC            _write
 	-------            PROC               _crc
 	B:0000H            SYMBOL             lsb
-	D:0014H            SYMBOL             j
-	C:09E8H            LINE#              266
-	C:09E8H            LINE#              269
-	C:09ECH            LINE#              271
-	C:09F4H            LINE#              272
-	C:09FCH            LINE#              273
-	C:09FFH            LINE#              274
-	C:0A06H            LINE#              275
-	C:0A11H            LINE#              276
-	C:0A14H            LINE#              277
-	C:0A1CH            LINE#              273
-	C:0A23H            LINE#              271
-	C:0A26H            LINE#              281
-	C:0A2AH            LINE#              282
-	C:0A2AH            LINE#              282
+	D:0016H            SYMBOL             j
+	C:09AAH            LINE#              265
+	C:09AAH            LINE#              268
+	C:09AEH            LINE#              270
+	C:09B6H            LINE#              271
+	C:09BEH            LINE#              272
+	C:09C1H            LINE#              273
+	C:09C8H            LINE#              274
+	C:09D3H            LINE#              275
+	C:09D6H            LINE#              276
+	C:09DEH            LINE#              272
+	C:09E5H            LINE#              270
+	C:09E8H            LINE#              280
+	C:09ECH            LINE#              281
+	C:09ECH            LINE#              281
 	-------            ENDPROC            _crc
 	-------            PROC               _div8RndUp
-	C:0A2BH            LINE#              284
-	C:0A2BH            LINE#              285
-	C:0A3DH            LINE#              286
-	C:0A3DH            LINE#              286
+	C:09EDH            LINE#              283
+	C:09EDH            LINE#              284
+	C:09FFH            LINE#              285
+	C:09FFH            LINE#              285
 	-------            ENDPROC            _div8RndUp
 	-------            PROC               _bytesToWord
-	C:0A3EH            LINE#              288
-	C:0A3EH            LINE#              289
-	C:0A4EH            LINE#              290
-	C:0A4EH            LINE#              290
+	C:0A00H            LINE#              287
+	C:0A00H            LINE#              288
+	C:0A10H            LINE#              289
+	C:0A10H            LINE#              289
 	-------            ENDPROC            _bytesToWord
 	-------            PROC               main
-	C:0A4FH            LINE#              10
-	C:0A4FH            LINE#              11
-	C:0A52H            LINE#              12
-	C:0A55H            LINE#              13
-	C:0A58H            LINE#              15
-	C:0A5AH            LINE#              17
-	C:0A5FH            LINE#              18
-	C:0A64H            LINE#              20
-	C:0A67H            LINE#              21
-	C:0A70H            LINE#              22
-	C:0A7BH            LINE#              24
-	C:0A82H            LINE#              25
-	C:0A89H            LINE#              28
-	C:0A8CH            LINE#              30
+	C:0A11H            LINE#              10
+	C:0A11H            LINE#              11
+	C:0A14H            LINE#              12
+	C:0A17H            LINE#              13
+	C:0A1AH            LINE#              15
+	C:0A1CH            LINE#              17
+	C:0A21H            LINE#              18
+	C:0A26H            LINE#              20
+	C:0A29H            LINE#              21
+	C:0A32H            LINE#              22
+	C:0A3DH            LINE#              24
+	C:0A44H            LINE#              25
+	C:0A4BH            LINE#              28
+	C:0A4EH            LINE#              30
 	-------            ENDPROC            main
 	-------            ENDMOD             DO-8
-	C:01F7H            PUBLIC             ?C_START3
-	C:000EH            PUBLIC             ?C_SLDIV_SP
-	C:003AH            PUBLIC             ?C_SIDIV
-	C:0062H            PUBLIC             ?C_UIDIV
-	C:00E7H            PUBLIC             CPL_R4R5
-	C:00EFH            PUBLIC             CPL_R6R7
-	C:009AH            PUBLIC             DIV_2
+	C:0145H            PUBLIC             ?C_START3
+	C:0024H            PUBLIC             ?C_LANL
+	C:0033H            PUBLIC             ?C_SIDIV
+	C:005BH            PUBLIC             ?C_UIDIV
+	C:00E0H            PUBLIC             CPL_R4R5
+	C:00E8H            PUBLIC             CPL_R6R7
+	C:0093H            PUBLIC             DIV_2
+	C:00F0H            PUBLIC             ?C_CMPLS
+	C:00FFH            PUBLIC             ?C_CMPL
+	C:0127H            PUBLIC             RST_STK4?C
+	C:000EH            PUBLIC             ?C_LSSHR
 	D:00A0H            PUBLIC             HPD_ADDR
 	N:007FH            PUBLIC             IDATALEN
 	N:00FFH            PUBLIC             _INITP2?
-	C:00FEH            PUBLIC             DIVL?C_1_SP
-	C:00F7H            PUBLIC             ?C_ULDIV_SP
-	C:017EH            PUBLIC             GESI?C
-	C:0193H            PUBLIC             DIVL?C_1
-	C:018CH            PUBLIC             ?C_ULDIV
-	C:019CH            PUBLIC             ?LOOP_DIV_SZ
-	C:01D4H            PUBLIC             ?DIV_STORE_Q_SZ
-	C:01E8H            PUBLIC             RST_STK4?C
+	C:0136H            PUBLIC             ?C_LOP
 
 ----------------------
 SUGGESTED OPTIMIZATION
 ----------------------
-Warning: 64 (40H) data bytes in the range [00H-80H] are available for storage.
+Warning: 62 (3EH) data bytes in the range [00H-80H] are available for storage.
          Consider using some of these for 'data' variables in your source files.
 
 

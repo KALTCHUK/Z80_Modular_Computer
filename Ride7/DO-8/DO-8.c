@@ -14,7 +14,7 @@ void main() {
 
     _DE = 0;
 
-baud = 19200;	// factory set baud rate.
+    baud = 19200;	// factory set baud rate.
 	id = 1;			// factory set modbus slave id.
 
 	if (_FS == 1) {
