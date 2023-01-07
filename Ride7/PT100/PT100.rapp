@@ -1,7 +1,7 @@
 
-<ApplicationBuild Header="PT100" Extern=".\PT100.rapp" Path=".\PT100.rapp" OutputFile=".\PT100.aof" sate="98" >
+<ApplicationBuild Header="PT100" Extern=".\PT100.rapp" Path=".\PT100.rapp" OutputFile=".\PT100.aof" sate="96" >
 	<NodeH Path=".\Serial.h" Header="Serial.h" Marker="-1" OutputFile="" sate="0" />
-	<NodeC Path=".\PT100.c" Header="PT100.c" Marker="-1" OutputFile=".\PT100.obj" sate="0" />
+	<NodeC Path=".\PT100.c" Header="PT100.c" Marker="-1" OutputFile=".\PT100.obj" sate="2" />
 	<Options>
 		<Config Header="Standard" >
 			<Set Header="ApplicationBuild" >

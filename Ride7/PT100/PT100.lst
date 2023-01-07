@@ -1,4 +1,4 @@
-RC51 COMPILER V06.20.17.263,  PT100              01/04/23  20:06:25  PAGE  1
+RC51 COMPILER V06.20.17.263,  PT100              01/07/23  12:53:00  PAGE  1
 
 QCW(0x00002F32)
 
@@ -47,19 +47,19 @@ stmt level    source
   30   1          _INT = 1;
   31   1          P1 = 0xff;
   32   1      
-  33   1          baud = 19200;
+  33   1          baud = 9600;
   34   1      	serialInit(baud);
   35   1      	
   36   1          greeting();
-  37   1      
+  37   1          
   38   1      	while (1) {
   39   2              printASCII(readADC());
   40   2              milliStart();
-  41   2              while(milli < 1);
+  41   2              while(milli < 1000);
   42   2              milliStop();
   43   2          }
   44   1      }
-RC51 COMPILER V06.20.17.263,  PT100              01/04/23  20:06:25  PAGE  4
+RC51 COMPILER V06.20.17.263,  PT100              01/07/23  12:53:00  PAGE  4
 
   45          
   46          void timer0_isr() interrupt 1 {
@@ -86,8 +86,8 @@ stmt level    source
   63          void printASCII(unsigned char v) {
   64   1          unsigned char buf[2], vDiv, vRem;
   65   1      
-  66   1          vDiv = v / 0xa;
-  67   1          vRem = v % 0xa;
+  66   1          vDiv = v / 0x10;
+  67   1          vRem = v % 0x10;
   68   1      
   69   1          if(vDiv < 0xa)
   70   1              buf[0] = vDiv + '0';
@@ -95,9 +95,9 @@ stmt level    source
   72   1              buf[0] = vDiv + 'A' - 0xa;
   73   1      
   74   1          if(vRem < 0xa)
-  75   1              buf[0] = vRem + '0';
+  75   1              buf[1] = vRem + '0';
   76   1          else
-  77   1              buf[0] = vRem + 'A' - 0xa;
+  77   1              buf[1] = vRem + 'A' - 0xa;
   78   1      
   79   1          newLine();
   80   1          serialTX(buf[0]);
@@ -120,7 +120,7 @@ stmt level    source
   96          void milliStop(void) {
   97   1          ET0 = 0;           //Disable TIMER0 Interrupt.
   98   1      }
-RC51 COMPILER V06.20.17.263,  PT100              01/04/23  20:06:25  PAGE  8
+RC51 COMPILER V06.20.17.263,  PT100              01/07/23  12:53:00  PAGE  8
 
   99          
  100          void newLine(void) {
@@ -135,26 +135,24 @@ stmt level    source
  109   1          for(i=0; i<16; i++) {   //Read 16 samples.
  110   2              _CS = 0;
  111   2              _WR = 0;
- 112   2              val++;              //Just a delay.
- 113   2              _WR = 1;
- 114   2              _CS = 1;
- 115   2          
- 116   2              while(_INT == 1);   //Wait for interrupt signal (end of AD
+ 112   2              _WR = 1;
+ 113   2              _CS = 1;
+ 114   2          
+ 115   2              while(_INT == 1);   //Wait for interrupt signal (end of AD
             -C conversion cycle).
- 117   2          
- 118   2              _CS = 0;
- 119   2              _RD = 0;
- 120   2              _CS = 0;
- 121   2              while(_INT == 0);   //Wait for valid data.
- 122   2              sum += P1;
- 123   2              _RD = 1;
- 124   2              _CS = 1;
- 125   2          }
- 126   1      
- 127   1          val = sum/16;           //Average sample.
- 128   1          return val;
- 129   1      }
-RC51 COMPILER V06.20.17.263,  PT100              01/04/23  20:06:25  PAGE 10
+ 116   2          
+ 117   2              _CS = 0;
+ 118   2              _RD = 0;
+ 119   2              while(_INT == 0);   //Wait for valid data.
+ 120   2              sum += P1;
+ 121   2              _RD = 1;
+ 122   2              _CS = 1;
+ 123   2          }
+ 124   1      
+ 125   1          val = sum/16;           //Average sample.
+ 126   1          return val;
+ 127   1      }
+RC51 COMPILER V06.20.17.263,  PT100              01/07/23  12:53:00  PAGE 10
 
 ASSEMBLY LISTING OF GENERATED OBJECT CODE
 
@@ -216,7 +214,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0053         ?CASE7:
                                            ; SOURCE LINE # 30 
 0053 758DD0         MOV    TH1,#0D0H
-RC51 COMPILER V06.20.17.263,  PT100              01/04/23  20:06:25  PAGE  2
+RC51 COMPILER V06.20.17.263,  PT100              01/07/23  12:53:00  PAGE  2
 
                                            ; SOURCE LINE # 31 
 0056 801C           SJMP   ?NXT1
@@ -276,7 +274,7 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0000 3098FD         JNB    RI,?WHILE3
                                            ; SOURCE LINE # 62 
 0003 C298           CLR    RI
-RC51 COMPILER V06.20.17.263,  PT100              01/04/23  20:06:25  PAGE  3
+RC51 COMPILER V06.20.17.263,  PT100              01/07/23  12:53:00  PAGE  3
 
                                            ; SOURCE LINE # 63 
 0005 AF99           MOV    R7,SBUF
@@ -297,9 +295,8 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 31 
 0008 7590FF         MOV    P1,#0FFH
                                            ; SOURCE LINE # 33 
-000B 75004B  R      MOV    baud,#04BH
-000E E4             CLR    A
-000F F500    R      MOV    baud+01H,A
+000B 750025  R      MOV    baud,#025H
+000E 750080  R      MOV    baud+01H,#080H
                                            ; SOURCE LINE # 34 
 0011 AE00    R      MOV    R6,baud
 0013 AF00    R      MOV    R7,baud+01H
@@ -315,9 +312,9 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0024         ?WHILE7:
                                            ; SOURCE LINE # 41 
 0024 E500    R      MOV    A,milli
-0026 B40005         CJNE   A,#000H,?LAB23
+0026 B40305         CJNE   A,#003H,?LAB23
 0029 E500    R      MOV    A,milli+01H
-002B B40100         CJNE   A,#001H,?LAB23
+002B B4E800         CJNE   A,#0E8H,?LAB23
 002E         ?LAB23:
 002E 40F4           JC     ?WHILE7
                                            ; SOURCE LINE # 42 
@@ -336,9 +333,9 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
 0007 758A66         MOV    TL0,#066H
                                            ; SOURCE LINE # 50 
 000A 0500    R      INC    milli+01H
-RC51 COMPILER V06.20.17.263,  PT100              01/04/23  20:06:25  PAGE  5
-
 000C E500    R      MOV    A,milli+01H
+RC51 COMPILER V06.20.17.263,  PT100              01/07/23  12:53:00  PAGE  5
+
 000E 7002           JNZ    ?NXT11
 0010 0500    R      INC    milli
 0012         ?NXT11:
@@ -394,57 +391,54 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
               ; Register R7 is assigned to parameter v
               ; R5 is assigned to vDiv
                                            ; SOURCE LINE # 66 
-0000 75F00A         MOV    B,#00AH
+0000 75F010         MOV    B,#010H
 0003 EF             MOV    A,R7
-RC51 COMPILER V06.20.17.263,  PT100              01/04/23  20:06:25  PAGE  6
-
 0004 84             DIV    AB
+RC51 COMPILER V06.20.17.263,  PT100              01/07/23  12:53:00  PAGE  6
+
 0005 FD             MOV    R5,A
               ; R4 is assigned to vRem
                                            ; SOURCE LINE # 67 
-0006 75F00A         MOV    B,#00AH
-0009 EF             MOV    A,R7
-000A 84             DIV    AB
-000B ACF0           MOV    R4,B
+0006 ACF0           MOV    R4,B
                                            ; SOURCE LINE # 69 
-000D BD0A00         CJNE   R5,#00AH,?LAB39
-0010         ?LAB39:
-0010 5007           JNC    ?ELSE2
+0008 B40A00         CJNE   A,#00AH,?LAB39
+000B         ?LAB39:
+000B 5007           JNC    ?ELSE2
                                            ; SOURCE LINE # 70 
-0012 ED             MOV    A,R5
-0013 2430           ADD    A,#030H
-0015 F500    R      MOV    buf,A
-0017 8005           SJMP   ?NXT18
-0019         ?ELSE2:
+000D ED             MOV    A,R5
+000E 2430           ADD    A,#030H
+0010 F500    R      MOV    buf,A
+0012 8005           SJMP   ?NXT18
+0014         ?ELSE2:
                                            ; SOURCE LINE # 72 
-0019 ED             MOV    A,R5
-001A 2437           ADD    A,#037H
-001C F500    R      MOV    buf,A
-001E         ?NXT18:
+0014 ED             MOV    A,R5
+0015 2437           ADD    A,#037H
+0017 F500    R      MOV    buf,A
+0019         ?NXT18:
                                            ; SOURCE LINE # 74 
-001E EC             MOV    A,R4
-001F B40A00         CJNE   A,#00AH,?LAB41
-0022         ?LAB41:
-0022 5007           JNC    ?ELSE3
+0019 EC             MOV    A,R4
+001A B40A00         CJNE   A,#00AH,?LAB41
+001D         ?LAB41:
+001D 5007           JNC    ?ELSE3
                                            ; SOURCE LINE # 75 
-0024 EC             MOV    A,R4
-0025 2430           ADD    A,#030H
-0027 F500    R      MOV    buf,A
-0029 8005           SJMP   ?NXT19
-002B         ?ELSE3:
+001F EC             MOV    A,R4
+0020 2430           ADD    A,#030H
+0022 F500    R      MOV    buf+01H,A
+0024 8005           SJMP   ?NXT19
+0026         ?ELSE3:
                                            ; SOURCE LINE # 77 
-002B EC             MOV    A,R4
-002C 2437           ADD    A,#037H
-002E F500    R      MOV    buf,A
-0030         ?NXT19:
+0026 EC             MOV    A,R4
+0027 2437           ADD    A,#037H
+0029 F500    R      MOV    buf+01H,A
+002B         ?NXT19:
                                            ; SOURCE LINE # 79 
-0030 120000  R      LCALL  newLine
+002B 120000  R      LCALL  newLine
                                            ; SOURCE LINE # 80 
-0033 AF00    R      MOV    R7,buf
-0035 120000  R      LCALL  _serialTX
+002E AF00    R      MOV    R7,buf
+0030 120000  R      LCALL  _serialTX
                                            ; SOURCE LINE # 81 
-0038 AF00    R      MOV    R7,buf+01H
-003A 020000  R      LJMP   _serialTX
+0033 AF00    R      MOV    R7,buf+01H
+0035 020000  R      LJMP   _serialTX
 
             ; FUNCTION _printASCII (END)
 
@@ -456,12 +450,12 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
                                            ; SOURCE LINE # 87 
 0005 758CFC         MOV    TH0,#0FCH
                                            ; SOURCE LINE # 88 
-RC51 COMPILER V06.20.17.263,  PT100              01/04/23  20:06:25  PAGE  7
-
 0008 758A66         MOV    TL0,#066H
                                            ; SOURCE LINE # 89 
 000B D28C           SETB   TR0
                                            ; SOURCE LINE # 90 
+RC51 COMPILER V06.20.17.263,  PT100              01/07/23  12:53:00  PAGE  7
+
 000D D2A9           SETB   ET0
                                            ; SOURCE LINE # 91 
 000F D2AF           SETB   EA
@@ -495,79 +489,73 @@ ASSEMBLY LISTING OF GENERATED OBJECT CODE
             ; FUNCTION readADC (BEGIN)
               ; R7 is assigned to val
               ; R4R5 is assigned to sum
-                                           ; SOURCE LINE # 106 
-0000 7F00           MOV    R7,#000H
                                            ; SOURCE LINE # 107 
-0002 E4             CLR    A
-0003 FC             MOV    R4,A
-0004 FD             MOV    R5,A
+0000 E4             CLR    A
+0001 FC             MOV    R4,A
+0002 FD             MOV    R5,A
               ; R6 is assigned to i
                                            ; SOURCE LINE # 109 
-0005 FE             MOV    R6,A
-0006         ?FOR3:
+0003 FE             MOV    R6,A
+0004         ?FOR3:
                                            ; SOURCE LINE # 110 
-0006 C2B2           CLR    INT0
+0004 C2B2           CLR    INT0
                                            ; SOURCE LINE # 111 
-0008 C2B4           CLR    T0
+0006 C2B4           CLR    T0
                                            ; SOURCE LINE # 112 
-000A 0F             INC    R7
+0008 D2B4           SETB   T0
                                            ; SOURCE LINE # 113 
-000B D2B4           SETB   T0
-                                           ; SOURCE LINE # 114 
-000D D2B2           SETB   INT0
-000F         ?WHILE10:
-RC51 COMPILER V06.20.17.263,  PT100              01/04/23  20:06:25  PAGE  9
-
-                                           ; SOURCE LINE # 116 
-000F 20B5FD         JB     T1,?WHILE10
+000A D2B2           SETB   INT0
+000C         ?WHILE10:
+                                           ; SOURCE LINE # 115 
+000C 20B5FD         JB     T1,?WHILE10
+                                           ; SOURCE LINE # 117 
+000F C2B2           CLR    INT0
                                            ; SOURCE LINE # 118 
-0012 C2B2           CLR    INT0
+0011 C2B3           CLR    INT1
+0013         ?WHILE11:
                                            ; SOURCE LINE # 119 
-0014 C2B3           CLR    INT1
+RC51 COMPILER V06.20.17.263,  PT100              01/07/23  12:53:00  PAGE  9
+
+0013 30B5FD         JNB    T1,?WHILE11
                                            ; SOURCE LINE # 120 
-0016 C2B2           CLR    INT0
-0018         ?WHILE11:
+0016 E590           MOV    A,P1
+0018 FB             MOV    R3,A
+0019 ED             MOV    A,R5
+001A 2B             ADD    A,R3
+001B FD             MOV    R5,A
+001C E4             CLR    A
+001D 3C             ADDC   A,R4
+001E FC             MOV    R4,A
                                            ; SOURCE LINE # 121 
-0018 30B5FD         JNB    T1,?WHILE11
+001F D2B3           SETB   INT1
                                            ; SOURCE LINE # 122 
-001B E590           MOV    A,P1
-001D FB             MOV    R3,A
-001E ED             MOV    A,R5
-001F 2B             ADD    A,R3
-0020 FD             MOV    R5,A
-0021 E4             CLR    A
-0022 3C             ADDC   A,R4
-0023 FC             MOV    R4,A
-                                           ; SOURCE LINE # 123 
-0024 D2B3           SETB   INT1
-                                           ; SOURCE LINE # 124 
-0026 D2B2           SETB   INT0
+0021 D2B2           SETB   INT0
                                            ; SOURCE LINE # 109 
-0028 0E             INC    R6
-0029 BE10DA         CJNE   R6,#010H,?FOR3
+0023 0E             INC    R6
+0024 BE10DD         CJNE   R6,#010H,?FOR3
               ; R7 is assigned to val
+                                           ; SOURCE LINE # 125 
+0027 8D03           MOV    AR3,R5
+0029 75F004         MOV    B,#004H
+002C         ?LAB54:
+002C C3             CLR    C
+002D 13             RRC    A
+002E CB             XCH    A,R3
+002F 13             RRC    A
+0030 CB             XCH    A,R3
+0031 D5F0F8         DJNZ   B,?LAB54
+0034 8B07           MOV    AR7,R3
                                            ; SOURCE LINE # 127 
-002C 8D03           MOV    AR3,R5
-002E 75F004         MOV    B,#004H
-0031         ?LAB54:
-0031 C3             CLR    C
-0032 13             RRC    A
-0033 CB             XCH    A,R3
-0034 13             RRC    A
-0035 CB             XCH    A,R3
-0036 D5F0F8         DJNZ   B,?LAB54
-0039 8B07           MOV    AR7,R3
-                                           ; SOURCE LINE # 129 
-003B 22             RET    
+0036 22             RET    
 
             ; FUNCTION readADC (END)
 
-RC51 COMPILER V06.20.17.263,  PT100              01/04/23  20:06:25  PAGE 11
+RC51 COMPILER V06.20.17.263,  PT100              01/07/23  12:53:00  PAGE 11
 
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    424    ----
+   CODE SIZE        =    414    ----
    CONSTANT SIZE    =     22    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

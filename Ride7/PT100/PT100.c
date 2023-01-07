@@ -30,15 +30,15 @@ void main() {
     _INT = 1;
     P1 = 0xff;
 
-    baud = 19200;
+    baud = 9600;
 	serialInit(baud);
 	
     greeting();
-
+    
 	while (1) {
         printASCII(readADC());
         milliStart();
-        while(milli < 1);
+        while(milli < 1000);
         milliStop();
     }
 }
@@ -63,8 +63,8 @@ void greeting(void) {
 void printASCII(unsigned char v) {
     unsigned char buf[2], vDiv, vRem;
 
-    vDiv = v / 0xa;
-    vRem = v % 0xa;
+    vDiv = v / 0x10;
+    vRem = v % 0x10;
 
     if(vDiv < 0xa)
         buf[0] = vDiv + '0';
@@ -72,9 +72,9 @@ void printASCII(unsigned char v) {
         buf[0] = vDiv + 'A' - 0xa;
 
     if(vRem < 0xa)
-        buf[0] = vRem + '0';
+        buf[1] = vRem + '0';
     else
-        buf[0] = vRem + 'A' - 0xa;
+        buf[1] = vRem + 'A' - 0xa;
 
     newLine();
     serialTX(buf[0]);
@@ -109,7 +109,6 @@ unsigned char readADC(void) {
     for(i=0; i<16; i++) {   //Read 16 samples.
         _CS = 0;
         _WR = 0;
-        val++;              //Just a delay.
         _WR = 1;
         _CS = 1;
     
@@ -117,7 +116,6 @@ unsigned char readADC(void) {
     
         _CS = 0;
         _RD = 0;
-        _CS = 0;
         while(_INT == 0);   //Wait for valid data.
         sum += P1;
         _RD = 1;

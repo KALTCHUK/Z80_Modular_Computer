@@ -1,17 +1,14 @@
 - DO-08:
-	- debug firmware
 	- design PCB
 	- assemble and test
 
-- DI-16:
+- DI-08:
 	- write firmware.
 	- build and test prototype
 	- design PCB
 	- assemble and test
 
 - RS485:
-	- debug firmware.
-	- test prototype
 	- design PCB
 	- assemble and test
 
