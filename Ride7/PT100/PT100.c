@@ -24,6 +24,8 @@ void newLine(void);
 unsigned char readADC(void);
 
 void main() {
+    //int i;
+
     _CS = 1;
     _RD = 1;
     _WR = 1;
@@ -34,14 +36,23 @@ void main() {
 	serialInit(baud);
 	
     greeting();
+
+    milliStart();
     
 	while (1) {
+/*        for(i=0; i<=0xff; i++) {
+            printASCII(i);
+            milli = 0;
+            while(milli<1000);
+        }*/
+    
         printASCII(readADC());
-        milliStart();
+        milli = 0;
         while(milli < 1000);
-        milliStop();
     }
+
 }
+
 
 void timer0_isr() interrupt 1 {
     TH0 = 0xfc;        //Reload the TIMER0.

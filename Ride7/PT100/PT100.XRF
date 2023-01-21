@@ -16,7 +16,7 @@ INTER-MODULE CROSS-REFERENCE LISTING
           main  . . . . . . . CODE    [PT100]:  C3S
           milli . . . . . . . DATA    [PT100]: 
           milliStart  . . . . CODE    [PT100]:  PT100
-          milliStop . . . . . CODE    [PT100]:  PT100
+          milliStop . . . . . CODE    [PT100]: 
           newLine . . . . . . CODE    [PT100]:  PT100
           readADC . . . . . . CODE    [PT100]:  PT100
           serialRX  . . . . . CODE    [PT100]: 

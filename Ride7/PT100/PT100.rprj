@@ -1,4 +1,4 @@
 
 <Project Header="Project 'PT100'" Path=".\PT100.rprj" Project="Yes" OutputFile="" sate="96" ActiveApp="PT100" >
-	<ApplicationBuild Header="PT100" Extern=".\PT100.rapp" Path=".\PT100.rapp" OutputFile=".\PT100.aof" sate="96" />
+	<ApplicationBuild Header="PT100" Extern=".\PT100.rapp" Path=".\PT100.rapp" OutputFile=".\PT100.aof" sate="98" />
 </Project>

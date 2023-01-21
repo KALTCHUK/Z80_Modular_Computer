@@ -22,8 +22,8 @@
 			
 	</Flags>
 	<Views>
-		<View File=".\Serial.h" Line="38" Index="0" />
-		<View File=".\PT100.c" Line="1" Index="1" focus="1" />
+		<View File=".\Serial.h" Line="8" Index="0" />
+		<View File=".\PT100.c" Line="27" Index="1" focus="1" />
 	</Views>
 	<BookMarks>
 		<BookMark File="" Line="0" />
@@ -61,6 +61,7 @@
 		</GrepReplaceWhat>
 	</Grep>
 	<FindStrings>
+		<Find>milli</Find>
 		<Find>_CS</Find>
 		<Find>kTO</Find>
 		<Find>I2C_delay</Find>

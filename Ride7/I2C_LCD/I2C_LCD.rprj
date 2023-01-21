@@ -1,0 +1,4 @@
+
+<Project Header="Project 'I2C_LCD'" Path=".\I2C_LCD.rprj" Project="Yes" OutputFile="" sate="96" ActiveApp="I2C_LCD" >
+	<ApplicationBuild Header="I2C_LCD" Extern=".\I2C_LCD.rapp" Path=".\I2C_LCD.rapp" OutputFile=".\I2C_LCD.aof" sate="98" />
+</Project>

@@ -1,0 +1,22 @@
+
+<ApplicationBuild Header="I2C_LCD" Extern=".\I2C_LCD.rapp" Path=".\I2C_LCD.rapp" OutputFile=".\I2C_LCD.aof" sate="98" >
+	<NodeC Path=".\I2C_LCD.c" Header="I2C_LCD.c" Marker="-1" OutputFile=".\I2C_LCD.obj" sate="0" />
+	<Options>
+		<Config Header="Standard" >
+			<Set Header="ApplicationBuild" >
+				<Section Header="General" >
+					<Property Header="TargetFamily" Value="80C51" />
+				</Section>
+			</Set>
+			<Set Header="Target" >
+				<Section Header="Processor80C51" >
+					<Property Header="Processor" Value="AT89C4051" Removable="1" />
+				</Section>
+				<Section Header="ToolSet80C51" >
+					<Property Header="BuildToolSet80C51" Value="80C51\RaisonanceTools.config" Removable="1" />
+					<Property Header="ArelocInfo" Value="" Removable="1" />
+				</Section>
+			</Set>
+		</Config>
+	</Options>
+</ApplicationBuild>

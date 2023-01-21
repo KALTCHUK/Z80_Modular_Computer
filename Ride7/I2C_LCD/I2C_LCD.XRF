@@ -1,0 +1,25 @@
+MS-DOS LX51 CODE BANKING LINKER/LOCATOR V06.20.17.263
+
+
+INTER-MODULE CROSS-REFERENCE LISTING
+------------------------------------
+
+          NAME. . . . . . . . USAGE   MODULE NAMES
+          ----------------------------------------
+          ?C_CPY  . . . . . . CODE    [STRCPY]:  I2C_LCD
+          ?C_START3 . . . . . CODE    [C3S]:  I2C_LCD
+          ?strcpy . . . . . . CODE    [STRCPY]: 
+          HPD_ADDR  . . . . . DATA    [HPD]:  C3S
+          IDATALEN  . . . . . NUMBER  [_C_IDATALEN]:  C3S
+          initLCD . . . . . . CODE    [I2C_LCD]:  I2C_LCD
+          main  . . . . . . . CODE    [I2C_LCD]:  C3S
+          milli . . . . . . . DATA    [I2C_LCD]: 
+          milliStart  . . . . CODE    [I2C_LCD]: 
+          TIM1_INIT . . . . . NUMBER  [** UNRESOLVED **]:
+          XSTACKLEN . . . . . NUMBER  [** UNRESOLVED **]:
+          _INITP2?  . . . . . NUMBER  [_C_IDATALEN]:  C3S
+          _putLCD . . . . . . CODE    [I2C_LCD]:  I2C_LCD
+          _STACK  . . . . . . IDATA   [I2C_LCD]:  C3S
+          __LOCAL_END__ . . . CODE    [SHARING]:  STRCPY
+          __NULL_POINTER__  . CODE    [SHARING]:  STRCPY
+          __STRCPY_NXT1__ . . CODE    [STRCPY]: 
