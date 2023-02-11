@@ -19,6 +19,8 @@
   https://www.arduino.cc/en/Tutorial/BuiltInExamples/AnalogInput
 */
 
+#define SAMPLES   16
+
 int sensorPin = A0;   // select the input pin for the potentiometer
 int ledPin = 13;      // select the pin for the LED
 int sensorValue = 0;  // variable to store the value coming from the sensor
@@ -34,12 +36,16 @@ void setup() {
 
 void loop() {
   float T;
+  int i;
   
   // read the value from the sensor:
   sensorValue = analogRead(sensorPin);
 
-  T = ((float)sensorValue - 51)*100/973;
-  
+  T=0;
+  for(i=0; i<SAMPLES; i++)
+    T += ((float)sensorValue - 51)*100/973;
+  T /= SAMPLES;                       // Average temperature
+    
   Serial.println(T, 1);
-  delay(1000);                       // wait for a second
+  delay(60000);                       // wait for a minute
 }

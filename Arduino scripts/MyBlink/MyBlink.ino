@@ -22,6 +22,6 @@ int main(void)
     LED_ON;     //Toggle LED
     _delay_ms(500);
     LED_OFF;
-    _delay_ms(100);
+    _delay_ms(500);
     }
 }
