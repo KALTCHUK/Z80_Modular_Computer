@@ -1,0 +1,78 @@
+
+(rules PCB DI-08
+  (snap_angle 
+    fortyfive_degree
+  )
+  (autoroute_settings
+    (fanout off)
+    (autoroute on)
+    (postroute on)
+    (vias on)
+    (via_costs 50)
+    (plane_via_costs 5)
+    (start_ripup_costs 100)
+    (start_pass_no 140)
+    (layer_rule F.Cu
+      (active off)
+      (preferred_direction horizontal)
+      (preferred_direction_trace_costs 1.0)
+      (against_preferred_direction_trace_costs 2.4)
+    )
+    (layer_rule B.Cu
+      (active on)
+      (preferred_direction horizontal)
+      (preferred_direction_trace_costs 1.0)
+      (against_preferred_direction_trace_costs 1.7)
+    )
+  )
+  (rule
+    (width 400.0)
+    (clear 400.2)
+    (clear 200.0 (type smd_to_turn_gap))
+    (clear 100.0 (type smd_smd))
+  )
+  (padstack "Via[0-1]_1500:500_um"
+    (shape
+      (circle F.Cu 1500.0 0.0 0.0)
+    )
+    (shape
+      (circle B.Cu 1500.0 0.0 0.0)
+    )
+    (attach off)
+  )
+  (via 
+    "Via[0-1]_1500:500_um" "Via[0-1]_1500:500_um" default
+  )
+  (via 
+    "Via[0-1]_1500:500_um-kicad_default" "Via[0-1]_1500:500_um" "kicad_default"
+  )
+  (via_rule
+    default "Via[0-1]_1500:500_um"
+  )
+  (via_rule
+    "kicad_default" "Via[0-1]_1500:500_um-kicad_default"
+  )
+  (class default
+    +24V GND +5V "Net-(C3-Pad1)" "Net-(C4-Pad1)" "/MB-A" "/MB-B" "Net-(J3-Pad1)"
+    /FS /RX /TX "Net-(J6-Pad1)" "Net-(J6-Pad3)" "Net-(J6-Pad5)" "Net-(J6-Pad6)" "Net-(J6-Pad7)"
+    "Net-(J6-Pad8)" "Net-(J6-Pad9)" "Net-(J6-Pad10)" /SCL /SDA /DE "unconnected-(U2-Pad11)" "unconnected-(U4-Pad7)"
+    (clearance_class default)
+    (via_rule default)
+    (rule
+      (width 400.0)
+    )
+    (circuit 
+      (use_layer F.Cu B.Cu)
+    )
+  )
+  (class "kicad_default"
+    (clearance_class "kicad_default")
+    (via_rule kicad_default)
+    (rule
+      (width 400.0)
+    )
+    (circuit 
+      (use_layer F.Cu B.Cu)
+    )
+  )
+)
