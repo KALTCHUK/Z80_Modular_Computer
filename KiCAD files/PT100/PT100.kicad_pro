@@ -34,9 +34,9 @@
         "other_text_thickness": 0.15,
         "other_text_upright": false,
         "pads": {
-          "drill": 0.8,
-          "height": 5.08,
-          "width": 5.08
+          "drill": 0.762,
+          "height": 1.524,
+          "width": 1.524
         },
         "silk_line_width": 0.15,
         "silk_text_italic": false,
@@ -45,17 +45,10 @@
         "silk_text_thickness": 0.15,
         "silk_text_upright": false,
         "zones": {
-          "45_degree_only": false,
-          "min_clearance": 1.016
+          "min_clearance": 0.5
         }
       },
-      "diff_pair_dimensions": [
-        {
-          "gap": 0.0,
-          "via_gap": 0.0,
-          "width": 0.0
-        }
-      ],
+      "diff_pair_dimensions": [],
       "drc_exclusions": [],
       "meta": {
         "version": 2
@@ -73,7 +66,7 @@
         "duplicate_footprints": "warning",
         "extra_footprint": "warning",
         "footprint": "error",
-        "footprint_type_mismatch": "error",
+        "footprint_type_mismatch": "ignore",
         "hole_clearance": "error",
         "hole_near_hole": "error",
         "invalid_outline": "error",
@@ -89,7 +82,7 @@
         "missing_footprint": "warning",
         "net_conflict": "warning",
         "npth_inside_courtyard": "ignore",
-        "padstack": "error",
+        "padstack": "warning",
         "pth_inside_courtyard": "ignore",
         "shorting_items": "error",
         "silk_edge_clearance": "warning",
@@ -111,8 +104,6 @@
         "zones_intersect": "error"
       },
       "rules": {
-        "allow_blind_buried_vias": false,
-        "allow_microvias": false,
         "max_error": 0.005,
         "min_clearance": 0.0,
         "min_connection": 0.0,
@@ -126,9 +117,9 @@
         "min_text_height": 0.7999999999999999,
         "min_text_thickness": 0.08,
         "min_through_hole_diameter": 0.3,
-        "min_track_width": 0.19999999999999998,
-        "min_via_annular_width": 0.049999999999999996,
-        "min_via_diameter": 0.39999999999999997,
+        "min_track_width": 0.0,
+        "min_via_annular_width": 0.09999999999999999,
+        "min_via_diameter": 0.5,
         "solder_mask_clearance": 0.0,
         "solder_mask_min_width": 0.0,
         "solder_mask_to_copper_clearance": 0.0,
@@ -174,17 +165,9 @@
           "td_width_to_size_filter_ratio": 0.9
         }
       ],
-      "track_widths": [
-        0.0
-      ],
-      "via_dimensions": [
-        {
-          "diameter": 0.0,
-          "drill": 0.0
-        }
-      ],
-      "zones_allow_external_fillets": false,
-      "zones_use_no_outline": true
+      "track_widths": [],
+      "via_dimensions": [],
+      "zones_allow_external_fillets": false
     },
     "layer_presets": [],
     "viewports": []
@@ -403,14 +386,14 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "PSU2.kicad_pro",
+    "filename": "PT100.kicad_pro",
     "version": 1
   },
   "net_settings": {
     "classes": [
       {
         "bus_width": 12,
-        "clearance": 0.508,
+        "clearance": 0.2,
         "diff_pair_gap": 0.25,
         "diff_pair_via_gap": 0.25,
         "diff_pair_width": 0.2,
@@ -420,9 +403,9 @@
         "name": "Default",
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "schematic_color": "rgba(0, 0, 0, 0.000)",
-        "track_width": 1.016,
-        "via_diameter": 1.016,
-        "via_drill": 0.508,
+        "track_width": 0.25,
+        "via_diameter": 0.8,
+        "via_drill": 0.4,
         "wire_width": 6
       }
     ],
@@ -438,7 +421,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "specctra_dsn": "PSU2.dsn",
+      "specctra_dsn": "",
       "step": "",
       "vrml": ""
     },
@@ -484,8 +467,12 @@
   },
   "sheets": [
     [
-      "221290f4-0522-4f3d-864c-1a98b112eecc",
+      "e63e39d7-6ac0-4ffd-8aa3-1841a4541b55",
       ""
+    ],
+    [
+      "4497a361-d4eb-4a8f-a2db-ed22e0a154a6",
+      "AC_part"
     ]
   ],
   "text_variables": {}
